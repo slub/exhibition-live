@@ -1,0 +1,249 @@
+id: http://ontologies.slub-dresden.de/exhibtion
+name: exhibtion-info
+prefixes:
+  sladb: http://ontologies.slub-dresden.de/exhibition#
+  slsrc: http://ontologies.slub-dresden.de/source#
+  slmeta: http://ontologies.slub-dresden.de/meta#
+  slperson: http://ontologies.slub-dresden.de/person#
+  linkml: https://w3id.org/linkml/
+  geo: http://www.opengis.net/ont/geosparql#
+default_prefix: sladb
+imports:
+  - linkml:types
+default_range: string
+
+classes:
+  Exhibition:
+    description: >-
+      A collection of objects that are displayed together in a museum or other
+      public space.
+    class_uri: sladb:Exhibition
+    attributes:
+      name:
+        description: >-
+          The name of the exhibition.
+        range: string
+        multivalued: false
+      description:
+        description: >-
+          A description of the exhibition.
+        range: string
+        multivalued: false
+      start_date:
+        description: >-
+          The date the exhibition starts.
+        range: ExactTemporalValue
+        multivalued: false
+      end_date:
+        description: >-
+          The date the exhibition ends.
+        any_of:
+          - range: ExactTemporalValue
+          - range: AfterTemporalValue
+          - range: BeforeTemporalValue
+          - range: BetweenTemporalValue
+        multivalued: false
+      curator:
+        description: >-
+          The curator of the exhibition.
+        range: Person
+        multivalued: false
+      source:
+        description: >-
+          The source of the exhibition.
+        range: Source
+        multivalued: true
+      location:
+        description: >-
+          The location of the exhibition.
+        range: Location
+        multivalued: false
+      objects:
+        description: >-
+          The objects in the exhibition.
+        range: Object
+        multivalued: true
+      artists:
+        description: >-
+          The artists in the exhibition.
+        range: Person
+        multivalued: true
+
+  Object:
+    description: >-
+      A physical object that is part of an exhibition.
+    class_uri: sladb:Object
+    slots:
+      - name
+      - description
+      - artist
+      - source
+      - meta
+  TemporalValue:
+    class_uri: sladb:TemporalValue
+    abstract: true
+  ExactTemporalValue:
+    class_uri: sladb:ExactTemporalValue
+    is_a: TemporalValue
+    attributes:
+      at:
+        range: date
+  BeforeTemporalValue:
+    class_uri: sladb:BeforeTemporalValue
+    is_a: TemporalValue
+    attributes:
+      before:
+        range: date
+  AfterTemporalValue:
+    class_uri: sladb:AfterTemporalValue
+    is_a: TemporalValue
+    attributes:
+      after:
+        range: date
+  BetweenTemporalValue:
+    class_uri: sladb:BetweenTemporalValue
+    is_a: TemporalValue
+    attributes:
+      after:
+        range: date
+      before:
+        range: date
+  Work:
+    description: >-
+      A work of art.
+    class_uri: sladb:Work
+    slots:
+      - name
+      - description
+      - artist
+      - source
+      - meta
+  Source:
+    description: >-
+      A source of information.
+    class_uri: slsrc:Source
+    slots:
+      - name
+      - description
+      - url
+      - meta
+  Organization:
+    description: >-
+      An organization.
+    class_uri: slperson:Organization
+    slots:
+      - name
+      - description
+      - meta
+  Person:
+    description: >-
+      A person.
+    class_uri: slperson:Person
+    slots:
+      - name
+      - description
+      - birth_date
+      - death_date
+      - mailaddress
+      - meta
+  Meta:
+    description: >-
+      Metadata.
+    class_uri: slmeta:Meta
+    slots:
+      - createdBy
+      - created
+      - updatedBy
+      - updated
+      - version
+
+  GeoFeature:
+    description: >-
+      A geographic feature.
+    class_uri: geo:GeoFeature
+    slots:
+      - name
+      - description
+      - geo
+
+slots:
+  name:
+    range: string
+    required: true
+  description:
+    description: >-
+      A description of the artist.
+    range: string
+  birth_date:
+    description: >-
+      The birth date of the artist.
+    any_of:
+      - range: date
+      - range: datetime
+      - range: string
+  death_date:
+    description: >-
+      The death date of the artist.
+    any_of:
+      - range: date
+      - range: datetime
+      - range: string
+  mailaddress:
+    description: >-
+      The mail address of the artist.
+    range: string
+  url:
+    range: string
+  start_date:
+    any_of:
+      - range: date
+      - range: datetime
+      - range: string
+  end_date:
+    any_of:
+      - range: date
+      - range: datetime
+      - range: string
+  curator:
+    range: Person
+    multivalued: true
+  objects:
+    description: >-
+      The objects that are part of the exhibition.
+    any_of:
+      - range: sladb:Object
+      - range: sladb:Work
+    multivalued: true
+  source:
+    description: >-
+      The sources that are used to create the exhibition.
+    range: Source
+    multivalued: true
+  location:
+    description: >-
+      The location of the exhibition.
+    range: GeoFeature
+  artist:
+    range: Person
+    multivalued: true
+  meta:
+    range: Meta
+    multivalued: true
+  createdBy:
+    range: string
+  created:
+    range: datetime
+  updatedBy:
+    range: string
+  updated:
+    range: datetime
+  version:
+    range: string
+  geo:
+    range: wktLiteral
+types:
+  wktLiteral:
+    uri: geo:wktLiteral
+    base: str
+    description: >-
+      Well-known text representation of a geometry. Point(lng,lat)

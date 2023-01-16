@@ -1,0 +1,56 @@
+{
+  "type": "VerticalLayout",
+  "elements": [
+    {
+      "type": "HorizontalLayout",
+      "elements": [
+        {
+          "type": "Control",
+          "scope": "#/properties/name"
+        },
+        {
+          "type": "Control",
+          "scope": "#/properties/description"
+        }
+      ]
+    },
+    {
+      "type": "Label",
+      "text": "Start und Enddatum"
+    },
+    {
+      "type": "HorizontalLayout",
+      "elements": [
+        {
+          "type": "Control",
+          "scope": "#/properties/start_date"
+        },
+        {
+          "type": "Control",
+          "scope": "#/properties/end_date"
+        }
+      ]
+    },
+    {
+      "type": "Control",
+      "label": "Curator",
+      "scope": "#/properties/curator"
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/artists"
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/location"
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/objects"
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/source"
+    }
+  ]
+}

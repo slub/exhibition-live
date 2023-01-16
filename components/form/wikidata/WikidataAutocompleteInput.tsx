@@ -17,7 +17,7 @@ const getTextFromHTML: (html: string) => null | string = (html) => {
 const buildLabelFromSuggestion: (suggestion: AutocompleteSuggestion) => string =
     ({label, value}) =>`${getTextFromHTML(`<html><body>${label}</body></html>`)}, wikidata: ${value}`
 
-const WikidataAutoCompleteInput: FunctionComponent<Props> = (props) => {
+const WikidataAutocompleteInput: FunctionComponent<Props> = (props) => {
   const [selected, setSelected] = useState<AutocompleteSuggestion | null>(null);
 
   return (
@@ -40,4 +40,4 @@ const WikidataAutoCompleteInput: FunctionComponent<Props> = (props) => {
   );
 };
 
-export default WikidataAutoCompleteInput;
+export default WikidataAutocompleteInput;

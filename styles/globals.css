@@ -105,3 +105,8 @@ a {
     color-scheme: dark;
   }
 }
+
+.debounced_autocomplete_option_label .searchmatch {
+  font-weight: bold;
+}
+

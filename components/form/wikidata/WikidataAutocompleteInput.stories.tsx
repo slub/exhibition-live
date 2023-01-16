@@ -1,6 +1,7 @@
+import {ComponentMeta} from '@storybook/react'
 import React from 'react'
-import {ComponentMeta} from "@storybook/react";
-import WikidataAutocompleteInput from './WikidataAutocompleteInput';
+
+import WikidataAutocompleteInput from './WikidataAutocompleteInput'
 
 export default {
   title: 'form/wikidata/WikidataAutoCompleteInput',

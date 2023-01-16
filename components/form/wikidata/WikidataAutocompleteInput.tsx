@@ -1,7 +1,8 @@
-import React, {FunctionComponent, useState} from 'react';
-import {AutocompleteSuggestion, DebouncedAutocomplete} from "../DebouncedAutoComplete";
-import parse from "html-react-parser";
-import findPersonWithinWikidata from "../../utils/wikidata/findPersonWithinWikidata";
+import parse from 'html-react-parser'
+import React, {FunctionComponent, useState} from 'react'
+
+import findPersonWithinWikidata from '../../utils/wikidata/findPersonWithinWikidata'
+import {AutocompleteSuggestion, DebouncedAutocomplete} from '../DebouncedAutoComplete'
 
 interface OwnProps {}
 
@@ -9,7 +10,7 @@ type Props = OwnProps;
 
 const getTextFromHTML: (html: string) => null | string = (html) => {
   const
-      document = (new DOMParser()).parseFromString(html, "text/html"),
+      document = (new DOMParser()).parseFromString(html, 'text/html'),
       el = document.querySelector('body')
   return el?.textContent ? el.textContent.trim() : null
 }
@@ -18,7 +19,7 @@ const buildLabelFromSuggestion: (suggestion: AutocompleteSuggestion) => string =
     ({label, value}) =>`${getTextFromHTML(`<html><body>${label}</body></html>`)}, wikidata: ${value}`
 
 const WikidataAutocompleteInput: FunctionComponent<Props> = (props) => {
-  const [selected, setSelected] = useState<AutocompleteSuggestion | null>(null);
+  const [selected, setSelected] = useState<AutocompleteSuggestion | null>(null)
 
   return (
       <DebouncedAutocomplete
@@ -34,10 +35,10 @@ const WikidataAutocompleteInput: FunctionComponent<Props> = (props) => {
               </li>
           )}
           onChange={(_event: any, item: AutocompleteSuggestion | null) => {
-              setSelected(item);
+              setSelected(item)
           }}
       />
-  );
-};
+  )
+}
 
-export default WikidataAutocompleteInput;
+export default WikidataAutocompleteInput

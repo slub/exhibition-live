@@ -1,6 +1,7 @@
-import React, {FunctionComponent, useState} from 'react';
-import {AutocompleteSuggestion, DebouncedAutocomplete} from "../DebouncedAutoComplete";
-import findPersonWithinGND from "../../utils/gnd/findpersonWithinGND";
+import React, {FunctionComponent, useState} from 'react'
+
+import findPersonWithinGND from '../../utils/gnd/findpersonWithinGND'
+import {AutocompleteSuggestion, DebouncedAutocomplete} from '../DebouncedAutoComplete'
 
 interface OwnProps {
 }
@@ -26,7 +27,7 @@ const GNDAutocompleteInput: FunctionComponent<Props> = (props) => {
           onChange={(_event: any, item: AutocompleteSuggestion | null) => {
             setSelected(item)
           }}/>
-  );
-};
+  )
+}
 
-export default GNDAutocompleteInput;
+export default GNDAutocompleteInput

@@ -1,6 +1,7 @@
-import React, {FunctionComponent, useEffect, useState} from 'react';
-import {sparqlSelectViaFieldMappings} from "../utils/sparql";
-import {exhibitionPrefixes} from "../exhibtion";
+import React, {FunctionComponent, useEffect, useState} from 'react'
+
+import {exhibitionPrefixes} from '../exhibtion'
+import {sparqlSelectViaFieldMappings} from '../utils/sparql'
 
 interface OwnProps {
 }
@@ -17,7 +18,7 @@ type ExhibitionStub = {
 const ContentMain: FunctionComponent<Props> = (props) => {
   const [exhibition, setExhibition] = useState<ExhibitionStub | undefined>()
   useEffect(() => {
-    sparqlSelectViaFieldMappings("slmeta:282203", {
+    sparqlSelectViaFieldMappings('slmeta:282203', {
       name: {kind: 'literal', type: 'xsd:string', predicateURI: 'sladb:a7710', single: true},
       place1: {type: 'xsd:string', predicateURI: 'sladb:a7762', single: true},
       place2: {type: 'xsd:string', predicateURI: 'sladb:a7772', single: true},
@@ -27,7 +28,7 @@ const ContentMain: FunctionComponent<Props> = (props) => {
           setExhibition(exhibition as ExhibitionStub)
         })
 
-  }, [setExhibition]);
+  }, [setExhibition])
 
   if (!exhibition) return null
   return (
@@ -62,28 +63,28 @@ const ContentMain: FunctionComponent<Props> = (props) => {
                   <a href="https://performance.musiconn.de/location/alte-buchhaendlerboerse-leipzig">
                     {exhibition.place2}
                   </a>
-                  →{" "}
+                  →{' '}
                   <a
                       href="https://performance.musiconn.de/location/leipzig"
                       title="Leipzig"
                   >
                     {exhibition.place1}
                   </a>
-                  →{" "}
+                  →{' '}
                   <a
                       href="https://performance.musiconn.de/location/sachsen"
                       title="Sachsen"
                   >
                     Sachsen
                   </a>
-                  →{" "}
+                  →{' '}
                   <a
                       href="https://performance.musiconn.de/location/deutschland"
                       title="Deutschland"
                   >
                     Deutschland
                   </a>
-                  →{" "}
+                  →{' '}
                   <a
                       href="https://performance.musiconn.de/location/europa"
                       title="Europa"
@@ -134,7 +135,7 @@ const ContentMain: FunctionComponent<Props> = (props) => {
                   Programm
                 </dt>
                 <dd className="program">
-                  <span className="additional-inline">1)</span>{" "}
+                  <span className="additional-inline">1)</span>{' '}
                   <a
                       href="https://performance.musiconn.de/work/faniska-ouvertuere-cherubini-luigi"
                       title="Faniska. Ouvertüre (Cherubini, Luigi)"
@@ -154,7 +155,7 @@ const ContentMain: FunctionComponent<Props> = (props) => {
                       title="Volkland, Alfred (1841–1905)"
                   >
                     Volkland, Alfred (1841–1905)
-                  </a>{" "}
+                  </a>{' '}
                     (
                   <a href="https://performance.musiconn.de/subject/dirigat">
                     Dirigat
@@ -163,7 +164,7 @@ const ContentMain: FunctionComponent<Props> = (props) => {
                 </span>
                 </dd>
                 <dd className="program">
-                  <span className="additional-inline">2)</span>{" "}
+                  <span className="additional-inline">2)</span>{' '}
                   <a
                       href="https://performance.musiconn.de/work/beim-abschiede-schubert-franz-ludwig"
                       title="Beim Abschiede (Schubert, Franz Ludwig)"
@@ -183,7 +184,7 @@ const ContentMain: FunctionComponent<Props> = (props) => {
                       title="Volkland, Alfred (1841–1905)"
                   >
                     Volkland, Alfred (1841–1905)
-                  </a>{" "}
+                  </a>{' '}
                     (
                   <a href="https://performance.musiconn.de/subject/dirigat">
                     Dirigat
@@ -194,7 +195,7 @@ const ContentMain: FunctionComponent<Props> = (props) => {
                       title="Schubert, Clara"
                   >
                     Schubert, Clara
-                  </a>{" "}
+                  </a>{' '}
                     (
                   <a href="https://performance.musiconn.de/subject/singstimme">
                     Singstimme
@@ -203,7 +204,7 @@ const ContentMain: FunctionComponent<Props> = (props) => {
                 </span>
                 </dd>
                 <dd className="program">
-                  <span className="additional-inline">3)</span>{" "}
+                  <span className="additional-inline">3)</span>{' '}
                   <a
                       href="https://performance.musiconn.de/work/konzerte-klavier-orchester-nr-1-op-11-e-moll-chopin-frederic"
                       title="Konzerte, Klavier, Orchester, Nr. 1, op. 11 (e-Moll) (Chopin, Frédéric)"
@@ -224,7 +225,7 @@ const ContentMain: FunctionComponent<Props> = (props) => {
                       title="Volkland, Alfred (1841–1905)"
                   >
                     Volkland, Alfred (1841–1905)
-                  </a>{" "}
+                  </a>{' '}
                     (
                   <a href="https://performance.musiconn.de/subject/dirigat">
                     Dirigat
@@ -235,7 +236,7 @@ const ContentMain: FunctionComponent<Props> = (props) => {
                       title="Esipova, Anna N. (1851–1914)"
                   >
                     Esipova, Anna N. (1851–1914)
-                  </a>{" "}
+                  </a>{' '}
                     (
                   <a href="https://performance.musiconn.de/subject/klavier">
                     Klavier
@@ -244,7 +245,7 @@ const ContentMain: FunctionComponent<Props> = (props) => {
                 </span>
                 </dd>
                 <dd className="program">
-                  <span className="additional-inline">4)</span>{" "}
+                  <span className="additional-inline">4)</span>{' '}
                   <a
                       href="https://performance.musiconn.de/work/die-schoene-muellerin-morgengruss-schubert-franz"
                       title="Die schöne Müllerin. Morgengruß (Schubert, Franz)"
@@ -258,7 +259,7 @@ const ContentMain: FunctionComponent<Props> = (props) => {
                       title="Schubert, Clara"
                   >
                     Schubert, Clara
-                  </a>{" "}
+                  </a>{' '}
                     (
                   <a href="https://performance.musiconn.de/subject/singstimme">
                     Singstimme
@@ -267,7 +268,7 @@ const ContentMain: FunctionComponent<Props> = (props) => {
                 </span>
                 </dd>
                 <dd className="program">
-                  <span className="additional-inline">5)</span>{" "}
+                  <span className="additional-inline">5)</span>{' '}
                   <a
                       href="https://performance.musiconn.de/work/gesaenge-op-47-der-blumenstrauss-mendelssohn-bartholdy-felix"
                       title="Gesänge op. 47. Der Blumenstrauß (Mendelssohn Bartholdy, Felix)"
@@ -282,7 +283,7 @@ const ContentMain: FunctionComponent<Props> = (props) => {
                       title="Schubert, Clara"
                   >
                     Schubert, Clara
-                  </a>{" "}
+                  </a>{' '}
                     (
                   <a href="https://performance.musiconn.de/subject/singstimme">
                     Singstimme
@@ -291,7 +292,7 @@ const ContentMain: FunctionComponent<Props> = (props) => {
                 </span>
                 </dd>
                 <dd className="program">
-                  <span className="additional-inline">6)</span>{" "}
+                  <span className="additional-inline">6)</span>{' '}
                   <a
                       href="https://performance.musiconn.de/work/andante-scherzo-mendelssohn-bartholdy-felix"
                       title="Andante, Scherzo (Mendelssohn Bartholdy, Felix)"
@@ -305,7 +306,7 @@ const ContentMain: FunctionComponent<Props> = (props) => {
                       title="Esipova, Anna N. (1851–1914)"
                   >
                     Esipova, Anna N. (1851–1914)
-                  </a>{" "}
+                  </a>{' '}
                     (
                   <a href="https://performance.musiconn.de/subject/klavier">
                     Klavier
@@ -314,7 +315,7 @@ const ContentMain: FunctionComponent<Props> = (props) => {
                 </span>
                 </dd>
                 <dd className="program">
-                  <span className="additional-inline">7)</span>{" "}
+                  <span className="additional-inline">7)</span>{' '}
                   <a
                       href="https://performance.musiconn.de/work/walzer-klavier-raff-joseph-joachim"
                       title="Walzer, Klavier (Raff, Joseph Joachim)"
@@ -328,7 +329,7 @@ const ContentMain: FunctionComponent<Props> = (props) => {
                       title="Esipova, Anna N. (1851–1914)"
                   >
                     Esipova, Anna N. (1851–1914)
-                  </a>{" "}
+                  </a>{' '}
                     (
                   <a href="https://performance.musiconn.de/subject/klavier">
                     Klavier
@@ -337,7 +338,7 @@ const ContentMain: FunctionComponent<Props> = (props) => {
                 </span>
                 </dd>
                 <dd className="program">
-                  <span className="additional-inline">8)</span>{" "}
+                  <span className="additional-inline">8)</span>{' '}
                   <a
                       href="https://performance.musiconn.de/work/bluette-leschetizky-theodor"
                       title="Bluette (Leschetizky, Theodor)"
@@ -351,7 +352,7 @@ const ContentMain: FunctionComponent<Props> = (props) => {
                       title="Esipova, Anna N. (1851–1914)"
                   >
                     Esipova, Anna N. (1851–1914)
-                  </a>{" "}
+                  </a>{' '}
                     (
                   <a href="https://performance.musiconn.de/subject/klavier">
                     Klavier
@@ -360,7 +361,7 @@ const ContentMain: FunctionComponent<Props> = (props) => {
                 </span>
                 </dd>
                 <dd className="program">
-                  <span className="additional-inline">9)</span>{" "}
+                  <span className="additional-inline">9)</span>{' '}
                   <a
                       href="https://performance.musiconn.de/work/harold-en-italie-berlioz-hector"
                       title="Harold en Italie (Berlioz, Hector)"
@@ -380,7 +381,7 @@ const ContentMain: FunctionComponent<Props> = (props) => {
                       title="Volkland, Alfred (1841–1905)"
                   >
                     Volkland, Alfred (1841–1905)
-                  </a>{" "}
+                  </a>{' '}
                     (
                   <a href="https://performance.musiconn.de/subject/dirigat">
                     Dirigat
@@ -391,7 +392,7 @@ const ContentMain: FunctionComponent<Props> = (props) => {
                       title="Thümer, Carl Julius"
                   >
                     Thümer, Carl Julius
-                  </a>{" "}
+                  </a>{' '}
                     (
                   <a href="https://performance.musiconn.de/subject/viola">
                     Viola
@@ -418,7 +419,7 @@ const ContentMain: FunctionComponent<Props> = (props) => {
                     Stadtbibliothek Leipzig
                   </a>
                   <span className="additional-inline">
-                  {" "}
+                  {' '}
                     (
                   <a
                       href="https://digital.slub-dresden.de/id507696093"
@@ -431,7 +432,7 @@ const ContentMain: FunctionComponent<Props> = (props) => {
                   )
                 </span>
                   <span className="additional-block">
-                  Voransicht externes Digitalisat{" "}
+                  Voransicht externes Digitalisat{' '}
                     <span className="additional-inline">(795)</span>
                 </span>
                   <span className="result-pagination">
@@ -453,7 +454,7 @@ const ContentMain: FunctionComponent<Props> = (props) => {
                     </span>
                   </span>
                 </span>
-                  <figure style={{display: "inline-block", margin: "5px 5px"}}>
+                  <figure style={{display: 'inline-block', margin: '5px 5px'}}>
                     <a
                         href="https://images.iiif.slub-dresden.de/iiif/2/data%2Fkitodo%2FProdeKoi_507696093_0007%2FProdeKoi_507696093_0007_tif%2Fjpegs%2F00000001.tif.large.jpg/full/full/0/default.jpg"
                         target="_blank"
@@ -468,7 +469,7 @@ const ContentMain: FunctionComponent<Props> = (props) => {
                     </a>
                     <figcaption>Seite [ - ]</figcaption>
                   </figure>
-                  <figure style={{display: "inline-block", margin: "5px 5px"}}>
+                  <figure style={{display: 'inline-block', margin: '5px 5px'}}>
                     <a
                         href="https://images.iiif.slub-dresden.de/iiif/2/data%2Fkitodo%2FProdeKoi_507696093_0007%2FProdeKoi_507696093_0007_tif%2Fjpegs%2F00000002.tif.large.jpg/full/full/0/default.jpg"
                         target="_blank"
@@ -483,7 +484,7 @@ const ContentMain: FunctionComponent<Props> = (props) => {
                     </a>
                     <figcaption>Seite [ - ]</figcaption>
                   </figure>
-                  <figure style={{display: "inline-block", margin: "5px 5px"}}>
+                  <figure style={{display: 'inline-block', margin: '5px 5px'}}>
                     <a
                         href="https://images.iiif.slub-dresden.de/iiif/2/data%2Fkitodo%2FProdeKoi_507696093_0007%2FProdeKoi_507696093_0007_tif%2Fjpegs%2F00000003.tif.large.jpg/full/full/0/default.jpg"
                         target="_blank"
@@ -498,7 +499,7 @@ const ContentMain: FunctionComponent<Props> = (props) => {
                     </a>
                     <figcaption>Seite [ - ]</figcaption>
                   </figure>
-                  <figure style={{display: "inline-block", margin: "5px 5px"}}>
+                  <figure style={{display: 'inline-block', margin: '5px 5px'}}>
                     <a
                         href="https://images.iiif.slub-dresden.de/iiif/2/data%2Fkitodo%2FProdeKoi_507696093_0007%2FProdeKoi_507696093_0007_tif%2Fjpegs%2F00000004.tif.large.jpg/full/full/0/default.jpg"
                         target="_blank"
@@ -513,7 +514,7 @@ const ContentMain: FunctionComponent<Props> = (props) => {
                     </a>
                     <figcaption>Seite [ - ]</figcaption>
                   </figure>
-                  <figure style={{display: "inline-block", margin: "5px 5px"}}>
+                  <figure style={{display: 'inline-block', margin: '5px 5px'}}>
                     <a
                         href="https://images.iiif.slub-dresden.de/iiif/2/data%2Fkitodo%2FProdeKoi_507696093_0007%2FProdeKoi_507696093_0007_tif%2Fjpegs%2F00000005.tif.large.jpg/full/full/0/default.jpg"
                         target="_blank"
@@ -528,7 +529,7 @@ const ContentMain: FunctionComponent<Props> = (props) => {
                     </a>
                     <figcaption>Seite [ - ]</figcaption>
                   </figure>
-                  <figure style={{display: "inline-block", margin: "5px 5px"}}>
+                  <figure style={{display: 'inline-block', margin: '5px 5px'}}>
                     <a
                         href="https://images.iiif.slub-dresden.de/iiif/2/data%2Fkitodo%2FProdeKoi_507696093_0007%2FProdeKoi_507696093_0007_tif%2Fjpegs%2F00000006.tif.large.jpg/full/full/0/default.jpg"
                         target="_blank"
@@ -543,7 +544,7 @@ const ContentMain: FunctionComponent<Props> = (props) => {
                     </a>
                     <figcaption>Seite [ - ]</figcaption>
                   </figure>
-                  <figure style={{display: "inline-block", margin: "5px 5px"}}>
+                  <figure style={{display: 'inline-block', margin: '5px 5px'}}>
                     <a
                         href="https://images.iiif.slub-dresden.de/iiif/2/data%2Fkitodo%2FProdeKoi_507696093_0007%2FProdeKoi_507696093_0007_tif%2Fjpegs%2F00000007.tif.large.jpg/full/full/0/default.jpg"
                         target="_blank"
@@ -558,7 +559,7 @@ const ContentMain: FunctionComponent<Props> = (props) => {
                     </a>
                     <figcaption>Seite [ - ]</figcaption>
                   </figure>
-                  <figure style={{display: "inline-block", margin: "5px 5px"}}>
+                  <figure style={{display: 'inline-block', margin: '5px 5px'}}>
                     <a
                         href="https://images.iiif.slub-dresden.de/iiif/2/data%2Fkitodo%2FProdeKoi_507696093_0007%2FProdeKoi_507696093_0007_tif%2Fjpegs%2F00000008.tif.large.jpg/full/full/0/default.jpg"
                         target="_blank"
@@ -573,7 +574,7 @@ const ContentMain: FunctionComponent<Props> = (props) => {
                     </a>
                     <figcaption>Seite [ - ]</figcaption>
                   </figure>
-                  <figure style={{display: "inline-block", margin: "5px 5px"}}>
+                  <figure style={{display: 'inline-block', margin: '5px 5px'}}>
                     <a
                         href="https://images.iiif.slub-dresden.de/iiif/2/data%2Fkitodo%2FProdeKoi_507696093_0007%2FProdeKoi_507696093_0007_tif%2Fjpegs%2F00000009.tif.large.jpg/full/full/0/default.jpg"
                         target="_blank"
@@ -588,7 +589,7 @@ const ContentMain: FunctionComponent<Props> = (props) => {
                     </a>
                     <figcaption>Seite [ - ]</figcaption>
                   </figure>
-                  <figure style={{display: "inline-block", margin: "5px 5px"}}>
+                  <figure style={{display: 'inline-block', margin: '5px 5px'}}>
                     <a
                         href="https://images.iiif.slub-dresden.de/iiif/2/data%2Fkitodo%2FProdeKoi_507696093_0007%2FProdeKoi_507696093_0007_tif%2Fjpegs%2F00000010.tif.large.jpg/full/full/0/default.jpg"
                         target="_blank"
@@ -603,7 +604,7 @@ const ContentMain: FunctionComponent<Props> = (props) => {
                     </a>
                     <figcaption>Seite [ - ]</figcaption>
                   </figure>
-                  <figure style={{display: "inline-block", margin: "5px 5px"}}>
+                  <figure style={{display: 'inline-block', margin: '5px 5px'}}>
                     <a
                         href="https://images.iiif.slub-dresden.de/iiif/2/data%2Fkitodo%2FProdeKoi_507696093_0007%2FProdeKoi_507696093_0007_tif%2Fjpegs%2F00000011.tif.large.jpg/full/full/0/default.jpg"
                         target="_blank"
@@ -618,7 +619,7 @@ const ContentMain: FunctionComponent<Props> = (props) => {
                     </a>
                     <figcaption>Seite [ - ]</figcaption>
                   </figure>
-                  <figure style={{display: "inline-block", margin: "5px 5px"}}>
+                  <figure style={{display: 'inline-block', margin: '5px 5px'}}>
                     <a
                         href="https://images.iiif.slub-dresden.de/iiif/2/data%2Fkitodo%2FProdeKoi_507696093_0007%2FProdeKoi_507696093_0007_tif%2Fjpegs%2F00000012.tif.large.jpg/full/full/0/default.jpg"
                         target="_blank"
@@ -633,7 +634,7 @@ const ContentMain: FunctionComponent<Props> = (props) => {
                     </a>
                     <figcaption>Seite [ - ]</figcaption>
                   </figure>
-                  <figure style={{display: "inline-block", margin: "5px 5px"}}>
+                  <figure style={{display: 'inline-block', margin: '5px 5px'}}>
                     <a
                         href="https://images.iiif.slub-dresden.de/iiif/2/data%2Fkitodo%2FProdeKoi_507696093_0007%2FProdeKoi_507696093_0007_tif%2Fjpegs%2F00000013.tif.large.jpg/full/full/0/default.jpg"
                         target="_blank"
@@ -648,7 +649,7 @@ const ContentMain: FunctionComponent<Props> = (props) => {
                     </a>
                     <figcaption>Seite [ - ]</figcaption>
                   </figure>
-                  <figure style={{display: "inline-block", margin: "5px 5px"}}>
+                  <figure style={{display: 'inline-block', margin: '5px 5px'}}>
                     <a
                         href="https://images.iiif.slub-dresden.de/iiif/2/data%2Fkitodo%2FProdeKoi_507696093_0007%2FProdeKoi_507696093_0007_tif%2Fjpegs%2F00000014.tif.large.jpg/full/full/0/default.jpg"
                         target="_blank"
@@ -663,7 +664,7 @@ const ContentMain: FunctionComponent<Props> = (props) => {
                     </a>
                     <figcaption>Seite [ - ]</figcaption>
                   </figure>
-                  <figure style={{display: "inline-block", margin: "5px 5px"}}>
+                  <figure style={{display: 'inline-block', margin: '5px 5px'}}>
                     <a
                         href="https://images.iiif.slub-dresden.de/iiif/2/data%2Fkitodo%2FProdeKoi_507696093_0007%2FProdeKoi_507696093_0007_tif%2Fjpegs%2F00000015.tif.large.jpg/full/full/0/default.jpg"
                         target="_blank"
@@ -692,7 +693,7 @@ const ContentMain: FunctionComponent<Props> = (props) => {
           </div>
         </div>
       </div>
-  );
-};
+  )
+}
 
-export default ContentMain;
+export default ContentMain

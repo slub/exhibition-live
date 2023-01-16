@@ -1,9 +1,10 @@
 import Head from 'next/head'
+
+import ContentHeader from '../components/content/ContentHeader'
+import ContentMain from '../components/content/ContentMain'
+import PerformanceFooter from '../components/layout/PerformanceFooter'
+import PerformanceHeader from '../components/layout/PerformanceHeader'
 import styles from '../styles/Home.module.css'
-import PerformanceFooter from "../components/layout/PerformanceFooter";
-import PerformanceHeader from "../components/layout/PerformanceHeader";
-import ContentHeader from "../components/content/ContentHeader";
-import ContentMain from "../components/content/ContentMain";
 
 export default () => (
     <>

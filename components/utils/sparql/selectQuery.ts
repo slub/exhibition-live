@@ -1,9 +1,10 @@
-import {QueryEngine} from "@comunica/query-sparql";
-import {BindingsStream} from "@comunica/types";
-import {Literal} from "@rdfjs/types";
-import {rdfLiteralToNative} from "../primitives";
-import {prefixes2sparqlPrefixDeclaration} from "./index";
-import {Prefixes} from "../types";
+import {QueryEngine} from '@comunica/query-sparql'
+import {BindingsStream} from '@comunica/types'
+import {Literal} from '@rdfjs/types'
+
+import {rdfLiteralToNative} from '../primitives'
+import {Prefixes} from '../types'
+import {prefixes2sparqlPrefixDeclaration} from './index'
 
 type TypeMapping = {
   'xsd:string': string,
@@ -53,7 +54,7 @@ export const sparqlSelectFieldsQuery = (uri: string, fieldMapping: FieldMapping)
 
 
 export const sparqlSelectViaFieldMappings = async (subjectIRI: string, fieldMapping: FieldMapping, prefixes: Prefixes, permissive: boolean) => {
-  const myEngine = new QueryEngine();
+  const myEngine = new QueryEngine()
 
   const sparqlQuery = `
     ${prefixes2sparqlPrefixDeclaration(prefixes)}
@@ -62,10 +63,10 @@ export const sparqlSelectViaFieldMappings = async (subjectIRI: string, fieldMapp
   const bindingsStream: BindingsStream = await myEngine.queryBindings(sparqlQuery, {
         sources: ['http://localhost:9999/blazegraph/namespace/kb/sparql'],
       }
-  );
+  )
 
   type TypesSupported = string | number | boolean | Date
-  let result: { [k: string]: TypesSupported | TypesSupported[] } = {}
+  const result: { [k: string]: TypesSupported | TypesSupported[] } = {}
 
   for (const binding of await bindingsStream.toArray()) {
     Object.entries(fieldMapping).forEach(([k, v]) => {

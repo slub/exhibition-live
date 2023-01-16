@@ -1,6 +1,7 @@
+import {ComponentMeta} from '@storybook/react'
 import React from 'react'
-import {ComponentMeta} from "@storybook/react";
-import GNDAutocompleteInput from "./GNDAutocompleteInput";
+
+import GNDAutocompleteInput from './GNDAutocompleteInput'
 
 export default {
   title: 'form/gnd/GNDAutoCompleteInput',

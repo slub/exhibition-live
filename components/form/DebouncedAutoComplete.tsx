@@ -1,12 +1,10 @@
-import React, { FunctionComponent, useCallback, useState } from 'react';
+import { Search } from '@mui/icons-material'
+import { CircularProgress } from '@mui/material'
+import Autocomplete, { AutocompleteProps } from '@mui/material/Autocomplete'
+import { debounce } from 'lodash'
+import React, { FunctionComponent, useCallback, useState } from 'react'
 
-import { Search } from '@mui/icons-material';
-import { CircularProgress } from '@mui/material';
-import Autocomplete, { AutocompleteProps } from '@mui/material/Autocomplete';
-import { debounce } from 'lodash';
-
-
-import { TextField } from './TextField';
+import { TextField } from './TextField'
 
 export type AutocompleteSuggestion = {
   label: string;
@@ -26,32 +24,32 @@ export const DebouncedAutocomplete: FunctionComponent<
 > = ({ load, ...props }) => {
   const [suggestions, setSuggestions] = useState<
     AutocompleteSuggestion[] | undefined
-  >(undefined);
-  const [loading, setLoading] = useState<boolean>(false);
+  >(undefined)
+  const [loading, setLoading] = useState<boolean>(false)
 
   const debouncedRequest = useCallback(
     debounce(async (value: string) => {
-      const data = await load(value);
+      const data = await load(value)
       if (data.length > 0) {
-        setSuggestions(data);
+        setSuggestions(data)
       } else {
-        setSuggestions(undefined);
+        setSuggestions(undefined)
       }
-      setLoading(false);
+      setLoading(false)
     }, 500),
     [setLoading, setSuggestions, load]
-  );
+  )
 
   const handleOnChange = useCallback(
       (e: any): void => {
-        setLoading(true);
-        const value = e.currentTarget.value;
+        setLoading(true)
+        const value = e.currentTarget.value
         if (value.length > 4) {
-          debouncedRequest(e.currentTarget.value);
+          debouncedRequest(e.currentTarget.value)
         }
       },
       [setLoading, debouncedRequest],
-  );
+  )
 
   return (
     <>
@@ -81,5 +79,5 @@ export const DebouncedAutocomplete: FunctionComponent<
         options={suggestions || []}
       />
     </>
-  );
-};
+  )
+}

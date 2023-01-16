@@ -1,3 +1,20 @@
 {
-  "extends": "next/core-web-vitals"
+  "extends": "next/core-web-vitals",
+  "plugins": ["simple-import-sort"],
+  "rules": {
+    "semi": [ "error", "never" ],
+    "quotes": [ "error", "single" ],
+    "sort-imports": "off",
+    "prefer-const": "error",
+    "no-var": "error",
+    "prefer-rest-params": "off",
+    "no-mixed-spaces-and-tabs": "off",
+    "no-async-promise-executor": "off",
+    "simple-import-sort/imports": "error",
+    "simple-import-sort/exports": "error",
+    "import/first": "error",
+    "import/newline-after-import": "error",
+    "import/no-duplicates": "error",
+    "react/display-name": "off"
+  }
 }

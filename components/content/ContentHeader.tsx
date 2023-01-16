@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent } from 'react'
 
 interface OwnProps {}
 
@@ -82,6 +82,6 @@ const ContentHeader: FunctionComponent<Props> = (props) =>
             </form>
           </div>
         </div>
-    );
+    )
 
-export default ContentHeader;
+export default ContentHeader

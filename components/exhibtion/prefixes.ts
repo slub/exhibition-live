@@ -1,4 +1,4 @@
-import {Prefixes} from "../utils/types";
+import {Prefixes} from '../utils/types'
 
 export const exhibitionPrefixes: Prefixes = {
   sladb: 'http://ontologies.slub-dresden.de/exhibiton#',

@@ -1,8 +1,9 @@
-import {QueryEngine} from "@comunica/query-sparql";
-import {BindingsStream} from "@comunica/types";
-import {Literal, NamedNode} from "@rdfjs/types";
-import {gndPrefixes} from "./prefixes";
-import {prefixes2sparqlPrefixDeclaration} from "../sparql";
+import {QueryEngine} from '@comunica/query-sparql'
+import {BindingsStream} from '@comunica/types'
+import {Literal, NamedNode} from '@rdfjs/types'
+
+import {prefixes2sparqlPrefixDeclaration} from '../sparql'
+import {gndPrefixes} from './prefixes'
 
 export type GNDSearchResultEntry = {
   gndid: string
@@ -20,12 +21,12 @@ SELECT DISTINCT ?gndid ?score ?literal WHERE
 `
 
 const findPersonWithinGND = async (searchString: string, limit?: number) => {
-  const myEngine = new QueryEngine();
+  const myEngine = new QueryEngine()
   const bindingsStream: BindingsStream = await myEngine.queryBindings(searchPersonWithinGNDQuery(searchString, limit), {
         sources: ['http://gnd4c.digicult-verbund.de:3030/gndt/sparql'],
       }
-  );
-  let results: GNDSearchResultEntry[] = []
+  )
+  const results: GNDSearchResultEntry[] = []
   for (const binding of await bindingsStream.toArray()) {
     results.push({
       gndid: (binding.get('gndid') as NamedNode).value,

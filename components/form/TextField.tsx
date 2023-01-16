@@ -1,9 +1,8 @@
-import React, { FunctionComponent } from 'react';
-
 import {
   TextField as MuiTextField,
   TextFieldProps as MuiTextFieldProps,
-} from '@mui/material';
+} from '@mui/material'
+import React, { FunctionComponent } from 'react'
 
 
 export type TextFieldProps = MuiTextFieldProps;
@@ -24,4 +23,4 @@ export const TextField: FunctionComponent<TextFieldProps> = ({
     }}
     {...props}
   />
-);
+)

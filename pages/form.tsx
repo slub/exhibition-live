@@ -1,19 +1,20 @@
-import Head from "next/head";
-import PerformanceHeader from "../components/layout/PerformanceHeader";
-import PerformanceFooter from "../components/layout/PerformanceFooter";
+import {JsonFormsCore} from '@jsonforms/core'
 import {materialCells, materialRenderers} from '@jsonforms/material-renderers'
-import {JsonForms} from "@jsonforms/react";
-import {useCallback, useState} from "react";
+import {JsonForms} from '@jsonforms/react'
+import Head from 'next/head'
+import {useCallback, useState} from 'react'
+
+import PerformanceFooter from '../components/layout/PerformanceFooter'
+import PerformanceHeader from '../components/layout/PerformanceHeader'
+import uischema from '../schema/exhibition-form-ui-schema.json'
+import schema from '../schema/exhibition-info.schema.json'
 import styles from '../styles/Home.module.css'
-import {JsonFormsCore} from "@jsonforms/core";
-import schema from "../schema/exhibition-info.schema.json"
-import uischema from "../schema/exhibition-form-ui-schema.json"
 
 
 const exhibitionSchema = { ...schema, ...schema.$defs.Exhibition}
 
 export default () => {
-  const [data, setData] = useState({});
+  const [data, setData] = useState({})
 
 
   const handleFormChange = useCallback(
@@ -53,5 +54,5 @@ export default () => {
           </div>
         </main>
       </>
-  );
+  )
 }

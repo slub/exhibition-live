@@ -11,8 +11,8 @@
     "linkml:interactive": "docker run --rm -v $(pwd)/schema:/work -w /work -ti linkml/linkml:1.4",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook",
-    "lint:fix": "next lint --fix && eslint --fix .",
-    "lint:check": "next lint && eslint ."
+    "lint:fix": "next lint --fix && eslint --fix ./components ./pages",
+    "lint:check": "next lint && eslint ./components ./pages"
   },
   "dependencies": {
     "@apidevtools/json-schema-ref-parser": "^9.1.0",

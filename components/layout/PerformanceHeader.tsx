@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent } from 'react'
 
 interface OwnProps {}
 
@@ -74,7 +74,7 @@ const PerformanceHeader: FunctionComponent<Props> = (props) =>
                           href="https://performance.musiconn.de/projects/die-erstauffuehrungen-des-verdi-requiems-im-deutschsprachigen-raum"
                           title="Die Erstaufführungen des 'Verdi-Requiems' im deutschsprachigen Raum"
                       >
-                        Die Erstaufführungen des 'Verdi-Requiems' im deutschsprachigen
+                        Die Erstaufführungen des &apos;Verdi-Requiems&apos; im deutschsprachigen
                         Raum
                       </a>
                     </li>
@@ -269,6 +269,6 @@ const PerformanceHeader: FunctionComponent<Props> = (props) =>
             </button>
           </div>
         </header>
-    );
+    )
 
-export default PerformanceHeader;
+export default PerformanceHeader

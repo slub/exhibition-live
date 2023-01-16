@@ -1,5 +1,5 @@
-import {rdf, xsd} from "@tpluscode/rdf-ns-builders";
-import * as RDF from "rdf-js";
+import {rdf, xsd} from '@tpluscode/rdf-ns-builders'
+import * as RDF from 'rdf-js'
 
 export function rdfLiteralToNative(literal: RDF.Literal): string | number | boolean | Date {
     switch (literal.datatype.value) {
@@ -7,7 +7,7 @@ export function rdfLiteralToNative(literal: RDF.Literal): string | number | bool
         case xsd.string.value:
             return literal.value
         case xsd.boolean.value:
-            return literal.value === "true"
+            return literal.value === 'true'
         case xsd.integer.value:
             return parseInt(literal.value)
         case xsd.decimal.value:

@@ -5,12 +5,22 @@ The adb-next project is an exhibition-catalog, that uses [Next.js](https://nextj
 First, run the development server:
 
 ```bash
-yarn dev
+yarn && yarn dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+## Storybook
+
+This project uses [Storybooks](https://storybook.js.org/) to enforce reusable component based development and to document them with
+all of their props and options. It also gives an  overview over the frontend components used for this project.
+
+```bash
+yarn && yarn storybook
+```
+
+Open [http://localhost:6006](http://localhost:6006) with your browser to see the storybook.
+
 
 ## Learn More
 

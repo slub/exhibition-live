@@ -1,0 +1,33 @@
+name: Exhibition Catalog release branch - Publish Storybook
+
+on:
+  # Trigger via 'Actions' on GitHub
+  workflow_dispatch:
+
+# cancel workflow when a newer version of the workflow is triggered on the same github ref
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+
+jobs:
+  build-and-deploy-storybook:
+    name: Build and Deploy Storybook
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Use Node.js 16.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16.x
+
+      - name: Restore node_modules from cache
+        uses: actions/cache@v2
+
+      - name: Deploy Storybook
+        # storybook requires the env vars to be in a .env file for access in the manager.ts
+        run: |
+          npm run deploy-storybook -- --ci
+        env:
+          GH_TOKEN: ${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}

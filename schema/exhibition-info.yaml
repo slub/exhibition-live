@@ -7,6 +7,8 @@ prefixes:
   slperson: http://ontologies.slub-dresden.de/person#
   linkml: https://w3id.org/linkml/
   geo: http://www.opengis.net/ont/geosparql#
+  gndo: http://d-nb.info/standards/elementset/gnd#
+  wd: http://www.wikidata.org/entity/
 default_prefix: sladb
 imports:
   - linkml:types
@@ -24,6 +26,12 @@ classes:
           The name of the exhibition.
         range: string
         multivalued: false
+      category:
+        range: string
+        multivalued: true
+      partOfSeries:
+        range: Series
+        multivalued: false
       description:
         description: >-
           A description of the exhibition.
@@ -32,7 +40,11 @@ classes:
       start_date:
         description: >-
           The date the exhibition starts.
-        range: ExactTemporalValue
+        any_of:
+          - range: ExactTemporalValue
+          - range: AfterTemporalValue
+          - range: BeforeTemporalValue
+          - range: BetweenTemporalValue
         multivalued: false
       end_date:
         description: >-
@@ -48,11 +60,6 @@ classes:
           The curator of the exhibition.
         range: Person
         multivalued: false
-      source:
-        description: >-
-          The source of the exhibition.
-        range: Source
-        multivalued: true
       location:
         description: >-
           The location of the exhibition.
@@ -68,15 +75,35 @@ classes:
           The artists in the exhibition.
         range: Person
         multivalued: true
+    slots:
+      - source
+      - meta
 
+  Series:
+    description: >-
+      A reoccurring event
+    class_uri: sladb:Series
+    attributes:
+      category:
+        range: string
+        multivalued: true
+    slots:
+      - name
+      - description
+      - source
+      - meta
   Object:
     description: >-
       A physical object that is part of an exhibition.
     class_uri: sladb:Object
+    attributes:
+      auth:
+        description: >-
+          author of a Work or Object
+        range: person
     slots:
       - name
       - description
-      - artist
       - source
       - meta
   TemporalValue:
@@ -108,16 +135,6 @@ classes:
         range: date
       before:
         range: date
-  Work:
-    description: >-
-      A work of art.
-    class_uri: sladb:Work
-    slots:
-      - name
-      - description
-      - artist
-      - source
-      - meta
   Source:
     description: >-
       A source of information.
@@ -139,11 +156,36 @@ classes:
     description: >-
       A person.
     class_uri: slperson:Person
+    attributes:
+      sameAs:
+        any_of:
+          - range: wd:Q5
+          - range: gndo:DifferentiatedPerson
+        mulitvalued: true
+      gndPerson:
+        range: wd:Q5
+      wikidataHuman:
+        range: gndo:DifferentiatedPerson
+      birth_date:
+
+        description: >-
+          The birth date of the person.
+        any_of:
+          - range: ExactTemporalValue
+          - range: AfterTemporalValue
+          - range: BeforeTemporalValue
+          - range: BetweenTemporalValue
+      death_date:
+        description: >-
+          The death date of the person.
+        any_of:
+          - range: ExactTemporalValue
+          - range: AfterTemporalValue
+          - range: BeforeTemporalValue
+          - range: BetweenTemporalValue
     slots:
       - name
       - description
-      - birth_date
-      - death_date
       - mailaddress
       - meta
   Meta:
@@ -172,59 +214,18 @@ slots:
     required: true
   description:
     description: >-
-      A description of the artist.
+      A description of the thing.
     range: string
-  birth_date:
-    description: >-
-      The birth date of the artist.
-    any_of:
-      - range: date
-      - range: datetime
-      - range: string
-  death_date:
-    description: >-
-      The death date of the artist.
-    any_of:
-      - range: date
-      - range: datetime
-      - range: string
   mailaddress:
     description: >-
       The mail address of the artist.
     range: string
   url:
     range: string
-  start_date:
-    any_of:
-      - range: date
-      - range: datetime
-      - range: string
-  end_date:
-    any_of:
-      - range: date
-      - range: datetime
-      - range: string
-  curator:
-    range: Person
-    multivalued: true
-  objects:
-    description: >-
-      The objects that are part of the exhibition.
-    any_of:
-      - range: sladb:Object
-      - range: sladb:Work
-    multivalued: true
   source:
     description: >-
-      The sources that are used to create the exhibition.
+      The sources that are used to create the entity.
     range: Source
-    multivalued: true
-  location:
-    description: >-
-      The location of the exhibition.
-    range: GeoFeature
-  artist:
-    range: Person
     multivalued: true
   meta:
     range: Meta

@@ -26,54 +26,54 @@ classes:
           The name of the exhibition.
         range: string
         multivalued: false
+      description:
+        description: >-
+          A description of the exhibition.
+        range: string
+        multivalued: false
       category:
         range: string
         multivalued: true
       partOfSeries:
         range: Series
         multivalued: false
-      description:
-        description: >-
-          A description of the exhibition.
-        range: string
-        multivalued: false
       start_date:
         description: >-
           The date the exhibition starts.
-        any_of:
-          - range: ExactTemporalValue
-          - range: AfterTemporalValue
-          - range: BeforeTemporalValue
-          - range: BetweenTemporalValue
+        range: TemporalValue
         multivalued: false
       end_date:
         description: >-
           The date the exhibition ends.
-        any_of:
-          - range: ExactTemporalValue
-          - range: AfterTemporalValue
-          - range: BeforeTemporalValue
-          - range: BetweenTemporalValue
+        range: TemporalValue
         multivalued: false
+      organizer:
+        description: >-
+          The organizer of the exhibition.
+        range: Person
+        multivalued: true
       curator:
         description: >-
           The curator of the exhibition.
         range: Person
-        multivalued: false
+        multivalued: true
+      artist:
+        description: >-
+          The artists in the exhibition.
+        range: Person
+        multivalued: true
       location:
         description: >-
           The location of the exhibition.
         range: Location
+        multivalued: true
+      organization:
+        range: Organization
         multivalued: false
-      objects:
+      object:
         description: >-
           The objects in the exhibition.
         range: Object
-        multivalued: true
-      artists:
-        description: >-
-          The artists in the exhibition.
-        range: Person
         multivalued: true
     slots:
       - source
@@ -97,10 +97,10 @@ classes:
       A physical object that is part of an exhibition.
     class_uri: sladb:Object
     attributes:
-      auth:
+      creator:
         description: >-
           author of a Work or Object
-        range: person
+        range: Person
     slots:
       - name
       - description
@@ -108,33 +108,10 @@ classes:
       - meta
   TemporalValue:
     class_uri: sladb:TemporalValue
-    abstract: true
-  ExactTemporalValue:
-    class_uri: sladb:ExactTemporalValue
-    is_a: TemporalValue
     attributes:
-      at:
-        range: date
-  BeforeTemporalValue:
-    class_uri: sladb:BeforeTemporalValue
-    is_a: TemporalValue
-    attributes:
-      before:
-        range: date
-  AfterTemporalValue:
-    class_uri: sladb:AfterTemporalValue
-    is_a: TemporalValue
-    attributes:
-      after:
-        range: date
-  BetweenTemporalValue:
-    class_uri: sladb:BetweenTemporalValue
-    is_a: TemporalValue
-    attributes:
-      after:
-        range: date
-      before:
-        range: date
+      date:
+         pattern: "[+-]\d{4}-\d{2}-\d{2}"
+      modifier: DateModifier
   Source:
     description: >-
       A source of information.
@@ -198,15 +175,23 @@ classes:
       - updatedBy
       - updated
       - version
+  Location:
+    is_a: GeoFeature
+    attributes:
+      parent:
+        range: Location
+        multivalued: false
+    slots:
+      - name
+      - description
+      - geo
 
   GeoFeature:
     description: >-
       A geographic feature.
     class_uri: geo:GeoFeature
-    slots:
-      - name
-      - description
-      - geo
+    abstract: true
+
 
 slots:
   name:
@@ -248,3 +233,9 @@ types:
     base: str
     description: >-
       Well-known text representation of a geometry. Point(lng,lat)
+enums:
+  DateModifier:
+    permissible_values:
+      BEFORE:
+      AFTER:
+      VAGUE:

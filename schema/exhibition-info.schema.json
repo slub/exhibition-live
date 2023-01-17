@@ -1,372 +1,370 @@
 {
-  "$defs": {
-    "AfterTemporalValue": {
-      "additionalProperties": false,
-      "description": "",
-      "properties": {
-        "after": {
-          "format": "date",
-          "type": "string"
-        }
-      },
-      "title": "AfterTemporalValue",
-      "type": "object"
-    },
-    "BeforeTemporalValue": {
-      "additionalProperties": false,
-      "description": "",
-      "properties": {
-        "before": {
-          "format": "date",
-          "type": "string"
-        }
-      },
-      "title": "BeforeTemporalValue",
-      "type": "object"
-    },
-    "BetweenTemporalValue": {
-      "additionalProperties": false,
-      "description": "",
-      "properties": {
-        "after": {
-          "format": "date",
-          "type": "string"
+    "$defs": {
+        "DateModifier": {
+            "description": "",
+            "enum": [
+                "BEFORE",
+                "AFTER",
+                "VAGUE"
+            ],
+            "title": "DateModifier",
+            "type": "string"
         },
-        "before": {
-          "format": "date",
-          "type": "string"
-        }
-      },
-      "title": "BetweenTemporalValue",
-      "type": "object"
-    },
-    "ExactTemporalValue": {
-      "additionalProperties": false,
-      "description": "",
-      "properties": {
-        "at": {
-          "format": "date",
-          "type": "string"
-        }
-      },
-      "title": "ExactTemporalValue",
-      "type": "object"
-    },
-    "Exhibition": {
-      "additionalProperties": false,
-      "description": "A collection of objects that are displayed together in a museum or other public space.",
-      "properties": {
-        "artists": {
-          "description": "The artists in the exhibition.",
-          "items": {
-            "$ref": "#/$defs/Person"
-          },
-          "type": "array"
-        },
-        "curator": {
-          "$ref": "#/$defs/Person",
-          "description": "The curator of the exhibition."
-        },
-        "description": {
-          "description": "A description of the exhibition.",
-          "type": "string"
-        },
-        "end_date": {
-          "anyOf": [
-            {
-              "type": "string"
+        "Exhibition": {
+            "additionalProperties": false,
+            "description": "A collection of objects that are displayed together in a museum or other public space.",
+            "properties": {
+                "artist": {
+                    "description": "The artists in the exhibition.",
+                    "items": {
+                        "$ref": "#/$defs/Person"
+                    },
+                    "type": "array"
+                },
+                "category": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": "array"
+                },
+                "curator": {
+                    "description": "The curator of the exhibition.",
+                    "items": {
+                        "$ref": "#/$defs/Person"
+                    },
+                    "type": "array"
+                },
+                "description": {
+                    "description": "A description of the exhibition.",
+                    "type": "string"
+                },
+                "end_date": {
+                    "$ref": "#/$defs/TemporalValue",
+                    "description": "The date the exhibition ends."
+                },
+                "location": {
+                    "description": "The location of the exhibition.",
+                    "items": {
+                        "$ref": "#/$defs/Location"
+                    },
+                    "type": "array"
+                },
+                "meta": {
+                    "items": {
+                        "$ref": "#/$defs/Meta"
+                    },
+                    "type": "array"
+                },
+                "name": {
+                    "description": "The name of the exhibition.",
+                    "type": "string"
+                },
+                "object": {
+                    "description": "The objects in the exhibition.",
+                    "items": {
+                        "$ref": "#/$defs/Object"
+                    },
+                    "type": "array"
+                },
+                "organization": {
+                    "$ref": "#/$defs/Organization"
+                },
+                "organizer": {
+                    "description": "The organizer of the exhibition.",
+                    "items": {
+                        "$ref": "#/$defs/Person"
+                    },
+                    "type": "array"
+                },
+                "partOfSeries": {
+                    "$ref": "#/$defs/Series"
+                },
+                "source": {
+                    "description": "The sources that are used to create the entity.",
+                    "items": {
+                        "$ref": "#/$defs/Source"
+                    },
+                    "type": "array"
+                },
+                "start_date": {
+                    "$ref": "#/$defs/TemporalValue",
+                    "description": "The date the exhibition starts."
+                }
             },
-            {
-              "type": "string"
+            "title": "Exhibition",
+            "type": "object"
+        },
+        "Location": {
+            "additionalProperties": false,
+            "description": "",
+            "properties": {
+                "description": {
+                    "description": "A description of the thing.",
+                    "type": "string"
+                },
+                "geo": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "parent": {
+                    "$ref": "#/$defs/Location"
+                }
             },
-            {
-              "type": "string"
+            "required": [
+                "name"
+            ],
+            "title": "Location",
+            "type": "object"
+        },
+        "Meta": {
+            "additionalProperties": false,
+            "description": "Metadata.",
+            "properties": {
+                "created": {
+                    "format": "date-time",
+                    "type": "string"
+                },
+                "createdBy": {
+                    "type": "string"
+                },
+                "updated": {
+                    "format": "date-time",
+                    "type": "string"
+                },
+                "updatedBy": {
+                    "type": "string"
+                },
+                "version": {
+                    "type": "string"
+                }
             },
-            {
-              "type": "string"
-            }
-          ],
-          "description": "The date the exhibition ends."
+            "title": "Meta",
+            "type": "object"
         },
-        "location": {
-          "description": "The location of the exhibition.",
-          "type": "string"
-        },
-        "name": {
-          "description": "The name of the exhibition.",
-          "type": "string"
-        },
-        "objects": {
-          "description": "The objects in the exhibition.",
-          "items": {
-            "$ref": "#/$defs/Object"
-          },
-          "type": "array"
-        },
-        "source": {
-          "description": "The source of the exhibition.",
-          "items": {
-            "$ref": "#/$defs/Source"
-          },
-          "type": "array"
-        },
-        "start_date": {
-          "anyOf": [
-            {
-              "$ref": "#/$defs/ExactTemporalValue"
+        "Object": {
+            "additionalProperties": false,
+            "description": "A physical object that is part of an exhibition.",
+            "properties": {
+                "creator": {
+                    "$ref": "#/$defs/Person",
+                    "description": "author of a Work or Object"
+                },
+                "description": {
+                    "description": "A description of the thing.",
+                    "type": "string"
+                },
+                "meta": {
+                    "items": {
+                        "$ref": "#/$defs/Meta"
+                    },
+                    "type": "array"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "source": {
+                    "description": "The sources that are used to create the entity.",
+                    "items": {
+                        "$ref": "#/$defs/Source"
+                    },
+                    "type": "array"
+                }
             },
-            {
-              "$ref": "#/$defs/BeforeTemporalValue"
+            "required": [
+                "name"
+            ],
+            "title": "Object",
+            "type": "object"
+        },
+        "Organization": {
+            "additionalProperties": false,
+            "description": "An organization.",
+            "properties": {
+                "description": {
+                    "description": "A description of the thing.",
+                    "type": "string"
+                },
+                "meta": {
+                    "items": {
+                        "$ref": "#/$defs/Meta"
+                    },
+                    "type": "array"
+                },
+                "name": {
+                    "type": "string"
+                }
             },
-            {
-              "$ref": "#/$defs/AfterTemporalValue"
-            },{
-              "$ref": "#/$defs/BetweenTemporalValue"
-            }
-          ],
-          "description": "The date the exhibition starts."
+            "required": [
+                "name"
+            ],
+            "title": "Organization",
+            "type": "object"
+        },
+        "Person": {
+            "additionalProperties": false,
+            "description": "A person.",
+            "properties": {
+                "birth_date": {
+                    "anyOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "string"
+                        }
+                    ],
+                    "description": "The birth date of the person."
+                },
+                "death_date": {
+                    "anyOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "string"
+                        }
+                    ],
+                    "description": "The death date of the person."
+                },
+                "description": {
+                    "description": "A description of the thing.",
+                    "type": "string"
+                },
+                "gndPerson": {
+                    "type": "string"
+                },
+                "mailaddress": {
+                    "description": "The mail address of the artist.",
+                    "type": "string"
+                },
+                "meta": {
+                    "items": {
+                        "$ref": "#/$defs/Meta"
+                    },
+                    "type": "array"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "sameAs": {
+                    "anyOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "string"
+                        }
+                    ]
+                },
+                "wikidataHuman": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "name"
+            ],
+            "title": "Person",
+            "type": "object"
+        },
+        "Series": {
+            "additionalProperties": false,
+            "description": "A reoccurring event",
+            "properties": {
+                "category": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": "array"
+                },
+                "description": {
+                    "description": "A description of the thing.",
+                    "type": "string"
+                },
+                "meta": {
+                    "items": {
+                        "$ref": "#/$defs/Meta"
+                    },
+                    "type": "array"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "source": {
+                    "description": "The sources that are used to create the entity.",
+                    "items": {
+                        "$ref": "#/$defs/Source"
+                    },
+                    "type": "array"
+                }
+            },
+            "required": [
+                "name"
+            ],
+            "title": "Series",
+            "type": "object"
+        },
+        "Source": {
+            "additionalProperties": false,
+            "description": "A source of information.",
+            "properties": {
+                "description": {
+                    "description": "A description of the thing.",
+                    "type": "string"
+                },
+                "meta": {
+                    "items": {
+                        "$ref": "#/$defs/Meta"
+                    },
+                    "type": "array"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "url": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "name"
+            ],
+            "title": "Source",
+            "type": "object"
+        },
+        "TemporalValue": {
+            "additionalProperties": false,
+            "description": "",
+            "properties": {
+                "date": {
+                    "pattern": "[+-]\\d{4}-\\d{2}-\\d{2}",
+                    "type": "string"
+                },
+                "modifier": {
+                    "$ref": "#/$defs/DateModifier"
+                }
+            },
+            "title": "TemporalValue",
+            "type": "object"
         }
-      },
-      "title": "Exhibition",
-      "type": "object"
     },
-    "GeoFeature": {
-      "additionalProperties": false,
-      "description": "A geographic feature.",
-      "properties": {
-        "description": {
-          "description": "A description of the artist.",
-          "type": "string"
-        },
-        "geo": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        }
-      },
-      "required": [
-        "name"
-      ],
-      "title": "GeoFeature",
-      "type": "object"
-    },
-    "Meta": {
-      "additionalProperties": false,
-      "description": "Metadata.",
-      "properties": {
-        "created": {
-          "format": "date-time",
-          "type": "string"
-        },
-        "createdBy": {
-          "type": "string"
-        },
-        "updated": {
-          "format": "date-time",
-          "type": "string"
-        },
-        "updatedBy": {
-          "type": "string"
-        },
-        "version": {
-          "type": "string"
-        }
-      },
-      "title": "Meta",
-      "type": "object"
-    },
-    "Object": {
-      "additionalProperties": false,
-      "description": "A physical object that is part of an exhibition.",
-      "properties": {
-        "artist": {
-          "items": {
-            "$ref": "#/$defs/Person"
-          },
-          "type": "array"
-        },
-        "description": {
-          "description": "A description of the artist.",
-          "type": "string"
-        },
-        "meta": {
-          "items": {
-            "$ref": "#/$defs/Meta"
-          },
-          "type": "array"
-        },
-        "name": {
-          "type": "string"
-        },
-        "source": {
-          "description": "The sources that are used to create the exhibition.",
-          "items": {
-            "$ref": "#/$defs/Source"
-          },
-          "type": "array"
-        }
-      },
-      "required": [
-        "name"
-      ],
-      "title": "Object",
-      "type": "object"
-    },
-    "Organization": {
-      "additionalProperties": false,
-      "description": "An organization.",
-      "properties": {
-        "description": {
-          "description": "A description of the artist.",
-          "type": "string"
-        },
-        "meta": {
-          "items": {
-            "$ref": "#/$defs/Meta"
-          },
-          "type": "array"
-        },
-        "name": {
-          "type": "string"
-        }
-      },
-      "required": [
-        "name"
-      ],
-      "title": "Organization",
-      "type": "object"
-    },
-    "Person": {
-      "additionalProperties": false,
-      "description": "A person.",
-      "properties": {
-        "birth_date": {
-          "anyOf": [
-            {
-              "format": "date",
-              "type": "string"
-            },
-            {
-              "format": "date-time",
-              "type": "string"
-            },
-            {
-              "type": "string"
-            }
-          ],
-          "description": "The birth date of the artist."
-        },
-        "death_date": {
-          "anyOf": [
-            {
-              "format": "date",
-              "type": "string"
-            },
-            {
-              "format": "date-time",
-              "type": "string"
-            },
-            {
-              "type": "string"
-            }
-          ],
-          "description": "The death date of the artist."
-        },
-        "description": {
-          "description": "A description of the artist.",
-          "type": "string"
-        },
-        "mailaddress": {
-          "description": "The mail address of the artist.",
-          "type": "string"
-        },
-        "meta": {
-          "items": {
-            "$ref": "#/$defs/Meta"
-          },
-          "type": "array"
-        },
-        "name": {
-          "type": "string"
-        }
-      },
-      "required": [
-        "name"
-      ],
-      "title": "Person",
-      "type": "object"
-    },
-    "Source": {
-      "additionalProperties": false,
-      "description": "A source of information.",
-      "properties": {
-        "description": {
-          "description": "A description of the artist.",
-          "type": "string"
-        },
-        "meta": {
-          "items": {
-            "$ref": "#/$defs/Meta"
-          },
-          "type": "array"
-        },
-        "name": {
-          "type": "string"
-        },
-        "url": {
-          "type": "string"
-        }
-      },
-      "required": [
-        "name"
-      ],
-      "title": "Source",
-      "type": "object"
-    },
-    "Work": {
-      "additionalProperties": false,
-      "description": "A work of art.",
-      "properties": {
-        "artist": {
-          "items": {
-            "$ref": "#/$defs/Person"
-          },
-          "type": "array"
-        },
-        "description": {
-          "description": "A description of the artist.",
-          "type": "string"
-        },
-        "meta": {
-          "items": {
-            "$ref": "#/$defs/Meta"
-          },
-          "type": "array"
-        },
-        "name": {
-          "type": "string"
-        },
-        "source": {
-          "description": "The sources that are used to create the exhibition.",
-          "items": {
-            "$ref": "#/$defs/Source"
-          },
-          "type": "array"
-        }
-      },
-      "required": [
-        "name"
-      ],
-      "title": "Work",
-      "type": "object"
-    }
-  },
-  "$id": "http://ontologies.slub-dresden.de/exhibtion",
-  "$schema": "http://json-schema.org/draft-07/schema#",
-  "additionalProperties": true,
-  "metamodel_version": "1.7.0",
-  "title": "exhibtion-info",
-  "type": "object",
-  "version": null
+    "$id": "http://ontologies.slub-dresden.de/exhibtion",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "additionalProperties": true,
+    "metamodel_version": "1.7.0",
+    "title": "exhibtion-info",
+    "type": "object",
+    "version": null
 }

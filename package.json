@@ -11,6 +11,7 @@
     "linkml:interactive": "docker run --rm -v $(pwd)/schema:/work -w /work -ti linkml/linkml:1.4",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook",
+    "deploy-storybook": "storybook-to-ghpages",
     "lint:fix": "next lint --fix && eslint --fix ./components ./pages",
     "lint:check": "next lint && eslint ./components ./pages"
   },
@@ -54,6 +55,7 @@
     "@storybook/builder-webpack5": "^6.5.15",
     "@storybook/manager-webpack5": "^6.5.15",
     "@storybook/react": "^6.5.15",
+    "@storybook/storybook-deployer": "^2.8.16",
     "@storybook/testing-library": "^0.0.13",
     "@types/lodash": "^4.14.191",
     "@types/node": "18.11.18",

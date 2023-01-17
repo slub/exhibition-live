@@ -16,18 +16,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-
-      - name: Use Node.js 16.x
-        uses: actions/setup-node@v1
+      - uses: actions/setup-node@v2
         with:
-          node-version: 16.x
-
+          node-version: 14
+          registry-url: https://npm.pkg.github.com/
+          
       - name: Restore node_modules from cache
         uses: actions/cache@v2
 
-      - name: Deploy Storybook
-        # storybook requires the env vars to be in a .env file for access in the manager.ts
-        run: |
-          npm run deploy-storybook -- --ci
+      - run: yarn
+      - run: yarn deploy-storybook -- --ci --source-branch=main
         env:
           GH_TOKEN: ${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}

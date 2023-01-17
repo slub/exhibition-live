@@ -110,8 +110,9 @@ classes:
     class_uri: sladb:TemporalValue
     attributes:
       date:
-         pattern: "[+-]\d{4}-\d{2}-\d{2}"
-      modifier: DateModifier
+        pattern: "[+-]\\d{4}-\\d{2}-\\d{2}"
+      modifier:
+        range: DateModifier
   Source:
     description: >-
       A source of information.
@@ -138,7 +139,6 @@ classes:
         any_of:
           - range: wd:Q5
           - range: gndo:DifferentiatedPerson
-        mulitvalued: true
       gndPerson:
         range: wd:Q5
       wikidataHuman:

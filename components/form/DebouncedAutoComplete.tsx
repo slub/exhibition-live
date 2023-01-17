@@ -57,8 +57,10 @@ export const DebouncedAutocomplete: FunctionComponent<
         noOptionsText="No results"
         {...props}
         renderInput={(params) => (
+          // @ts-ignore
           <TextField
             {...params}
+            variant={'outlined'}
             placeholder={props.placeholder}
             onChange={handleOnChange}
             InputProps={{

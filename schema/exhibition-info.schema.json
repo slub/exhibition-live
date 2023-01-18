@@ -1,19 +1,18 @@
 {
     "$defs": {
-        "DateModifier": {
-            "description": "",
-            "enum": [
-                "BEFORE",
-                "AFTER",
-                "VAGUE"
-            ],
-            "title": "DateModifier",
-            "type": "string"
-        },
         "Exhibition": {
             "additionalProperties": false,
             "description": "A collection of objects that are displayed together in a museum or other public space.",
+            "required": [ "@type", "@id" ],
             "properties": {
+                "@type": {
+                    "const": "http://ontologies.slub-dresden.de/exhibiton#Exhibition",
+                    "type": "string"
+                },
+                "@id": {
+                    "title": "http://ontologies.slub-dresden.de/exhibiton/entity#",
+                    "type": "string"
+                },
                 "artist": {
                     "description": "The artists in the exhibition.",
                     "items": {
@@ -98,6 +97,13 @@
             "additionalProperties": false,
             "description": "",
             "properties": {
+                "@type": {
+                    "const": "http://ontologies.slub-dresden.de/exhibiton#Location"
+                },
+                "@id": {
+                    "title": "http://ontologies.slub-dresden.de/exhibiton/entity#",
+                    "type": "string"
+                },
                 "description": {
                     "description": "A description of the thing.",
                     "type": "string"
@@ -147,6 +153,13 @@
             "additionalProperties": false,
             "description": "A physical object that is part of an exhibition.",
             "properties": {
+                "@type": {
+                    "const": "http://ontologies.slub-dresden.de/exhibiton#Object"
+                },
+                "@id": {
+                    "title": "http://ontologies.slub-dresden.de/exhibiton/entity#",
+                    "type": "string"
+                },
                 "creator": {
                     "$ref": "#/$defs/Person",
                     "description": "author of a Work or Object"
@@ -206,45 +219,26 @@
             "additionalProperties": false,
             "description": "A person.",
             "properties": {
+                "@type": {
+                    "const": "http://ontologies.slub-dresden.de/exhibiton#Person",
+                    "type": "string"
+                },
+                "@id": {
+                    "title": "http://ontologies.slub-dresden.de/exhibiton/entity#",
+                    "type": "string"
+                },
                 "birth_date": {
-                    "anyOf": [
-                        {
-                            "type": "string"
-                        },
-                        {
-                            "type": "string"
-                        },
-                        {
-                            "type": "string"
-                        },
-                        {
-                            "type": "string"
-                        }
-                    ],
+                    "format": "date",
+                    "type": "string",
                     "description": "The birth date of the person."
                 },
                 "death_date": {
-                    "anyOf": [
-                        {
-                            "type": "string"
-                        },
-                        {
-                            "type": "string"
-                        },
-                        {
-                            "type": "string"
-                        },
-                        {
-                            "type": "string"
-                        }
-                    ],
+                    "format": "date",
+                    "type": "string",
                     "description": "The death date of the person."
                 },
                 "description": {
                     "description": "A description of the thing.",
-                    "type": "string"
-                },
-                "gndPerson": {
                     "type": "string"
                 },
                 "mailaddress": {
@@ -263,16 +257,12 @@
                 "sameAs": {
                     "anyOf": [
                         {
-                            "type": "string"
+                            "$ref": "#/$defs/WikidataHuman"
                         },
                         {
-                            "type": "string"
+                            "$ref": "#/$defs/GNDPerson"
                         }
                     ]
-                },
-                "wikidataHuman": {
-                    "format": "wikidata-Q5",
-                    "type": "string"
                 }
             },
             "required": [
@@ -285,6 +275,13 @@
             "additionalProperties": false,
             "description": "A reoccurring event",
             "properties": {
+                "@type": {
+                    "const": "http://ontologies.slub-dresden.de/exhibiton#Series"
+                },
+                "@id": {
+                    "title": "http://ontologies.slub-dresden.de/exhibiton/entity#",
+                    "type": "string"
+                },
                 "category": {
                     "items": {
                         "type": "string"
@@ -317,6 +314,26 @@
             ],
             "title": "Series",
             "type": "object"
+        },
+        "WikidataHuman": {
+            "title": "within Wikidata",
+            "additionalProperties": true,
+            "properties": {
+                "@id": {
+                    "format": "wikidata-Q5",
+                    "type": "string"
+                }
+            }
+        },
+        "GNDPerson": {
+            "title": "within GND",
+            "additionalProperties": true,
+            "properties": {
+                "@id": {
+                    "format": "gndo-DifferentiatedPerson",
+                    "type": "string"
+                }
+            }
         },
         "Source": {
             "additionalProperties": false,
@@ -354,7 +371,12 @@
                     "type": "string"
                 },
                 "modifier": {
-                    "$ref": "#/$defs/DateModifier"
+                    "type": "string",
+                    "enum": [
+                        "BEFORE",
+                        "AFTER",
+                        "VAGUE"
+                    ]
                 }
             },
             "title": "TemporalValue",

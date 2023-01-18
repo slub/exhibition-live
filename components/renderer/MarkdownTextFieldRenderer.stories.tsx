@@ -22,8 +22,7 @@ const schema = {
     'description': {
       'type': 'string'
     }
-  },
-  'required': ['birthDate']
+  }
 }
 
 const renderers = [

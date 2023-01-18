@@ -56,8 +56,8 @@ export type WikidataSearchResult = {
   searchinfo: { totalhits: number }
 }
 
-const findPersonWithinWikidata = async (searchString: string, limit?: number) => {
-  const result = await fetch(`${wikidataApiURL}?${buildWikidataFulltextSearchParams(searchString, [['P31=Q5']], limit)}`)
+const findPersonWithinWikidata = async (searchString: string, limit?: number, typeOf: string = 'Q5') => {
+  const result = await fetch(`${wikidataApiURL}?${buildWikidataFulltextSearchParams(searchString, [[`P31=${typeOf}`]], limit)}`)
       .then(res => res.json())
 
   return result.query as WikidataSearchResult

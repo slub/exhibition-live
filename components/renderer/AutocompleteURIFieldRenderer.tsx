@@ -1,4 +1,4 @@
-import {ControlProps, showAsRequired} from '@jsonforms/core'
+import {ControlProps, showAsRequired, update} from '@jsonforms/core'
 import {withJsonFormsControlProps} from '@jsonforms/react'
 import {Edit, EditOff} from '@mui/icons-material'
 import {FormControl, FormLabel, Grid, Hidden, IconButton} from '@mui/material'
@@ -33,7 +33,7 @@ const AutocompleteURIFieldRenderer = (props: ControlProps) => {
 
 const handleChange_ = useCallback(
     (v?: string) => {
-      handleChange(path, v || '')
+      handleChange(path, v)
     },
     [path, handleChange],
 )

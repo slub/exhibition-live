@@ -26,7 +26,7 @@ export const resolveSubSchemas = (
       ...schema,
       [keyword]: (schema[keyword] as any[]).map(e =>
           // @ts-ignore
-          e.$ref ? resolveSchema(schema, e.$ref, rootSchema) : e
+          e.$ref ? resolveSchema(rootSchema, e.$ref, rootSchema) : e
       )
     }
   }
@@ -71,12 +71,8 @@ export const MaterialCustomAnyOfRenderer = ({
         path={path}
       />
       <Tabs value={selectedAnyOf} onChange={handleChange}>
-        {anyOfRenderInfos.map(anyOfRenderInfo => {
-          console.log({anyOfRenderInfo})
-          return (
-              <Tab key={anyOfRenderInfo.label} label={anyOfRenderInfo.label}/>
-          )
-        })}
+        {anyOfRenderInfos.map(anyOfRenderInfo => (
+                <Tab key={anyOfRenderInfo.label} label={anyOfRenderInfo.label}/>))}
       </Tabs>
       {anyOfRenderInfos.map(
         (anyOfRenderInfo, anyOfIndex) =>

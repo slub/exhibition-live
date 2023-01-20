@@ -6,11 +6,8 @@ import PerformanceFooter from '../components/layout/PerformanceFooter'
 import PerformanceHeader from '../components/layout/PerformanceHeader'
 import styles from '../styles/Home.module.css'
 
-
 export default () => {
   const [data, setData] = useState({})
-
-
   return (
       <>
         <Head>
@@ -26,11 +23,8 @@ export default () => {
             {/* Content wrapper */}
             <div className="default-wrapper">
               {/* Header area for content */}
-              <EditExhibitionJSONForm data={data} setData={_data => setData(_data)} />
+              <EditExhibitionJSONForm data={data} setData={_data => setData(_data)}/>
             </div>
-            <code>
-              {JSON.stringify(data, null ,2)}
-            </code>
             {/* Page footer */}
             <PerformanceFooter/>
           </div>

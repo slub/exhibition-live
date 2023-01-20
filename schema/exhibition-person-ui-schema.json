@@ -1,0 +1,25 @@
+{
+  "type": "VerticalLayout",
+  "elements": [
+    {
+      "type": "Control",
+      "scope": "#/properties/name",
+      "label": "Name"
+    },
+    {
+      "type": "HorizontalLayout",
+      "elements": [
+        {
+          "type": "Control",
+          "scope": "#/properties/birth_date",
+          "label": "Geburtsdatum"
+        },
+        {
+          "type": "Control",
+          "scope": "#/properties/death_date",
+          "label": "Todesdatum"
+        }
+      ]
+    }
+  ]
+}

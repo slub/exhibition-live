@@ -21,9 +21,19 @@ classes:
       public space.
     class_uri: sladb:Exhibition
     attributes:
-      name:
+      title:
         description: >-
-          The name of the exhibition.
+          The title of the exhibition.
+        range: string
+        multivalued: false
+      subtitle:
+        description: >-
+          The subtitle of the exhibition.
+        range: string
+        multivalued: false
+      originaltitle:
+        description: >-
+          The original title of the exhibition.
         range: string
         multivalued: false
       description:

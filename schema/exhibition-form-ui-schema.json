@@ -2,55 +2,102 @@
   "type": "VerticalLayout",
   "elements": [
     {
-      "type": "HorizontalLayout",
+      "type": "Group",
+      "label": "Allgemeine Daten der Ausstellung",
       "elements": [
         {
           "type": "Control",
-          "scope": "#/properties/name"
+          "label": "Titel der Ausstellung",
+          "scope": "#/properties/title"
+        },
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "label": "Untertitel",
+              "scope": "#/properties/subtitle"
+            },
+            {
+              "type": "Control",
+              "label": "Originaltitle",
+              "scope": "#/properties/originaltitle"
+            }
+          ]
         },
         {
           "type": "Control",
+          "label": "Kurzbeschreibung",
           "scope": "#/properties/description"
-        }
-      ]
-    },
-    {
-      "type": "Label",
-      "text": "Start und Enddatum"
-    },
-    {
-      "type": "HorizontalLayout",
-      "elements": [
-        {
-          "type": "Control",
-          "scope": "#/properties/start_date"
         },
         {
           "type": "Control",
-          "scope": "#/properties/end_date"
+          "label": "Quellen der Daten",
+          "scope": "#/properties/source"
         }
       ]
     },
     {
-      "type": "Control",
-      "label": "Curator",
-      "scope": "#/properties/curator"
+      "type": "Group",
+      "label": "Zeitlicher Rahmen",
+      "elements": [
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "label": "Startdatum",
+              "scope": "#/properties/start_date"
+            },
+            {
+              "type": "Control",
+              "label": "Enddatum",
+              "scope": "#/properties/end_date"
+            }
+          ]
+        }
+      ]
     },
     {
-      "type": "Control",
-      "scope": "#/properties/artists"
+      "type": "Group",
+      "label": "Geografischer Rahmen",
+      "elements": [
+        {
+          "type": "Control",
+          "scope": "#/properties/location"
+        }
+      ]
     },
     {
-      "type": "Control",
-      "scope": "#/properties/location"
+      "type": "Group",
+      "label": "Beteiligte Personen",
+      "elements": [
+        {
+          "type": "Control",
+          "label": "Kurator",
+          "scope": "#/properties/curator"
+        },
+        {
+          "type": "Control",
+          "label": "Ausstellende Künstler",
+          "scope": "#/properties/artist"
+        },
+        {
+          "type": "Control",
+          "label": "Andere beteiligte Personen",
+          "scope": "#/properties/involvedPerson"
+        }
+      ]
     },
     {
-      "type": "Control",
-      "scope": "#/properties/objects"
-    },
-    {
-      "type": "Control",
-      "scope": "#/properties/source"
+      "type": "Group",
+      "label": "Verbundene Ressourcen",
+      "elements": [
+        {
+          "type": "Control",
+          "scope": "#/properties/objects"
+        }
+      ]
     }
   ]
 }

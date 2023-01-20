@@ -1,6 +1,7 @@
 import 'react-json-view-lite/dist/index.css'
 
 import {JsonFormsCore, rankWith, schemaMatches, scopeEndsWith} from '@jsonforms/core'
+import {JsonFormsUISchemaRegistryEntry} from '@jsonforms/core/src/reducers/uischemas'
 import {materialCells, materialRenderers} from '@jsonforms/material-renderers'
 import {JsonForms} from '@jsonforms/react'
 import datasetFactory from '@rdfjs/dataset'
@@ -13,14 +14,13 @@ import React, {FunctionComponent, useCallback, useEffect, useState} from 'react'
 import {JsonView} from 'react-json-view-lite'
 import stringToStream from 'string-to-stream'
 
-import schema from '../../schema/exhibition-info.schema.json'
 import uischema from '../../schema/exhibition-form-ui-schema.json'
-import personschema from '../../schema/exhibition-person-ui-schema.json'
+import schema from '../../schema/exhibition-info.schema.json'
 import locationschema from '../../schema/exhibition-location-ui-schema.json'
+import personschema from '../../schema/exhibition-person-ui-schema.json'
 import AutocompleteURIFieldRenderer from '../renderer/AutocompleteURIFieldRenderer'
 import AutoIdentifierRenderer from '../renderer/AutoIdentifierRenderer'
 import MaterialCustomAnyOfRenderer, {materialCustomAnyOfControlTester} from '../renderer/MaterialCustomAnyOfRenderer'
-import {JsonFormsUISchemaRegistryEntry} from '@jsonforms/core/src/reducers/uischemas'
 import {jsonSchemaGraphInfuser} from '../utils/graph/jsonSchemaGraphInfuser'
 
 export const exhibitionSchema = {...schema, ...schema.$defs.Exhibition}

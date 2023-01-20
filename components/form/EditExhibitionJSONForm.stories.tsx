@@ -3,7 +3,6 @@ import {ComponentMeta} from '@storybook/react'
 import { JSONSchemaFaker } from 'json-schema-faker'
 import {useState} from 'react'
 
-import {queryPerson} from '../utils/sparql/constructQuery'
 import EditExhibitionJSONForm, {exhibitionSchema} from './EditExhibitionJSONForm'
 
 export default {
@@ -16,10 +15,6 @@ export const EditExhibitionJSOnFormDefault = () => {
   button('generate random entry', () => {
     // @ts-ignore
     setData(JSONSchemaFaker.generate(exhibitionSchema))
-  })
-  button('query Person', () => {
-    // @ts-ignore
-    queryPerson().then(r => console.log(r))
   })
 
   return <EditExhibitionJSONForm data={data} setData={setData}/>

@@ -1,7 +1,7 @@
 import React, {FunctionComponent, useEffect, useState} from 'react'
 
 import {exhibitionPrefixes} from '../exhibtion'
-import {sparqlSelectViaFieldMappings} from '../utils/sparql'
+import {remoteSparqlQuery, sparqlSelectViaFieldMappings} from '../utils/sparql'
 
 interface OwnProps {
 }
@@ -15,15 +15,20 @@ type ExhibitionStub = {
   type: string | undefined
 }
 
+
 const ContentMain: FunctionComponent<Props> = (props) => {
   const [exhibition, setExhibition] = useState<ExhibitionStub | undefined>()
   useEffect(() => {
     sparqlSelectViaFieldMappings('slmeta:282203', {fieldMapping: {
       name: {kind: 'literal', type: 'xsd:string', predicateURI: 'sladb:a7710', single: true},
-      place1: {type: 'xsd:string', predicateURI: 'sladb:a7762', single: true},
-      place2: {type: 'xsd:string', predicateURI: 'sladb:a7772', single: true},
-      type: {type: 'xsd:string', predicateURI: 'sladb:a7662', single: true}
-    }, prefixes: exhibitionPrefixes,permissive: true, sources: ['http://localhost:9999/blazegraph/namespace/kb/sparql']})
+      place1: {kind: 'literal', type: 'xsd:string', predicateURI: 'sladb:a7762', single: true},
+      place2: {kind: 'literal', type: 'xsd:string', predicateURI: 'sladb:a7772', single: true},
+      type: {kind: 'literal', type: 'xsd:string', predicateURI: 'sladb:a7662', single: true}
+    },
+      prefixes: exhibitionPrefixes,
+      permissive: true,
+      query: queryString => remoteSparqlQuery(queryString, ['http://localhost:9999/blazegraph/namespace/kb/sparql']),
+      })
         .then((exhibition) => {
           setExhibition(exhibition as ExhibitionStub)
         })

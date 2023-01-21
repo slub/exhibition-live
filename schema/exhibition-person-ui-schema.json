@@ -20,6 +20,16 @@
           "label": "Todesdatum"
         }
       ]
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/description",
+      "label": "Beschreibung, Anmerkungen zur Person"
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/placeofwork",
+      "label": "Wirkungsorte"
     }
   ]
 }

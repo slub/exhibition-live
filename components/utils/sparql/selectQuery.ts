@@ -1,5 +1,4 @@
-import {QueryEngine} from '@comunica/query-sparql'
-import {BindingsStream, IDataSource} from '@comunica/types'
+import {BindingsStream} from '@comunica/types'
 import {Literal, NamedNode} from '@rdfjs/types'
 
 import {rdfLiteralToNative} from '../primitives'
@@ -18,14 +17,14 @@ type TypeMapping = {
 }
 
 type MappingTarget = {
-  kind?: 'literal' | 'object'
+  kind: 'literal' | 'object'
   single?: boolean
   optional?: boolean
   predicateURI: string
 }
 
 type LiteralMappingTarget = MappingTarget & {
-  kind?: 'literal' | undefined,
+  kind: 'literal',
   type: keyof TypeMapping
 }
 
@@ -49,7 +48,7 @@ type SparqlSelectViaFieldMappingOptions = {
   wrapAround?: [string, string]
   prefixes?: Prefixes
   permissive: boolean
-  sources: [IDataSource,...IDataSource[]]
+  query:  (queryString: string) => Promise<BindingsStream>
   includeLabel?: boolean
   includeDescription?: boolean
 }
@@ -85,14 +84,14 @@ export const sparqlSelectFieldsQuery = (uri: string, { fieldMapping, wrapAround,
     `
 }
 
-export const sparqlSelectViaFieldMappings = async (subjectIRI: string, {prefixes, permissive, sources, ...params}: SparqlSelectViaFieldMappingOptions) => {
-  const myEngine = new QueryEngine()
+export const sparqlSelectViaFieldMappings = async (subjectIRI: string, {prefixes, permissive, query, ...params}: SparqlSelectViaFieldMappingOptions) => {
 
   const sparqlQuery = `
     ${prefixes ? prefixes2sparqlPrefixDeclaration(prefixes) : ''}
     ${sparqlSelectFieldsQuery(subjectIRI, params)}
     `
-  const bindingsStream: BindingsStream = await myEngine.queryBindings(sparqlQuery, { sources })
+
+  const bindingsStream: BindingsStream = await query(sparqlQuery)
 
   type TypesSupported = string | number | boolean | Date
   const result: { [k: string]: TypesSupported | TypesSupported[] } = {}
@@ -109,6 +108,7 @@ export const sparqlSelectViaFieldMappings = async (subjectIRI: string, {prefixes
           kDescription = `${k}Description`,
           o = binding.get(k)
       if(!o) return
+      // @ts-ignore
       if (isLiteralMappingTarget(v)) {
         const literal = o as Literal
         const native: string | number | boolean | Date = rdfLiteralToNative(literal)
@@ -121,30 +121,33 @@ export const sparqlSelectViaFieldMappings = async (subjectIRI: string, {prefixes
           if (!Array.isArray(result[k]) || (result[k] as TypesSupported[]).includes(native))
             result[k] = [...((result[k] || []) as TypesSupported[] | []), native]
         }
-      } else if(isObjectMappingTarget(v)) {
-        const object = o as NamedNode
-        const native = object.value
-        let label, description
-        if(v.includeLabel) {
-          label = (binding.get(kLabel) as Literal).value
-        }
-        if(v.includeDescription) {
-          description = (binding.get(kDescription) as Literal).value
-        }
-        if (v.single) {
-          if (!permissive) {
-            if (result[k] !== undefined || result[k] !== null || result[k] !== native) throw new Error('got multiple results for a single value')
-          }
-          result[k] = native
-          if(label) result[kLabel] = label
-          if(description) result[kDescription] = description
-        } else {
-          if (!Array.isArray(result[k]) || (result[k] as TypesSupported[]).includes(native)) {
-            result[k] = [...((result[k] || []) as TypesSupported[] | []), native]
-            if(label) result[kLabel] = [...((result[kLabel] || []) as TypesSupported[] | []), label]
-            if(description) result[kDescription] = [...((result[kDescription] || []) as TypesSupported[] | []), description]
-          }
-        }
+      } else {
+        // @ts-ignore
+        if(isObjectMappingTarget(v)) {
+                const object = o as NamedNode
+                const native = object.value
+                let label, description
+                if(v.includeLabel) {
+                  label = (binding.get(kLabel) as Literal).value
+                }
+                if(v.includeDescription) {
+                  description = (binding.get(kDescription) as Literal).value
+                }
+                if (v.single) {
+                  if (!permissive) {
+                    if (result[k] !== undefined || result[k] !== null || result[k] !== native) throw new Error('got multiple results for a single value')
+                  }
+                  result[k] = native
+                  if(label) result[kLabel] = label
+                  if(description) result[kDescription] = description
+                } else {
+                  if (!Array.isArray(result[k]) || (result[k] as TypesSupported[]).includes(native)) {
+                    result[k] = [...((result[k] || []) as TypesSupported[] | []), native]
+                    if(label) result[kLabel] = [...((result[kLabel] || []) as TypesSupported[] | []), label]
+                    if(description) result[kDescription] = [...((result[kDescription] || []) as TypesSupported[] | []), description]
+                  }
+                }
+              }
       }
     })
   }

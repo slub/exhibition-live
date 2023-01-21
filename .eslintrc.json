@@ -15,6 +15,7 @@
     "import/first": "error",
     "import/newline-after-import": "error",
     "import/no-duplicates": "error",
-    "react/display-name": "off"
+    "react/display-name": "off",
+    "react/no-unescaped-entities": "off"
   }
 }

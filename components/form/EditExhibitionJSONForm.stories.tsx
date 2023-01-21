@@ -12,7 +12,7 @@ export default {
 
 export const EditExhibitionJSOnFormDefault = () => {
   const [data, setData] = useState<any>()
-  button('generate random entity state', () => {
+  button('generate random entry', () => {
     // @ts-ignore
     setData(JSONSchemaFaker.generate(exhibitionSchema))
   })

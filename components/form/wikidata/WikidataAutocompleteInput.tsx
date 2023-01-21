@@ -2,10 +2,8 @@ import {Typography} from '@mui/material'
 import parse from 'html-react-parser'
 import React, {FunctionComponent, useCallback, useEffect, useMemo, useState} from 'react'
 
-import {sparqlSelectViaFieldMappings} from '../../utils/sparql'
-import {Prefixes} from '../../utils/types'
-import {wikidataPrefixes} from '../../utils/wikidata'
-import findPersonWithinWikidata from '../../utils/wikidata/findPersonWithinWikidata'
+import {remoteSparqlQuery, sparqlSelectViaFieldMappings} from '../../utils/sparql'
+import {findPersonWithinWikidataUsingREST, wikidataPrefixes} from '../../utils/wikidata'
 import {AutocompleteSuggestion, DebouncedAutocomplete} from '../DebouncedAutoComplete'
 import WikidataHumanCard from './WikidataHumanCard'
 import WikidataThingCard from './WikidataThingCard'
@@ -61,7 +59,7 @@ const WikidataAutocompleteInput: FunctionComponent<Props> = ({selected, onSelect
               bd:serviceParam wikibase:language "en" .`, '}'],
       prefixes: wikidataPrefixes,
       permissive: true,
-      sources: ['https://query.wikidata.org/sparql']
+      query: (sparqlSelect: string) => remoteSparqlQuery(sparqlSelect, ['https://query.wikidata.org/sparql'])
     }).then(_classInfo => {
       setClassInfo({'@id': `wd:${classType}`, ..._classInfo} as WikidataEntityInfo)
     })
@@ -77,12 +75,14 @@ const WikidataAutocompleteInput: FunctionComponent<Props> = ({selected, onSelect
         </Typography>
         <DebouncedAutocomplete
             load={async (searchString) => searchString
-                ? (await findPersonWithinWikidata(searchString, 10, classType)).search.map(({
-                                                                                           snippet,
-                                                                                           title
-                                                                                         }) => ({
+                ? (await findPersonWithinWikidataUsingREST(searchString, 10, classType)).map(d => {
+                  return d
+                }).map((
+                    { key,
+                      excerpt: snippet
+                     }) => ({
                   label: snippet.split('\n')[0],
-                  value: title
+                  value: key
                 }))
                 : []}
             value={__selected}

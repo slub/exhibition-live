@@ -40,7 +40,9 @@ describe('make construct query', () => {
   })
 
   test('can build construct query from simple schema', () => {
-    expect(buildConstructQuery('http://www.example.com/test', schema)).toMatch(/CONSTRUCT {.*/ )
+    const constructQuery = buildConstructQuery('http://www.example.com/test', schema)
+    console.log(constructQuery)
+    expect(constructQuery).toMatch(/CONSTRUCT {.*/ )
   })
 
 })

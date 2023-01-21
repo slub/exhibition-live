@@ -1,21 +1,27 @@
 import 'react-json-view-lite/dist/index.css'
 
 import {JsonFormsCore, rankWith, schemaMatches, scopeEndsWith} from '@jsonforms/core'
+import {JsonFormsUISchemaRegistryEntry} from '@jsonforms/core/src/reducers/uischemas'
 import {materialCells, materialRenderers} from '@jsonforms/material-renderers'
 import {JsonForms} from '@jsonforms/react'
-import * as jsonld from 'jsonld'
+import datasetFactory from '@rdfjs/dataset'
+import Parser from '@rdfjs/parser-jsonld'
+import {Dataset} from '@rdfjs/types'
+import {JSONSchema7} from 'json-schema'
 import isEmpty from 'lodash/isEmpty'
-import React, {FunctionComponent, useCallback, useState} from 'react'
+import dsExt from 'rdf-dataset-ext'
+import React, {FunctionComponent, useCallback, useEffect, useState} from 'react'
 import {JsonView} from 'react-json-view-lite'
+import stringToStream from 'string-to-stream'
 
-import schema from '../../schema/exhibition-info.schema.json'
 import uischema from '../../schema/exhibition-form-ui-schema.json'
-import personschema from '../../schema/exhibition-person-ui-schema.json'
+import schema from '../../schema/exhibition-info.schema.json'
 import locationschema from '../../schema/exhibition-location-ui-schema.json'
+import personschema from '../../schema/exhibition-person-ui-schema.json'
 import AutocompleteURIFieldRenderer from '../renderer/AutocompleteURIFieldRenderer'
 import AutoIdentifierRenderer from '../renderer/AutoIdentifierRenderer'
 import MaterialCustomAnyOfRenderer, {materialCustomAnyOfControlTester} from '../renderer/MaterialCustomAnyOfRenderer'
-import {JsonFormsUISchemaRegistryEntry} from '@jsonforms/core/src/reducers/uischemas'
+import {jsonSchemaGraphInfuser} from '../utils/graph/jsonSchemaGraphInfuser'
 
 export const exhibitionSchema = {...schema, ...schema.$defs.Exhibition}
 
@@ -61,45 +67,77 @@ const uiSchemas: JsonFormsUISchemaRegistryEntry[] = [
     }
 ]
 
-const sladb = 'http://ontology.slub-dresden.de/exhibition#'
-const slent = 'http://ontology.slub-dresden.de/exhibition/entities#'
+const sladb = 'http://ontologies.slub-dresden.de/exhibition#'
+const slent = 'http://ontologies.slub-dresden.de/exhibition/entities#'
 const EditExhibitionJSONForm: FunctionComponent<Props> = ({data, setData}) => {
     const [jsonldData, setJsonldData] = useState<any>({})
-    const handleFormChange = useCallback(
-        (state: Pick<JsonFormsCore, 'data' | 'errors'>) => {
-            setData(state.data)
-            const jsonldDoc = {
-                '@context': {
-                    '@vocab': sladb,
-                    'xsd': 'http://www.w3.org/2001/XMLSchema#',
-                    'birth_date': {
-                        '@type': 'xsd:date'
-                    },
-                    'death_date': {
-                        '@type': 'xsd:date'
-                    }
-                },
-                ...JSON.parse(JSON.stringify(state.data))
+    const [jsonFromGraph, setJsonFromGraph] = useState<any>({})
+  const [entityIRI, setEntityIRI] = useState<string | undefined>()
+  const handleFormChange = useCallback(
+      (state: Pick<JsonFormsCore, 'data' | 'errors'>) => {
+        setData(state.data)
+        if (state.data['@id']) {
+          setEntityIRI(state.data['@id'])
+        }
+        const jsonldDoc = {
+          '@context': {
+            '@vocab': sladb,
+            'xsd': 'http://www.w3.org/2001/XMLSchema#',
+            'birth_date': {
+              '@type': 'xsd:date'
+            },
+            'death_date': {
+              '@type': 'xsd:date'
             }
-            jsonld.JsonLdProcessor.expand(jsonldDoc).then(res => setJsonldData(res))
-            //jsonld.toRDF(jsonldDoc).then(res => console.log(res))
+          },
+          ...JSON.parse(JSON.stringify(state.data))
+        }
+        //jsonld.JsonLdProcessor.expand(jsonldDoc).then(res => {
+        //  setJsonldData(res);
+        //     }
+        //  )
+        //jsonld.toRDF(jsonldDoc).then(res => console.log(res))
 
-        }, [setData, setJsonldData])
+        try {
+          const jsonldStream = stringToStream(JSON.stringify(jsonldDoc))
+          const parser = new Parser()
+          const dsPromise = dsExt.fromStream(datasetFactory.dataset(), parser.import(jsonldStream))
+          dsPromise.then(ds => {
+            if (entityIRI) {
+              const resultJSON = jsonSchemaGraphInfuser(sladb, entityIRI, ds as Dataset, exhibitionSchema as JSONSchema7, {
+                omitEmptyArrays: true,
+                omitEmptyObjects: true,
+                maxRecursionEachRef: 1,
+                maxRecursion: 5
+              })
+              setJsonFromGraph(resultJSON)
+            }
+          })
+        } catch (e) {
+          console.error('Cannot convert JSONLD to dataset', e)
+        }
+
+      }, [setData, setJsonldData, setEntityIRI, setJsonFromGraph])
 
 
-    return (<>
-            <JsonForms
-                data={data}
-                renderers={renderers}
-                cells={materialCells}
-                onChange={handleFormChange}
-                schema={exhibitionSchema}
-                uischema={uischema}
-                uischemas={uiSchemas}
-            />
-            <JsonView data={jsonldData} shouldInitiallyExpand={(lvl) => lvl < 5}/>
-        </>
-    )
+  return (<>
+        <JsonForms
+            data={data}
+            renderers={renderers}
+            cells={materialCells}
+            onChange={handleFormChange}
+            schema={exhibitionSchema}
+            uischema={uischema}
+            uischemas={uiSchemas}
+
+        />
+        <JsonView data={data} shouldInitiallyExpand={(lvl) => lvl < 5}/>
+        <hr/>
+        <JsonView data={jsonldData} shouldInitiallyExpand={(lvl) => lvl < 5}/>
+        <hr/>
+        <JsonView data={jsonFromGraph} shouldInitiallyExpand={(lvl) => lvl < 5}/>
+      </>
+  )
 }
 
 export default EditExhibitionJSONForm

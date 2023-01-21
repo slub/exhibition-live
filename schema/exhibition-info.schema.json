@@ -2,7 +2,7 @@
   "$defs": {
     "Exhibition": {
       "additionalProperties": false,
-      "description": "A collection of objects that are displayed together in a museum or other public space.",
+      "description": "Eine Ausstellung an einem Ort und einer Zeit mit Objekten und Personen.",
       "required": [
         "@type",
         "@id"
@@ -17,14 +17,14 @@
           "type": "string"
         },
         "artist": {
-          "description": "The artists in the exhibition.",
+          "description": "Ausstellende Künstler.",
           "items": {
             "$ref": "#/$defs/Person"
           },
           "type": "array"
         },
         "involvedPerson": {
-          "description": "The persons involved in the exhibition.",
+          "description": "Andere mit der Ausstellung verbundene Personen und ihre Rollen.",
           "items": {
             "type": "object",
             "properties": {
@@ -32,7 +32,7 @@
                 "$ref": "#/$defs/Person"
               },
               "role": {
-                "description": "The role of the person in the exhibition.",
+                "description": "Die Rolle der Person in der Ausstellung.",
                 "oneOf": [
                   {
                     "title": "Organisator",
@@ -59,23 +59,47 @@
           "type": "array"
         },
         "curator": {
-          "description": "The curator of the exhibition.",
+          "description": "Kurator(en) der Ausstellung.",
           "items": {
             "$ref": "#/$defs/Person"
           },
           "type": "array"
         },
         "description": {
-          "description": "A description of the exhibition.",
+          "description": "Eine kurze Beschreibung der Ausstellung und Anmerkungen zur Ausstellung.",
           "type": "string",
           "format": "markdown"
         },
         "end_date": {
           "$ref": "#/$defs/TemporalValue",
-          "description": "The date the exhibition ends."
+          "description": "Datum der Ausstellung."
+        },
+        "otherDate": {
+          "type": "array",
+          "description": "Andere Daten zur Ausstellung.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "date": {
+                "$ref": "#/$defs/TemporalValue"
+              },
+              "typeOfDate": {
+                "oneOf": [
+                  {
+                    "title": "Vernissage",
+                    "const": "http://ontologies.slub-dresden.de/exhibiton#Vernissage"
+                  },
+                  {
+                    "title": "Finissage",
+                    "const": "http://ontologies.slub-dresden.de/exhibiton#Finissage"
+                  }
+                ]
+              }
+            }
+          }
         },
         "location": {
-          "description": "The location of the exhibition.",
+          "description": "Der geografische Ort der Ausstellung.",
           "items": {
             "$ref": "#/$defs/Location"
           },
@@ -88,14 +112,36 @@
           "type": "array"
         },
         "object": {
-          "description": "The objects in the exhibition.",
+          "description": "Mit der Ausstellung verbundene Objekte.",
           "items": {
             "$ref": "#/$defs/Object"
           },
           "type": "array"
         },
         "organization": {
-          "$ref": "#/$defs/Organization"
+          "description": "Die Organisation(en), die mit der Ausstellung verbunden sind.",
+          "type": "object",
+          "items": {
+            "type": "object",
+            "properties": {
+              "organization": {
+                "$ref": "#/$defs/Organization"
+              },
+              "role": {
+                "description": "Die Rolle der Organisation in der Ausstellung.",
+                "oneOf": [
+                  {
+                    "title": "Organisator",
+                    "const": "http://ontologies.slub-dresden.de/exhibiton#Organizer"
+                  },
+                  {
+                    "title": "Sponsor",
+                    "const": "http://ontologies.slub-dresden.de/exhibiton#Sponsor"
+                  }
+                ]
+              }
+            }
+          }
         },
         "organizer": {
           "description": "The organizer of the exhibition.",

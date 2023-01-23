@@ -107,7 +107,7 @@ const EditExhibitionJSONForm: FunctionComponent<Props> = ({data, setData}) => {
               const resultJSON = jsonSchemaGraphInfuser(sladb, entityIRI, ds as Dataset, exhibitionSchema as JSONSchema7, {
                 omitEmptyArrays: true,
                 omitEmptyObjects: true,
-                maxRecursionEachRef: 1,
+                maxRecursionEachRef: 3,
                 maxRecursion: 5
               })
               setJsonFromGraph(resultJSON)

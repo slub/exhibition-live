@@ -16,7 +16,14 @@ export const useRDFDataSources = (sources: string[]) => {
                   .then(r => r.text())
                   .then(exhibitionData => ao.load(exhibitionData, RDFMimetype.TURTLE, BASE_IRI))
               )
-          ).finally(() =>{
+          )
+              .then(() => {
+                console.log('successfullt bulk loaded data')
+              })
+              .catch(e => {
+                console.error('some error occurred while bulk loading',e )
+              })
+              .finally(() =>{
             setBulkLoading(false)
             setBulkLoaded(true)
           })})}, [init, setBulkLoading, setBulkLoaded])

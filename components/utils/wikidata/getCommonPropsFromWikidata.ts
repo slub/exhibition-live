@@ -2,7 +2,7 @@ import {QueryEngine} from '@comunica/query-sparql'
 import {BindingsStream, IDataSource} from '@comunica/types'
 import {Literal} from '@rdfjs/types'
 
-import {prefixes2sparqlPrefixDeclaration, sparqlSelectFieldsQuery} from '../sparql'
+import {prefixes2sparqlPrefixDeclaration} from '../sparql'
 import {wikidataPrefixes} from './prefixes'
 
 const buildPropsQuery = (thingIRI: string) => `

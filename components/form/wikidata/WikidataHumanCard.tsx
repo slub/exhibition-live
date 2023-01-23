@@ -5,7 +5,7 @@ import {
   CardContent,
   CardMedia, Collapse, Container,
   Grid,
-  Paper,
+  Skeleton,
   Table, TableBody, TableCell,
   TableContainer, TableRow,
   Typography
@@ -13,8 +13,8 @@ import {
 import dayjs from 'dayjs'
 import React, {FunctionComponent, useCallback, useEffect, useState} from 'react'
 
-import {sparqlSelectViaFieldMappings} from '../../utils/sparql'
-import {getCommonPropsFromWikidata, wikidataPrefixes} from '../../utils/wikidata'
+import {remoteSparqlQuery, sparqlSelectViaFieldMappings} from '../../utils/sparql'
+import {wikidataPrefixes} from '../../utils/wikidata'
 import WikidataAllPropTable from './WikidataAllPropTable'
 
 interface OwnProps {
@@ -42,9 +42,9 @@ const WikidataHumanCard: FunctionComponent<Props> = ({personIRI}) => {
       }, [setExpanded])
 
   useEffect(() => {
+    setPersonData(null)
     if(!personIRI)
       return
-    console.log('Will query person Info', personIRI)
     sparqlSelectViaFieldMappings(`wd:${personIRI}`, {
       fieldMapping: {
         occupation: {kind: 'object', optional: true, type: 'NamedNode', predicateURI: 'wdt:P106'},
@@ -59,48 +59,57 @@ const WikidataHumanCard: FunctionComponent<Props> = ({personIRI}) => {
               bd:serviceParam wikibase:language "en" .`, '}'],
       prefixes: wikidataPrefixes,
       permissive: true,
-      sources: ['https://query.wikidata.org/sparql']
+      query: (sparqlSelect: string) => remoteSparqlQuery(sparqlSelect, ['https://query.wikidata.org/sparql'])
     }).then(_personInfo => {
       setPersonData(_personInfo as PersonInfo)
     })
   }, [personIRI, setPersonData])
 
-  return personData ? <div>
+  return  <div>
     <Grid container spacing={2}>
       <Grid item xs={4}>
         <Card >
-          <CardMedia
+          {!personData ?
+              <Skeleton sx={{ height: 300 }} animation="wave" variant="rectangular" />
+              : <CardMedia
               component="img"
               alt={'Image of ' + personData.label}
               height="300"
               {...(personData.image ? {image: personData.image} : {})}
-          />
+          />}
           <CardContent>
-            <Typography gutterBottom variant="h5" component="div">
-              {personData.label}
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              {personData.description}
-            </Typography>
-            <TableContainer component={Container}>
-              <Table sx={{ minWidth: '100%' }} aria-label="custom pagination table">
-                <TableBody>
-                  {([
-                    {label: 'birth date', value: personData.birthDate || ''},
-                    {label: 'death date', value: personData.deathDate || ''}
-                  ]).map((row) => (
-                      <TableRow key={row.label}>
-                        <TableCell component="th" scope="row">
-                          {row.label}
-                        </TableCell>
-                        <TableCell style={{ width: 160 }} align="right">
-                          {dayjs( row.value ).toString()}
-                        </TableCell>
-                      </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
+            {!personData ? <>
+              <Skeleton animation="wave" height={10} style={{ marginBottom: 6 }} />
+              <Skeleton animation="wave" height={10} width="80%" />
+            </> : <>
+              <Typography gutterBottom variant="h5" component="div">
+                {personData.label}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                {personData.description}
+              </Typography>
+              <TableContainer component={Container}>
+                <Table sx={{ minWidth: '100%' }} aria-label="custom pagination table">
+                  <TableBody>
+                    {([
+                      {label: 'birth date', value: personData.birthDate || ''},
+                      {label: 'death date', value: personData.deathDate || ''}
+                    ]).map((row) => (
+                        <TableRow key={row.label}>
+                          <TableCell component="th" scope="row">
+                            {row.label}
+                          </TableCell>
+                          <TableCell style={{ width: 160 }} align="right">
+                            {dayjs( row.value ).toString()}
+                          </TableCell>
+                        </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </>
+
+            }
           </CardContent>
           <CardActions>
             <Button size="small">Copy</Button>
@@ -114,7 +123,7 @@ const WikidataHumanCard: FunctionComponent<Props> = ({personIRI}) => {
         </Collapse>
       </Grid>
     </Grid>
-  </div> : <div>Blubb</div>
+  </div>
 
 
 

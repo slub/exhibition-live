@@ -3,18 +3,13 @@ import {
   Card,
   CardActions,
   CardContent,
-  CardMedia, Collapse, Container,
-  Grid,
-  Paper,
-  Table, TableBody, TableCell,
-  TableContainer, TableRow,
+  CardMedia, Collapse, Grid,
   Typography
 } from '@mui/material'
-import dayjs from 'dayjs'
 import React, {FunctionComponent, useCallback, useEffect, useState} from 'react'
 
-import {sparqlSelectViaFieldMappings} from '../../utils/sparql'
-import {getCommonPropsFromWikidata, wikidataPrefixes} from '../../utils/wikidata'
+import {remoteSparqlQuery, sparqlSelectViaFieldMappings} from '../../utils/sparql'
+import {wikidataPrefixes} from '../../utils/wikidata'
 import WikidataAllPropTable from './WikidataAllPropTable'
 
 interface OwnProps {
@@ -52,7 +47,7 @@ const WikidataThingCard: FunctionComponent<Props> = ({thingIRI}) => {
               bd:serviceParam wikibase:language "en" .`, '}'],
       prefixes: wikidataPrefixes,
       permissive: true,
-      sources: ['https://query.wikidata.org/sparql']
+      query: (sparqlSelect: string) => remoteSparqlQuery(sparqlSelect, ['https://query.wikidata.org/sparql'])
     }).then(_info => {
       setThingData(_info as ThingInfo)
     })

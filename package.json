@@ -53,6 +53,7 @@
     "next": "13.1.1",
     "rdf-dataset-ext": "^1.0.1",
     "react": "18.2.0",
+    "react-collapse-pane": "^3.0.1",
     "react-dom": "18.2.0",
     "react-i18next": "^12.1.4",
     "react-json-view-lite": "^0.9.4",
@@ -61,6 +62,7 @@
     "rehype-sanitize": "^5.0.1",
     "sparql-http-client": "^2.4.2",
     "string-to-stream": "^3.0.1",
+    "styled-components": "^5.3.6",
     "uuid": "^9.0.0",
     "zustand": "^4.3.2"
   },

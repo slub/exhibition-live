@@ -12,8 +12,8 @@ interface OwnProps {
 type Props = OwnProps;
 
 const withPrefixes = (yg: Yasgui) => {
-  const yasqe = yg.getTab(1)?.getYasqe()
-  const yasqr = yg.getTab(1)?.getYasr()
+  const yasqe = yg.getTab(yg.persistentConfig.currentId())?.getYasqe()
+  const yasqr = yg.getTab(yg.persistentConfig.currentId())?.getYasr()
   yasqe?.addPrefixes(exhibitionPrefixes)
   //yasqr?.set
   return yg

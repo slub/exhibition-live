@@ -56,7 +56,8 @@ const propertyWalker = (baseIRI: string, node: clownface.GraphPointer, subSchema
         val = propertyWalker(
             baseIRI,
             newNode as clownface.GraphPointer,
-            schema, rootSchema,
+            schema,
+            rootSchema,
             +1,
             circularSet,
             options)

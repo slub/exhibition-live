@@ -4,7 +4,6 @@ import {SELECT} from '@tpluscode/sparql-builder'
 import type Yasgui from '@triply/yasgui'
 import dayjs from 'dayjs'
 import moment from 'moment'
-import dynamic from 'next/dynamic'
 import React, {FormEvent, FunctionComponent, useCallback, useEffect, useState} from 'react'
 
 import {BASE_IRI} from '../config'

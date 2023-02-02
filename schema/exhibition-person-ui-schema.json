@@ -3,6 +3,14 @@
   "elements": [
     {
       "type": "Control",
+      "scope": "#/properties/@id"
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/@type"
+    },
+    {
+      "type": "Control",
       "scope": "#/properties/name",
       "label": "Name"
     },

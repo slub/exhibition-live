@@ -7,6 +7,14 @@
       "elements": [
         {
           "type": "Control",
+          "scope": "#/properties/@id"
+        },
+        {
+          "type": "Control",
+          "scope": "#/properties/@type"
+        },
+        {
+          "type": "Control",
           "label": "Titel der Ausstellung",
           "scope": "#/properties/title"
         },
@@ -90,12 +98,14 @@
         {
           "type": "Control",
           "label": "Kurator",
-          "scope": "#/properties/curator"
+          "scope": "#/properties/curator",
+          "elementLabelProp": "name"
         },
         {
           "type": "Control",
           "label": "Ausstellende Künstler",
-          "scope": "#/properties/artist"
+          "scope": "#/properties/artist",
+          "elementLabelProp": "name"
         },
         {
           "type": "Control",

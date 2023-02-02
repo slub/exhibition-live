@@ -1,10 +1,10 @@
 import {describe, expect, test} from '@jest/globals'
-import {JSONSchema6} from 'json-schema'
+import {JSONSchema7} from 'json-schema'
 
 import {buildConstructQuery} from './jsonSchema2construct'
 
-const schema: JSONSchema6 = {
-'$schema': 'http://json-schema.org/draft-06/schema#',
+const schema: JSONSchema7 = {
+'$schema': 'http://json-schema.org/draft-07/schema#',
     '$id': 'https://example.com/person.schema.json',
     'title': 'Person',
     'description': 'A human being',

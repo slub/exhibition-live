@@ -1,0 +1,152 @@
+id: http://ontologies.slub-dresden.de/exhibtion
+name: exhibtion-info
+prefixes:
+  sladb: http://ontologies.slub-dresden.de/exhibition#
+  slsrc: http://ontologies.slub-dresden.de/source#
+  slmeta: http://ontologies.slub-dresden.de/meta#
+  slperson: http://ontologies.slub-dresden.de/person#
+  linkml: https://w3id.org/linkml/    
+default_prefix: sladb
+imports:
+  - linkml:types
+default_range: string
+
+classes:
+  Exhibtion:
+    description: >-
+      A collection of objects that are displayed together in a museum or other
+      public space.
+    class_uri: sladb:Exhibtion
+    slots:
+      name:
+        range: string
+        required: true
+      description:
+        description: >-
+          A description of the exhibition.
+        range: string
+      start_date:
+        description: >-
+          The start date of the exhibition.
+        range: 
+          - date
+          - datetime
+          - string
+      end_date:
+        description: >-
+          The end date of the exhibition.
+        range: 
+          - date
+          - datetime
+          - string
+      curator:
+        description: >-
+          The curator of the exhibition.
+        range: slperson:Person
+        multivalued: true
+      objects:
+        description: >-
+          The objects that are part of the exhibition.
+        range: 
+          - sladb:Object
+          - sladb:Work
+        multivalued: true
+      sources:
+        description: >-
+          The sources that are used to create the exhibition.
+        range: slsrc:Source
+        multivalued: true
+      meta:
+        description: >-
+          The metadata of the exhibition.
+        range: slmeta:Meta
+        multivalued: true
+  Artist:
+    description: >-
+      A person who creates art.
+    class_uri: sladb:Artist
+    slots:
+      name:
+        description: >-
+          The name of the artist.
+        range: string
+        required: true
+      description:
+        description: >-
+          A description of the artist.
+        range: string
+      birth_date:
+        description: >-
+          The birth date of the artist.
+        range: 
+          - date
+          - datetime
+          - string
+      death_date:
+        description: >-
+          The death date of the artist.
+        range:
+          - date
+          - datetime
+          - string
+      sources:
+        description: >-
+          The sources that are used to create the artist.
+        range: slsrc:Source
+        multivalued: true
+      meta:
+        description: >-
+          The metadata of the artist.
+        range: slmeta:Meta
+        multivalued: true
+  Object:
+    description: >-
+      A physical object that is part of an exhibition.
+    class_uri: sladb:Object
+    slots:
+      - name
+      - description
+      - artist
+      - sources
+      - meta
+  Work:
+    description: >-
+      A work of art.
+    class_uri: sladb:Work
+    slots:
+      - name
+      - description
+      - artist
+      - sources
+      - meta
+  Source:
+    description: >-
+      A source of information.
+    class_uri: slsrc:Source
+    slots:
+      - id
+      - name
+      - description
+      - url
+      - meta
+  Organization:
+    description: >-
+      An organization.
+    class_uri: slperson:Organization
+    slots:
+      - name
+      - description
+      - meta
+  Person:
+    description: >-
+      A person.
+    class_uri: slperson:Person
+    slots:
+      - name
+      - description
+      - birth_date
+      - death_date
+      - mailaddress
+      - meta
+
+

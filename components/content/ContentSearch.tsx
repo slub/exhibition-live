@@ -1,5 +1,6 @@
 import {literal, variable} from '@rdfjs/data-model'
 import namespace from '@rdfjs/namespace'
+import {rdfs} from '@tpluscode/rdf-ns-builders'
 import {SELECT} from '@tpluscode/sparql-builder'
 import type Yasgui from '@triply/yasgui'
 import dayjs from 'dayjs'
@@ -59,7 +60,7 @@ const sladb = namespace(BASE_IRI)
 const slmeta = namespace('http://ontologies.slub-dresden.de/meta#')
 
 const checkDate = (v: any) => (v instanceof Date) ? dayjs(v).toJSON() : v
-type ClassCount = { clazz?: string, count?: string }
+type ClassCount = { clazz?: string, clazzLabel?: string, count?: string }
 
 const ContentSearch: FunctionComponent<Props> = (props) => {
   const [complexEnabled, setComplexEnabled] = useState(false)
@@ -80,52 +81,53 @@ const ContentSearch: FunctionComponent<Props> = (props) => {
 
 
   const [classCount, setClassCount] = useState<ClassCount[]>([])
-  /**
-   * For each owl:Class within the database count all instances
-   * and return the result as a table
-   *
-   **/
 
 
-  /*
-useEffect(() => {
-  const count = variable('count '),
-      clazz = variable('clazz ')
-  const query = SELECT`${clazz} (COUNT(?entity) AS ${count})`.WHERE`
-  ?entity a ${clazz} .
-`.GROUP().BY(clazz ).ORDER().BY(count).LIMIT(1000).build()*/
+  useEffect(() => {
+    console.log('ping')
+    if (!oxigraph || !bulkLoaded) return
+    /**
+     * For each owl:Class within the database count all instances
+     * and return the result as a table
+     *
+     **/
+    const count = variable('count '),
+        clazz = variable('clazz '),
+        clazzLabel = variable('clazzLabel '),
+        innerSelect =
+            SELECT`${clazz} (COUNT(?entity) AS ${count}) `.WHERE`
+                ?entity a ${clazz} .
+            `.GROUP().BY(clazz)
+                .LIMIT(1000),
+        selectQuery =
+            SELECT`${clazz} ${clazzLabel} ${count} `.WHERE`
+              ${clazz} ${rdfs.label} ${clazzLabel} .
+              { ${innerSelect} }
+            `.LIMIT(1000)
 
-
-    /*
-   const doQuery = async () => {
-      if (!oxigraph || !bulkLoaded) return
-      const result = await oxigraph.query(`
-      SELECT *
-  WHERE {
-  ?entity a ?clazz .
-  BIND(COUNT(?entity) AS ?count) .
-  }
-  GROUP BY ?clazz
-  ORDER BY DESC(?count)
-      `)
-      const bindings: SparqlBindings = result.data
-      const data = bindings.results.bindings.map(b => ({
-        clazz: b.clazz?.value,
-        count: b.count?.value,
-      }))
-      setClassCount(data)
-      console.log({data})
-    }
-
-  }, [oxigraph, setClassCount, bulkLoaded])*/
+    oxigraph.query(selectQuery.build())
+        .then(result => {
+          if (!Array.isArray(result?.data?.results?.bindings)) return
+          const bindings: SparqlBindings = result.data
+          setClassCount(
+              bindings.results.bindings.map(b => ({
+                clazz: b.clazz?.value,
+                clazzLabel: b.clazzLabel?.value,
+                count: b.count?.value,
+              }))
+          )
+        })
+  }, [oxigraph, setClassCount, bulkLoaded])
 
   const handleSparqlQuery = useCallback(
       async () => {
-        if(!yasgui) return
+        if (!yasgui) return
+        // @ts-ignore
         const yasqe = yasgui.getTab(0)?.getYasqe()
+        // @ts-ignore
         const yasr = yasgui.getTab(0)?.getYasr()
         const query = yasqe?.getValueWithoutComments()
-        if(!oxigraph || !query) return
+        if (!oxigraph || !query) return
         const response = (await oxigraph.query(query))
         console.log({response, yasr})
         yasr?.setResponse(response)
@@ -208,7 +210,7 @@ useEffect(() => {
 
   return (
       <div className="container">
-        <SPARQLToolkit onInit={yg => setYasgui(yg)} onSendClicked={handleSparqlQuery} />
+        <SPARQLToolkit onInit={yg => setYasgui(yg)} onSendClicked={handleSparqlQuery}/>
         <div id="c195" className="colName-text colPos-0 text text">
           <p>
             Nähere Informationen zu Inhalten von musiconn.performance und zu
@@ -323,6 +325,19 @@ useEffect(() => {
           <div className="view-selection">
             <nav className="search-navigation">
               <ul className="view-tabs">
+                {
+                  classCount.map(({clazz, clazzLabel, count}) => <li>
+                      <a
+                          key={clazz}
+                          href={`/search?clazz=${clazzLabel}`}
+                          className="series"
+                      >
+                        {clazzLabel}<span className="result-count">{count}</span>
+                      </a>
+                    </li>
+
+                  )
+                }
                 <li>
                   <a
                       href="https://performance.musiconn.de/search/series?max=25&sort=1%7C1%7C1%7C1%7C1%7C1%7C1&cHash=4b0986aeaeba449d98a9184ce9e1cdf9"

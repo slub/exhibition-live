@@ -1,0 +1,332 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>DATABASE</ID>
+  <OriginalElement>1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_authority</OriginalElement>
+  <nodes>
+    <node x="2632.541666666667" y="936.0">1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_exhibition_tags</node>
+    <node x="346.7933743169385" y="10.0">1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_exhibitionobject</node>
+    <node x="2900.541666666667" y="936.0">1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_exhibitionseries_tags</node>
+    <node x="2837.416666666667" y="524.0">1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_tag</node>
+    <node x="2903.348702185791" y="-26.0">1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_organizer</node>
+    <node x="689.2100409836053" y="-14.0">1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_location</node>
+    <node x="46.5" y="536.0">1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_role</node>
+    <node x="737.4600409836053" y="-248.0">1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_authority</node>
+    <node x="1330.2916666666667" y="22.0">1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_exhibitioncategory</node>
+    <node x="708.6605191256824" y="936.0">1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_exhibition_locations</node>
+    <node x="2359.348702185791" y="-62.0">1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_exhibitionseries</node>
+    <node x="1108.2916666666667" y="22.0">1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_otherdate</node>
+    <node x="2382.348702185791" y="-248.0">1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_seriestype</node>
+    <node x="774.625" y="488.0">1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_place</node>
+    <node x="2632.348702185791" y="22.0">1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_resourcetype</node>
+    <node x="1980.2219945355191" y="936.0">1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_exhibition_organizer</node>
+    <node x="1301.8350409836053" y="936.0">1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_exhibition_places</node>
+    <node x="2363.541666666667" y="936.0">1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_eventtype_tags</node>
+    <node x="911.2916666666667" y="22.0">1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_source</node>
+    <node x="1627.2653688524574" y="936.0">1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_exhibition_resources</node>
+    <node x="2093.0850409836053" y="488.0">1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_resource</node>
+    <node x="319.6605191256824" y="936.0">1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_exhibition_exhiobitionobjects</node>
+    <node x="1307.4105191256824" y="332.0">1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_exhibition</node>
+    <node x="1629.2916666666667" y="10.0">1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_eventtype</node>
+    <node x="-38.5" y="924.0">1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_involvedperson</node>
+    <node x="-108.0" y="-62.0">1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_person</node>
+    <node x="-29.456625683061475" y="-260.0">1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_import</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_eventtype_tags" target="1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_tag" relationship="REFERENCES">
+      <point x="62.25" y="-56.0" />
+      <point x="2550.291666666667" y="893.0" />
+      <point x="2947.666666666667" y="893.0" />
+      <point x="36.75" y="68.0" />
+    </edge>
+    <edge source="1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_exhibition_locations" target="1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_exhibition" relationship="REFERENCES">
+      <point x="72.25" y="-56.0" />
+      <point x="925.4105191256824" y="903.0" />
+      <point x="1421.4105191256824" y="903.0" />
+      <point x="0.0" y="260.0" />
+    </edge>
+    <edge source="1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_exhibition_places" target="1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_place" relationship="REFERENCES">
+      <point x="-66.5" y="-56.0" />
+      <point x="1368.3350409836053" y="893.0" />
+      <point x="865.125" y="893.0" />
+      <point x="0.0" y="104.0" />
+    </edge>
+    <edge source="1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_location" target="1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_authority" relationship="REFERENCES">
+      <point x="0.0" y="-92.0" />
+      <point x="783.2100409836053" y="-83.0" />
+      <point x="835.4600409836053" y="-83.0" />
+      <point x="0.0" y="56.0" />
+    </edge>
+    <edge source="1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_exhibitionseries_tags" target="1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_tag" relationship="REFERENCES">
+      <point x="-74.5" y="-56.0" />
+      <point x="2975.041666666667" y="893.0" />
+      <point x="2947.666666666667" y="893.0" />
+      <point x="36.75" y="68.0" />
+    </edge>
+    <edge source="1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_exhibition" target="1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_otherdate" relationship="REFERENCES">
+      <point x="-19.0" y="-260.0" />
+      <point x="1402.4105191256824" y="290.0" />
+      <point x="1209.2916666666667" y="290.0" />
+      <point x="0.0" y="56.0" />
+    </edge>
+    <edge source="1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_resource" target="1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_resourcetype" relationship="REFERENCES">
+      <point x="64.33333333333348" y="-104.0" />
+      <point x="2253.9183743169388" y="300.0" />
+      <point x="2747.848702185791" y="300.0" />
+      <point x="0.0" y="56.0" />
+    </edge>
+    <edge source="1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_organizer" target="1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_import" relationship="REFERENCES">
+      <point x="50.0" y="-104.0" />
+      <point x="3053.348702185791" y="-93.0" />
+      <point x="1862.0850409836053" y="-93.0" />
+      <point x="1862.0850409836053" y="-103.0" />
+      <point x="191.37670765027178" y="-103.0" />
+      <point x="88.33333333333326" y="68.0" />
+    </edge>
+    <edge source="1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_exhibition" target="1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_exhibitioncategory" relationship="REFERENCES">
+      <point x="19.0" y="-260.0" />
+      <point x="1440.4105191256824" y="310.0" />
+      <point x="1469.7916666666667" y="310.0" />
+      <point x="0.0" y="56.0" />
+    </edge>
+    <edge source="1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_person" target="1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_authority" relationship="REFERENCES">
+      <point x="96.0" y="-140.0" />
+      <point x="132.0" y="-83.0" />
+      <point x="835.4600409836053" y="-83.0" />
+      <point x="0.0" y="56.0" />
+    </edge>
+    <edge source="1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_resource" target="1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_import" relationship="REFERENCES">
+      <point x="0.0" y="-104.0" />
+      <point x="2189.5850409836053" y="270.0" />
+      <point x="2003.6605191256822" y="270.0" />
+      <point x="2003.6605191256822" y="-93.0" />
+      <point x="1862.0850409836053" y="-93.0" />
+      <point x="1862.0850409836053" y="-103.0" />
+      <point x="191.37670765027178" y="-103.0" />
+      <point x="88.33333333333326" y="68.0" />
+    </edge>
+    <edge source="1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_tag" target="1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_tag" relationship="REFERENCES">
+      <point x="-36.75" y="68.0" />
+      <point x="2874.166666666667" y="680.0" />
+      <point x="2817.416666666667" y="680.0" />
+      <point x="2817.416666666667" y="592.0" />
+      <point x="-73.5" y="-0.0" />
+    </edge>
+    <edge source="1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_exhibition_tags" target="1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_exhibition" relationship="REFERENCES">
+      <point x="-62.0" y="-56.0" />
+      <point x="2694.541666666667" y="903.0" />
+      <point x="1421.4105191256824" y="903.0" />
+      <point x="0.0" y="260.0" />
+    </edge>
+    <edge source="1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_eventtype_tags" target="1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_eventtype" relationship="REFERENCES">
+      <point x="-62.25" y="-56.0" />
+      <point x="2425.791666666667" y="883.0" />
+      <point x="2588.9600409836053" y="883.0" />
+      <point x="2588.9600409836053" y="260.0" />
+      <point x="1782.2916666666667" y="260.0" />
+      <point x="51.0" y="68.0" />
+    </edge>
+    <edge source="1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_exhibition_tags" target="1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_tag" relationship="REFERENCES">
+      <point x="62.0" y="-56.0" />
+      <point x="2818.541666666667" y="893.0" />
+      <point x="2947.666666666667" y="893.0" />
+      <point x="36.75" y="68.0" />
+    </edge>
+    <edge source="1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_exhibition_locations" target="1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_location" relationship="REFERENCES">
+      <point x="-72.25" y="-56.0" />
+      <point x="780.9105191256824" y="893.0" />
+      <point x="764.125" y="893.0" />
+      <point x="764.125" y="310.0" />
+      <point x="830.2100409836053" y="310.0" />
+      <point x="47.0" y="92.0" />
+    </edge>
+    <edge source="1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_exhibition_organizer" target="1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_organizer" relationship="REFERENCES">
+      <point x="73.0" y="-56.0" />
+      <point x="2199.221994535519" y="873.0" />
+      <point x="2448.5850409836053" y="873.0" />
+      <point x="2448.5850409836053" y="310.0" />
+      <point x="3053.348702185791" y="310.0" />
+      <point x="50.0" y="104.0" />
+    </edge>
+    <edge source="1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_location" target="1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_location" relationship="REFERENCES">
+      <point x="-47.0" y="92.0" />
+      <point x="736.2100409836053" y="190.0" />
+      <point x="669.2100409836053" y="190.0" />
+      <point x="669.2100409836053" y="78.0" />
+      <point x="-94.0" y="-0.0" />
+    </edge>
+    <edge source="1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_exhibition" target="1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_eventtype" relationship="REFERENCES">
+      <point x="57.0" y="-260.0" />
+      <point x="1478.4105191256824" y="280.0" />
+      <point x="1680.2916666666667" y="280.0" />
+      <point x="-51.0" y="68.0" />
+    </edge>
+    <edge source="1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_exhibitionobject" target="1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_authority" relationship="REFERENCES">
+      <point x="0.0" y="-68.0" />
+      <point x="475.2933743169385" y="-83.0" />
+      <point x="835.4600409836053" y="-83.0" />
+      <point x="0.0" y="56.0" />
+    </edge>
+    <edge source="1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_place" target="1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_location" relationship="REFERENCES">
+      <point x="-60.333333333333485" y="-104.0" />
+      <point x="804.7916666666665" y="310.0" />
+      <point x="830.2100409836053" y="310.0" />
+      <point x="47.0" y="92.0" />
+    </edge>
+    <edge source="1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_exhibition" target="1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_exhibitionseries" relationship="REFERENCES">
+      <point x="95.0" y="-260.0" />
+      <point x="1516.4105191256824" y="290.0" />
+      <point x="2485.848702185791" y="290.0" />
+      <point x="0.0" y="140.0" />
+    </edge>
+    <edge source="1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_exhibition" target="1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_source" relationship="REFERENCES">
+      <point x="-95.0" y="-260.0" />
+      <point x="1326.4105191256824" y="310.0" />
+      <point x="999.2916666666667" y="310.0" />
+      <point x="0.0" y="56.0" />
+    </edge>
+    <edge source="1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_exhibition_resources" target="1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_exhibition" relationship="REFERENCES">
+      <point x="-73.5" y="-56.0" />
+      <point x="1700.7653688524574" y="903.0" />
+      <point x="1421.4105191256824" y="903.0" />
+      <point x="0.0" y="260.0" />
+    </edge>
+    <edge source="1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_eventtype" target="1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_import" relationship="REFERENCES">
+      <point x="0.0" y="-68.0" />
+      <point x="1731.2916666666667" y="-93.0" />
+      <point x="1862.0850409836053" y="-93.0" />
+      <point x="1862.0850409836053" y="-103.0" />
+      <point x="191.37670765027178" y="-103.0" />
+      <point x="88.33333333333326" y="68.0" />
+    </edge>
+    <edge source="1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_exhibition" target="1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_import" relationship="REFERENCES">
+      <point x="-57.0" y="-260.0" />
+      <point x="1364.4105191256824" y="300.0" />
+      <point x="1097.7916666666667" y="300.0" />
+      <point x="1097.7916666666667" y="-93.0" />
+      <point x="1862.0850409836053" y="-93.0" />
+      <point x="1862.0850409836053" y="-103.0" />
+      <point x="191.37670765027178" y="-103.0" />
+      <point x="88.33333333333326" y="68.0" />
+    </edge>
+    <edge source="1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_exhibitionseries" target="1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_seriestype" relationship="REFERENCES">
+      <point x="0.0" y="-140.0" />
+      <point x="0.0" y="56.0" />
+    </edge>
+    <edge source="1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_involvedperson" target="1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_exhibition" relationship="REFERENCES">
+      <point x="83.0" y="-68.0" />
+      <point x="169.0" y="903.0" />
+      <point x="1421.4105191256824" y="903.0" />
+      <point x="0.0" y="260.0" />
+    </edge>
+    <edge source="1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_involvedperson" target="1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_person" relationship="REFERENCES">
+      <point x="-83.0" y="-68.0" />
+      <point x="3.0" y="903.0" />
+      <point x="36.0" y="903.0" />
+      <point x="0.0" y="140.0" />
+    </edge>
+    <edge source="1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_exhibition_exhiobitionobjects" target="1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_exhibition" relationship="REFERENCES">
+      <point x="92.25" y="-56.0" />
+      <point x="596.4105191256824" y="903.0" />
+      <point x="1421.4105191256824" y="903.0" />
+      <point x="0.0" y="260.0" />
+    </edge>
+    <edge source="1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_organizer" target="1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_organizer" relationship="REFERENCES">
+      <point x="-50.0" y="104.0" />
+      <point x="2953.348702185791" y="202.0" />
+      <point x="2883.348702185791" y="202.0" />
+      <point x="2883.348702185791" y="78.0" />
+      <point x="-100.0" y="-0.0" />
+    </edge>
+    <edge source="1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_organizer" target="1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_authority" relationship="REFERENCES">
+      <point x="-50.0" y="-104.0" />
+      <point x="2953.348702185791" y="-83.0" />
+      <point x="835.4600409836053" y="-83.0" />
+      <point x="0.0" y="56.0" />
+    </edge>
+    <edge source="1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_involvedperson" target="1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_role" relationship="REFERENCES">
+      <point x="0.0" y="-68.0" />
+      <point x="86.0" y="903.0" />
+      <point x="122.5" y="903.0" />
+      <point x="0.0" y="56.0" />
+    </edge>
+    <edge source="1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_exhibitionseries" target="1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_exhibitionseries" relationship="REFERENCES">
+      <point x="-84.33333333333337" y="140.0" />
+      <point x="2401.5153688524574" y="238.0" />
+      <point x="2339.348702185791" y="238.0" />
+      <point x="2339.348702185791" y="78.0" />
+      <point x="-126.5" y="-0.0" />
+    </edge>
+    <edge source="1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_exhibition_resources" target="1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_resource" relationship="REFERENCES">
+      <point x="73.5" y="-56.0" />
+      <point x="1847.7653688524574" y="893.0" />
+      <point x="2189.5850409836053" y="893.0" />
+      <point x="0.0" y="104.0" />
+    </edge>
+    <edge source="1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_exhibition_exhiobitionobjects" target="1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_exhibitionobject" relationship="REFERENCES">
+      <point x="-92.25" y="-56.0" />
+      <point x="411.9105191256824" y="893.0" />
+      <point x="475.2933743169385" y="893.0" />
+      <point x="0.0" y="68.0" />
+    </edge>
+    <edge source="1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_place" target="1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_import" relationship="REFERENCES">
+      <point x="60.333333333333485" y="-104.0" />
+      <point x="925.4583333333335" y="310.0" />
+      <point x="900.7916666666667" y="310.0" />
+      <point x="900.7916666666667" y="-93.0" />
+      <point x="1862.0850409836053" y="-93.0" />
+      <point x="1862.0850409836053" y="-103.0" />
+      <point x="191.37670765027178" y="-103.0" />
+      <point x="88.33333333333326" y="68.0" />
+    </edge>
+    <edge source="1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_exhibitionseries_tags" target="1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_exhibitionseries" relationship="REFERENCES">
+      <point x="74.5" y="-56.0" />
+      <point x="3124.041666666667" y="250.0" />
+      <point x="2570.182035519124" y="250.0" />
+      <point x="84.33333333333331" y="140.0" />
+    </edge>
+    <edge source="1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_exhibition_places" target="1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_exhibition" relationship="REFERENCES">
+      <point x="66.5" y="-56.0" />
+      <point x="1501.3350409836053" y="903.0" />
+      <point x="1421.4105191256824" y="903.0" />
+      <point x="0.0" y="260.0" />
+    </edge>
+    <edge source="1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_exhibition_organizer" target="1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_exhibition" relationship="REFERENCES">
+      <point x="-73.0" y="-56.0" />
+      <point x="2053.221994535519" y="903.0" />
+      <point x="1421.4105191256824" y="903.0" />
+      <point x="0.0" y="260.0" />
+    </edge>
+    <edge source="1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_resource" target="1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_authority" relationship="REFERENCES">
+      <point x="-64.33333333333348" y="-104.0" />
+      <point x="2125.251707650272" y="280.0" />
+      <point x="1843.7916666666667" y="280.0" />
+      <point x="1843.7916666666667" y="-83.0" />
+      <point x="835.4600409836053" y="-83.0" />
+      <point x="0.0" y="56.0" />
+    </edge>
+    <edge source="1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_place" target="1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_authority" relationship="REFERENCES">
+      <point x="0.0" y="-104.0" />
+      <point x="865.125" y="310.0" />
+      <point x="889.7916666666667" y="310.0" />
+      <point x="889.7916666666667" y="-83.0" />
+      <point x="835.4600409836053" y="-83.0" />
+      <point x="0.0" y="56.0" />
+    </edge>
+    <edge source="1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_person" target="1080cfbd-a46f-49eb-a766-e420ba15920b.TABLE:postgres.public.adbinput_import" relationship="REFERENCES">
+      <point x="0.0" y="-140.0" />
+      <point x="36.0" y="-83.0" />
+      <point x="103.04337431693853" y="-83.0" />
+      <point x="0.0" y="68.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic" zoom="0.6489329726480313" showDependencies="false" x="1555.5" y="410.4624826308476" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Columns</Category>
+    <Category>Comments</Category>
+    <Category>Key columns</Category>
+    <Category>Virtual foreign keys</Category>
+  </Categories>
+</Diagram>
+

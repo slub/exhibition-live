@@ -1,0 +1,73 @@
+# metamodel_version: 1.7.0
+type Exhibtion
+  {
+    name: String!
+    description: String
+    startDate: String
+    endDate: String
+    curator: [Person]
+    source: [Source]
+    objects: [String]
+    location: GeoFeature
+  }
+
+type GeoFeature
+  {
+    name: String!
+    description: String
+    geo: WktLiteral
+  }
+
+type Meta
+  {
+    createdBy: String
+    created: Datetime
+    updatedBy: String
+    updated: Datetime
+    version: String
+  }
+
+type Object
+  {
+    name: String!
+    description: String
+    artist: [Person]
+    source: [Source]
+    meta: [Meta]
+  }
+
+type Organization
+  {
+    name: String!
+    description: String
+    meta: [Meta]
+  }
+
+type Person
+  {
+    name: String!
+    description: String
+    birthDate: String
+    deathDate: String
+    mailaddress: String
+    meta: [Meta]
+  }
+
+type Source
+  {
+    name: String!
+    description: String
+    url: String
+    meta: [Meta]
+  }
+
+type Work
+  {
+    name: String!
+    description: String
+    artist: [Person]
+    source: [Source]
+    meta: [Meta]
+  }
+
+

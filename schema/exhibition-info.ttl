@@ -1,0 +1,545 @@
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix linkml: <https://w3id.org/linkml/> .
+@prefix sh: <https://w3id.org/shacl/> .
+@prefix shex: <http://www.w3.org/ns/shex#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://ontologies.slub-dresden.de/exhibtion-info> a linkml:SchemaDefinition ;
+    dcterms:license "https://creativecommons.org/publicdomain/zero/1.0/" ;
+    linkml:classes <http://ontologies.slub-dresden.de/Exhibtion>,
+        <http://ontologies.slub-dresden.de/GeoFeature>,
+        <http://ontologies.slub-dresden.de/Meta>,
+        <http://ontologies.slub-dresden.de/Object>,
+        <http://ontologies.slub-dresden.de/Organization>,
+        <http://ontologies.slub-dresden.de/Person>,
+        <http://ontologies.slub-dresden.de/Source>,
+        <http://ontologies.slub-dresden.de/Work> ;
+    linkml:default_prefix "sladb" ;
+    linkml:default_range <http://ontologies.slub-dresden.de/string> ;
+    linkml:generation_date "2023-01-05T14:55:47"^^xsd:dateTime ;
+    linkml:id <http://ontologies.slub-dresden.de/exhibtion> ;
+    linkml:imports linkml:types ;
+    linkml:metamodel_version "1.7.0" ;
+    linkml:slots <http://ontologies.slub-dresden.de/artist>,
+        <http://ontologies.slub-dresden.de/birth_date>,
+        <http://ontologies.slub-dresden.de/created>,
+        <http://ontologies.slub-dresden.de/createdBy>,
+        <http://ontologies.slub-dresden.de/curator>,
+        <http://ontologies.slub-dresden.de/death_date>,
+        <http://ontologies.slub-dresden.de/description>,
+        <http://ontologies.slub-dresden.de/end_date>,
+        <http://ontologies.slub-dresden.de/geo>,
+        <http://ontologies.slub-dresden.de/location>,
+        <http://ontologies.slub-dresden.de/mailaddress>,
+        <http://ontologies.slub-dresden.de/meta>,
+        <http://ontologies.slub-dresden.de/name>,
+        <http://ontologies.slub-dresden.de/objects>,
+        <http://ontologies.slub-dresden.de/source>,
+        <http://ontologies.slub-dresden.de/start_date>,
+        <http://ontologies.slub-dresden.de/updated>,
+        <http://ontologies.slub-dresden.de/updatedBy>,
+        <http://ontologies.slub-dresden.de/url>,
+        <http://ontologies.slub-dresden.de/version> ;
+    linkml:source_file "exhibition-info.yaml" ;
+    linkml:source_file_date "2023-01-05T14:54:36"^^xsd:dateTime ;
+    linkml:source_file_size 3572 ;
+    linkml:types <http://ontologies.slub-dresden.de/boolean>,
+        <http://ontologies.slub-dresden.de/date>,
+        <http://ontologies.slub-dresden.de/date_or_datetime>,
+        <http://ontologies.slub-dresden.de/datetime>,
+        <http://ontologies.slub-dresden.de/decimal>,
+        <http://ontologies.slub-dresden.de/double>,
+        <http://ontologies.slub-dresden.de/float>,
+        <http://ontologies.slub-dresden.de/integer>,
+        <http://ontologies.slub-dresden.de/ncname>,
+        <http://ontologies.slub-dresden.de/nodeidentifier>,
+        <http://ontologies.slub-dresden.de/objectidentifier>,
+        <http://ontologies.slub-dresden.de/string>,
+        <http://ontologies.slub-dresden.de/time>,
+        <http://ontologies.slub-dresden.de/uri>,
+        <http://ontologies.slub-dresden.de/uriorcurie>,
+        <http://ontologies.slub-dresden.de/wktLiteral> ;
+    sh:declare [ sh:namespace <http://ontologies.slub-dresden.de/meta#> ;
+            sh:prefix "slmeta" ],
+        [ sh:namespace linkml: ;
+            sh:prefix "linkml" ],
+        [ sh:namespace <http://ontologies.slub-dresden.de/person#> ;
+            sh:prefix "slperson" ],
+        [ sh:namespace <http://ontologies.slub-dresden.de/exhibition#> ;
+            sh:prefix "sladb" ],
+        [ sh:namespace <http://www.opengis.net/ont/geosparql#> ;
+            sh:prefix "geo" ],
+        [ sh:namespace <http://ontologies.slub-dresden.de/source#> ;
+            sh:prefix "slsrc" ] .
+
+<http://ontologies.slub-dresden.de/boolean> a linkml:TypeDefinition ;
+    skos:definition "A binary (true or false) value" ;
+    skos:inScheme linkml:types ;
+    linkml:base "Bool" ;
+    linkml:definition_uri linkml:Boolean ;
+    linkml:imported_from "linkml:types" ;
+    linkml:repr "bool" ;
+    linkml:uri xsd:boolean .
+
+<http://ontologies.slub-dresden.de/date> a linkml:TypeDefinition ;
+    skos:definition "a date (year, month and day) in an idealized calendar" ;
+    skos:editorialNote "URI is dateTime because OWL reasoners don't work with straight date or time" ;
+    skos:inScheme linkml:types ;
+    linkml:base "XSDDate" ;
+    linkml:definition_uri linkml:Date ;
+    linkml:imported_from "linkml:types" ;
+    linkml:repr "str" ;
+    linkml:uri xsd:date .
+
+<http://ontologies.slub-dresden.de/date_or_datetime> a linkml:TypeDefinition ;
+    skos:definition "Either a date or a datetime" ;
+    skos:inScheme linkml:types ;
+    linkml:base "str" ;
+    linkml:definition_uri linkml:DateOrDatetime ;
+    linkml:imported_from "linkml:types" ;
+    linkml:repr "str" ;
+    linkml:uri linkml:DateOrDatetime .
+
+<http://ontologies.slub-dresden.de/decimal> a linkml:TypeDefinition ;
+    skos:definition "A real number with arbitrary precision that conforms to the xsd:decimal specification" ;
+    skos:inScheme linkml:types ;
+    linkml:base "Decimal" ;
+    linkml:definition_uri linkml:Decimal ;
+    linkml:imported_from "linkml:types" ;
+    linkml:uri xsd:decimal .
+
+<http://ontologies.slub-dresden.de/double> a linkml:TypeDefinition ;
+    skos:definition "A real number that conforms to the xsd:double specification" ;
+    skos:inScheme linkml:types ;
+    linkml:base "float" ;
+    linkml:definition_uri linkml:Double ;
+    linkml:imported_from "linkml:types" ;
+    linkml:uri xsd:double .
+
+<http://ontologies.slub-dresden.de/float> a linkml:TypeDefinition ;
+    skos:definition "A real number that conforms to the xsd:float specification" ;
+    skos:inScheme linkml:types ;
+    linkml:base "float" ;
+    linkml:definition_uri linkml:Float ;
+    linkml:imported_from "linkml:types" ;
+    linkml:uri xsd:float .
+
+<http://ontologies.slub-dresden.de/integer> a linkml:TypeDefinition ;
+    skos:definition "An integer" ;
+    skos:inScheme linkml:types ;
+    linkml:base "int" ;
+    linkml:definition_uri linkml:Integer ;
+    linkml:imported_from "linkml:types" ;
+    linkml:uri xsd:integer .
+
+<http://ontologies.slub-dresden.de/ncname> a linkml:TypeDefinition ;
+    skos:definition "Prefix part of CURIE" ;
+    skos:inScheme linkml:types ;
+    linkml:base "NCName" ;
+    linkml:definition_uri linkml:Ncname ;
+    linkml:imported_from "linkml:types" ;
+    linkml:repr "str" ;
+    linkml:uri xsd:string .
+
+<http://ontologies.slub-dresden.de/nodeidentifier> a linkml:TypeDefinition ;
+    skos:definition "A URI, CURIE or BNODE that represents a node in a model." ;
+    skos:inScheme linkml:types ;
+    linkml:base "NodeIdentifier" ;
+    linkml:definition_uri linkml:Nodeidentifier ;
+    linkml:imported_from "linkml:types" ;
+    linkml:repr "str" ;
+    linkml:uri shex:nonLiteral .
+
+<http://ontologies.slub-dresden.de/objectidentifier> a linkml:TypeDefinition ;
+    skos:definition "A URI or CURIE that represents an object in the model." ;
+    skos:inScheme linkml:types ;
+    skos:note "Used for inheritence and type checking" ;
+    linkml:base "ElementIdentifier" ;
+    linkml:definition_uri linkml:Objectidentifier ;
+    linkml:imported_from "linkml:types" ;
+    linkml:repr "str" ;
+    linkml:uri shex:iri .
+
+<http://ontologies.slub-dresden.de/time> a linkml:TypeDefinition ;
+    skos:definition "A time object represents a (local) time of day, independent of any particular day" ;
+    skos:editorialNote "URI is dateTime because OWL reasoners do not work with straight date or time" ;
+    skos:inScheme linkml:types ;
+    linkml:base "XSDTime" ;
+    linkml:definition_uri linkml:Time ;
+    linkml:imported_from "linkml:types" ;
+    linkml:repr "str" ;
+    linkml:uri xsd:dateTime .
+
+<http://ontologies.slub-dresden.de/uri> a linkml:TypeDefinition ;
+    skos:definition "a complete URI" ;
+    skos:inScheme linkml:types ;
+    linkml:base "URI" ;
+    linkml:definition_uri linkml:Uri ;
+    linkml:imported_from "linkml:types" ;
+    linkml:repr "str" ;
+    linkml:uri xsd:anyURI .
+
+<http://ontologies.slub-dresden.de/uriorcurie> a linkml:TypeDefinition ;
+    skos:definition "a URI or a CURIE" ;
+    skos:inScheme linkml:types ;
+    linkml:base "URIorCURIE" ;
+    linkml:definition_uri linkml:Uriorcurie ;
+    linkml:imported_from "linkml:types" ;
+    linkml:repr "str" ;
+    linkml:uri xsd:anyURI .
+
+<http://ontologies.slub-dresden.de/birth_date> a linkml:SlotDefinition ;
+    skos:definition "The birth date of the artist." ;
+    skos:inScheme <http://ontologies.slub-dresden.de/exhibtion> ;
+    linkml:any_of [ a linkml:AnonymousSlotExpression ;
+            linkml:range <http://ontologies.slub-dresden.de/string> ],
+        [ a linkml:AnonymousSlotExpression ;
+            linkml:range xsd:date ],
+        [ a linkml:AnonymousSlotExpression ;
+            linkml:range xsd:datetime ] ;
+    linkml:definition_uri <http://ontologies.slub-dresden.de/exhibition#birth_date> ;
+    linkml:domain_of <http://ontologies.slub-dresden.de/Person> ;
+    linkml:owner <http://ontologies.slub-dresden.de/Person> ;
+    linkml:range <http://ontologies.slub-dresden.de/string> ;
+    linkml:slot_uri <http://ontologies.slub-dresden.de/exhibition#birth_date> .
+
+<http://ontologies.slub-dresden.de/created> a linkml:SlotDefinition ;
+    skos:inScheme <http://ontologies.slub-dresden.de/exhibtion> ;
+    linkml:definition_uri <http://ontologies.slub-dresden.de/exhibition#created> ;
+    linkml:domain_of <http://ontologies.slub-dresden.de/Meta> ;
+    linkml:owner <http://ontologies.slub-dresden.de/Meta> ;
+    linkml:range <http://ontologies.slub-dresden.de/datetime> ;
+    linkml:slot_uri <http://ontologies.slub-dresden.de/exhibition#created> .
+
+<http://ontologies.slub-dresden.de/createdBy> a linkml:SlotDefinition ;
+    skos:inScheme <http://ontologies.slub-dresden.de/exhibtion> ;
+    linkml:definition_uri <http://ontologies.slub-dresden.de/exhibition#createdBy> ;
+    linkml:domain_of <http://ontologies.slub-dresden.de/Meta> ;
+    linkml:owner <http://ontologies.slub-dresden.de/Meta> ;
+    linkml:range <http://ontologies.slub-dresden.de/string> ;
+    linkml:slot_uri <http://ontologies.slub-dresden.de/exhibition#createdBy> .
+
+<http://ontologies.slub-dresden.de/curator> a linkml:SlotDefinition ;
+    skos:inScheme <http://ontologies.slub-dresden.de/exhibtion> ;
+    linkml:definition_uri <http://ontologies.slub-dresden.de/exhibition#curator> ;
+    linkml:domain_of <http://ontologies.slub-dresden.de/Exhibtion> ;
+    linkml:inlined true ;
+    linkml:multivalued true ;
+    linkml:owner <http://ontologies.slub-dresden.de/Exhibtion> ;
+    linkml:range <http://ontologies.slub-dresden.de/Person> ;
+    linkml:slot_uri <http://ontologies.slub-dresden.de/exhibition#curator> .
+
+<http://ontologies.slub-dresden.de/death_date> a linkml:SlotDefinition ;
+    skos:definition "The death date of the artist." ;
+    skos:inScheme <http://ontologies.slub-dresden.de/exhibtion> ;
+    linkml:any_of [ a linkml:AnonymousSlotExpression ;
+            linkml:range xsd:date ],
+        [ a linkml:AnonymousSlotExpression ;
+            linkml:range xsd:datetime ],
+        [ a linkml:AnonymousSlotExpression ;
+            linkml:range <http://ontologies.slub-dresden.de/string> ] ;
+    linkml:definition_uri <http://ontologies.slub-dresden.de/exhibition#death_date> ;
+    linkml:domain_of <http://ontologies.slub-dresden.de/Person> ;
+    linkml:owner <http://ontologies.slub-dresden.de/Person> ;
+    linkml:range <http://ontologies.slub-dresden.de/string> ;
+    linkml:slot_uri <http://ontologies.slub-dresden.de/exhibition#death_date> .
+
+<http://ontologies.slub-dresden.de/end_date> a linkml:SlotDefinition ;
+    skos:inScheme <http://ontologies.slub-dresden.de/exhibtion> ;
+    linkml:any_of [ a linkml:AnonymousSlotExpression ;
+            linkml:range xsd:datetime ],
+        [ a linkml:AnonymousSlotExpression ;
+            linkml:range <http://ontologies.slub-dresden.de/string> ],
+        [ a linkml:AnonymousSlotExpression ;
+            linkml:range xsd:date ] ;
+    linkml:definition_uri <http://ontologies.slub-dresden.de/exhibition#end_date> ;
+    linkml:domain_of <http://ontologies.slub-dresden.de/Exhibtion> ;
+    linkml:owner <http://ontologies.slub-dresden.de/Exhibtion> ;
+    linkml:range <http://ontologies.slub-dresden.de/string> ;
+    linkml:slot_uri <http://ontologies.slub-dresden.de/exhibition#end_date> .
+
+<http://ontologies.slub-dresden.de/geo> a linkml:SlotDefinition ;
+    skos:inScheme <http://ontologies.slub-dresden.de/exhibtion> ;
+    linkml:definition_uri <http://ontologies.slub-dresden.de/exhibition#geo> ;
+    linkml:domain_of <http://ontologies.slub-dresden.de/GeoFeature> ;
+    linkml:owner <http://ontologies.slub-dresden.de/GeoFeature> ;
+    linkml:range <http://ontologies.slub-dresden.de/wktLiteral> ;
+    linkml:slot_uri <http://ontologies.slub-dresden.de/exhibition#geo> .
+
+<http://ontologies.slub-dresden.de/location> a linkml:SlotDefinition ;
+    skos:definition "The location of the exhibition." ;
+    skos:inScheme <http://ontologies.slub-dresden.de/exhibtion> ;
+    linkml:definition_uri <http://ontologies.slub-dresden.de/exhibition#location> ;
+    linkml:domain_of <http://ontologies.slub-dresden.de/Exhibtion> ;
+    linkml:inlined true ;
+    linkml:owner <http://ontologies.slub-dresden.de/Exhibtion> ;
+    linkml:range <http://ontologies.slub-dresden.de/GeoFeature> ;
+    linkml:slot_uri <http://ontologies.slub-dresden.de/exhibition#location> .
+
+<http://ontologies.slub-dresden.de/mailaddress> a linkml:SlotDefinition ;
+    skos:definition "The mail address of the artist." ;
+    skos:inScheme <http://ontologies.slub-dresden.de/exhibtion> ;
+    linkml:definition_uri <http://ontologies.slub-dresden.de/exhibition#mailaddress> ;
+    linkml:domain_of <http://ontologies.slub-dresden.de/Person> ;
+    linkml:owner <http://ontologies.slub-dresden.de/Person> ;
+    linkml:range <http://ontologies.slub-dresden.de/string> ;
+    linkml:slot_uri <http://ontologies.slub-dresden.de/exhibition#mailaddress> .
+
+<http://ontologies.slub-dresden.de/objects> a linkml:SlotDefinition ;
+    skos:definition "The objects that are part of the exhibition." ;
+    skos:inScheme <http://ontologies.slub-dresden.de/exhibtion> ;
+    linkml:any_of [ a linkml:AnonymousSlotExpression ;
+            linkml:range <sladb:Object> ],
+        [ a linkml:AnonymousSlotExpression ;
+            linkml:range <sladb:Work> ] ;
+    linkml:definition_uri <http://ontologies.slub-dresden.de/exhibition#objects> ;
+    linkml:domain_of <http://ontologies.slub-dresden.de/Exhibtion> ;
+    linkml:multivalued true ;
+    linkml:owner <http://ontologies.slub-dresden.de/Exhibtion> ;
+    linkml:range <http://ontologies.slub-dresden.de/string> ;
+    linkml:slot_uri <http://ontologies.slub-dresden.de/exhibition#objects> .
+
+<http://ontologies.slub-dresden.de/start_date> a linkml:SlotDefinition ;
+    skos:inScheme <http://ontologies.slub-dresden.de/exhibtion> ;
+    linkml:any_of [ a linkml:AnonymousSlotExpression ;
+            linkml:range xsd:date ],
+        [ a linkml:AnonymousSlotExpression ;
+            linkml:range xsd:datetime ],
+        [ a linkml:AnonymousSlotExpression ;
+            linkml:range <http://ontologies.slub-dresden.de/string> ] ;
+    linkml:definition_uri <http://ontologies.slub-dresden.de/exhibition#start_date> ;
+    linkml:domain_of <http://ontologies.slub-dresden.de/Exhibtion> ;
+    linkml:owner <http://ontologies.slub-dresden.de/Exhibtion> ;
+    linkml:range <http://ontologies.slub-dresden.de/string> ;
+    linkml:slot_uri <http://ontologies.slub-dresden.de/exhibition#start_date> .
+
+<http://ontologies.slub-dresden.de/updated> a linkml:SlotDefinition ;
+    skos:inScheme <http://ontologies.slub-dresden.de/exhibtion> ;
+    linkml:definition_uri <http://ontologies.slub-dresden.de/exhibition#updated> ;
+    linkml:domain_of <http://ontologies.slub-dresden.de/Meta> ;
+    linkml:owner <http://ontologies.slub-dresden.de/Meta> ;
+    linkml:range <http://ontologies.slub-dresden.de/datetime> ;
+    linkml:slot_uri <http://ontologies.slub-dresden.de/exhibition#updated> .
+
+<http://ontologies.slub-dresden.de/updatedBy> a linkml:SlotDefinition ;
+    skos:inScheme <http://ontologies.slub-dresden.de/exhibtion> ;
+    linkml:definition_uri <http://ontologies.slub-dresden.de/exhibition#updatedBy> ;
+    linkml:domain_of <http://ontologies.slub-dresden.de/Meta> ;
+    linkml:owner <http://ontologies.slub-dresden.de/Meta> ;
+    linkml:range <http://ontologies.slub-dresden.de/string> ;
+    linkml:slot_uri <http://ontologies.slub-dresden.de/exhibition#updatedBy> .
+
+<http://ontologies.slub-dresden.de/url> a linkml:SlotDefinition ;
+    skos:inScheme <http://ontologies.slub-dresden.de/exhibtion> ;
+    linkml:definition_uri <http://ontologies.slub-dresden.de/exhibition#url> ;
+    linkml:domain_of <http://ontologies.slub-dresden.de/Source> ;
+    linkml:owner <http://ontologies.slub-dresden.de/Source> ;
+    linkml:range <http://ontologies.slub-dresden.de/string> ;
+    linkml:slot_uri <http://ontologies.slub-dresden.de/exhibition#url> .
+
+<http://ontologies.slub-dresden.de/version> a linkml:SlotDefinition ;
+    skos:inScheme <http://ontologies.slub-dresden.de/exhibtion> ;
+    linkml:definition_uri <http://ontologies.slub-dresden.de/exhibition#version> ;
+    linkml:domain_of <http://ontologies.slub-dresden.de/Meta> ;
+    linkml:owner <http://ontologies.slub-dresden.de/Meta> ;
+    linkml:range <http://ontologies.slub-dresden.de/string> ;
+    linkml:slot_uri <http://ontologies.slub-dresden.de/exhibition#version> .
+
+<http://ontologies.slub-dresden.de/wktLiteral> a linkml:TypeDefinition ;
+    skos:definition "Well-known text representation of a geometry. Point(lng,lat)" ;
+    skos:inScheme <http://ontologies.slub-dresden.de/exhibtion> ;
+    linkml:base "str" ;
+    linkml:definition_uri <http://ontologies.slub-dresden.de/exhibition#WktLiteral> ;
+    linkml:uri <http://www.opengis.net/ont/geosparql#wktLiteral> .
+
+<http://ontologies.slub-dresden.de/artist> a linkml:SlotDefinition ;
+    skos:inScheme <http://ontologies.slub-dresden.de/exhibtion> ;
+    linkml:definition_uri <http://ontologies.slub-dresden.de/exhibition#artist> ;
+    linkml:domain_of <http://ontologies.slub-dresden.de/Object>,
+        <http://ontologies.slub-dresden.de/Work> ;
+    linkml:inlined true ;
+    linkml:multivalued true ;
+    linkml:owner <http://ontologies.slub-dresden.de/Work> ;
+    linkml:range <http://ontologies.slub-dresden.de/Person> ;
+    linkml:slot_uri <http://ontologies.slub-dresden.de/exhibition#artist> .
+
+<http://ontologies.slub-dresden.de/datetime> a linkml:TypeDefinition ;
+    skos:definition "The combination of a date and time" ;
+    skos:inScheme linkml:types ;
+    linkml:base "XSDDateTime" ;
+    linkml:definition_uri linkml:Datetime ;
+    linkml:imported_from "linkml:types" ;
+    linkml:repr "str" ;
+    linkml:uri xsd:dateTime .
+
+<http://ontologies.slub-dresden.de/Organization> a linkml:ClassDefinition ;
+    skos:definition "An organization." ;
+    skos:inScheme <http://ontologies.slub-dresden.de/exhibtion> ;
+    skos:mappingRelation <slperson:Organization> ;
+    linkml:class_uri <http://ontologies.slub-dresden.de/person#Organization> ;
+    linkml:definition_uri <http://ontologies.slub-dresden.de/exhibition#Organization> ;
+    linkml:slot_usage [ ] ;
+    linkml:slots <http://ontologies.slub-dresden.de/description>,
+        <http://ontologies.slub-dresden.de/meta>,
+        <http://ontologies.slub-dresden.de/name> .
+
+<http://ontologies.slub-dresden.de/source> a linkml:SlotDefinition ;
+    skos:definition "The sources that are used to create the exhibition." ;
+    skos:inScheme <http://ontologies.slub-dresden.de/exhibtion> ;
+    linkml:definition_uri <http://ontologies.slub-dresden.de/exhibition#source> ;
+    linkml:domain_of <http://ontologies.slub-dresden.de/Exhibtion>,
+        <http://ontologies.slub-dresden.de/Object>,
+        <http://ontologies.slub-dresden.de/Work> ;
+    linkml:inlined true ;
+    linkml:multivalued true ;
+    linkml:owner <http://ontologies.slub-dresden.de/Work> ;
+    linkml:range <http://ontologies.slub-dresden.de/Source> ;
+    linkml:slot_uri <http://ontologies.slub-dresden.de/exhibition#source> .
+
+<http://ontologies.slub-dresden.de/Object> a linkml:ClassDefinition ;
+    skos:definition "A physical object that is part of an exhibition." ;
+    skos:inScheme <http://ontologies.slub-dresden.de/exhibtion> ;
+    skos:mappingRelation <sladb:Object> ;
+    linkml:class_uri <http://ontologies.slub-dresden.de/exhibition#Object> ;
+    linkml:definition_uri <http://ontologies.slub-dresden.de/exhibition#Object> ;
+    linkml:slot_usage [ ] ;
+    linkml:slots <http://ontologies.slub-dresden.de/artist>,
+        <http://ontologies.slub-dresden.de/description>,
+        <http://ontologies.slub-dresden.de/meta>,
+        <http://ontologies.slub-dresden.de/name>,
+        <http://ontologies.slub-dresden.de/source> .
+
+<http://ontologies.slub-dresden.de/meta> a linkml:SlotDefinition ;
+    skos:inScheme <http://ontologies.slub-dresden.de/exhibtion> ;
+    linkml:definition_uri <http://ontologies.slub-dresden.de/exhibition#meta> ;
+    linkml:domain_of <http://ontologies.slub-dresden.de/Object>,
+        <http://ontologies.slub-dresden.de/Organization>,
+        <http://ontologies.slub-dresden.de/Person>,
+        <http://ontologies.slub-dresden.de/Source>,
+        <http://ontologies.slub-dresden.de/Work> ;
+    linkml:inlined true ;
+    linkml:multivalued true ;
+    linkml:owner <http://ontologies.slub-dresden.de/Person> ;
+    linkml:range <http://ontologies.slub-dresden.de/Meta> ;
+    linkml:slot_uri <http://ontologies.slub-dresden.de/exhibition#meta> .
+
+<http://ontologies.slub-dresden.de/Source> a linkml:ClassDefinition ;
+    skos:definition "A source of information." ;
+    skos:inScheme <http://ontologies.slub-dresden.de/exhibtion> ;
+    skos:mappingRelation <slsrc:Source> ;
+    linkml:class_uri <http://ontologies.slub-dresden.de/source#Source> ;
+    linkml:definition_uri <http://ontologies.slub-dresden.de/exhibition#Source> ;
+    linkml:slot_usage [ ] ;
+    linkml:slots <http://ontologies.slub-dresden.de/description>,
+        <http://ontologies.slub-dresden.de/meta>,
+        <http://ontologies.slub-dresden.de/name>,
+        <http://ontologies.slub-dresden.de/url> .
+
+<http://ontologies.slub-dresden.de/GeoFeature> a linkml:ClassDefinition ;
+    skos:definition "A geographic feature." ;
+    skos:inScheme <http://ontologies.slub-dresden.de/exhibtion> ;
+    skos:mappingRelation <geo:GeoFeature> ;
+    linkml:class_uri <http://www.opengis.net/ont/geosparql#GeoFeature> ;
+    linkml:definition_uri <http://ontologies.slub-dresden.de/exhibition#GeoFeature> ;
+    linkml:slot_usage [ ] ;
+    linkml:slots <http://ontologies.slub-dresden.de/description>,
+        <http://ontologies.slub-dresden.de/geo>,
+        <http://ontologies.slub-dresden.de/name> .
+
+<http://ontologies.slub-dresden.de/Work> a linkml:ClassDefinition ;
+    skos:definition "A work of art." ;
+    skos:inScheme <http://ontologies.slub-dresden.de/exhibtion> ;
+    skos:mappingRelation <sladb:Work> ;
+    linkml:class_uri <http://ontologies.slub-dresden.de/exhibition#Work> ;
+    linkml:definition_uri <http://ontologies.slub-dresden.de/exhibition#Work> ;
+    linkml:slot_usage [ ] ;
+    linkml:slots <http://ontologies.slub-dresden.de/artist>,
+        <http://ontologies.slub-dresden.de/description>,
+        <http://ontologies.slub-dresden.de/meta>,
+        <http://ontologies.slub-dresden.de/name>,
+        <http://ontologies.slub-dresden.de/source> .
+
+<http://ontologies.slub-dresden.de/description> a linkml:SlotDefinition ;
+    skos:definition "A description of the artist." ;
+    skos:inScheme <http://ontologies.slub-dresden.de/exhibtion> ;
+    linkml:definition_uri <http://ontologies.slub-dresden.de/exhibition#description> ;
+    linkml:domain_of <http://ontologies.slub-dresden.de/Exhibtion>,
+        <http://ontologies.slub-dresden.de/GeoFeature>,
+        <http://ontologies.slub-dresden.de/Object>,
+        <http://ontologies.slub-dresden.de/Organization>,
+        <http://ontologies.slub-dresden.de/Person>,
+        <http://ontologies.slub-dresden.de/Source>,
+        <http://ontologies.slub-dresden.de/Work> ;
+    linkml:owner <http://ontologies.slub-dresden.de/GeoFeature> ;
+    linkml:range <http://ontologies.slub-dresden.de/string> ;
+    linkml:slot_uri <http://ontologies.slub-dresden.de/exhibition#description> .
+
+<http://ontologies.slub-dresden.de/name> a linkml:SlotDefinition ;
+    skos:inScheme <http://ontologies.slub-dresden.de/exhibtion> ;
+    linkml:definition_uri <http://ontologies.slub-dresden.de/exhibition#name> ;
+    linkml:domain_of <http://ontologies.slub-dresden.de/Exhibtion>,
+        <http://ontologies.slub-dresden.de/GeoFeature>,
+        <http://ontologies.slub-dresden.de/Object>,
+        <http://ontologies.slub-dresden.de/Organization>,
+        <http://ontologies.slub-dresden.de/Person>,
+        <http://ontologies.slub-dresden.de/Source>,
+        <http://ontologies.slub-dresden.de/Work> ;
+    linkml:owner <http://ontologies.slub-dresden.de/GeoFeature> ;
+    linkml:range <http://ontologies.slub-dresden.de/string> ;
+    linkml:required true ;
+    linkml:slot_uri <http://ontologies.slub-dresden.de/exhibition#name> .
+
+<http://ontologies.slub-dresden.de/Meta> a linkml:ClassDefinition ;
+    skos:definition "Metadata." ;
+    skos:inScheme <http://ontologies.slub-dresden.de/exhibtion> ;
+    skos:mappingRelation <slmeta:Meta> ;
+    linkml:class_uri <http://ontologies.slub-dresden.de/meta#Meta> ;
+    linkml:definition_uri <http://ontologies.slub-dresden.de/exhibition#Meta> ;
+    linkml:slot_usage [ ] ;
+    linkml:slots <http://ontologies.slub-dresden.de/created>,
+        <http://ontologies.slub-dresden.de/createdBy>,
+        <http://ontologies.slub-dresden.de/updated>,
+        <http://ontologies.slub-dresden.de/updatedBy>,
+        <http://ontologies.slub-dresden.de/version> .
+
+<http://ontologies.slub-dresden.de/Person> a linkml:ClassDefinition ;
+    skos:definition "A person." ;
+    skos:inScheme <http://ontologies.slub-dresden.de/exhibtion> ;
+    skos:mappingRelation <slperson:Person> ;
+    linkml:class_uri <http://ontologies.slub-dresden.de/person#Person> ;
+    linkml:definition_uri <http://ontologies.slub-dresden.de/exhibition#Person> ;
+    linkml:slot_usage [ ] ;
+    linkml:slots <http://ontologies.slub-dresden.de/birth_date>,
+        <http://ontologies.slub-dresden.de/death_date>,
+        <http://ontologies.slub-dresden.de/description>,
+        <http://ontologies.slub-dresden.de/mailaddress>,
+        <http://ontologies.slub-dresden.de/meta>,
+        <http://ontologies.slub-dresden.de/name> .
+
+<http://ontologies.slub-dresden.de/Exhibtion> a linkml:ClassDefinition ;
+    skos:definition "A collection of objects that are displayed together in a museum or other public space." ;
+    skos:inScheme <http://ontologies.slub-dresden.de/exhibtion> ;
+    skos:mappingRelation <sladb:Exhibtion> ;
+    linkml:class_uri <http://ontologies.slub-dresden.de/exhibition#Exhibtion> ;
+    linkml:definition_uri <http://ontologies.slub-dresden.de/exhibition#Exhibtion> ;
+    linkml:slot_usage [ ] ;
+    linkml:slots <http://ontologies.slub-dresden.de/curator>,
+        <http://ontologies.slub-dresden.de/description>,
+        <http://ontologies.slub-dresden.de/end_date>,
+        <http://ontologies.slub-dresden.de/location>,
+        <http://ontologies.slub-dresden.de/name>,
+        <http://ontologies.slub-dresden.de/objects>,
+        <http://ontologies.slub-dresden.de/source>,
+        <http://ontologies.slub-dresden.de/start_date> .
+
+<http://ontologies.slub-dresden.de/string> a linkml:TypeDefinition ;
+    skos:definition "A character string" ;
+    skos:inScheme linkml:types ;
+    linkml:base "str" ;
+    linkml:definition_uri linkml:String ;
+    linkml:imported_from "linkml:types" ;
+    linkml:uri xsd:string .
+
+
+

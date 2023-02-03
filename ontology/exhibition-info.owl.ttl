@@ -1,0 +1,402 @@
+@prefix IAO: <http://purl.obolibrary.org/obo/IAO_> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix geo: <http://www.opengis.net/ont/geosparql#> .
+@prefix linkml: <https://w3id.org/linkml/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix sladb: <http://ontologies.slub-dresden.de/exhibition#> .
+@prefix slmeta: <http://ontologies.slub-dresden.de/meta#> .
+@prefix slperson: <http://ontologies.slub-dresden.de/person#> .
+@prefix slsrc: <http://ontologies.slub-dresden.de/source#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://ontologies.slub-dresden.de/exhibtion.owl.ttl> a owl:Ontology ;
+    rdfs:label "exhibtion-info" ;
+    IAO:0000700 sladb:Exhibition,
+        sladb:GeoFeature,
+        sladb:Meta,
+        sladb:Object,
+        sladb:Organization,
+        sladb:Person,
+        sladb:Series,
+        sladb:Source,
+        sladb:TemporalValue ;
+    dcterms:license "https://creativecommons.org/publicdomain/zero/1.0/" ;
+    linkml:generation_date "2023-01-19T19:39:12" ;
+    linkml:metamodel_version "1.7.0" ;
+    linkml:source_file "exhibition-info.yaml" ;
+    linkml:source_file_date "2023-01-19T19:39:01" ;
+    linkml:source_file_size 4928 .
+
+sladb:artist a owl:ObjectProperty ;
+    rdfs:label "artist" ;
+    rdfs:comment "The artists in the exhibition." ;
+    rdfs:range sladb:Person .
+
+sladb:birth_date a owl:DatatypeProperty ;
+    rdfs:label "birth_date" ;
+    rdfs:comment "The birth date of the person." ;
+    rdfs:range xsd:string .
+
+sladb:category a owl:DatatypeProperty ;
+    rdfs:label "category" ;
+    rdfs:range xsd:string .
+
+sladb:created a owl:DatatypeProperty ;
+    rdfs:label "created" ;
+    rdfs:range xsd:dateTime .
+
+sladb:createdBy a owl:DatatypeProperty ;
+    rdfs:label "createdBy" ;
+    rdfs:range xsd:string .
+
+sladb:creator a owl:ObjectProperty ;
+    rdfs:label "creator" ;
+    rdfs:comment "author of a Work or Object" ;
+    rdfs:range sladb:Person .
+
+sladb:curator a owl:ObjectProperty ;
+    rdfs:label "curator" ;
+    rdfs:comment "The curator of the exhibition." ;
+    rdfs:range sladb:Person .
+
+sladb:date a owl:DatatypeProperty ;
+    rdfs:label "date" ;
+    rdfs:range xsd:string .
+
+sladb:death_date a owl:DatatypeProperty ;
+    rdfs:label "death_date" ;
+    rdfs:comment "The death date of the person." ;
+    rdfs:range xsd:string .
+
+sladb:end_date a owl:ObjectProperty ;
+    rdfs:label "end_date" ;
+    rdfs:comment "The date the exhibition ends." ;
+    rdfs:range sladb:TemporalValue .
+
+sladb:geo a owl:DatatypeProperty ;
+    rdfs:label "geo" ;
+    rdfs:range geo:wktLiteral .
+
+sladb:location a owl:ObjectProperty ;
+    rdfs:label "location" ;
+    rdfs:comment "The location of the exhibition." ;
+    rdfs:range sladb:Location .
+
+sladb:mailaddress a owl:DatatypeProperty ;
+    rdfs:label "mailaddress" ;
+    rdfs:comment "The mail address of the artist." ;
+    rdfs:range xsd:string .
+
+sladb:modifier a owl:ObjectProperty ;
+    rdfs:label "modifier" ;
+    rdfs:range sladb:DateModifier .
+
+sladb:object a owl:ObjectProperty ;
+    rdfs:label "object" ;
+    rdfs:comment "The objects in the exhibition." ;
+    rdfs:range sladb:Object .
+
+sladb:organization a owl:ObjectProperty ;
+    rdfs:label "organization" ;
+    rdfs:range sladb:Organization .
+
+sladb:organizer a owl:ObjectProperty ;
+    rdfs:label "organizer" ;
+    rdfs:comment "The organizer of the exhibition." ;
+    rdfs:range sladb:Person .
+
+sladb:parent a owl:ObjectProperty ;
+    rdfs:label "parent" ;
+    rdfs:range sladb:Location .
+
+sladb:partOfSeries a owl:ObjectProperty ;
+    rdfs:label "partOfSeries" ;
+    rdfs:range sladb:Series .
+
+sladb:sameAs a owl:DatatypeProperty ;
+    rdfs:label "sameAs" ;
+    rdfs:range xsd:string .
+
+sladb:start_date a owl:ObjectProperty ;
+    rdfs:label "start_date" ;
+    rdfs:comment "The date the exhibition starts." ;
+    rdfs:range sladb:TemporalValue .
+
+sladb:updated a owl:DatatypeProperty ;
+    rdfs:label "updated" ;
+    rdfs:range xsd:dateTime .
+
+sladb:updatedBy a owl:DatatypeProperty ;
+    rdfs:label "updatedBy" ;
+    rdfs:range xsd:string .
+
+sladb:url a owl:DatatypeProperty ;
+    rdfs:label "url" ;
+    rdfs:range xsd:string .
+
+sladb:version a owl:DatatypeProperty ;
+    rdfs:label "version" ;
+    rdfs:range xsd:string .
+
+sladb:DateModifier a owl:Class ;
+    rdfs:label "DateModifier" ;
+    owl:unionOf ( <http://ontologies.slub-dresden.de/exhibition#DateModifier#BEFORE> <http://ontologies.slub-dresden.de/exhibition#DateModifier#AFTER> <http://ontologies.slub-dresden.de/exhibition#DateModifier#VAGUE> ) ;
+    linkml:permissible_values <http://ontologies.slub-dresden.de/exhibition#DateModifier#AFTER>,
+        <http://ontologies.slub-dresden.de/exhibition#DateModifier#BEFORE>,
+        <http://ontologies.slub-dresden.de/exhibition#DateModifier#VAGUE> .
+
+<http://ontologies.slub-dresden.de/exhibition#DateModifier#AFTER> a owl:Class ;
+    rdfs:label "AFTER" .
+
+<http://ontologies.slub-dresden.de/exhibition#DateModifier#BEFORE> a owl:Class ;
+    rdfs:label "BEFORE" .
+
+<http://ontologies.slub-dresden.de/exhibition#DateModifier#VAGUE> a owl:Class ;
+    rdfs:label "VAGUE" .
+
+sladb:Exhibition a owl:Class ;
+    rdfs:label "Exhibition" ;
+    rdfs:comment "A collection of objects that are displayed together in a museum or other public space." ;
+    rdfs:subClassOf [ a owl:Restriction ;
+            owl:onDataRange xsd:string ;
+            owl:onProperty sladb:name ;
+            owl:qualifiedCardinality 1 ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass sladb:TemporalValue ;
+            owl:onProperty sladb:end_date ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom sladb:Source ;
+            owl:onProperty sladb:source ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onDataRange xsd:string ;
+            owl:onProperty sladb:description ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass sladb:Series ;
+            owl:onProperty sladb:partOfSeries ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass sladb:Organization ;
+            owl:onProperty sladb:organization ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom sladb:Person ;
+            owl:onProperty sladb:artist ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom sladb:Person ;
+            owl:onProperty sladb:organizer ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom sladb:Location ;
+            owl:onProperty sladb:location ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass sladb:TemporalValue ;
+            owl:onProperty sladb:start_date ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom sladb:Meta ;
+            owl:onProperty sladb:meta ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom sladb:Person ;
+            owl:onProperty sladb:curator ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom sladb:Object ;
+            owl:onProperty sladb:object ] ;
+    skos:exactMatch sladb:Exhibition .
+
+sladb:GeoFeature a owl:Class ;
+    rdfs:label "GeoFeature" ;
+    rdfs:comment "A geographic feature." ;
+    skos:exactMatch geo:GeoFeature .
+
+sladb:Organization a owl:Class ;
+    rdfs:label "Organization" ;
+    rdfs:comment "An organization." ;
+    rdfs:subClassOf [ a owl:Restriction ;
+            owl:allValuesFrom sladb:Meta ;
+            owl:onProperty sladb:meta ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onDataRange xsd:string ;
+            owl:onProperty sladb:description ],
+        [ a owl:Restriction ;
+            owl:onDataRange xsd:string ;
+            owl:onProperty sladb:name ;
+            owl:qualifiedCardinality 1 ] ;
+    skos:exactMatch slperson:Organization .
+
+sladb:source a owl:ObjectProperty ;
+    rdfs:label "source" ;
+    rdfs:comment "The sources that are used to create the entity." ;
+    rdfs:range sladb:Source .
+
+sladb:Location a owl:Cla,ss ;
+    rdfs:label "Location" ;
+    rdfs:subClassOf [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass sladb:Location ;
+            owl:onProperty sladb:parent ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onDataRange xsd:string ;
+            owl:onProperty sladb:description ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onDataRange geo:wktLiteral ;
+            owl:onProperty sladb:geo ],
+        [ a owl:Restriction ;
+            owl:onDataRange xsd:string ;
+            owl:onProperty sladb:name ;
+            owl:qualifiedCardinality 1 ],
+        sladb:GeoFeature .
+
+sladb:Object a owl:Class ;
+    rdfs:label "Object" ;
+    rdfs:comment "A physical object that is part of an exhibition." ;
+    rdfs:subClassOf [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onDataRange xsd:string ;
+            owl:onProperty sladb:description ],
+        [ a owl:Restriction ;
+            owl:onDataRange xsd:string ;
+            owl:onProperty sladb:name ;
+            owl:qualifiedCardinality 1 ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom sladb:Source ;
+            owl:onProperty sladb:source ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass sladb:Person ;
+            owl:onProperty sladb:creator ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom sladb:Meta ;
+            owl:onProperty sladb:meta ] ;
+    skos:exactMatch sladb:Object .
+
+sladb:Series a owl:Class ;
+    rdfs:label "Series" ;
+    rdfs:comment "A reoccurring event" ;
+    rdfs:subClassOf [ a owl:Restriction ;
+            owl:allValuesFrom sladb:Source ;
+            owl:onProperty sladb:source ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom sladb:Meta ;
+            owl:onProperty sladb:meta ],
+        [ a owl:Restriction ;
+            owl:onDataRange xsd:string ;
+            owl:onProperty sladb:name ;
+            owl:qualifiedCardinality 1 ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onDataRange xsd:string ;
+            owl:onProperty sladb:description ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom xsd:string ;
+            owl:onProperty sladb:category ] ;
+    skos:exactMatch sladb:Series .
+
+sladb:Source a owl:Class ;
+    rdfs:label "Source" ;
+    rdfs:comment "A source of information." ;
+    rdfs:subClassOf [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onDataRange xsd:string ;
+            owl:onProperty sladb:url ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onDataRange xsd:string ;
+            owl:onProperty sladb:description ],
+        [ a owl:Restriction ;
+            owl:onDataRange xsd:string ;
+            owl:onProperty sladb:name ;
+            owl:qualifiedCardinality 1 ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom sladb:Meta ;
+            owl:onProperty sladb:meta ] ;
+    skos:exactMatch slsrc:Source .
+
+sladb:TemporalValue a owl:Class ;
+    rdfs:label "TemporalValue" ;
+    rdfs:subClassOf [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass sladb:DateModifier ;
+            owl:onProperty sladb:modifier ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onDataRange xsd:string ;
+            owl:onProperty sladb:date ] ;
+    skos:exactMatch sladb:TemporalValue .
+
+sladb:meta a owl:ObjectProperty ;
+    rdfs:label "meta" ;
+    rdfs:range sladb:Meta .
+
+sladb:description a owl:DatatypeProperty ;
+    rdfs:label "description" ;
+    rdfs:comment "A description of the thing." ;
+    rdfs:range xsd:string .
+
+sladb:name a owl:DatatypeProperty ;
+    rdfs:label "name" ;
+    rdfs:range xsd:string .
+
+sladb:Meta a owl:Class ;
+    rdfs:label "Meta" ;
+    rdfs:comment "Metadata." ;
+    rdfs:subClassOf [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onDataRange xsd:dateTime ;
+            owl:onProperty sladb:created ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onDataRange xsd:dateTime ;
+            owl:onProperty sladb:updated ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onDataRange xsd:string ;
+            owl:onProperty sladb:updatedBy ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onDataRange xsd:string ;
+            owl:onProperty sladb:createdBy ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onDataRange xsd:string ;
+            owl:onProperty sladb:version ] ;
+    skos:exactMatch slmeta:Meta .
+
+sladb:Person a owl:Class ;
+    rdfs:label "Person" ;
+    rdfs:comment "A person." ;
+    rdfs:subClassOf [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onDataRange xsd:string ;
+            owl:onProperty sladb:death_date ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onDataRange xsd:string ;
+            owl:onProperty sladb:description ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onDataRange xsd:string ;
+            owl:onProperty sladb:sameAs ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onDataRange xsd:string ;
+            owl:onProperty sladb:mailaddress ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom sladb:Meta ;
+            owl:onProperty sladb:meta ],
+        [ a owl:Restriction ;
+            owl:onDataRange xsd:string ;
+            owl:onProperty sladb:name ;
+            owl:qualifiedCardinality 1 ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onDataRange xsd:string ;
+            owl:onProperty sladb:birth_date ] ;
+    skos:exactMatch slperson:Person .
+

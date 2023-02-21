@@ -1,9 +1,5 @@
 import dayjs from 'dayjs'
-import { FromSchema } from 'json-schema-to-ts'
-import React, {FunctionComponent, useEffect, useState} from 'react'
-
-import {exhibitionPrefixes} from '../exhibtion'
-import {remoteSparqlQuery, sparqlSelectViaFieldMappings} from '../utils/sparql'
+import React, {FunctionComponent} from 'react'
 
 
 interface OwnProps {

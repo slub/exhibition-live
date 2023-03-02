@@ -1,0 +1,62 @@
+{
+  "type": "VerticalLayout",
+  "elements": [
+    {
+      "type": "Group",
+      "label": "Allgemeine Daten der Ausstellung",
+      "elements": [
+        {
+          "type": "Control",
+          "scope": "#/properties/@id"
+        },
+        {
+          "type": "Control",
+          "scope": "#/properties/@type"
+        },
+        {
+          "type": "Control",
+          "label": "Titel der Ausstellung",
+          "scope": "#/properties/title"
+        },
+        {
+          "type": "Control",
+          "label": "Kurzbeschreibung",
+          "scope": "#/properties/description"
+        }
+      ]
+    },
+    {
+      "type": "Group",
+      "label": "Zeitlicher Rahmen",
+       "elements": [
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "label": "Startdatum",
+              "scope": "#/properties/startDate"
+            },
+            {
+              "type": "Control",
+              "label": "Enddatum",
+              "scope": "#/properties/endDate"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Group",
+      "label": "Beteiligte Personen und Institutionen",
+      "elements": [
+        {
+          "type": "Control",
+          "label": "Künstler",
+          "scope": "#/properties/artist",
+          "elementLabelProp": "name"
+        }
+      ]
+    }
+  ]
+}

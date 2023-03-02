@@ -1,0 +1,151 @@
+{
+  "$defs": {
+    "Exhibition": {
+      "additionalProperties": false,
+      "description": "Eine Ausstellung an einem Ort und einer Zeit mit Objekten und Personen.",
+      "required": [
+        "@type",
+        "@id"
+      ],
+      "properties": {
+        "@type": {
+          "const": "http://ontologies.slub-dresden.de/exhibition#Exhibition",
+          "type": "string"
+        },
+        "@id": {
+          "title": "http://ontologies.slub-dresden.de/exhibition/entity#",
+          "type": "string"
+        },
+        "artist": {
+          "description": "Ausstellende Künstler.",
+          "items": {
+            "$ref": "#/$defs/Person"
+          },
+          "type": "array"
+        },
+        "title": {
+          "description": "Titel der Ausstellung",
+          "type": "string"
+        },
+        "description": {
+          "description": "Eine kurze Beschreibung der Ausstellung und Anmerkungen zur Ausstellung.",
+          "type": "string",
+          "format": "markdown"
+        },
+        "startDate": {
+          "$ref": "#/$defs/TemporalValue",
+          "description": "Start der Ausstellung."
+        },
+        "endDate": {
+          "$ref": "#/$defs/TemporalValue",
+          "description": "Datum der Ausstellung."
+        }
+      },
+      "title": "Exhibition",
+      "type": "object"
+    },
+    "Person": {
+      "additionalProperties": false,
+      "description": "A person.",
+      "properties": {
+        "@type": {
+          "const": "http://ontologies.slub-dresden.de/exhibition#Person",
+          "type": "string"
+        },
+        "@id": {
+          "title": "http://ontologies.slub-dresden.de/exhibition/entity#",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string",
+          "description": "Name der Person"
+        },
+        "birthDate": {
+          "format": "date",
+          "type": "string",
+          "title": "Geburtsdatum"
+        },
+        "deathDate": {
+          "format": "date",
+          "type": "string",
+          "title": "Sterbedatum"
+        },
+        "description": {
+          "description": "Anmerkungen zur Person",
+          "type": "string"
+        },
+        "occupation": {
+          "description": "Hauptberufe der Person",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "name",
+        "@type"
+      ],
+      "title": "Person",
+      "type": "object"
+    },
+    "WikidataHuman": {
+      "title": "Wikidata",
+      "additionalProperties": true,
+      "properties": {
+        "@id": {
+          "format": "wikidata-Q5",
+          "type": "string"
+        }
+      }
+    },
+    "GNDPerson": {
+      "title": "GND",
+      "additionalProperties": true,
+      "properties": {
+        "@id": {
+          "format": "gndo-DifferentiatedPerson",
+          "type": "string"
+        }
+      }
+    },
+    "TemporalValue": {
+      "additionalProperties": false,
+      "description": "",
+      "properties": {
+        "date": {
+          "pattern": "[+-]?\\d{4}-\\d{2}-\\d{2}",
+          "label": "Datum",
+          "type": "string"
+        },
+        "modifier": {
+          "type": "string",
+          "label": "Modifizierung",
+          "oneOf": [
+            {
+              "const": "BEFORE",
+              "title": "Vor"
+            },
+            {
+              "const": "AFTER",
+              "title": "Nach"
+            },
+            {
+              "const": "VAGUE",
+              "title": "Um"
+            }
+          ]
+        }
+      },
+      "title": "TemporalValue",
+      "type": "object"
+    }
+  },
+  "$id": "http://ontologies.slub-dresden.de/exhibtion",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "additionalProperties": true,
+  "metamodel_version": "1.7.0",
+  "title": "exhibtion-info",
+  "type": "object",
+  "version": null
+}

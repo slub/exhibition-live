@@ -6,10 +6,10 @@ import merge from 'lodash/merge'
 import React, {useCallback, useEffect, useMemo, useState} from 'react'
 
 import {AutocompleteSuggestion} from '../form/DebouncedAutoComplete'
-import WikidataAutocompleteInput from '../form/wikidata/WikidataAutocompleteInput'
+import GNDAutocompleteInput from '../form/gnd/GNDAutocompleteInput'
 
 
-const AutocompleteURIFieldRenderer = (props: ControlProps) => {
+const AutocompleteGNDFieldRenderer = (props: ControlProps) => {
   const {
     id,
     errors,
@@ -29,7 +29,7 @@ const AutocompleteURIFieldRenderer = (props: ControlProps) => {
   const [selected, setSelected] = useState<AutocompleteSuggestion | null>(null)
 
 
-  const classType = useMemo(() => schema.format?.substring('wikidata-'.length), [schema])
+  const classType = useMemo(() => schema.format?.substring('gndo-'.length), [schema])
 
 const handleChange_ = useCallback(
     (v?: string) => {
@@ -39,7 +39,7 @@ const handleChange_ = useCallback(
 )
 
 useEffect(() => {
-  handleChange_(selected ? `http://www.wikidata.org/entity/${selected.value}` : undefined)
+  handleChange_(selected ? selected.value : undefined)
 }, [selected, handleChange_])
 
 
@@ -66,10 +66,10 @@ return (
             <IconButton onClick={() => setEditMode(prev => !prev)}>{editMode ? <EditOff/> : <Edit/>}</IconButton>
           </Grid>
         </Grid>
-        <WikidataAutocompleteInput selected={selected} onSelectionChange={setSelected} typeOf={classType}/>
+        <GNDAutocompleteInput selected={selected} onSelectionChange={setSelected} typeOf={classType}/>
       </FormControl>
     </Hidden>
 )
 }
 
-export default withJsonFormsControlProps(AutocompleteURIFieldRenderer)
+export default withJsonFormsControlProps(AutocompleteGNDFieldRenderer)

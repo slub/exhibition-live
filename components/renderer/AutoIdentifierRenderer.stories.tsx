@@ -19,7 +19,7 @@ const schema = {
   'type': 'object',
   'properties': {
     '@id': {
-      'title': 'http://ontologies.slub-dresden.de/exhibiton/entity#',
+      'title': 'http://ontologies.slub-dresden.de/exhibition/entity#',
       'type': 'string'
     }
   }

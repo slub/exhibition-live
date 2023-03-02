@@ -21,6 +21,15 @@
     },
     {
       "type": "Control",
+      "label": "Werke",
+      "scope": "#/properties/works",
+      "options": {
+        "elementLabelProp": "name",
+        "detail": "GENERATED"
+      }
+    },
+    {
+      "type": "Control",
       "scope": "#/properties/@id"
     },
     {

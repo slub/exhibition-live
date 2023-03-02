@@ -19,9 +19,15 @@
         "artist": {
           "description": "Ausstellende Künstler.",
           "items": {
-            "$ref": "#/$defs/Person"
+            "$ref": "#/$defs/PersonStub"
           },
           "type": "array"
+        },
+        "works": {
+          "description": "Bedeutende Werke der Person",
+          "items": {
+            "$ref": "#/$defs/WorkStub"
+          }
         },
         "title": {
           "description": "Titel der Ausstellung",
@@ -42,6 +48,78 @@
         }
       },
       "title": "Exhibition",
+      "type": "object"
+    },
+    "WorkStub": {
+      "additionalProperties": false,
+      "description": "A work stub.",
+      "properties": {
+        "@type": {
+          "const": "http://ontologies.slub-dresden.de/exhibition#Work",
+          "type": "string"
+        },
+        "@id": {
+          "title": "http://ontologies.slub-dresden.de/exhibition/entity#",
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "@type"
+      ],
+      "title": "Work",
+      "type": "object"
+
+    },
+    "Work": {
+      "additionalProperties": false,
+      "description": "A work",
+      "properties": {
+        "@type": {
+          "const": "http://ontologies.slub-dresden.de/exhibition#Work",
+          "type": "string"
+        },
+        "@id": {
+          "title": "http://ontologies.slub-dresden.de/exhibition/entity#",
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "category": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "@type",
+        "name"
+      ],
+      "title": "Work",
+      "type": "object"
+
+    },
+    "PersonStub": {
+      "additionalProperties": false,
+      "description": "A person stub.",
+      "properties": {
+        "@type": {
+          "const": "http://ontologies.slub-dresden.de/exhibition#Person",
+          "type": "string"
+        },
+        "@id": {
+          "title": "http://ontologies.slub-dresden.de/exhibition/entity#",
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "@type"
+      ],
+      "title": "Person",
       "type": "object"
     },
     "Person": {
@@ -79,6 +157,16 @@
           "description": "Hauptberufe der Person",
           "items": {
             "type": "string"
+          }
+        },
+        "titleWork": {
+          "description": "Prägnatests Werk der Person",
+          "$ref": "#/$defs/WorkStub"
+        },
+        "works": {
+          "description": "Bedeutende Werke der Person",
+          "items": {
+            "$ref": "#/$defs/WorkStub"
           }
         }
       },

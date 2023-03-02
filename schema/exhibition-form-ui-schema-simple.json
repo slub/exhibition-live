@@ -54,9 +54,21 @@
           "type": "Control",
           "label": "Künstler",
           "scope": "#/properties/artist",
-          "elementLabelProp": "name"
+          "options": {
+            "elementLabelProp": "name",
+            "detail": "GENERATED"
+          }
         }
       ]
+    },
+    {
+      "type": "Control",
+      "label": "Ausgestellte Werke",
+      "scope": "#/properties/works",
+      "options": {
+        "elementLabelProp": "name",
+        "detail": "GENERATED"
+      }
     }
   ]
 }

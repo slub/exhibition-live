@@ -138,7 +138,6 @@ const propertyWalker = (baseIRI: string, node: clownface.GraphPointer, subSchema
       }
     }
     const typeNode = node.out(rdf.type)
-    console.log({node, typeNode})
     if(typeNode.value) {
       additionalProps = {
         ...additionalProps,

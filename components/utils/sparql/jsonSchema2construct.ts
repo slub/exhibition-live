@@ -1,5 +1,4 @@
-import {findAllRefs, JsonSchema, resolveSchema} from '@jsonforms/core'
-import {CONSTRUCT, DELETE} from '@tpluscode/sparql-builder'
+import {JsonSchema, resolveSchema} from '@jsonforms/core'
 import {JSONSchema7, JSONSchema7Definition} from 'json-schema'
 
 import {isJSONSchema, isJSONSchemaDefinition} from '../core/jsonSchema'

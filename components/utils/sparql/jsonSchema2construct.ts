@@ -43,10 +43,7 @@ export const jsonSchema2construct: (subjectURI: string, rootSchema: JSONSchema7,
           construct += `${sP} ${p} ${o} .\n`
         if(schema.$ref) {
           const subSchema =  resolveSchema(schema as JsonSchema, '', rootSchema as JsonSchema)
-          console.log(schema.$ref)
-          console.log({subSchema})
           if(subSchema && subSchema.properties &&  !propertiesContainStopSymbol(subSchema.properties, stopSymbols)) {
-            console.log('propertiesToSPARQL')
             propertiesToSPARQLPatterns(o, subSchema as JSONSchema7, level + 1)
           }
         }

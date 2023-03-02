@@ -1,3 +1,4 @@
+import {JsonFormsUISchemaRegistryEntry} from '@jsonforms/core'
 import {Box, Button, Container} from '@mui/material'
 import {JSONSchema7} from 'json-schema'
 import Head from 'next/head'
@@ -12,11 +13,14 @@ import {
   exhibitionSchema
 } from '../components/form/formConfigs'
 import SemanticJsonForm from '../components/form/SemanticJsonForm'
+import {uischemas} from '../components/form/uischemas'
 import PerformanceFooter from '../components/layout/PerformanceFooter'
 import PerformanceHeader from '../components/layout/PerformanceHeader'
 import {useFormEditor} from '../components/state'
 import {oxigrahCrudOptions} from '../components/utils/sparql/remoteOxigrapho'
+import uischema from '../schema/exhibition-form-ui-schema-simple.json'
 import styles from '../styles/Home.module.css'
+
 
 const WithPreviewForm = ({ children }: { children: React.ReactChild}) => {
   const isLandscape = false
@@ -72,6 +76,7 @@ export default () => {
                 {/* Header area for content */}
                 <SemanticJsonForm
                     data={data}
+                    entityIRI={data['@id']}
                     setData={_data => setData(_data)}
                     shouldLoadInitially
                     typeIRI='http://ontologies.slub-dresden.de/exhibition#Exhibition'
@@ -80,6 +85,10 @@ export default () => {
                     jsonldContext={defaultJsonldContext}
                     queryBuildOptions={defaultQueryBuilderOptions}
                     schema={exhibitionSchema as JSONSchema7}
+                    jsonFormsProps={{
+                      uischema,
+                      uischemas: uischemas
+                    }}
                 />
               </Container>
               {/* Page footer */}

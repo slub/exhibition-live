@@ -1,9 +1,11 @@
 import {JsonFormsUISchemaRegistryEntry} from '@jsonforms/core'
-import {Box, Button, Container} from '@mui/material'
+import {CreateNewFolder as NewIcon} from '@mui/icons-material'
+import {Box, Button, Container, IconButton} from '@mui/material'
 import {JSONSchema7} from 'json-schema'
 import Head from 'next/head'
 import {useCallback, useState} from 'react'
 import {SplitPane} from 'react-collapse-pane'
+import {v4 as uuidv4} from 'uuid'
 
 import ContentMainPreview from '../components/content/ContentMainPreview'
 import {
@@ -41,9 +43,11 @@ const WithPreviewForm = ({ children }: { children: React.ReactChild}) => {
       : <div className={'page-wrapper'}>{children}</div>}
   </>
 }
+const baseIRI = 'http://ontologies.slub-dresden.de/exhibition/entity#'
+const classIRI = 'http://ontologies.slub-dresden.de/exhibition#Exhibition'
 const exampleData = {
-  '@id': 'http://ontologies.slub-dresden.de/exhibition/entity#b7748b40-b15b-4a6d-8f13-e65088232080',
-  '@type': 'http://ontologies.slub-dresden.de/exhibition#Exhibition',
+  '@id': `${baseIRI}b7748b40-b15b-4a6d-8f13-e65088232080`,
+  '@type': classIRI,
   'title': 'Otto Dix Ausstellung',
   'subtitle': 'Das neue Metrum',
   'description': 'Eine kontemporaere Ausstellung',
@@ -57,7 +61,14 @@ const exampleData = {
   }
 }
 export default () => {
-  const [data, setData] = useState(exampleData)
+  const [data, setData] = useState<any>(exampleData)
+  const handleNew = useCallback(() => {
+    const newURI = `${baseIRI}${uuidv4()}`
+    setData({
+      '@id': newURI,
+      '@type': classIRI,
+    })
+  }, [setData])
   return (
       <>
         <Head>
@@ -74,6 +85,7 @@ export default () => {
               {/* Content wrapper */}
               <Container className="default-wrapper">
                 {/* Header area for content */}
+                <IconButton onClick={handleNew}><NewIcon /></IconButton>
                 <SemanticJsonForm
                     data={data}
                     entityIRI={data['@id']}

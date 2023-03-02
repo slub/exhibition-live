@@ -7,6 +7,7 @@ import merge from 'lodash/merge'
 import React, {useCallback, useMemo, useState} from 'react'
 import {v4 as uuidv4} from 'uuid'
 
+import DiscoverAutocompleteInput from '../form/discover/DiscoverAutocompleteInput'
 import {defaultJsonldContext, defaultPrefix, defaultQueryBuilderOptions} from '../form/formConfigs'
 import SemanticJsonForm, {CRUDOpsType} from '../form/SemanticJsonForm'
 import {uischemaForType} from '../form/uischemaForType'
@@ -105,7 +106,13 @@ const InlineSemanticFormsRenderer = (props: ControlProps) => {
                                 onCancel={handleToggle}
                                 onSave={handleSave}
                                 onReload={load}
-                                onRemove={handleRemove}>
+                                search={<>
+                                    <DiscoverAutocompleteInput
+                                        typeIRI={typeIRI}
+                                        title={label || ''}
+                                        onSelectionChange={selection => handleChange_(selection?.value)}/>
+                                </>}
+                                onRemove={handleRemove}><>
                                 <SemanticJsonForm
                                     data={formData}
                                     hideToolbar={true}
@@ -125,8 +132,9 @@ const InlineSemanticFormsRenderer = (props: ControlProps) => {
                                     onEntityChange={entityIRI => console.log({entityIRI})}
                                     onInit={(crudOps) => setCRUDOps(crudOps)}
                                 />
+                            </>
                             </MuiEditDialog>
-                        )
+                    )
                         : (<Grid container alignItems='baseline'>
                             <Grid item flex={'auto'}>
                                 <SemanticJsonForm

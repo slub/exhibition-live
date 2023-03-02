@@ -49,7 +49,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }))
 
 
-export default function MuiEditDialog({children, open, title, onSave, onCancel, onClose, onReload, onRemove}: {
+export default function MuiEditDialog({children, open, title, onSave, onCancel, onClose, onReload, onRemove, search}: {
     onCancel?: () =>  void,
     onSave?: () => void,
     onClose?: () => void,
@@ -57,6 +57,7 @@ export default function MuiEditDialog({children, open, title, onSave, onCancel, 
     onRemove?: () => void,
     open?: boolean,
     title?: string,
+    search?: React.ReactChild,
     children?: React.ReactChild}) {
     const theme = useTheme()
     const fullScreen = useMediaQuery(theme.breakpoints.down('md'))
@@ -75,15 +76,7 @@ export default function MuiEditDialog({children, open, title, onSave, onCancel, 
                             <Typography variant="h6" color="inherit" component="div">
                                 {title || 'Bearbeiten oder Erstellen'}
                             </Typography>
-                            <Search>
-                                <SearchIconWrapper>
-                                    <SearchIcon />
-                                </SearchIconWrapper>
-                                <StyledInputBase
-                                    placeholder="Search…"
-                                    inputProps={{ 'aria-label': 'search' }}
-                                />
-                            </Search>
+                                {search}
                             <Box sx={{ flexGrow: 1 }} />
                             <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
                                 {onSave && <IconButton

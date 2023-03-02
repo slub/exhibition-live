@@ -1,6 +1,7 @@
 import {QueryEngine} from '@comunica/query-sparql'
-import {IDataSource} from '@comunica/types'
+import {BindingsStream, IDataSource} from '@comunica/types'
 import datasetFactory from '@rdfjs/dataset'
+import {Bindings, ResultStream} from '@rdfjs/types'
 import N3 from 'n3'
 
 type Sources = [IDataSource, ...IDataSource[]]
@@ -48,6 +49,11 @@ const defaultQueryFetch = async (query: string) => {
         fetch: createCutomizedFetch(query, 'application/sparql-update')
     })
     return await prepared.execute()
+}
+export const defaultQuerySelect: (query: string) => Promise<any[]> = async (query: string) => {
+    const sFetch = createCutomizedFetch(query)
+    const prepared = await sFetch(sources[0] )
+    return ((await prepared.json())?.results?.bindings || []) as any[]
 }
 
 export const oxigrahCrudOptions = {

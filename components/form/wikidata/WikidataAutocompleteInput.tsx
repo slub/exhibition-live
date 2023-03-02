@@ -67,12 +67,6 @@ const WikidataAutocompleteInput: FunctionComponent<Props> = ({selected, onSelect
 
 
   return (<>
-        <Typography variant={'h4'}>
-          {classInfo?.label || classType || ''}
-        </Typography>
-        <Typography variant={'body1'}>
-          {classInfo?.description}
-        </Typography>
         <DebouncedAutocomplete
             load={async (searchString) => searchString
                 ? (await findPersonWithinWikidataUsingREST(searchString, 10, classType)).map(d => {

@@ -76,7 +76,11 @@ export default function MuiEditDialog({children, open, title, onSave, onCancel, 
                             <Typography variant="h6" color="inherit" component="div">
                                 {title || 'Bearbeiten oder Erstellen'}
                             </Typography>
-                                {search}
+                            <Box sx={{ flexGrow: 3 }} >
+                            <Search >
+                                    {search}
+                            </Search>
+                            </Box>
                             <Box sx={{ flexGrow: 1 }} />
                             <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
                                 {onSave && <IconButton

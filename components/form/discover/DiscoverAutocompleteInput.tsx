@@ -24,8 +24,7 @@ const findEntityByClass = async (searchString: string, typeIRI: string) => {
   let query = SELECT.DISTINCT` ${subjectV} ${nameV}`.WHERE`
           ${subjectV} a <${typeIRI}> ;
             :name ${nameV} . 
-            FILTER(regex(${nameV}, "${searchString}", "i")) .
-            
+            FILTER(contains(${nameV}, "${searchString}")) .
 `.LIMIT(10).build(defaultQueryBuilderOptions)
   query = `PREFIX : <${defaultPrefix}> ` + query
   const bindings = await defaultQuerySelect(query)
@@ -64,7 +63,6 @@ const DiscoverAutocompleteInput: FunctionComponent<Props> = ({title = 'etwas', s
             renderOption={(props, option: any) => (
                 <li {...props} key={option.value}>
                   {parse(`<span class="debounced_autocomplete_option_label">${option.label}</span>`)}
-                  {option.value}
                 </li>
             )}
             // @ts-ignore

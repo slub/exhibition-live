@@ -60,7 +60,7 @@ export const DebouncedAutocomplete: FunctionComponent<
           // @ts-ignore
           <TextField
             {...params}
-            variant={'outlined'}
+            variant={'standard'}
             placeholder={props.placeholder}
             onChange={handleOnChange}
             InputProps={{

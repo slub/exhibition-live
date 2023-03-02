@@ -52,7 +52,7 @@ const defaultQueryFetch = async (query: string) => {
 }
 export const defaultQuerySelect: (query: string) => Promise<any[]> = async (query: string) => {
     const sFetch = createCutomizedFetch(query)
-    const prepared = await sFetch(sources[0] )
+    const prepared = await sFetch(sources[0] as string)
     return ((await prepared.json())?.results?.bindings || []) as any[]
 }
 

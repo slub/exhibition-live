@@ -114,21 +114,21 @@ export const useSPARQL_CRUD = (entityIRI: string | undefined, typeIRI: string | 
             if (!isUpdate && !upsertByDefault) {
                 const updateQuery = INSERT.DATA` ${ntriples} `
                 const query = updateQuery.build()
-                const res = await updateFetch(query)
+                await updateFetch(query)
                 setIsUpdate(true)
             } else {
                 const {
                     construct,
                     whereRequired,
                     whereOptionals
-                } = jsonSchema2construct(entityIRI, schema, [], ['@id', '@type'])
+                } = jsonSchema2construct(entityIRI, schema, ['@id'], ['@id', '@type'])
                 const queries = [
                     DELETE` ${construct} `.WHERE`${whereEntity} ${whereRequired}\n${whereOptionals}`.build(queryBuildOptions),
                     INSERT.DATA` ${ntriples} `.build(queryBuildOptions)
                 ]
                 for (let query of queries) {
                     query = `PREFIX : <${defaultPrefix}> ` + query
-                    const res = await updateFetch(query)
+                    await updateFetch(query)
                 }
             }
         },

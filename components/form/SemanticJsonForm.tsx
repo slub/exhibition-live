@@ -1,25 +1,37 @@
 import 'react-json-view-lite/dist/index.css'
 
-import {JsonFormsCore, JsonFormsUISchemaRegistryEntry, JsonSchema, rankWith, scopeEndsWith} from '@jsonforms/core'
+import {
+    JsonFormsCore,
+    JsonSchema,
+    rankWith,
+    scopeEndsWith,
+    UISchemaElement
+} from '@jsonforms/core'
 import {materialCells, materialRenderers} from '@jsonforms/material-renderers'
-import {JsonForms} from '@jsonforms/react'
-import {Button, Switch} from '@mui/material'
+import {JsonForms, JsonFormsInitStateProps} from '@jsonforms/react'
+import {Button, Hidden, Switch} from '@mui/material'
 import {JSONSchema7} from 'json-schema'
 import {JsonLdContext} from 'jsonld-context-parser'
+import {isEmpty} from 'lodash'
 import React, {FunctionComponent, useCallback, useEffect, useState} from 'react'
 import {JsonView} from 'react-json-view-lite'
 
-import uischema from '../../schema/exhibition-form-ui-schema-simple.json'
-import personschema from '../../schema/exhibition-person-ui-schema-simple.json'
 import AutoIdentifierRenderer from '../renderer/AutoIdentifierRenderer'
+import InlineSemanticFormsRenderer from '../renderer/InlineSemanticFormsRenderer'
 import MaterialCustomAnyOfRenderer, {materialCustomAnyOfControlTester} from '../renderer/MaterialCustomAnyOfRenderer'
 import {MaterialListWithDetailRenderer, materialListWithDetailTester} from '../renderer/MaterialListWithDetailRenderer'
-import {useFormEditor} from '../state'
+import TypeOfRenderer from '../renderer/TypeOfRenderer'
 import {useJsonldParser} from '../state/useJsonldParser'
 import {CrudOptions, SparqlBuildOptions, useSPARQL_CRUD} from '../state/useSPARQL_CRUD'
 
+export type CRUDOpsType = {
+    load: () => Promise<void>
+    save: () => Promise<void>
+    remove: () => Promise<void>
+}
 
 interface OwnProps {
+    entityIRI?: string | undefined
     data: any,
     setData: (data: any) => void
     shouldLoadInitially?: boolean
@@ -30,6 +42,10 @@ interface OwnProps {
     debugEnabled?: boolean
     crudOptions?: Partial<CrudOptions>
     queryBuildOptions?:  SparqlBuildOptions
+    jsonFormsProps?: Partial<JsonFormsInitStateProps>
+    onEntityChange?: (entityIRI: string | undefined) => void
+    onInit?: (crudOps: CRUDOpsType) => void
+    hideToolbar?: boolean
 }
 
 type Props = OwnProps;
@@ -61,19 +77,27 @@ const renderers = [
         ),
         renderer: AutoIdentifierRenderer
     }, {
+        tester: rankWith(10,
+            scopeEndsWith('@type')
+        ),
+        renderer: TypeOfRenderer
+    },{
         tester: materialListWithDetailTester,
         renderer: MaterialListWithDetailRenderer
+    }, {
+        tester: rankWith(15,
+            (uischema: UISchemaElement): boolean => {
+                if (isEmpty(uischema)) {
+                    return false
+                }
+
+                const options = uischema.options
+                return !isEmpty(options) && options['inline']
+            }),
+        renderer: InlineSemanticFormsRenderer
     }
 ]
 
-const uiSchemas: JsonFormsUISchemaRegistryEntry[] = [
-    {
-        tester: (schema, schemaPath, path) => {
-            return schema.properties?.['@type']?.const === 'http://ontologies.slub-dresden.de/exhibition#Person' ? 11 : -1
-        },
-        uischema: personschema
-    }
-]
 
 const infuserOptions = {
     omitEmptyArrays: true,
@@ -85,6 +109,7 @@ const infuserOptions = {
 
 const SemanticJsonForm: FunctionComponent<Props> =
     ({
+        entityIRI,
          data,
          setData,
          shouldLoadInitially,
@@ -94,13 +119,18 @@ const SemanticJsonForm: FunctionComponent<Props> =
          jsonldContext,
          debugEnabled,
         crudOptions = {},
-        queryBuildOptions
+        queryBuildOptions,
+        jsonFormsProps = {},
+        onEntityChange,
+        onInit,
+        hideToolbar
      }) => {
         const [jsonldData, setJsonldData] = useState<any>({})
-        const {formData, setFormData} = useFormEditor()
+        //const {formData, setFormData} = useFormEditor()
+        const [formData, setFormData] = useState<any | undefined>()
         const [initiallyLoaded, setInitiallyLoaded] = useState<string | undefined>(undefined)
 
-        const {entityIRI, parseJSONLD} = useJsonldParser(
+        const {parseJSONLD} = useJsonldParser(
             data,
             jsonldContext,
             schema,
@@ -110,6 +140,11 @@ const SemanticJsonForm: FunctionComponent<Props> =
                 walkerOptions: infuserOptions,
                 defaultPrefix
             })
+
+        useEffect(() => {
+            onEntityChange && onEntityChange(entityIRI)
+        }, [entityIRI])
+
 
         const {
             exists,
@@ -134,17 +169,15 @@ const SemanticJsonForm: FunctionComponent<Props> =
 
         useEffect(() => {
             const testExistenceAndLoad = async () => {
-                console.log('check')
-                console.log({entityIRI, shouldLoadInitially, initiallyLoaded})
                 if (!entityIRI || !shouldLoadInitially || initiallyLoaded === entityIRI)
                     return
-                console.log('start')
                 setIsUpdate(await exists())
                 await load()
                 setInitiallyLoaded(entityIRI)
             }
-            console.log('init')
-            testExistenceAndLoad()
+            setTimeout(() => testExistenceAndLoad(), 1)
+            //todo why is it necessary
+            //testExistenceAndLoad()
         }, [entityIRI, shouldLoadInitially, exists, load, initiallyLoaded, setInitiallyLoaded])
 
 
@@ -157,23 +190,30 @@ const SemanticJsonForm: FunctionComponent<Props> =
             parseJSONLD(data)
         }, [data, parseJSONLD])
 
+        useEffect(() => {
+            if(onInit) {
+                onInit({load, save, remove})
+            }
+        }, [onInit, load, save, remove])
+
+
 
         return (<>
+            <Hidden xsUp={hideToolbar}>
                 <Button onClick={save}>speichern</Button>
                 <Button onClick={remove}>entfernen</Button>
                 <Button onClick={load}>laden</Button>
                 <Switch checked={isUpdate} onChange={e => setIsUpdate(Boolean(e.target.checked))} title={'upsert'}/>
+            </Hidden>
                 <JsonForms
                     data={data}
                     renderers={renderers}
                     cells={materialCells}
                     onChange={handleFormChange}
                     schema={schema as JsonSchema}
-                    uischema={uischema}
-                    uischemas={uiSchemas}
+                    {...jsonFormsProps}
 
                 />
-                <Button onClick={save}>speichern</Button>
                 {debugEnabled && <>
                     <JsonView data={data} shouldInitiallyExpand={(lvl) => lvl < 5}/>
                     <hr/>

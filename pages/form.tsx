@@ -1,15 +1,22 @@
-import {Box, Button} from '@mui/material'
+import {Box, Button, Container} from '@mui/material'
+import {JSONSchema7} from 'json-schema'
 import Head from 'next/head'
 import {useCallback, useState} from 'react'
 import {SplitPane} from 'react-collapse-pane'
 
 import ContentMainPreview from '../components/content/ContentMainPreview'
-import EditExhibitionJSONForm from '../components/form/EditExhibitionJSONForm'
+import {
+  defaultJsonldContext,
+  defaultPrefix,
+  defaultQueryBuilderOptions,
+  exhibitionSchema
+} from '../components/form/formConfigs'
+import SemanticJsonForm from '../components/form/SemanticJsonForm'
 import PerformanceFooter from '../components/layout/PerformanceFooter'
 import PerformanceHeader from '../components/layout/PerformanceHeader'
 import {useFormEditor} from '../components/state'
+import {oxigrahCrudOptions} from '../components/utils/sparql/remoteOxigrapho'
 import styles from '../styles/Home.module.css'
-
 
 const WithPreviewForm = ({ children }: { children: React.ReactChild}) => {
   const isLandscape = false
@@ -30,17 +37,23 @@ const WithPreviewForm = ({ children }: { children: React.ReactChild}) => {
       : <div className={'page-wrapper'}>{children}</div>}
   </>
 }
-
+const exampleData = {
+  '@id': 'http://ontologies.slub-dresden.de/exhibition/entity#b7748b40-b15b-4a6d-8f13-e65088232080',
+  '@type': 'http://ontologies.slub-dresden.de/exhibition#Exhibition',
+  'title': 'Otto Dix Ausstellung',
+  'subtitle': 'Das neue Metrum',
+  'description': 'Eine kontemporaere Ausstellung',
+  'startDate': {
+    'date': '2016-09-22',
+    'modifier': 'AFTER'
+  },
+  'endDate': {
+    'date': '2016-09-27',
+    'modifier': 'AFTER'
+  }
+}
 export default () => {
-  const [data, setData] = useState({})
-
-
-  const handleSave = useCallback(
-      () => {
-      },
-      [data])
-
-
+  const [data, setData] = useState(exampleData)
   return (
       <>
         <Head>
@@ -51,20 +64,27 @@ export default () => {
         </Head>
         <main className={styles.main}>
 
-          <WithPreviewForm  >
             <>
               {/* Page header */}
               <PerformanceHeader/>
               {/* Content wrapper */}
-              <div className="default-wrapper">
+              <Container className="default-wrapper">
                 {/* Header area for content */}
-                <EditExhibitionJSONForm data={data} setData={_data => setData(_data)}/>
-                <Button onClick={handleSave} >speichern</Button>
-              </div>
+                <SemanticJsonForm
+                    data={data}
+                    setData={_data => setData(_data)}
+                    shouldLoadInitially
+                    typeIRI='http://ontologies.slub-dresden.de/exhibition#Exhibition'
+                    crudOptions={oxigrahCrudOptions}
+                    defaultPrefix={defaultPrefix}
+                    jsonldContext={defaultJsonldContext}
+                    queryBuildOptions={defaultQueryBuilderOptions}
+                    schema={exhibitionSchema as JSONSchema7}
+                />
+              </Container>
               {/* Page footer */}
               <PerformanceFooter/>
             </>
-          </WithPreviewForm>
         </main>
       </>
   )

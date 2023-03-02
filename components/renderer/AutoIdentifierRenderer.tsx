@@ -42,7 +42,7 @@ const handleChange_ = useCallback(
 
 
 return (
-    <Hidden xsUp={!visible}>
+    <Hidden xsUp={true}>
       <FormControl
           fullWidth={!appliedUiSchemaOptions.trim}
           id={id}

@@ -1,48 +1,95 @@
 import {describe, expect, test} from '@jest/globals'
+import {CONSTRUCT} from '@tpluscode/sparql-builder'
 import {JSONSchema7} from 'json-schema'
 
-import {buildConstructQuery} from './jsonSchema2construct'
+import {BASE_IRI} from '../../config'
+import {exhibitionPrefixes} from '../../exhibtion'
+import {jsonSchema2construct} from './jsonSchema2construct'
 
 const schema: JSONSchema7 = {
-'$schema': 'http://json-schema.org/draft-07/schema#',
+    '$schema': 'http://json-schema.org/draft-07/schema#',
     '$id': 'https://example.com/person.schema.json',
     'title': 'Person',
     'description': 'A human being',
     'type': 'object',
-    'required': [ 'name', 'father' ],
+    'required': ['name', 'father'],
     'properties': {
-      'name': {
-          'type': 'string'
-      },
-      'knows': {
-        'type': 'array',
-        'items': {
-          'required': [ 'nick' ],
-          'properties': {
-            'nick': { 'type': 'string' },
-          }
+        'name': {
+            'type': 'string'
+        },
+        'knows': {
+            'type': 'array',
+            'items': {
+                'required': ['nick'],
+                'properties': {
+                    'nick': {'type': 'string'},
+                }
+            }
+        },
+        'father': {
+            'type': 'object',
+            'properties': {
+                'name': {'type': 'string'},
+                'description': {'type': 'string'}
+            }
         }
-      },
-      'father': {
-        'type': 'object',
-        'properties': {
-          'name': { 'type': 'string' },
-          'description': { 'type': 'string'}
-        }
-      }
     }
 }
 
+const schema2: JSONSchema7 = {
+    '$schema': 'http://json-schema.org/draft-07/schema#',
+    '$id': 'https://example.com/person.schema.json',
+    'title': 'Person',
+    'description': 'A human being',
+    'type': 'object',
+    'required': ['name', 'father'],
+    'properties': {
+        'name': {
+            'type': 'string'
+        },
+        'knows': {
+            'type': 'array',
+            'items': {
+                'required': ['nick'],
+                'properties': {
+                    'nick': {'type': 'string'},
+                }
+            }
+        },
+        'father': {
+            'type': 'object',
+            'properties': {
+                '@id': {'type': 'string'},
+                'name': {'type': 'string'},
+                'description': {'type': 'string'}
+            }
+        }
+    }
+}
+const subject = 'http://www.example.com/test'
+const buildConstructQuery = (subjectURI: string,schema: JSONSchema7) => {
+    const {
+        construct, whereRequired, whereOptionals
+    } = jsonSchema2construct(subjectURI, schema)
+    return CONSTRUCT`${construct}`.WHERE`${whereRequired}\n${whereOptionals}`
+}
 describe('make construct query', () => {
 
-  test('adds 1 + 2 to equal 3', () => {
-    expect(1 + 2).toBe(3)
-  })
+    test('can build construct query from simple schema', () => {
+        const constructQuery = buildConstructQuery(subject, schema).build({
+            base: BASE_IRI,
+            prefixes: {
+                ...exhibitionPrefixes
+            }
+        }).toString()
+        console.log(constructQuery)
+        expect(constructQuery).toMatch(/CONSTRUCT {.*/)
+    })
 
-  test('can build construct query from simple schema', () => {
-    const constructQuery = buildConstructQuery('http://www.example.com/test', schema)
-    console.log(constructQuery)
-    expect(constructQuery).toMatch(/CONSTRUCT {.*/ )
-  })
+    test('use stop symbols', () => {
+        const {construct, whereOptionals} = jsonSchema2construct(subject, schema2, ['@id'])
+        console.log(whereOptionals)
+        expect(whereOptionals).toMatch(subject)
+    })
 
 })

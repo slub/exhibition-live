@@ -1,47 +1,76 @@
-import {findAllRefs, JsonSchema7} from '@jsonforms/core'
-import {CONSTRUCT} from '@tpluscode/sparql-builder'
-import {JSONSchema7} from 'json-schema'
-import jsonref from 'jsonref'
+import {findAllRefs, JsonSchema, resolveSchema} from '@jsonforms/core'
+import {CONSTRUCT, DELETE} from '@tpluscode/sparql-builder'
+import {JSONSchema7, JSONSchema7Definition} from 'json-schema'
 
-import {BASE_IRI} from '../../config'
-import {exhibitionPrefixes} from '../../exhibtion'
 import {isJSONSchema, isJSONSchemaDefinition} from '../core/jsonSchema'
 
 
+const propertiesContainStopSymbol = (properties: object, stopSymbols: string[]) => {
+  const propKeys = Object.keys(properties)
+  for (const stopSymbol of stopSymbols) {
+    if(propKeys.includes(stopSymbol)) return true
+  }
+  return false
+}
+
 const MAX_RECURSION = 10
 const makePrefixed = (key: string) => key.includes(':') ? key : `:${key}`
-const base_iri = BASE_IRI
-const jsonSchema2construct = (subjectURI: string, rootSchema: JSONSchema7) => {
-  let construct = '', where = '', varIndex = 0
+const doNotFollowItemsRefs = false
+export const jsonSchema2construct: (subjectURI: string, rootSchema: JSONSchema7, stopSymbols?: string[], excludedProperties?: string[]) => { whereRequired: string, whereOptionals: string; construct: string } = (subjectURI, rootSchema, stopSymbols = [], excludedProperties = []) => {
+  let construct = '', whereOptionals = '', varIndex = 0
+  const whereRequired = ''
   const s = `<${subjectURI}>`
   const propertiesToSPARQLPatterns = (sP: string, subSchema: JSONSchema7, level: number) => {
     if(level > MAX_RECURSION) {
       console.warn(`will stop at level ${level} to prevent infinite loop because MAX_RECURSION is set to ${MAX_RECURSION}`)
       return
     }
+    if(level > 0 && propertiesContainStopSymbol(subSchema.properties || {}, stopSymbols)) {
+      return
+    }
+    const __type = `?__type_${varIndex++}`
+    whereOptionals += `OPTIONAL { ${sP} a ${__type} . }\n`
+    construct += `${sP} a ${__type} .\n`
     Object.entries(subSchema.properties || {}).map(([property,schema]) => {
-      if(isJSONSchema(schema)) {
+      if(isJSONSchema(schema) && !excludedProperties.includes(property)) {
         const required = subSchema.required?.includes(property),
             p = makePrefixed(property),
             o = `?${property}_${varIndex++}`
-        if(!required) { where += 'OPTIONAL {\n' }
+        if(!required) {
+          whereOptionals += `OPTIONAL {\n${sP} ${p} ${o} .\n`
+        } else {
+          whereOptionals += `${sP} ${p} ${o} .\n`
+        }
           construct += `${sP} ${p} ${o} .\n`
-          where += `${sP} ${p} ${o} .\n`
-          if(schema.properties) {
+        if(schema.$ref) {
+          const subSchema =  resolveSchema(schema as JsonSchema, '', rootSchema as JsonSchema)
+          console.log(schema.$ref)
+          console.log({subSchema})
+          if(subSchema && subSchema.properties &&  !propertiesContainStopSymbol(subSchema.properties, stopSymbols)) {
+            console.log('propertiesToSPARQL')
+            propertiesToSPARQLPatterns(o, subSchema as JSONSchema7, level + 1)
+          }
+        }
+        else if(schema.properties && !propertiesContainStopSymbol(schema.properties, stopSymbols)) {
             propertiesToSPARQLPatterns(o, schema, level + 1)
           }
-          if(isJSONSchemaDefinition(schema.items) && isJSONSchema(schema.items) && schema.items.properties) {
+        else if(schema.items) {
+          if (isJSONSchemaDefinition(schema.items) && isJSONSchema(schema.items) && schema.items.properties && !propertiesContainStopSymbol(schema.items.properties, stopSymbols)) {
             propertiesToSPARQLPatterns(o, schema.items, level + 1)
           }
-          if(schema.$ref) {
-            const allRefs = findAllRefs(rootSchema as JsonSchema7)
-            const subSchema = allRefs[schema.$ref]
-            if(subSchema) {
+          if(!doNotFollowItemsRefs
+              && isJSONSchemaDefinition(schema.items)
+              && isJSONSchema(schema.items)
+              && schema.items.$ref) {
+            //const ref = schema.items.$ref
+            const subSchema = resolveSchema(schema.items as JsonSchema, '', rootSchema as JsonSchema)
+            if (subSchema && isJSONSchemaDefinition(subSchema as JSONSchema7Definition) && isJSONSchema(subSchema as JSONSchema7) ) {
               propertiesToSPARQLPatterns(o, subSchema as JSONSchema7, level + 1)
             }
-
           }
-        if(!required) { where += '}\n' }
+
+        }
+        if(!required) { whereOptionals += '}\n' }
       }
     })
   }
@@ -49,18 +78,5 @@ const jsonSchema2construct = (subjectURI: string, rootSchema: JSONSchema7) => {
   if(isJSONSchemaDefinition(rootSchema.items) && isJSONSchema(rootSchema.items) && rootSchema.items.properties) {
     propertiesToSPARQLPatterns(s, rootSchema.items, 0)
   }
-  return { construct, where }
-}
-
-
-export const buildConstructQuery = (subjectURI: string,schema: JSONSchema7) => {
-  const {
-    construct, where
-  } = jsonSchema2construct(subjectURI, schema)
-  return CONSTRUCT`${construct}`.WHERE`${where}`.build({
-    base: base_iri,
-    prefixes: {
-      ...exhibitionPrefixes
-    }
-  }).toString()
+  return { construct, whereRequired, whereOptionals }
 }

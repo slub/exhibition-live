@@ -1,18 +1,14 @@
+import {JsonSchema, resolveSchema} from '@jsonforms/core'
 import ds from '@rdfjs/data-model'
 import namespace from '@rdfjs/namespace'
 import {Dataset} from '@rdfjs/types'
 import {rdf} from '@tpluscode/rdf-ns-builders'
 import clownface from 'clownface'
 import {JSONSchema7, JSONSchema7Definition} from 'json-schema'
-import { pointer }from 'jsonref'
 
 import {filterUndefOrNull} from '../core'
 import {isJSONSchema, isJSONSchemaDefinition} from '../core/jsonSchema'
 
-
-const getRefDefinition = (ref: string, schema: JSONSchema7) => {
-  return pointer(schema, ref.substring(1)) as JSONSchema7 | undefined
-}
 
 
 export type WalkerOptions = {
@@ -39,7 +35,7 @@ const propertyWalker = (baseIRI: string, node: clownface.GraphPointer, subSchema
     if (isJSONSchema(schema)) {
       if (schema.$ref) {
         const ref = schema.$ref
-        const subSchema = getRefDefinition(ref, rootSchema)
+        const subSchema =  resolveSchema(schema as JsonSchema, '', rootSchema as JsonSchema)
         if (subSchema && isJSONSchemaDefinition(subSchema as JSONSchema7Definition) && isJSONSchema(subSchema as JSONSchema7)) {
           if (!circularSet[ref] || circularSet[ref] < MAX_RECURSION) {
             val = propertyWalker(
@@ -52,7 +48,8 @@ const propertyWalker = (baseIRI: string, node: clownface.GraphPointer, subSchema
                 options)
           }
         }
-      } else if (schema.properties) {
+      }
+      else if (schema.properties) {
         val = propertyWalker(
             baseIRI,
             newNode as clownface.GraphPointer,
@@ -61,14 +58,15 @@ const propertyWalker = (baseIRI: string, node: clownface.GraphPointer, subSchema
             +1,
             circularSet,
             options)
-      } else if (schema.items) {
+      }
+      else if (schema.items) {
         val = filterUndefOrNull(newNode.map(quad => {
           if (isJSONSchemaDefinition(schema.items) && isJSONSchema(schema.items)) {
             if (schema.items.$ref) {
               const ref = schema.items.$ref
-              const subSchema = getRefDefinition(ref, rootSchema)
+              const subSchema =  resolveSchema(schema.items as JsonSchema, '', rootSchema as JsonSchema)
               if (subSchema && isJSONSchemaDefinition(subSchema as JSONSchema7Definition) && isJSONSchema(subSchema as JSONSchema7)) {
-                if (!circularSet[ref] || circularSet[ref] < MAX_RECURSION) {
+                if ((circularSet[ref] || 0) < MAX_RECURSION) {
                   return propertyWalker(
                       baseIRI,
                       quad,
@@ -83,9 +81,30 @@ const propertyWalker = (baseIRI: string, node: clownface.GraphPointer, subSchema
             } else if (schema.items.properties) {
               return propertyWalker(baseIRI, quad, schema.items, rootSchema, level + 1, circularSet, options)
             }
+            if(schema.items.type) {
+              if(!Array.isArray(schema.items.type)) {
+                switch (schema.items.type) {
+                  case 'object':
+                    return {}
+                  case 'array':
+                    return []
+                  case 'integer':
+                    return (parseInt(quad.value))
+                  case 'number':
+                    return (parseFloat(quad.value))
+                  case 'boolean':
+                    return quad.value === 'true'
+                  case 'string':
+                    return quad.value
+                  default:
+                    return quad.value
+                }
+              }
+            }
           }
         }))
-      } else if (schema.type === 'array') {
+      }
+      else if (schema.type === 'array') {
         val = newNode.values
       }
       if (!val) {
@@ -119,6 +138,7 @@ const propertyWalker = (baseIRI: string, node: clownface.GraphPointer, subSchema
       }
     }
     const typeNode = node.out(rdf.type)
+    console.log({node, typeNode})
     if(typeNode.value) {
       additionalProps = {
         ...additionalProps,

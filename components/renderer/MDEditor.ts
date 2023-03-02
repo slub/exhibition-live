@@ -1,6 +1,3 @@
-import '@uiw/react-md-editor/markdown-editor.css'
-import '@uiw/react-markdown-preview/markdown.css'
-
 import {MarkdownPreviewProps, MarkdownPreviewRef} from '@uiw/react-markdown-preview'
 import {ContextStore, MDEditorProps} from '@uiw/react-md-editor'
 import dynamic, {LoaderComponent} from 'next/dynamic'

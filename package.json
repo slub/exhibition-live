@@ -18,7 +18,9 @@
     "codegen": "graphql-codegen",
     "codegen:watch": "graphql-codegen --watch",
     "lint:fix": "next lint --fix && eslint --fix ./components ./pages",
-    "lint:check": "next lint && eslint ./components ./pages"
+    "lint:check": "next lint && eslint ./components ./pages",
+    "docker:build": "docker build -t adb-next .",
+    "docker:run": "docker run -p 3000:3000 adb-next"
   },
   "dependencies": {
     "@apidevtools/json-schema-ref-parser": "^9.1.0",

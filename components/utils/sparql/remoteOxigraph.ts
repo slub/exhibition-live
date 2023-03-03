@@ -1,12 +1,11 @@
 import {QueryEngine} from '@comunica/query-sparql'
-import {BindingsStream, IDataSource} from '@comunica/types'
+import {IDataSource} from '@comunica/types'
 import datasetFactory from '@rdfjs/dataset'
-import {Bindings, ResultStream} from '@rdfjs/types'
 import N3 from 'n3'
 
 type Sources = [IDataSource, ...IDataSource[]]
-const sources: Sources = ['http://localhost:7878/query'] // ['http://localhost:9999/blazegraph/namespace/kb/sparql']
-const sourcesUpdate: Sources = ['http://localhost:7878/update'] // ['http://localhost:9999/blazegraph/namespace/kb/sparql']
+const sources: Sources = ['http://localhost:7878/query']
+const sourcesUpdate: Sources = ['http://localhost:7878/update']
 const cFetch = (query: string) => fetch('http://localhost:7878/query', {
     'headers': {
         'accept': 'application/n-triples,*/*;q=0.9',
@@ -56,7 +55,7 @@ export const defaultQuerySelect: (query: string) => Promise<any[]> = async (quer
     return ((await prepared.json())?.results?.bindings || []) as any[]
 }
 
-export const oxigrahCrudOptions = {
+export const oxigraphCrudOptions = {
     askFetch: async (query: string) => {
         const res = await askFetch(query)
         const {boolean} = await res.json()

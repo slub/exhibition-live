@@ -19,7 +19,7 @@ import {uischemas} from '../components/form/uischemas'
 import PerformanceFooter from '../components/layout/PerformanceFooter'
 import PerformanceHeader from '../components/layout/PerformanceHeader'
 import {useFormEditor} from '../components/state'
-import {oxigrahCrudOptions} from '../components/utils/sparql/remoteOxigrapho'
+import {oxigraphCrudOptions} from '../components/utils/sparql/remoteOxigraph'
 import uischema from '../schema/exhibition-form-ui-schema-simple.json'
 import styles from '../styles/Home.module.css'
 
@@ -72,7 +72,7 @@ export default () => {
   return (
       <>
         <Head>
-          <title>Exhibition.Performance</title>
+          <title>Auststellungserfassung</title>
           <meta name="description" content="a knowledge base about exhibitions"/>
           <meta name="viewport" content="width=device-width, initial-scale=1"/>
           <link rel="icon" href="/favicon.ico"/>
@@ -85,14 +85,14 @@ export default () => {
               {/* Content wrapper */}
               <Container className="default-wrapper">
                 {/* Header area for content */}
-                <IconButton onClick={handleNew}><NewIcon /></IconButton>
+                <IconButton onClick={handleNew} aria-label={'neuen Eintrag erstellen'}><NewIcon /></IconButton>
                 <SemanticJsonForm
                     data={data}
                     entityIRI={data['@id']}
                     setData={_data => setData(_data)}
                     shouldLoadInitially
                     typeIRI='http://ontologies.slub-dresden.de/exhibition#Exhibition'
-                    crudOptions={oxigrahCrudOptions}
+                    crudOptions={oxigraphCrudOptions}
                     defaultPrefix={defaultPrefix}
                     jsonldContext={defaultJsonldContext}
                     queryBuildOptions={defaultQueryBuilderOptions}

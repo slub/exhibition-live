@@ -122,6 +122,26 @@
       "title": "Person",
       "type": "object"
     },
+    "WikidataHuman": {
+      "title": "Wikidata",
+      "additionalProperties": true,
+      "properties": {
+        "@id": {
+          "format": "wikidata-Q5",
+          "type": "string"
+        }
+      }
+    },
+    "GNDPerson": {
+      "title": "GND",
+      "additionalProperties": true,
+      "properties": {
+        "@id": {
+          "format": "gndo-DifferentiatedPerson",
+          "type": "string"
+        }
+      }
+    },
     "Person": {
       "additionalProperties": false,
       "description": "A person.",
@@ -133,6 +153,12 @@
         "@id": {
           "title": "http://ontologies.slub-dresden.de/exhibition/entity#",
           "type": "string"
+        },
+        "wikidata": {
+          "$ref": "#/$defs/WikidataHuman"
+        },
+        "gnd": {
+          "$ref": "#/$defs/GNDPerson"
         },
         "name": {
           "title": "Name",
@@ -176,26 +202,6 @@
       ],
       "title": "Person",
       "type": "object"
-    },
-    "WikidataHuman": {
-      "title": "Wikidata",
-      "additionalProperties": true,
-      "properties": {
-        "@id": {
-          "format": "wikidata-Q5",
-          "type": "string"
-        }
-      }
-    },
-    "GNDPerson": {
-      "title": "GND",
-      "additionalProperties": true,
-      "properties": {
-        "@id": {
-          "format": "gndo-DifferentiatedPerson",
-          "type": "string"
-        }
-      }
     },
     "TemporalValue": {
       "additionalProperties": false,

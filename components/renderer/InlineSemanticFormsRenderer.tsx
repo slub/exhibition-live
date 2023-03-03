@@ -12,7 +12,7 @@ import {defaultJsonldContext, defaultPrefix, defaultQueryBuilderOptions} from '.
 import SemanticJsonForm, {CRUDOpsType} from '../form/SemanticJsonForm'
 import {uischemaForType} from '../form/uischemaForType'
 import {uischemas} from '../form/uischemas'
-import {oxigrahCrudOptions} from '../utils/sparql/remoteOxigrapho'
+import {oxigraphCrudOptions} from '../utils/sparql/remoteOxigraph'
 import MuiEditDialog from './MuiEditDialog'
 
 const InlineSemanticFormsRenderer = (props: ControlProps) => {
@@ -120,7 +120,7 @@ const InlineSemanticFormsRenderer = (props: ControlProps) => {
                                     setData={_data => setFormData(_data)}
                                     shouldLoadInitially
                                     typeIRI={typeIRI}
-                                    crudOptions={oxigrahCrudOptions}
+                                    crudOptions={oxigraphCrudOptions}
                                     defaultPrefix={defaultPrefix}
                                     jsonldContext={defaultJsonldContext}
                                     queryBuildOptions={defaultQueryBuilderOptions}
@@ -143,7 +143,7 @@ const InlineSemanticFormsRenderer = (props: ControlProps) => {
                                     setData={_data => setFormData(_data)}
                                     shouldLoadInitially
                                     typeIRI={typeIRI}
-                                    crudOptions={oxigrahCrudOptions}
+                                    crudOptions={oxigraphCrudOptions}
                                     defaultPrefix={defaultPrefix}
                                     jsonldContext={defaultJsonldContext}
                                     queryBuildOptions={defaultQueryBuilderOptions}

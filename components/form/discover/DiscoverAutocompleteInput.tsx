@@ -3,7 +3,7 @@ import {SELECT} from '@tpluscode/sparql-builder'
 import parse from 'html-react-parser'
 import React, {FunctionComponent, useCallback, useMemo, useState} from 'react'
 
-import {defaultQuerySelect} from '../../utils/sparql/remoteOxigrapho'
+import {defaultQuerySelect} from '../../utils/sparql/remoteOxigraph'
 import {AutocompleteSuggestion, DebouncedAutocomplete} from '../DebouncedAutoComplete'
 import {defaultPrefix, defaultQueryBuilderOptions} from '../formConfigs'
 

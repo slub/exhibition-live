@@ -5,7 +5,7 @@ import { JSONSchemaFaker } from 'json-schema-faker'
 import {useState} from 'react'
 
 import schema from '../../schema/exhibition-info.schema.json'
-import {oxigrahCrudOptions} from '../utils/sparql/remoteOxigrapho'
+import {oxigraphCrudOptions} from '../utils/sparql/remoteOxigraph'
 import {defaultJsonldContext, defaultPrefix, defaultQueryBuilderOptions} from './formConfigs'
 import SemanticJsonForm from './SemanticJsonForm'
 
@@ -27,7 +27,7 @@ export const SemanticJsonFormExhibition = () => {
       data={data}
       setData={setData}
       typeIRI='http://ontologies.slub-dresden.de/exhibition#Exhibition'
-      crudOptions={oxigrahCrudOptions}
+      crudOptions={oxigraphCrudOptions}
       defaultPrefix={defaultPrefix}
       jsonldContext={defaultJsonldContext}
       queryBuildOptions={defaultQueryBuilderOptions}

@@ -1,11 +1,11 @@
 import 'react-json-view-lite/dist/index.css'
 
 import {
-    JsonFormsCore,
-    JsonSchema,
-    rankWith,
-    scopeEndsWith,
-    UISchemaElement
+  JsonFormsCore,
+  JsonSchema,
+  rankWith, schemaMatches,
+  scopeEndsWith,
+  UISchemaElement
 } from '@jsonforms/core'
 import {materialCells, materialRenderers} from '@jsonforms/material-renderers'
 import {JsonForms, JsonFormsInitStateProps} from '@jsonforms/react'
@@ -16,6 +16,8 @@ import {isEmpty} from 'lodash'
 import React, {FunctionComponent, useCallback, useEffect, useState} from 'react'
 import {JsonView} from 'react-json-view-lite'
 
+import AutocompleteGNDFieldRenderer from '../renderer/AutocompleteGNDFieldRenderer'
+import AutocompleteURIFieldRenderer from '../renderer/AutocompleteURIFieldRenderer'
 import AutoIdentifierRenderer from '../renderer/AutoIdentifierRenderer'
 import InlineSemanticFormsRenderer from '../renderer/InlineSemanticFormsRenderer'
 import MaterialCustomAnyOfRenderer, {materialCustomAnyOfControlTester} from '../renderer/MaterialCustomAnyOfRenderer'
@@ -55,7 +57,7 @@ const renderers = [
     {
         tester: materialCustomAnyOfControlTester,
         renderer: MaterialCustomAnyOfRenderer
-    }, /*{
+    }, {
         tester: rankWith(15,
             schemaMatches(
                 schema =>
@@ -71,7 +73,7 @@ const renderers = [
                         schema.format?.startsWith('wikidata'))
             )),
         renderer: AutocompleteURIFieldRenderer,
-    }, */ {
+    }, {
         tester: rankWith(10,
             scopeEndsWith('@id')
         ),

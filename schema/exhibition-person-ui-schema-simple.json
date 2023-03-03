@@ -50,6 +50,22 @@
           "label": "Todesdatum"
         }
       ]
+    },
+    {
+      "type": "Group",
+      "label": "Links zu anderen Verzeichnissen",
+      "elements": [
+        {
+          "type": "Control",
+          "scope": "#/properties/wikidata",
+          "label": "zur Wikidata-ID"
+        },
+        {
+          "type": "Control",
+          "scope": "#/properties/gnd",
+          "label": "zur GND-ID"
+        }
+      ]
     }
   ]
 }

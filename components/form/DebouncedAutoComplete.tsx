@@ -14,6 +14,7 @@ export type AutocompleteSuggestion = {
 export type DebouncedAutocompleteProps = {
   load: (value?: string) => Promise<AutocompleteSuggestion[]>;
   placeholder: string;
+  minSearchLength?: number
 } & Omit<
   AutocompleteProps<any, any, any, any>,
   'renderInput' | 'size' | 'options'
@@ -21,7 +22,7 @@ export type DebouncedAutocompleteProps = {
 
 export const DebouncedAutocomplete: FunctionComponent<
   DebouncedAutocompleteProps
-> = ({ load, ...props }) => {
+> = ({ load,minSearchLength = 1, ...props }) => {
   const [suggestions, setSuggestions] = useState<
     AutocompleteSuggestion[] | undefined
   >(undefined)
@@ -44,11 +45,11 @@ export const DebouncedAutocomplete: FunctionComponent<
       (e: any): void => {
         setLoading(true)
         const value = e.currentTarget.value
-        if (value.length > 4) {
+        if (value.length >=  minSearchLength) {
           debouncedRequest(e.currentTarget.value)
         }
       },
-      [setLoading, debouncedRequest],
+      [setLoading, debouncedRequest, minSearchLength],
   )
 
   return (

@@ -68,6 +68,7 @@ const WikidataAutocompleteInput: FunctionComponent<Props> = ({selected, onSelect
 
   return (<>
         <DebouncedAutocomplete
+            minSearchLength={3}
             load={async (searchString) => searchString
                 ? (await findPersonWithinWikidataUsingREST(searchString, 10, classType)).map(d => {
                   return d

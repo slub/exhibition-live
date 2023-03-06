@@ -37,6 +37,7 @@
     "@mui/styles": "^5.11.2",
     "@mui/x-date-pickers": "^5.0.14",
     "@next/font": "13.1.1",
+    "@phntms/use-local-state": "^0.1.4",
     "@rdfjs/dataset": "^2.0.1",
     "@rdfjs/parser-jsonld": "^2.1.0",
     "@rdfjs/parser-n3": "^2.0.1",

@@ -4630,6 +4630,11 @@
     tslib "^2.4.1"
     webcrypto-core "^1.7.4"
 
+"@phntms/use-local-state@^0.1.4":
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/@phntms/use-local-state/-/use-local-state-0.1.4.tgz#762cced6f6ba4fa0881c97e17c1e5348cb1d2d17"
+  integrity sha512-Ax34DhMDBwbPW+tUdTp03uuxRtW3hzG8e8TRJ8Zit5JRWHXyi4rWzsKKiH89riTCAoWEFAopxuXjeD0xGoGZ9w==
+
 "@pkgr/utils@^2.3.1":
   version "2.3.1"
   resolved "https://registry.yarnpkg.com/@pkgr/utils/-/utils-2.3.1.tgz#0a9b06ffddee364d6642b3cd562ca76f55b34a03"

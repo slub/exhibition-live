@@ -11,7 +11,8 @@ import {
 } from '@jsonforms/core'
 import {materialCells, materialRenderers} from '@jsonforms/material-renderers'
 import {JsonForms, JsonFormsInitStateProps} from '@jsonforms/react'
-import {Button, Hidden, Switch} from '@mui/material'
+import {Edit, EditOff} from '@mui/icons-material'
+import {Button, Hidden, IconButton, Switch} from '@mui/material'
 import {JSONSchema7} from 'json-schema'
 import {JsonLdContext} from 'jsonld-context-parser'
 import {isEmpty} from 'lodash'
@@ -122,19 +123,21 @@ const SemanticJsonForm: FunctionComponent<Props> =
          defaultPrefix,
          schema,
          jsonldContext,
-         debugEnabled,
         crudOptions = {},
         queryBuildOptions,
         jsonFormsProps = {},
         onEntityChange,
         onInit,
         hideToolbar,
-        readonly
+        readonly,
      }) => {
         const [jsonldData, setJsonldData] = useState<any>({})
         //const {formData, setFormData} = useFormEditor()
         const [formData, setFormData] = useState<any | undefined>()
         const [initiallyLoaded, setInitiallyLoaded] = useState<string | undefined>(undefined)
+        const [editMode, setEditMode ] =useState(!Boolean(readonly))
+        const [debugEnabled, setDebugEnabled ] =useState(false)
+
 
         const {parseJSONLD} = useJsonldParser(
             data,
@@ -202,17 +205,28 @@ const SemanticJsonForm: FunctionComponent<Props> =
             }
         }, [onInit, load, save, remove])
 
+      const handleSave = useCallback(async () => {
+        await save()
+        setEditMode(false)
+      }, [save, setEditMode])
 
 
         return (<>
             <Hidden xsUp={hideToolbar}>
-                <Button onClick={save}>speichern</Button>
+                <IconButton onClick={() => setEditMode(editMode => !editMode)}>{editMode ? <EditOff/> : <Edit/>}</IconButton>
+              {editMode && <>
+                <Button onClick={handleSave}>speichern</Button>
                 <Button onClick={remove}>entfernen</Button>
                 <Button onClick={load}>laden</Button>
+              </>}
+                <Switch checked={debugEnabled} onChange={e => setDebugEnabled(Boolean(e.target.checked))} title={'debug'}/>
+              {debugEnabled && <>
                 <Switch checked={isUpdate} onChange={e => setIsUpdate(Boolean(e.target.checked))} title={'upsert'}/>
+              </>
+              }
             </Hidden>
                 <JsonForms
-                    readonly={readonly}
+                    readonly={!editMode}
                     data={data}
                     renderers={renderers}
                     cells={materialCells}
@@ -221,13 +235,10 @@ const SemanticJsonForm: FunctionComponent<Props> =
                     {...jsonFormsProps}
 
                 />
-                {debugEnabled && <>
-                    <JsonView data={data} shouldInitiallyExpand={(lvl) => lvl < 5}/>
+                {debugEnabled && [data, jsonldData, formData].map((data_, idx) => (<>
+                    <JsonView key={idx} data={data_} shouldInitiallyExpand={(lvl) => lvl < 5}/>
                     <hr/>
-                    <JsonView data={jsonldData} shouldInitiallyExpand={(lvl) => lvl < 5}/>
-                    <hr/>
-                    <JsonView data={formData || {}} shouldInitiallyExpand={(lvl) => lvl < 5}/>
-                </>}
+                </>))}
             </>
         )
     }

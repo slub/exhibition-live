@@ -249,21 +249,6 @@ const PerformanceHeader: FunctionComponent<Props> = (props) => {
                   Einstellungen
                 </a>
               </li>
-              <li className="submenu ">
-                <a href="https://performance.musiconn.de/api" title="API">
-                  API
-                </a>
-                <ul>
-                  <li>
-                    <a
-                        href="https://performance.musiconn.de/api/autocomplete"
-                        title="autocomplete"
-                    >
-                      autocomplete
-                    </a>
-                  </li>
-                </ul>
-              </li>
             </ul>
           </nav>
           {/* Navigation toggle for mobile navigation */}

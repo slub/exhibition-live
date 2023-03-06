@@ -4,7 +4,7 @@ import {Edit, EditOff} from '@mui/icons-material'
 import {FormControl, Grid, Hidden, IconButton} from '@mui/material'
 import {JSONSchema7} from 'json-schema'
 import merge from 'lodash/merge'
-import React, {useCallback, useMemo, useState} from 'react'
+import React, {useCallback, useEffect, useMemo, useState} from 'react'
 import {v4 as uuidv4} from 'uuid'
 
 import DiscoverAutocompleteInput from '../form/discover/DiscoverAutocompleteInput'
@@ -49,15 +49,18 @@ const InlineSemanticFormsRenderer = (props: ControlProps) => {
 
     //console.log({config})
 
-    const handleToggle = useCallback(() => {
-        const prefix = schema.title || 'http://ontologies.slub-dresden.de/exhibition/entity#'
+    const init = useCallback(() => {
         if (!data && !editMode) {
+            const prefix = schema.title || 'http://ontologies.slub-dresden.de/exhibition/entity#'
             const newURI = `${prefix}${uuidv4()}`
             handleChange_(newURI)
             console.log({data})
         }
-        setEditMode(!editMode)
-    }, [schema, data, handleChange_, setEditMode, editMode])
+    }, [schema, data, handleChange_])
+
+    useEffect(() => {
+        init()
+    }, [init])
 
     const {$ref, typeIRI, useModal} = uischema.options?.context || {}
 
@@ -74,24 +77,6 @@ const InlineSemanticFormsRenderer = (props: ControlProps) => {
         }
     }, [$ref, schema, rootSchema])
 
-    const handleSave = useCallback(
-        async () => {
-            if(!save) return
-            await save()
-            setEditMode(false)
-        },
-        [save, setEditMode])
-    const handleRemove = useCallback(
-        async () => {
-            if(!remove) return
-            await remove()
-            setEditMode(false)
-        },
-        [remove, setEditMode],
-    )
-
-
-
 
     return (
         <Hidden xsUp={!visible}>
@@ -101,46 +86,8 @@ const InlineSemanticFormsRenderer = (props: ControlProps) => {
                 variant={'standard'}
                 sx={theme => ({marginBottom: theme.spacing(2)})}
             >
-                <IconButton onClick={() => handleToggle()}>{editMode ? <EditOff/> : <Edit/>}</IconButton>
                 {subSchema && (
-                    useModal ? (
-                            <MuiEditDialog
-                                title={label || ''}
-                                open={editMode}
-                                onClose={handleToggle}
-                                onCancel={handleToggle}
-                                onSave={handleSave}
-                                onReload={load}
-                                search={<>
-                                    <DiscoverAutocompleteInput
-                                        typeIRI={typeIRI}
-                                        title={label || ''}
-                                        onSelectionChange={selection => handleChange_(selection?.value)}/>
-                                </>}
-                                onRemove={handleRemove}><>
-                                <SemanticJsonForm
-                                    data={formData}
-                                    hideToolbar={true}
-                                    entityIRI={data}
-                                    setData={_data => setFormData(_data)}
-                                    shouldLoadInitially
-                                    typeIRI={typeIRI}
-                                    crudOptions={crudOptions}
-                                    defaultPrefix={defaultPrefix}
-                                    jsonldContext={defaultJsonldContext}
-                                    queryBuildOptions={defaultQueryBuilderOptions}
-                                    schema={subSchema as JSONSchema7}
-                                    jsonFormsProps={{
-                                        uischema: uischemaForType(typeIRI),
-                                        uischemas: uischemas
-                                    }}
-                                    onEntityChange={entityIRI => console.log({entityIRI})}
-                                    onInit={(crudOps) => setCRUDOps(crudOps)}
-                                />
-                            </>
-                            </MuiEditDialog>
-                    )
-                        : (<Grid container alignItems='baseline'>
+                        <Grid container alignItems='baseline'>
                             <Grid item flex={'auto'}>
                                 <SemanticJsonForm
                                     readonly={!editMode}
@@ -155,12 +102,13 @@ const InlineSemanticFormsRenderer = (props: ControlProps) => {
                                     queryBuildOptions={defaultQueryBuilderOptions}
                                     schema={subSchema as JSONSchema7}
                                     jsonFormsProps={{
+                                        uischema: uischemaForType(typeIRI),
                                         uischemas: uischemas
                                     }}
-                                    onEntityChange={entityIRI => console.log({entityIRI})}
+                                    //onEntityChange={entityIRI => console.log({entityIRI})}
                                 />
                             </Grid>
-                        </Grid>))
+                        </Grid>)
                 }
             </FormControl>
         </Hidden>

@@ -33,7 +33,7 @@ const InlineSemanticFormsRendererModal = (props: ControlProps) => {
   } = props
   const isValid = errors.length === 0
   const appliedUiSchemaOptions = merge({}, config, uischema.options)
-  const [editMode, setEditMode] = useState(false)
+  const [modalIsOpen, setModalIsOpen] = useState(false)
   const [formData, setFormData] = useState({'@id': data})
   const [CRUDOps, setCRUDOps] = useState<CRUDOpsType | undefined>()
   const {load, save, remove} = CRUDOps || {}
@@ -51,13 +51,13 @@ const InlineSemanticFormsRendererModal = (props: ControlProps) => {
 
   const handleToggle = useCallback(() => {
     const prefix = schema.title || 'http://ontologies.slub-dresden.de/exhibition/entity#'
-    if (!data && !editMode) {
+    if (!data && !modalIsOpen) {
       const newURI = `${prefix}${uuidv4()}`
       handleChange_(newURI)
       console.log({data})
     }
-    setEditMode(!editMode)
-  }, [schema, data, handleChange_, setEditMode, editMode])
+    setModalIsOpen(!modalIsOpen)
+  }, [schema, data, handleChange_, setModalIsOpen, modalIsOpen])
 
   const {$ref, typeIRI, useModal} = uischema.options?.context || {}
 
@@ -78,16 +78,16 @@ const InlineSemanticFormsRendererModal = (props: ControlProps) => {
       async () => {
         if (!save) return
         await save()
-        setEditMode(false)
+        setModalIsOpen(false)
       },
-      [save, setEditMode])
+      [save, setModalIsOpen])
   const handleRemove = useCallback(
       async () => {
         if (!remove) return
         await remove()
-        setEditMode(false)
+        setModalIsOpen(false)
       },
-      [remove, setEditMode],
+      [remove, setModalIsOpen],
   )
 
 
@@ -99,11 +99,11 @@ const InlineSemanticFormsRendererModal = (props: ControlProps) => {
             variant={'standard'}
             sx={theme => ({marginBottom: theme.spacing(2)})}
         >
-          <IconButton onClick={(e) => { e.stopPropagation() ; handleToggle()}}>{editMode ? <EditOff/> : <Edit/>}</IconButton>
-          {editMode && subSchema && (
+          <IconButton onClick={(e) => { e.stopPropagation() ; handleToggle()}}>{modalIsOpen ? <EditOff/> : <Edit/>}</IconButton>
+          {modalIsOpen && subSchema && (
               <MuiEditDialog
                   title={label || ''}
-                  open={editMode}
+                  open={modalIsOpen}
                   onClose={handleToggle}
                   onCancel={handleToggle}
                   onSave={handleSave}

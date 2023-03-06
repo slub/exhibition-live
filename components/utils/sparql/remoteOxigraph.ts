@@ -3,10 +3,7 @@ import {IDataSource} from '@comunica/types'
 import datasetFactory from '@rdfjs/dataset'
 import N3 from 'n3'
 
-type Sources = [IDataSource, ...IDataSource[]]
-const sources: Sources = ['http://localhost:7878/query']
-const sourcesUpdate: Sources = ['http://localhost:7878/update']
-const cFetch = (query: string) => fetch('http://localhost:7878/query', {
+const cFetch = (query: string, endpoint: string) => fetch(endpoint, {
     'headers': {
         'accept': 'application/n-triples,*/*;q=0.9',
         'content-type': 'application/x-www-form-urlencoded',
@@ -17,7 +14,7 @@ const cFetch = (query: string) => fetch('http://localhost:7878/query', {
     'credentials': 'omit',
     'cache': 'no-cache'
 })
-const askFetch = (query: string) => fetch('http://localhost:7878/query', {
+const askFetch = (query: string, endpoint: string) => fetch(endpoint, {
     'headers': {
         'accept': 'application/sparql-results+json,*/*;q=0.9',
         'content-type': 'application/x-www-form-urlencoded',
@@ -41,33 +38,33 @@ const createCutomizedFetch: (query: string, contentType?: string) => (input: Req
     }
     return await fetch(input, newInit)
 }
-const defaultQueryFetch = async (query: string) => {
+const defaultQueryFetch = (endpoint:string) => async (query: string) => {
     const engine = new QueryEngine()
     const prepared = await engine.query(query, {
-        sources: sourcesUpdate,
+        sources: [endpoint] as [IDataSource],
         fetch: createCutomizedFetch(query, 'application/sparql-update')
     })
     return await prepared.execute()
 }
-export const defaultQuerySelect: (query: string) => Promise<any[]> = async (query: string) => {
+export const defaultQuerySelect: (query: string, endpoint: string) => Promise<any[]> = async (query: string, endpoint) => {
     const sFetch = createCutomizedFetch(query)
-    const prepared = await sFetch(sources[0] as string)
+    const prepared = await sFetch(endpoint)
     return ((await prepared.json())?.results?.bindings || []) as any[]
 }
 
-export const oxigraphCrudOptions = {
+export const oxigraphCrudOptions = (endpoint: string) => ({
     askFetch: async (query: string) => {
-        const res = await askFetch(query)
+        const res = await askFetch(query, endpoint)
         const {boolean} = await res.json()
         return boolean === true
     },
     constructFetch: async (query: string) => {
-        const res = await cFetch(query),
+        const res = await cFetch(query, endpoint),
             reader = new N3.Parser(),
             ntriples = await res.text(),
             ds = datasetFactory.dataset(reader.parse(ntriples))
         return ds
 
     },
-    updateFetch: defaultQueryFetch
-}
+    updateFetch: defaultQueryFetch(endpoint.replace('query', 'update')),
+})

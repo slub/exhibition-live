@@ -1,6 +1,6 @@
-import {create} from "zustand";
-import useLocalState from "@phntms/use-local-state";
-import {useEffect, useState} from "react";
+import useLocalState from '@phntms/use-local-state'
+import {useEffect, useState} from 'react'
+import {create} from 'zustand'
 
 type SparqlEndpoint = {
   label?: string

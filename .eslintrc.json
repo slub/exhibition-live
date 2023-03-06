@@ -1,6 +1,7 @@
 {
   "extends": "next/core-web-vitals",
   "plugins": ["simple-import-sort"],
+  "ignorePatterns": [ "components/renderer/**/*.tsx"],
   "rules": {
     "semi": [ "error", "never" ],
     "quotes": [ "error", "single" ],

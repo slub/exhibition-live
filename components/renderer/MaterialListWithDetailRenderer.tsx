@@ -104,6 +104,8 @@ export const MaterialListWithDetailRenderer =
         // @ts-ignore
       (...args) => {
         // @ts-ignore
+        if(!addItem) return () => {}
+        // @ts-ignore
         const __addItem = addItem(...args)
         return (..._args: any[]) => {
           // @ts-ignore

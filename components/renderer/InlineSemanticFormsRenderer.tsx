@@ -12,6 +12,7 @@ import {defaultJsonldContext, defaultPrefix, defaultQueryBuilderOptions} from '.
 import SemanticJsonForm, {CRUDOpsType} from '../form/SemanticJsonForm'
 import {uischemaForType} from '../form/uischemaForType'
 import {uischemas} from '../form/uischemas'
+import {useLocalSettings, useSettings} from '../state/useLocalSettings'
 import {oxigraphCrudOptions} from '../utils/sparql/remoteOxigraph'
 import MuiEditDialog from './MuiEditDialog'
 
@@ -36,6 +37,8 @@ const InlineSemanticFormsRenderer = (props: ControlProps) => {
     const [formData, setFormData] = useState({'@id': data})
     const [CRUDOps, setCRUDOps] = useState<CRUDOpsType | undefined>()
     const {load, save, remove } = CRUDOps || {}
+    const { activeEndpoint } = useSettings()
+    const crudOptions = activeEndpoint && oxigraphCrudOptions(activeEndpoint.endpoint)
 
     const handleChange_ = useCallback(
         (v?: string) => {
@@ -43,6 +46,8 @@ const InlineSemanticFormsRenderer = (props: ControlProps) => {
         },
         [path, handleChange],
     )
+
+    //console.log({config})
 
     const handleToggle = useCallback(() => {
         const prefix = schema.title || 'http://ontologies.slub-dresden.de/exhibition/entity#'
@@ -97,7 +102,7 @@ const InlineSemanticFormsRenderer = (props: ControlProps) => {
                 sx={theme => ({marginBottom: theme.spacing(2)})}
             >
                 <IconButton onClick={() => handleToggle()}>{editMode ? <EditOff/> : <Edit/>}</IconButton>
-                {editMode && subSchema && (
+                {subSchema && (
                     useModal ? (
                             <MuiEditDialog
                                 title={label || ''}
@@ -120,7 +125,7 @@ const InlineSemanticFormsRenderer = (props: ControlProps) => {
                                     setData={_data => setFormData(_data)}
                                     shouldLoadInitially
                                     typeIRI={typeIRI}
-                                    crudOptions={oxigraphCrudOptions}
+                                    crudOptions={crudOptions}
                                     defaultPrefix={defaultPrefix}
                                     jsonldContext={defaultJsonldContext}
                                     queryBuildOptions={defaultQueryBuilderOptions}
@@ -138,12 +143,13 @@ const InlineSemanticFormsRenderer = (props: ControlProps) => {
                         : (<Grid container alignItems='baseline'>
                             <Grid item flex={'auto'}>
                                 <SemanticJsonForm
+                                    readonly={!editMode}
                                     data={formData}
                                     entityIRI={data}
                                     setData={_data => setFormData(_data)}
                                     shouldLoadInitially
                                     typeIRI={typeIRI}
-                                    crudOptions={oxigraphCrudOptions}
+                                    crudOptions={crudOptions}
                                     defaultPrefix={defaultPrefix}
                                     jsonldContext={defaultJsonldContext}
                                     queryBuildOptions={defaultQueryBuilderOptions}

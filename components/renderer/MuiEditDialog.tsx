@@ -1,4 +1,4 @@
-import {Close as CloseIcon,DeleteForever as RemoveIcn, Menu as MenuIcon, Refresh as ReloadIcon, Save as SaveIcon,Search as SearchIcon} from '@mui/icons-material'
+import {Close as CloseIcon,DeleteForever as RemoveIcn, Fullscreen as FullscreenIcon, Refresh as ReloadIcon, Save as SaveIcon,Search as SearchIcon} from '@mui/icons-material'
 import {alpha, AppBar, Badge, Box, IconButton, InputBase, styled, Toolbar, Typography} from '@mui/material'
 import Button from '@mui/material/Button'
 import Dialog from '@mui/material/Dialog'
@@ -7,6 +7,7 @@ import DialogContent from '@mui/material/DialogContent'
 import { useTheme } from '@mui/material/styles'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import * as React from 'react'
+import {useState} from 'react'
 
 const Search = styled('div')(({ theme }) => ({
     position: 'relative',
@@ -60,15 +61,20 @@ export default function MuiEditDialog({children, open, title, onSave, onCancel, 
     search?: React.ReactChild,
     children?: React.ReactChild}) {
     const theme = useTheme()
+    const [forceFullscreen, setForceFullscreen] = useState(false)
     const fullScreen = useMediaQuery(theme.breakpoints.down('md'))
 
 
     return (
             <Dialog
-                fullScreen={fullScreen}
+                fullScreen={fullScreen || forceFullscreen}
                 open={Boolean(open)}
                 onClose={onClose}
+                fullWidth={true}
+                scroll={'paper'}
+                disableScrollLock={false}
                 aria-labelledby="responsive-dialog-title"
+                onClick={e => e.stopPropagation()}
             >
 
                     <AppBar position="static">
@@ -104,6 +110,13 @@ export default function MuiEditDialog({children, open, title, onSave, onCancel, 
                                     color="inherit">
                                         <ReloadIcon />
                                 </IconButton>}
+                                <IconButton
+                                    size="large"
+                                    aria-label="close without saving"
+                                    onClick={() => setForceFullscreen(ff => !ff)}
+                                    color="inherit">
+                                    <FullscreenIcon />
+                                </IconButton>
                                 <IconButton
                                     size="large"
                                     aria-label="close without saving"

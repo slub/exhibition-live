@@ -3,6 +3,7 @@ import {SELECT} from '@tpluscode/sparql-builder'
 import parse from 'html-react-parser'
 import React, {FunctionComponent, useCallback, useMemo, useState} from 'react'
 
+import {useSettings} from '../../state/useLocalSettings'
 import {defaultQuerySelect} from '../../utils/sparql/remoteOxigraph'
 import {AutocompleteSuggestion, DebouncedAutocomplete} from '../DebouncedAutoComplete'
 import {defaultPrefix, defaultQueryBuilderOptions} from '../formConfigs'
@@ -18,7 +19,7 @@ type Props = OwnProps;
 
 
 
-const findEntityByClass = async (searchString: string, typeIRI: string) => {
+const findEntityByClass = async (searchString: string, typeIRI: string, endpoint: string) => {
   const subjectV = variable('subject'),
       nameV = variable('name')
   let query = SELECT.DISTINCT` ${subjectV} ${nameV}`.WHERE`
@@ -27,7 +28,7 @@ const findEntityByClass = async (searchString: string, typeIRI: string) => {
             FILTER(contains(${nameV}, "${searchString}")) .
 `.LIMIT(10).build(defaultQueryBuilderOptions)
   query = `PREFIX : <${defaultPrefix}> ` + query
-  const bindings = await defaultQuerySelect(query)
+  const bindings = await defaultQuerySelect(query, endpoint)
   return bindings.map(binding => ({name: binding[nameV.value]?.value, value: binding[subjectV.value]?.value}))
 
 }
@@ -35,6 +36,7 @@ const findEntityByClass = async (searchString: string, typeIRI: string) => {
 
 const DiscoverAutocompleteInput: FunctionComponent<Props> = ({title = 'etwas', selected, onSelectionChange, typeIRI: classType}) => {
   const [_selected, setSelected] = useState<AutocompleteSuggestion | null>(null)
+  const { activeEndpoint } = useSettings()
 
   const __selected = useMemo(() => selected || _selected, [selected, _selected])
 
@@ -50,8 +52,8 @@ const DiscoverAutocompleteInput: FunctionComponent<Props> = ({title = 'etwas', s
   return (<>
         <DebouncedAutocomplete
             // @ts-ignore
-            load={async (searchString) => ((searchString && classType)
-                ? (await findEntityByClass(searchString, classType)).map(({name= '', value}) => {
+            load={async (searchString) => ((searchString && classType && activeEndpoint?.endpoint)
+                ? (await findEntityByClass(searchString, classType, activeEndpoint.endpoint)).map(({name= '', value}) => {
                   return {
                     label: name,
                     value

@@ -14,7 +14,7 @@ const createStubLayout = (defs: string, baseIRI: string, label?: string) => ({
         'context': {
           '$ref': `#/$defs/${defs}`,
           'typeIRI': `${baseIRI}${defs}`,
-          'useModal': true
+          'useModal': false
         }
       },
       'scope': '#/properties/@id'

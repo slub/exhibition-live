@@ -19,6 +19,7 @@ import {uischemas} from '../components/form/uischemas'
 import PerformanceFooter from '../components/layout/PerformanceFooter'
 import PerformanceHeader from '../components/layout/PerformanceHeader'
 import {useFormEditor} from '../components/state'
+import {useSettings} from '../components/state/useLocalSettings'
 import {oxigraphCrudOptions} from '../components/utils/sparql/remoteOxigraph'
 import uischema from '../schema/exhibition-form-ui-schema-simple.json'
 import styles from '../styles/Home.module.css'
@@ -62,6 +63,8 @@ const exampleData = {
 }
 export default () => {
   const [data, setData] = useState<any>(exampleData)
+  const { activeEndpoint } = useSettings()
+  const crudOptions = activeEndpoint && oxigraphCrudOptions(activeEndpoint.endpoint)
   const handleNew = useCallback(() => {
     const newURI = `${baseIRI}${uuidv4()}`
     setData({
@@ -92,7 +95,7 @@ export default () => {
                     setData={_data => setData(_data)}
                     shouldLoadInitially
                     typeIRI='http://ontologies.slub-dresden.de/exhibition#Exhibition'
-                    crudOptions={oxigraphCrudOptions}
+                    crudOptions={crudOptions}
                     defaultPrefix={defaultPrefix}
                     jsonldContext={defaultJsonldContext}
                     queryBuildOptions={defaultQueryBuilderOptions}

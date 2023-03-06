@@ -1,6 +1,8 @@
 import 'react-json-view-lite/dist/index.css'
 
 import {
+  isObjectArray,
+  isObjectArrayControl,
   JsonFormsCore,
   JsonSchema,
   rankWith, schemaMatches,
@@ -20,8 +22,8 @@ import AutocompleteGNDFieldRenderer from '../renderer/AutocompleteGNDFieldRender
 import AutocompleteURIFieldRenderer from '../renderer/AutocompleteURIFieldRenderer'
 import AutoIdentifierRenderer from '../renderer/AutoIdentifierRenderer'
 import InlineSemanticFormsRenderer from '../renderer/InlineSemanticFormsRenderer'
+import MaterialArrayOfLinkedItemRenderer from '../renderer/MaterialArrayOfLinkedItemRenderer'
 import MaterialCustomAnyOfRenderer, {materialCustomAnyOfControlTester} from '../renderer/MaterialCustomAnyOfRenderer'
-import {MaterialListWithDetailRenderer, materialListWithDetailTester} from '../renderer/MaterialListWithDetailRenderer'
 import TypeOfRenderer from '../renderer/TypeOfRenderer'
 import {useJsonldParser} from '../state/useJsonldParser'
 import {CrudOptions, SparqlBuildOptions, useSPARQL_CRUD} from '../state/useSPARQL_CRUD'
@@ -48,6 +50,7 @@ interface OwnProps {
     onEntityChange?: (entityIRI: string | undefined) => void
     onInit?: (crudOps: CRUDOpsType) => void
     hideToolbar?: boolean
+    readonly?: boolean
 }
 
 type Props = OwnProps;
@@ -84,10 +87,10 @@ const renderers = [
         ),
         renderer: TypeOfRenderer
     },{
-        tester: materialListWithDetailTester,
-        renderer: MaterialListWithDetailRenderer
+        tester: rankWith(5, isObjectArray),
+        renderer: MaterialArrayOfLinkedItemRenderer
     }, {
-        tester: rankWith(15,
+        tester: rankWith(10,
             (uischema: UISchemaElement): boolean => {
                 if (isEmpty(uischema)) {
                     return false
@@ -125,7 +128,8 @@ const SemanticJsonForm: FunctionComponent<Props> =
         jsonFormsProps = {},
         onEntityChange,
         onInit,
-        hideToolbar
+        hideToolbar,
+        readonly
      }) => {
         const [jsonldData, setJsonldData] = useState<any>({})
         //const {formData, setFormData} = useFormEditor()
@@ -208,6 +212,7 @@ const SemanticJsonForm: FunctionComponent<Props> =
                 <Switch checked={isUpdate} onChange={e => setIsUpdate(Boolean(e.target.checked))} title={'upsert'}/>
             </Hidden>
                 <JsonForms
+                    readonly={readonly}
                     data={data}
                     renderers={renderers}
                     cells={materialCells}

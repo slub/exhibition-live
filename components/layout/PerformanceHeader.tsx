@@ -245,7 +245,7 @@ const PerformanceHeader: FunctionComponent<Props> = (props) => {
                 </a>
               </li>
               <li>
-                <a href={'_blank'} onClick={openSettings} title="Einstellungen">
+                <a href='#' onClick={openSettings} title="Einstellungen">
                   Einstellungen
                 </a>
               </li>

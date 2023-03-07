@@ -24,8 +24,12 @@ import {oxigraphCrudOptions} from '../components/utils/sparql/remoteOxigraph'
 import uischema from '../schema/exhibition-form-ui-schema-simple.json'
 import styles from '../styles/Home.module.css'
 
-
-const WithPreviewForm = ({ children }: { children: React.ReactChild}) => {
+type Props = {
+  children: React.ReactChild
+  data: any
+  classIRI: string
+}
+const WithPreviewForm = ({classIRI, data, children }: Props ) => {
   const isLandscape = false
   const { previewEnabled, togglePreview,formData } = useFormEditor()
 
@@ -38,7 +42,7 @@ const WithPreviewForm = ({ children }: { children: React.ReactChild}) => {
             {children}
         </div>
         <div>
-          {formData && <ContentMainPreview exhibition={formData} />}
+          {<ContentMainPreview classIRI={classIRI}  exhibition={data} />}
         </div>
       </SplitPane>
       : <div className={'page-wrapper'}>{children}</div>}
@@ -82,6 +86,7 @@ export default () => {
         </Head>
         <main className={styles.main}>
 
+          <WithPreviewForm data={data} classIRI={classIRI}>
             <>
               {/* Page header */}
               <PerformanceHeader/>
@@ -109,6 +114,7 @@ export default () => {
               {/* Page footer */}
               <PerformanceFooter/>
             </>
+          </WithPreviewForm>
         </main>
       </>
   )

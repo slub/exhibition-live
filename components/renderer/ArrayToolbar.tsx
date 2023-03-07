@@ -18,6 +18,7 @@ export interface ArrayLayoutToolbarProps {
   path: string;
   addItem(path: string, data: any): () => void;
   createDefault(): any;
+  readonly?: boolean
 }
 export const ArrayLayoutToolbar = React.memo(
   ({
@@ -25,7 +26,8 @@ export const ArrayLayoutToolbar = React.memo(
     errors,
     addItem,
     path,
-    createDefault
+    createDefault,
+      readonly
   }: ArrayLayoutToolbarProps) => {
     const {t} = useTranslation()
     return (
@@ -40,7 +42,7 @@ export const ArrayLayoutToolbar = React.memo(
             </Grid>
           </Hidden>
           <Grid item>
-            <Grid container>
+            <Grid container sx={{visibility: readonly ? 'hidden' : 'visible'}}>
               <Grid item>
                 <Tooltip
                   id='tooltip-add'

@@ -16,7 +16,7 @@ import {
 } from '@jsonforms/core'
 import {
   JsonFormsDispatch,
-  JsonFormsStateContext,
+  JsonFormsStateContext, useJsonForms,
   withJsonFormsContext
 } from '@jsonforms/react'
 import ArrowDownward from '@mui/icons-material/ArrowDownward'
@@ -57,6 +57,7 @@ interface OwnPropsOfExpandPanel {
   config: any;
   childLabelProp?: string;
   handleExpansion(panel: string): (event: any, expanded: boolean) => void;
+  readonly?: boolean;
 }
 
 interface StatePropsOfExpandPanel extends OwnPropsOfExpandPanel {
@@ -107,7 +108,8 @@ const ExpandPanelRendererComponent = (props: ExpandPanelProps) => {
     uischemas,
     renderers,
     cells,
-    config
+    config,
+    readonly
   } = props
 
   const foundUISchema = useMemo(
@@ -123,11 +125,6 @@ const ExpandPanelRendererComponent = (props: ExpandPanelProps) => {
       ),
     [uischemas, schema, uischema.scope, path, uischema, rootSchema]
   )
-
-  const editItem = useCallback((path: string, toEdit: number) => (event: any): void => {
-    event.stopPropagation()
-    console.log(toEdit)
-  }, [])
 
   const appliedUiSchemaOptions = merge({}, config, uischema.options)
 
@@ -157,6 +154,7 @@ const ExpandPanelRendererComponent = (props: ExpandPanelProps) => {
                   direction='row'
                   justifyContent='center'
                   alignItems='center'
+                  sx={{visibility: readonly ? 'hidden' : 'visible'}}
                 >
                   {appliedUiSchemaOptions.showSortButtons ? (
                     <Fragment>

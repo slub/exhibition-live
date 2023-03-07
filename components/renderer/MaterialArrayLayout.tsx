@@ -35,6 +35,7 @@ import React, {useCallback,useState} from 'react'
 
 import { ArrayLayoutToolbar } from './ArrayToolbar'
 import ExpandPanelRenderer from './ExpandPanelRenderer'
+import {useJsonForms} from "@jsonforms/react";
 
 const MaterialArrayLayoutComponent = (props: ArrayLayoutProps)=> {
   const [expanded, setExpanded] = useState<string|boolean>(false)
@@ -65,6 +66,7 @@ const MaterialArrayLayoutComponent = (props: ArrayLayoutProps)=> {
     config,
     props.uischema.options
   )
+  const { readonly } = useJsonForms()
 
   return (
     <div>
@@ -78,6 +80,7 @@ const MaterialArrayLayoutComponent = (props: ArrayLayoutProps)=> {
         path={path}
         addItem={addItem}
         createDefault={innerCreateDefaultValue}
+        readonly={readonly}
       />
       <div>
         {data > 0 ? (
@@ -99,6 +102,7 @@ const MaterialArrayLayoutComponent = (props: ArrayLayoutProps)=> {
                 config={config}
                 childLabelProp={appliedUiSchemaOptions.elementLabelProp}
                 uischemas={uischemas}
+                readonly={readonly}
               />
             )
           })

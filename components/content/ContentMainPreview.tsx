@@ -187,7 +187,6 @@ const ContentMain: FunctionComponent<Props> = ({exhibition}: Props) => {
                     </span>
                   </span>
                 </span>
->
                 </dd>
                 <dt id="event_44711_projects" className="label-projects">
                   Projekte

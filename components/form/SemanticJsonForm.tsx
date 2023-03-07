@@ -207,6 +207,7 @@ const SemanticJsonForm: FunctionComponent<Props> =
 
       const handleSave = useCallback(async () => {
         await save()
+        await load()
         setEditMode(false)
       }, [save, setEditMode])
 

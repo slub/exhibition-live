@@ -1,10 +1,6 @@
 name: Exhibition Catalog release branch - Publish Storybook
 
 on:
-  # Runs on pushes targeting the default branch
-  push:
-    branches: ["main"]
-
   # Trigger via 'Actions' on GitHub
   workflow_dispatch:
 

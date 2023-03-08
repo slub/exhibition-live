@@ -58,8 +58,26 @@
             "elementLabelProp": "name",
             "detail": "GENERATED"
           }
+        },
+        {
+          "type": "Control",
+          "label": "Organisator",
+          "scope": "#/properties/organizer",
+          "options": {
+            "elementLabelProp": "name",
+            "detail": "GENERATED"
+          }
         }
       ]
+    },
+    {
+      "type": "Control",
+      "label": "Resourcen",
+      "scope": "#/properties/resources",
+      "options": {
+        "elementLabelProp": "name",
+        "detail": "GENERATED"
+      }
     },
     {
       "type": "Control",

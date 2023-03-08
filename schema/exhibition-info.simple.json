@@ -1,5 +1,93 @@
 {
   "$defs": {
+      "ResourceTypeStub": {
+    "description": "The type of a resource.",
+    "type": "object",
+    "properties": {
+      "@id": {
+        "title": "http://ontologies.slub-dresden.de/exhibition/entity#",
+        "type": "string"
+      },
+      "@type": {
+        "const": "http://ontologies.slub-dresden.de/exhibition#ResourceType",
+        "type": "string"
+      },
+      "name": {
+        "type": "string"
+      }
+    }
+  },
+  "ResourceType": {
+    "description": "The type of a resource.",
+    "type": "object",
+    "properties": {
+      "@id": {
+        "title": "http://ontologies.slub-dresden.de/exhibition/entity#",
+        "type": "string"
+      },
+      "@type": {
+        "const": "http://ontologies.slub-dresden.de/exhibition#ResourceType",
+        "type": "string"
+      },
+      "name": {
+        "type": "string"
+      }
+    }
+  },
+  "ResourceStub": {
+    "additionalProperties": false,
+    "description": "Eine Resource/ Material zu einer Ausstellung.",
+    "properties": {
+      "@type": {
+        "const": "http://ontologies.slub-dresden.de/exhibition#Resource",
+        "type": "string"
+      },
+      "@id": {
+        "title": "http://ontologies.slub-dresden.de/exhibition/entity#",
+        "type": "string"
+      },
+      "name": {
+        "type": "string"
+      }
+    },
+    "required": [
+      "@type"
+    ],
+    "title": "Resource",
+    "type": "object"
+  },
+  "Resource": {
+    "additionalProperties": false,
+    "description": "A resource stub.",
+    "properties": {
+      "@type": {
+        "const": "http://ontologies.slub-dresden.de/exhibition#Resource",
+        "type": "string"
+      },
+      "@id": {
+        "title": "http://ontologies.slub-dresden.de/exhibition/entity#",
+        "type": "string"
+      },
+      "name": {
+        "type": "string"
+      },
+      "type": {
+        "type": "string"
+      },
+      "url": {
+        "type": "string"
+      },
+      "lastChecked": {
+        "type": "string",
+        "format": "date"
+      }
+    },
+    "required": [
+      "@type"
+    ],
+    "title": "Resource",
+    "type": "object"
+  },
     "Exhibition": {
       "additionalProperties": false,
       "description": "Eine Ausstellung an einem Ort und einer Zeit mit Objekten und Personen.",
@@ -15,6 +103,11 @@
         "@id": {
           "title": "http://ontologies.slub-dresden.de/exhibition/entity#",
           "type": "string"
+        },
+        "organizer": {
+          "items": {
+            "$ref": "#/$defs/OrganizationStub"
+          }
         },
         "artist": {
           "description": "Ausstellende Künstler.",
@@ -45,6 +138,12 @@
         "endDate": {
           "$ref": "#/$defs/TemporalValue",
           "description": "Datum der Ausstellung."
+        },
+        "resources": {
+          "description": "Zusätzliche Ressourcen zur Ausstellung.",
+          "items": {
+            "$ref": "#/$defs/ResourceStub"
+          }
         }
       },
       "title": "Exhibition",
@@ -71,7 +170,6 @@
       ],
       "title": "Work",
       "type": "object"
-
     },
     "Work": {
       "additionalProperties": false,
@@ -88,6 +186,9 @@
         "name": {
           "type": "string"
         },
+        "year": {
+          "type": "number"
+        },
         "category": {
           "type": "string"
         }
@@ -98,148 +199,201 @@
       ],
       "title": "Work",
       "type": "object"
-
     },
-    "PersonStub": {
-      "additionalProperties": false,
-      "description": "A person stub.",
-      "properties": {
-        "@type": {
-          "const": "http://ontologies.slub-dresden.de/exhibition#Person",
-          "type": "string"
-        },
-        "@id": {
-          "title": "http://ontologies.slub-dresden.de/exhibition/entity#",
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        }
+  "PersonStub": {
+    "additionalProperties": false,
+    "description": "A person stub.",
+    "properties": {
+      "@type": {
+        "const": "http://ontologies.slub-dresden.de/exhibition#Person",
+        "type": "string"
       },
-      "required": [
-        "@type"
-      ],
-      "title": "Person",
-      "type": "object"
-    },
-    "WikidataHuman": {
-      "title": "Wikidata",
-      "additionalProperties": true,
-      "properties": {
-        "@id": {
-          "format": "wikidata-Q5",
-          "type": "string"
-        }
+      "@id": {
+        "title": "http://ontologies.slub-dresden.de/exhibition/entity#",
+        "type": "string"
+      },
+      "name": {
+        "type": "string"
+      },
+      "image": {
+        "type": "string",
+        "format": "uri"
       }
     },
-    "GNDPerson": {
-      "title": "GND",
-      "additionalProperties": true,
-      "properties": {
-        "@id": {
-          "format": "gndo-DifferentiatedPerson",
-          "type": "string"
-        }
+    "required": [
+      "@type"
+    ],
+    "title": "Person",
+    "type": "object"
+  },
+  "WikidataHuman": {
+    "title": "Wikidata",
+    "additionalProperties": true,
+    "properties": {
+      "@id": {
+        "format": "wikidata-Q5",
+        "type": "string"
       }
-    },
-    "Person": {
-      "additionalProperties": false,
-      "description": "A person.",
-      "properties": {
-        "@type": {
-          "const": "http://ontologies.slub-dresden.de/exhibition#Person",
-          "type": "string"
-        },
-        "@id": {
-          "title": "http://ontologies.slub-dresden.de/exhibition/entity#",
-          "type": "string"
-        },
-        "wikidata": {
-          "$ref": "#/$defs/WikidataHuman"
-        },
-        "gnd": {
-          "$ref": "#/$defs/GNDPerson"
-        },
-        "name": {
-          "title": "Name",
-          "type": "string",
-          "description": "Name der Person"
-        },
-        "birthDate": {
-          "format": "date",
-          "type": "string",
-          "title": "Geburtsdatum"
-        },
-        "deathDate": {
-          "format": "date",
-          "type": "string",
-          "title": "Sterbedatum"
-        },
-        "description": {
-          "description": "Anmerkungen zur Person",
-          "type": "string"
-        },
-        "occupation": {
-          "description": "Hauptberufe der Person",
-          "items": {
-            "type": "string"
-          }
-        },
-        "titleWork": {
-          "description": "Prägnatests Werk der Person",
-          "$ref": "#/$defs/WorkStub"
-        },
-        "works": {
-          "description": "Bedeutende Werke der Person",
-          "items": {
-            "$ref": "#/$defs/WorkStub"
-          }
-        }
-      },
-      "required": [
-        "name",
-        "@type"
-      ],
-      "title": "Person",
-      "type": "object"
-    },
-    "TemporalValue": {
-      "additionalProperties": false,
-      "description": "",
-      "properties": {
-        "date": {
-          "pattern": "[+-]?\\d{4}-\\d{2}-\\d{2}",
-          "label": "Datum",
-          "type": "string"
-        },
-        "modifier": {
-          "type": "string",
-          "label": "Modifizierung",
-          "oneOf": [
-            {
-              "const": "BEFORE",
-              "title": "Vor"
-            },
-            {
-              "const": "AFTER",
-              "title": "Nach"
-            },
-            {
-              "const": "VAGUE",
-              "title": "Um"
-            }
-          ]
-        }
-      },
-      "title": "TemporalValue",
-      "type": "object"
     }
   },
-  "$id": "http://ontologies.slub-dresden.de/exhibtion",
-  "$schema": "http://json-schema.org/draft-07/schema#",
-  "additionalProperties": true,
-  "metamodel_version": "1.7.0",
-  "title": "exhibtion-info",
-  "type": "object",
-  "version": null
+  "GNDPerson": {
+    "title": "GND",
+    "additionalProperties": true,
+    "properties": {
+      "@id": {
+        "format": "gndo-DifferentiatedPerson",
+        "type": "string"
+      }
+    }
+  },
+  "OrganizationStub": {
+    "additionalProperties": false,
+    "description": "An organization.",
+    "properties": {
+      "@type": {
+        "const": "http://ontologies.slub-dresden.de/exhibition#Organization",
+        "type": "string"
+      },
+      "@id": {
+        "title": "http://ontologies.slub-dresden.de/exhibition/entity#",
+        "type": "string"
+      },
+      "name": {
+        "type": "string"
+      },
+      "description": {
+        "description": "A description of the thing.",
+        "type": "string"
+      }
+    },
+    "required": [
+      "name"
+    ],
+    "title": "Organization",
+    "type": "object"
+  },
+  "Organization": {
+    "additionalProperties": false,
+    "description": "An organization.",
+    "properties": {
+      "name": {
+        "type": "string"
+      },
+      "description": {
+        "description": "A description of the thing.",
+        "type": "string"
+      }
+    },
+    "required": [
+      "name"
+    ],
+    "title": "Organization",
+    "type": "object"
+  },
+  "Person": {
+    "additionalProperties": false,
+    "description": "A person.",
+    "properties": {
+      "@type": {
+        "const": "http://ontologies.slub-dresden.de/exhibition#Person",
+        "type": "string"
+      },
+      "@id": {
+        "title": "http://ontologies.slub-dresden.de/exhibition/entity#",
+        "type": "string"
+      },
+      "wikidata": {
+        "$ref": "#/$defs/WikidataHuman"
+      },
+      "gnd": {
+        "$ref": "#/$defs/GNDPerson"
+      },
+      "name": {
+        "title": "Name",
+        "type": "string",
+        "description": "Name der Person"
+      },
+      "birthDate": {
+        "format": "date",
+        "type": "string",
+        "title": "Geburtsdatum"
+      },
+      "deathDate": {
+        "format": "date",
+        "type": "string",
+        "title": "Sterbedatum"
+      },
+      "description": {
+        "description": "Anmerkungen zur Person",
+        "type": "string"
+      },
+      "image": {
+        "type": "string",
+        "format": "uri"
+      },
+      "occupation": {
+        "description": "Hauptberufe der Person",
+        "items": {
+          "type": "string"
+        }
+      },
+      "titleWork": {
+        "description": "Prägnatests Werk der Person",
+        "$ref": "#/$defs/WorkStub"
+      },
+      "works": {
+        "description": "Bedeutende Werke der Person",
+        "items": {
+          "$ref": "#/$defs/WorkStub"
+        }
+      }
+    },
+    "required": [
+      "name",
+      "@type"
+    ],
+    "title": "Person",
+    "type": "object"
+  },
+  "TemporalValue": {
+    "additionalProperties": false,
+    "properties": {
+      "modifier": {
+        "type": "string",
+        "title": "Genauigkeit",
+        "oneOf": [
+          {
+            "const": "EXACT",
+            "title": "exakt"
+          },
+          {
+            "const": "BEFORE",
+            "title": "Vor"
+          },
+          {
+            "const": "AFTER",
+            "title": "Nach"
+          },
+          {
+            "const": "VAGUE",
+            "title": "Um"
+          }
+        ]
+      },
+      "date": {
+        "pattern": "[+-]?\\d{4}-\\d{2}-\\d{2}",
+        "title": "Datum",
+        "type": "string"
+      }
+    },
+    "type": "object"
+  }
+},
+"$id": "http://ontologies.slub-dresden.de/exhibtion",
+"$schema": "http://json-schema.org/draft-07/schema#",
+"additionalProperties": true,
+"metamodel_version": "1.7.0",
+"title": "exhibtion-info",
+"type": "object",
+"version": null
 }

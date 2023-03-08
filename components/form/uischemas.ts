@@ -33,4 +33,4 @@ const createUiSchema: (key: string, baseIRI: string, label?: string) => JsonForm
     uischema: createStubLayout(key, baseIRI, label)
 
 })
-export const uischemas: JsonFormsUISchemaRegistryEntry[] = ['Person', 'Work', 'Organization', 'Location'].map((key) => createUiSchema(key, BASE_IRI))
+export const uischemas: JsonFormsUISchemaRegistryEntry[] = ['Person', 'Work', 'Organization', 'Location', 'Resource'].map((key) => createUiSchema(key, BASE_IRI))

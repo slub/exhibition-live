@@ -131,7 +131,10 @@ const InlineSemanticFormsRendererModal = (props: ControlProps) => {
                       uischema: uischemaForType(typeIRI),
                       uischemas: uischemas
                     }}
-                    onEntityChange={entityIRI => console.log({entityIRI})}
+                    onEntityChange={entityIRI => {
+                      handleChange_(entityIRI)
+                      console.log({entityIRI});
+                    }}
                     onInit={(crudOps) => setCRUDOps(crudOps)}
                 />
               </>

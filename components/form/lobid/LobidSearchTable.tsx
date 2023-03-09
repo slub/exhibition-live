@@ -9,7 +9,7 @@ type Props = {
   searchString: string,
   typeName?: string
   onSelect?: (id: string | undefined) => void,
-  onAcceptItem?: (id: string | undefined) => void
+  onAcceptItem?: (id: string | undefined, data: any) => void
 }
 
 const LobidSearchTable: FunctionComponent<Props> = ({
@@ -65,6 +65,10 @@ const LobidSearchTable: FunctionComponent<Props> = ({
     fetchData()
   }, [searchString, typeName, fetchData])
 
+  const handleAccept = useCallback(
+      (id: string | undefined) => {
+        onAcceptItem && onAcceptItem(id, selectedEntry)
+      }, [onAcceptItem, selectedEntry])
 
   return (!selectedId ? <List>
     {
@@ -83,8 +87,11 @@ const LobidSearchTable: FunctionComponent<Props> = ({
       })
     }
 
-  </List> : <ClassicEntityCard id={selectedId} data={selectedEntry} onBack={() => handleSelect(undefined)}
-                               onAcceptItem={onAcceptItem}/>)
+  </List> : <ClassicEntityCard
+      id={selectedId}
+      data={selectedEntry}
+      onBack={() => handleSelect(undefined)}
+      onAcceptItem={handleAccept}/>)
 
 }
 

@@ -199,6 +199,13 @@ const SemanticJsonForm: FunctionComponent<Props> =
               return state.data })
           }, [setData, setHideSimilarityFinder])
 
+      const handleNewData = useCallback(
+          (newData: any) => {
+            console.log({newData})
+            if(!newData) return
+            setData(newData)
+          }, [setData])
+
       useEffect(() => {
         parseJSONLD(data)
       }, [data, parseJSONLD])
@@ -251,7 +258,7 @@ const SemanticJsonForm: FunctionComponent<Props> =
               </Grid>
               {!hideSimilarityFinder &&
                 <Grid item xs={6} md={4}>
-                  <SimilarityFinder data={data} classIRI={typeIRI} jsonSchema={schema} onEntityChange={onEntityChange}/>
+                  <SimilarityFinder data={data} classIRI={typeIRI} jsonSchema={schema} onEntityIRIChange={onEntityChange} onMappedDataAccepted={handleNewData}/>
                 </Grid>}
             </Grid>
           </>

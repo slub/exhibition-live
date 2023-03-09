@@ -7,6 +7,8 @@ import * as React from 'react'
 import {FunctionComponent, useCallback, useState} from 'react'
 
 import {BASE_IRI} from '../config'
+import {gndFieldsToOwnModelMap} from '../config/lobidMappings'
+import {mapGNDToModel} from '../utils/gnd/mapGNDToModel'
 import DiscoverSearchTable from './discover/DiscoverSearchTable'
 import LobidSearchTable from './lobid/LobidSearchTable'
 
@@ -14,7 +16,8 @@ type Props = {
   data: any,
   classIRI: string
   jsonSchema: JSONSchema7
-  onEntityChange?: (entityIRI: string | undefined) => void
+  onEntityIRIChange?: (entityIRI: string | undefined) => void
+  onMappedDataAccepted?: (data: any) => void
 };
 type State = {};
 
@@ -24,7 +27,7 @@ type SelectedEntity = {
   source: KnowledgeSources
 }
 const SimilarityFinder: FunctionComponent<Props> = ({
-                                                      data, classIRI, onEntityChange
+                                                      data, classIRI, onEntityIRIChange, onMappedDataAccepted
                                                     }) => {
   const [selectedKnowledgeSources, setSelectedKnowledgeSources] = useState<KnowledgeSources[]>(['kb', 'gnd', 'wikidata'])
   const [entitySelected, setEntitySelected] = useState<SelectedEntity | undefined>()
@@ -40,6 +43,20 @@ const SimilarityFinder: FunctionComponent<Props> = ({
       },
       [setEntitySelected],
   )
+
+  const handleAccept = useCallback(
+      (id: string | undefined, entryData: any) => {
+        console.log('accept', id, entryData)
+        if(!id || ! entryData?.allProps) return
+        const newData = mapGNDToModel(typeName, entryData.allProps, gndFieldsToOwnModelMap)
+        newData['gnd'] = { '@id': id }
+        onMappedDataAccepted && onMappedDataAccepted(newData)
+
+
+      },
+      [selectedKnowledgeSources, typeName, onMappedDataAccepted])
+
+
   return (<>
         <Grid container justifyContent="center">
           <Grid item>
@@ -49,13 +66,13 @@ const SimilarityFinder: FunctionComponent<Props> = ({
                   onChange={handleKnowledgeSourceChange}
                   aria-label="Suche über verschiedene Wissensquellen"
               >
-                <ToggleButton value="kb" aria-label="left aligned">
+                <ToggleButton value="kb" aria-label="lokale Datenbank">
                   <KnowledgebaseIcon/>
                 </ToggleButton>
-                <ToggleButton value="gnd" aria-label="centered">
+                <ToggleButton value="gnd" aria-label="GND">
                   <Image alt={'gnd logo'} width={24} height={24} src={'/Icons/gnd-logo.png'} />
                 </ToggleButton>
-                <ToggleButton value="wikidata" aria-label="right aligned">
+                <ToggleButton value="wikidata" aria-label="Wikidata">
                   <Image alt={'wikidata logo'} width={30} height={24} src={'/Icons/Wikidata-logo-en.svg'} />
                 </ToggleButton>
               </ToggleButtonGroup>
@@ -68,10 +85,14 @@ const SimilarityFinder: FunctionComponent<Props> = ({
                 searchString={data.name}
                 typeName={typeName}
                 classIRI={classIRI}
-                onAcceptItem={(id) => onEntityChange && onEntityChange(id)}
+                onAcceptItem={(id) => onEntityIRIChange && onEntityIRIChange(id)}
                 onSelect={(id) => handleSelect(id, 'kb')}/> }
         {(!entitySelected || entitySelected.source == 'gnd') && selectedKnowledgeSources.includes('gnd') &&
-          <LobidSearchTable searchString={data.name} typeName={typeName} onSelect={(id) => handleSelect(id, 'gnd')}/>}
+          <LobidSearchTable
+              onAcceptItem={handleAccept}
+              searchString={data.name}
+              typeName={typeName}
+              onSelect={(id) => handleSelect(id, 'gnd')}/>}
       </>
   )
 }

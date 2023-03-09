@@ -55,7 +55,20 @@
     {
       "type": "Control",
       "scope": "#/properties/@type"
+    },
+    {
+      "type": "Group",
+      "label": "Verzeichnisse",
+        "elements": [
+            {
+            "type": "Control",
+            "scope": "#/properties/gnd"
+            },
+            {
+            "type": "Control",
+            "scope": "#/properties/wikidata"
+            }
+        ]
     }
-
   ]
 }

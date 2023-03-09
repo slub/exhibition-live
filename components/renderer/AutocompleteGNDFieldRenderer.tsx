@@ -59,11 +59,12 @@ return (
                 required={showAsRequired(!!required,
                     appliedUiSchemaOptions.hideRequiredAsterisk)}
             >
-              {label}
+              GND
             </FormLabel>
           </Grid>
           <Grid item>
             <IconButton onClick={() => setEditMode(prev => !prev)}>{editMode ? <EditOff/> : <Edit/>}</IconButton>
+            {data}
           </Grid>
         </Grid>
         <GNDAutocompleteInput selected={selected} onSelectionChange={setSelected} typeOf={classType}/>

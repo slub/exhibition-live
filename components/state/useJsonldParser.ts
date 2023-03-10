@@ -19,14 +19,24 @@ export const useJsonldParser = (data: any, jsonldContext: JsonLdContext, schema:
                          { onFormDataChange, onJsonldData, walkerOptions = {}, defaultPrefix }: UseJsonLdParserOptions) => {
     const [entityIRI, setEntityIRI] = useState<string | undefined>()
     const parseJSONLD = useCallback(
-        async (_data: object) => {
+        async (_data: any) => {
             // @ts-ignore
             const _entityIri = (_data['@id'])
             if (_entityIri !== entityIRI) setEntityIRI(_entityIri)
-            const jsonldDoc = {
-                '@context': jsonldContext,
-                ...JSON.parse(JSON.stringify(_data))
-            }
+
+          //iterate through object and filter out every key, whose value is an empty object or an empty array
+            const jsonldDoc = Object.keys(_data).reduce((acc, key) => {
+                if (Array.isArray(_data[key]) && _data[key].length === 0) return acc
+                if (typeof _data[key] === 'object' && Object.keys(_data[key]).length === 0) return acc
+                return {
+                    ...acc,
+                    [key]: _data[key]
+                }
+            }, {
+              '@context': jsonldContext
+            })
+
+
             onJsonldData && onJsonldData(jsonldDoc)
 
             try {

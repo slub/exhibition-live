@@ -11,10 +11,13 @@ type UseSubscriptions = {
   subscribe: (key: string, callback: (value: any) => void) => string
   unsubscribe: (key: string, uuid: string) => void
   subscriptions: Subscription[]
-  dataChanged: (key: string) => void
 }
 
-const useSubscriptions = create<UseSubscriptions>((set, get) => ({
+export const subscriptionKeys = {
+  GLOBAL_DATA_CHANGE: 'globalDataChange'
+}
+
+export const useSubscriptions = create<UseSubscriptions>((set, get) => ({
   subscriptions: [],
   subscribe: (key, callback) => {
     const uuid = uuidv4()
@@ -34,9 +37,9 @@ const useSubscriptions = create<UseSubscriptions>((set, get) => ({
     set(({subscriptions}) => ({
       subscriptions: subscriptions.filter(s => s.key !== key || s.uuid !== uuid)
     }))
-  },
-  dataChanged: (key) => {
-    const {subscriptions} = get()
-    subscriptions.filter(s => s.key === key).forEach(s => s.callback(key))
   }
 }))
+
+export const  emitToSubscribers = (key: string, subscriptions: Subscription[]) => {
+  subscriptions.filter(s => s.key === key).forEach(s => s.callback(key))
+}

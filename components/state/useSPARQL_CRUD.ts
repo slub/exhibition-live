@@ -105,8 +105,12 @@ export const useSPARQL_CRUD = (entityIRI: string | undefined, typeIRI: string | 
     const save = useCallback(
         async () => {
             if (!data || !entityIRI || !whereEntity) return
+          const _data = {
+            ...data,
+            '@id': entityIRI
+          }
             const ntWriter = new N3.Writer({format: 'Turtle'})
-            const ds = await jsonld.toRDF(data)
+            const ds = await jsonld.toRDF(_data)
 
             // @ts-ignore
             const ntriples = ntWriter.quadsToString([...ds]).replaceAll('_:_:', '_:')

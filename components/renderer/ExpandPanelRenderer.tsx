@@ -63,6 +63,7 @@ interface OwnPropsOfExpandPanel {
 interface StatePropsOfExpandPanel extends OwnPropsOfExpandPanel {
   childLabel: string;
   childPath: string;
+  avatar: string;
   enableMoveUp: boolean;
   enableMoveDown: boolean;
 }
@@ -109,7 +110,8 @@ const ExpandPanelRendererComponent = (props: ExpandPanelProps) => {
     renderers,
     cells,
     config,
-    readonly
+    readonly,
+    avatar
   } = props
 
   const foundUISchema = useMemo(
@@ -139,7 +141,7 @@ const ExpandPanelRendererComponent = (props: ExpandPanelProps) => {
           <Grid item xs={7} md={9}>
             <Grid container alignItems={'center'}>
               <Grid item xs={2} md={1}>
-                <Avatar aria-label='Index'>{index + 1}</Avatar>
+                <Avatar aria-label='Index' src={avatar}>{index + 1}</Avatar>
               </Grid>
               <Grid item xs={10} md={11}>
                 <span id={labelHtmlId}>{childLabel}</span>
@@ -220,7 +222,7 @@ const ExpandPanelRendererComponent = (props: ExpandPanelProps) => {
         </Grid>
       </AccordionSummary>
       <AccordionDetails>
-        <JsonFormsDispatch
+        {expanded && <JsonFormsDispatch
           schema={schema}
           uischema={foundUISchema}
           path={childPath}
@@ -239,7 +241,7 @@ const ExpandPanelRendererComponent = (props: ExpandPanelProps) => {
               renderer: InlineSemanticFormsRenderer
             }]}
           cells={cells}
-        />
+        />}
       </AccordionDetails>
     </Accordion>
   )
@@ -308,6 +310,7 @@ export const withContextToExpandPanelProps = (
   const childLabel = childLabelProp
     ? get(childData, childLabelProp, '')
     : get(childData, getFirstPrimitiveProp(schema), '')
+  const avatar = get(childData, 'image') || get(childData, 'logo')
 
   return (
     <Component
@@ -316,6 +319,7 @@ export const withContextToExpandPanelProps = (
       childLabel={childLabel}
       childPath={childPath}
       uischemas={uischemas}
+      avatar={avatar}
     />
   )
 }

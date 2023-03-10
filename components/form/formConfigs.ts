@@ -1,8 +1,6 @@
 import namespace from '@rdfjs/namespace'
 
-import schemaLoaded from '../../schema/exhibition-info.simple.json'
 
-export const exhibitionSchema = {...schemaLoaded, ...schemaLoaded.$defs.Exhibition}
 export const sladb = namespace('http://ontologies.slub-dresden.de/exhibition#')
 export const slent = namespace('http://ontologies.slub-dresden.de/exhibition/entity#')
 export const defaultPrefix = sladb[''].value

@@ -14,7 +14,7 @@ import {
   defaultJsonldContext,
   defaultPrefix,
   defaultQueryBuilderOptions,
-  exhibitionSchema, sladb, slent
+  sladb, slent
 } from '../components/form/formConfigs'
 import SemanticJsonForm from '../components/form/SemanticJsonForm'
 import {useUISchemaForType} from '../components/form/uischemaForType'
@@ -86,7 +86,7 @@ export default () => {
       '@type': classIRI,
     })
   }, [setData])
-  const {data: loadedSchema} = useQuery(['schema', typeName], () => fetch(`/schema/${typeName}.schema.json`).then(async res => {
+  const {data: loadedSchema} = useQuery(['schema', typeName], () => fetch(`../schema/${typeName}.schema.json`).then(async res => {
     const jsonData: any = await res.json()
     if (!jsonData) return
     const result = {

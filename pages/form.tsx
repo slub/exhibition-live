@@ -9,12 +9,12 @@ import {v4 as uuidv4} from 'uuid'
 
 import {BASE_IRI} from '../components/config'
 import ContentMainPreview from '../components/content/ContentMainPreview'
-import SettingsModal from '../components/content/settings/SettingsModal'
 import {
   defaultJsonldContext,
   defaultPrefix,
   defaultQueryBuilderOptions,
-  sladb, slent
+  sladb,
+  slent
 } from '../components/form/formConfigs'
 import SemanticJsonForm from '../components/form/SemanticJsonForm'
 import {useUISchemaForType} from '../components/form/uischemaForType'
@@ -86,15 +86,13 @@ export default () => {
       '@type': classIRI,
     })
   }, [setData])
-  const {data: loadedSchema} = useQuery(['schema', typeName], () => fetch(`../schema/${typeName}.schema.json`).then(async res => {
+  const {data: loadedSchema} = useQuery(['schema', typeName], () => fetch(`./schema/${typeName}.schema.json`).then(async res => {
     const jsonData: any = await res.json()
     if (!jsonData) return
-    const result = {
+    return {
       ...jsonData,
       ...(jsonData.$defs?.[typeName] || {})
     }
-    console.log('loadedSchema', result)
-    return result
   }))
   const uischemaExternal = useUISchemaForType(classIRI)
   return (

@@ -42,7 +42,6 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps ) => {
 
   const handleChange_ = useCallback(
       (v?: string) => {
-        console.log({v, data, path})
         //FIXME: this is a workaround for a bug, that causes this to be called with the same value eternally
         if (v === data) return
         console.log({v, data, path})
@@ -53,15 +52,16 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps ) => {
 
   //console.log({config})
   useEffect(() => {
+    let label_ = ''
     if(data) {
       const parentData = Resolve.data(ctx?.core?.data, path.substring(0, path.length - ('@id'.length + 1  )))
-      const label_ = parentData?.label || parentData?.name || parentData?.title
-      setRealLabel(label_ || '')
+      label_ = parentData?.label || parentData?.name || parentData?.title || parentData?.['@id'] || ''
     }
+    setRealLabel(label_)
   }, [data, ctx?.core?.data, path, setRealLabel]);
 
-  const init = useCallback(() => {
-    if (!data && !editMode) {
+  const newURI = useCallback(() => {
+    if (!data) {
       const prefix = schema.title || slent[''].value
       const newURI = `${prefix}${uuidv4()}`
       handleChange_(newURI)
@@ -69,8 +69,9 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps ) => {
   }, [schema, data, handleChange_])
 
   useEffect(() => {
-    init()
-  }, [init])
+    if(editMode)
+      newURI()
+  }, [newURI, editMode])
 
   const {$ref, typeIRI} = uischema.options?.context || {}
   const uischemaExternal = useUISchemaForType(typeIRI || '')
@@ -93,7 +94,7 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps ) => {
       <Hidden xsUp={!visible}>
         <Grid container alignItems='baseline'>
           <Grid item flex={'auto'}>
-            {realLabel && <DiscoverAutocompleteInput
+            { realLabel && <DiscoverAutocompleteInput
                 readonly={Boolean(ctx.readonly)}
                 typeIRI={typeIRI}
                 title={label || ''}

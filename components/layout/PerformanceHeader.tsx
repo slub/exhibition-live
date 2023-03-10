@@ -240,13 +240,13 @@ const PerformanceHeader: FunctionComponent<Props> = (props) => {
                 </a>
               </li>
               <li>
-                <a href="https://performance.musiconn.de/about" title="Über uns">
-                  Über uns
+                <a href='#' onClick={openSettings} title="Einstellungen">
+                  Einstellungen
                 </a>
               </li>
               <li>
-                <a href='#' onClick={openSettings} title="Einstellungen">
-                  Einstellungen
+                <a href="https://performance.musiconn.de/about" title="Über uns">
+                  Über uns
                 </a>
               </li>
             </ul>

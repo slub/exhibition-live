@@ -4,7 +4,7 @@ import {Grid, Icon, ToggleButton, ToggleButtonGroup, Tooltip} from '@mui/materia
 import {JSONSchema7} from 'json-schema'
 import Image from 'next/image'
 import * as React from 'react'
-import {FunctionComponent, useCallback, useState} from 'react'
+import {FunctionComponent, useCallback, useMemo,useState} from 'react'
 
 import {BASE_IRI} from '../config'
 import {gndFieldsToOwnModelMap} from '../config/lobidMappings'
@@ -36,7 +36,7 @@ const SimilarityFinder: FunctionComponent<Props> = ({
       (event: React.MouseEvent<HTMLElement>, newKnowledgeSources: KnowledgeSources[]) => {
         setSelectedKnowledgeSources(newKnowledgeSources)
       }, [setSelectedKnowledgeSources])
-  const typeName = classIRI.substring(BASE_IRI.length, classIRI.length)
+  const typeName = useMemo(() => classIRI.substring(BASE_IRI.length, classIRI.length), [classIRI])
   const handleSelect = useCallback(
       (id: string | undefined, source: KnowledgeSources) => {
         setEntitySelected(id ? {id, source} : undefined)

@@ -1,7 +1,7 @@
 import {ControlProps, JsonSchema, resolveSchema} from '@jsonforms/core'
 import {withJsonFormsControlProps} from '@jsonforms/react'
 import {Edit, EditOff} from '@mui/icons-material'
-import {FormControl, Grid, Hidden, IconButton} from '@mui/material'
+import {FormControl, Hidden, IconButton} from '@mui/material'
 import {JSONSchema7} from 'json-schema'
 import merge from 'lodash/merge'
 import React, {useCallback, useMemo, useState} from 'react'
@@ -12,7 +12,7 @@ import {defaultJsonldContext, defaultPrefix, defaultQueryBuilderOptions} from '.
 import SemanticJsonForm, {CRUDOpsType} from '../form/SemanticJsonForm'
 import {uischemaForType} from '../form/uischemaForType'
 import {uischemas} from '../form/uischemas'
-import {useLocalSettings, useSettings} from '../state/useLocalSettings'
+import {useSettings} from '../state/useLocalSettings'
 import {oxigraphCrudOptions} from '../utils/sparql/remoteOxigraph'
 import MuiEditDialog from './MuiEditDialog'
 
@@ -42,19 +42,19 @@ const InlineSemanticFormsRendererModal = (props: ControlProps) => {
 
   const handleChange_ = useCallback(
       (v?: string) => {
+        //FIXME: this is a workaround for a bug, that causes this to be called with the same value eternally
+        if(v === data) return
         handleChange(path, v)
       },
-      [path, handleChange],
+      [path, handleChange, data],
   )
 
-  //console.log({config})
 
   const handleToggle = useCallback(() => {
     const prefix = schema.title || 'http://ontologies.slub-dresden.de/exhibition/entity#'
     if (!data && !modalIsOpen) {
       const newURI = `${prefix}${uuidv4()}`
       handleChange_(newURI)
-      console.log({data})
     }
     setModalIsOpen(!modalIsOpen)
   }, [schema, data, handleChange_, setModalIsOpen, modalIsOpen])
@@ -78,6 +78,7 @@ const InlineSemanticFormsRendererModal = (props: ControlProps) => {
       async () => {
         if (!save) return
         await save()
+        //emitToSubscribers(subscriptionKeys.GLOBAL_DATA_CHANGE, subscriptions)
         setModalIsOpen(false)
       },
       [save, setModalIsOpen])
@@ -131,10 +132,7 @@ const InlineSemanticFormsRendererModal = (props: ControlProps) => {
                       uischema: uischemaForType(typeIRI),
                       uischemas: uischemas
                     }}
-                    onEntityChange={entityIRI => {
-                      handleChange_(entityIRI)
-                      console.log({entityIRI});
-                    }}
+                    onEntityChange={handleChange_}
                     onInit={(crudOps) => setCRUDOps(crudOps)}
                 />
               </>

@@ -1,20 +1,17 @@
 import {ControlProps, JsonSchema, resolveSchema} from '@jsonforms/core'
 import {withJsonFormsControlProps} from '@jsonforms/react'
-import {Edit, EditOff} from '@mui/icons-material'
-import {FormControl, Grid, Hidden, IconButton} from '@mui/material'
+import {FormControl, Grid, Hidden} from '@mui/material'
 import {JSONSchema7} from 'json-schema'
 import merge from 'lodash/merge'
 import React, {useCallback, useEffect, useMemo, useState} from 'react'
 import {v4 as uuidv4} from 'uuid'
 
-import DiscoverAutocompleteInput from '../form/discover/DiscoverAutocompleteInput'
 import {defaultJsonldContext, defaultPrefix, defaultQueryBuilderOptions} from '../form/formConfigs'
-import SemanticJsonForm, {CRUDOpsType} from '../form/SemanticJsonForm'
+import SemanticJsonForm from '../form/SemanticJsonForm'
 import {uischemaForType} from '../form/uischemaForType'
 import {uischemas} from '../form/uischemas'
-import {useLocalSettings, useSettings} from '../state/useLocalSettings'
+import {useSettings} from '../state/useLocalSettings'
 import {oxigraphCrudOptions} from '../utils/sparql/remoteOxigraph'
-import MuiEditDialog from './MuiEditDialog'
 
 const InlineSemanticFormsRenderer = (props: ControlProps) => {
     const {
@@ -35,8 +32,6 @@ const InlineSemanticFormsRenderer = (props: ControlProps) => {
     const appliedUiSchemaOptions = merge({}, config, uischema.options)
     const [editMode, setEditMode] = useState(false)
     const [formData, setFormData] = useState({'@id': data})
-    const [CRUDOps, setCRUDOps] = useState<CRUDOpsType | undefined>()
-    const {load, save, remove } = CRUDOps || {}
     const { activeEndpoint } = useSettings()
     const crudOptions = activeEndpoint && oxigraphCrudOptions(activeEndpoint.endpoint)
 

@@ -61,9 +61,8 @@ return (
             >
               GND
             </FormLabel>
-          </Grid>
+          </Grid>{' '}
           <Grid item>
-            <IconButton onClick={() => setEditMode(prev => !prev)}>{editMode ? <EditOff/> : <Edit/>}</IconButton>
             {data}
           </Grid>
         </Grid>

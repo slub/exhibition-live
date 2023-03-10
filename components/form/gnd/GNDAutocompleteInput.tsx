@@ -14,7 +14,7 @@ type Props = OwnProps;
 const buildLabelFromSuggestion: (suggestion: AutocompleteSuggestion) => string
     = ({value, label}) => `${label}, GND: ${value}`
 
-const GNDAutocompleteInput: FunctionComponent<Props> = ({selected, onSelectionChange, typeOf: classType}) => {
+const GNDAutocompleteInput: FunctionComponent<Props> = ({typeOf, selected, onSelectionChange, typeOf: classType}) => {
     const [_selected, setSelected] = useState<AutocompleteSuggestion | null>(null)
 
     const __selected = useMemo(() => selected || _selected, [selected, _selected])
@@ -36,7 +36,7 @@ const GNDAutocompleteInput: FunctionComponent<Props> = ({selected, onSelectionCh
                     value: gndid
                 }))
                 : []}
-            placeholder="Search a person within the GND"
+            placeholder={`Suche innerhalb der GND (${typeOf})`}
             getOptionLabel={buildLabelFromSuggestion}
             onChange={(_event: any, item: AutocompleteSuggestion | null) => {
                 onSelectionChange && onSelectionChange(item)

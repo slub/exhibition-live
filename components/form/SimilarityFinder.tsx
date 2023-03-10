@@ -46,7 +46,6 @@ const SimilarityFinder: FunctionComponent<Props> = ({
 
   const handleAccept = useCallback(
       (id: string | undefined, entryData: any) => {
-        console.log('accept', id, entryData)
         if(!id || ! entryData?.allProps) return
         const newData = mapGNDToModel(typeName, entryData.allProps, gndFieldsToOwnModelMap)
         newData['gnd'] = { '@id': id }
@@ -56,6 +55,10 @@ const SimilarityFinder: FunctionComponent<Props> = ({
       },
       [selectedKnowledgeSources, typeName, onMappedDataAccepted])
 
+  const handleEntityChange = useCallback(
+      (id: string |  undefined) => {
+        onEntityIRIChange && onEntityIRIChange(id)
+      }, [onEntityIRIChange])
 
   return (<>
         <Grid container justifyContent="center">
@@ -85,7 +88,7 @@ const SimilarityFinder: FunctionComponent<Props> = ({
                 searchString={data.name}
                 typeName={typeName}
                 classIRI={classIRI}
-                onAcceptItem={(id) => onEntityIRIChange && onEntityIRIChange(id)}
+                onAcceptItem={handleEntityChange}
                 onSelect={(id) => handleSelect(id, 'kb')}/> }
         {(!entitySelected || entitySelected.source == 'gnd') && selectedKnowledgeSources.includes('gnd') &&
           <LobidSearchTable

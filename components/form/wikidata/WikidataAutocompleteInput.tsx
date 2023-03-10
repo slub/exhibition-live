@@ -81,7 +81,7 @@ const WikidataAutocompleteInput: FunctionComponent<Props> = ({selected, onSelect
                 }))
                 : []}
             value={__selected}
-            placeholder="Search for a human within wikidata"
+            placeholder={`Suche innerhalb der Wikidata (${classType})`}
             getOptionLabel={buildLabelFromSuggestion}
             renderOption={(props, option: any) => (
                 <li {...props} key={option.value}>

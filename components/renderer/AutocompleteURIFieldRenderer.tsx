@@ -21,7 +21,8 @@ const AutocompleteURIFieldRenderer = (props: ControlProps) => {
     config,
     data,
     handleChange,
-    path
+    path,
+      readonly
   } = props
   const isValid = errors.length === 0
   const appliedUiSchemaOptions = merge({}, config, uischema.options)
@@ -59,11 +60,11 @@ return (
                 required={showAsRequired(!!required,
                     appliedUiSchemaOptions.hideRequiredAsterisk)}
             >
-              {label}
+              Wikidata
             </FormLabel>
-          </Grid>
+          </Grid>{' '}
           <Grid item>
-            <IconButton onClick={() => setEditMode(prev => !prev)}>{editMode ? <EditOff/> : <Edit/>}</IconButton>
+            {data}
           </Grid>
         </Grid>
         <WikidataAutocompleteInput selected={selected} onSelectionChange={setSelected} typeOf={classType}/>

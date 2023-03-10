@@ -28,6 +28,7 @@ import MaterialCustomAnyOfRenderer, {materialCustomAnyOfControlTester} from '../
 import TypeOfRenderer from '../renderer/TypeOfRenderer'
 import {useJsonldParser} from '../state/useJsonldParser'
 import {CrudOptions, SparqlBuildOptions, useSPARQL_CRUD} from '../state/useSPARQL_CRUD'
+import {emitToSubscribers, subscriptionKeys, useSubscriptions} from '../state/useSubscriptions'
 import SimilarityFinder from './SimilarityFinder'
 
 export type CRUDOpsType = {
@@ -55,7 +56,7 @@ interface OwnProps {
   readonly?: boolean
 }
 
-type Props = OwnProps;
+export type SemanticJsonFormsProps = OwnProps;
 
 const renderers = [
   ...materialRenderers,
@@ -113,7 +114,7 @@ const infuserOptions = {
 }
 
 
-const SemanticJsonForm: FunctionComponent<Props> =
+const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> =
     ({
        entityIRI,
        data,
@@ -138,6 +139,8 @@ const SemanticJsonForm: FunctionComponent<Props> =
       const [editMode, setEditMode] = useState(!Boolean(readonly))
       const [debugEnabled, setDebugEnabled] = useState(false)
       const [hideSimilarityFinder, setHideSimilarityFinder] = useState(true)
+      const { subscribe, unsubscribe, subscriptions } = useSubscriptions()
+      const [ subscription, setSubscription] =  useState<string | undefined>()
 
       const {parseJSONLD} = useJsonldParser(
           data,
@@ -151,8 +154,8 @@ const SemanticJsonForm: FunctionComponent<Props> =
           })
 
       useEffect(() => {
-        onEntityChange && onEntityChange(entityIRI)
-      }, [entityIRI])
+       // onEntityChange && onEntityChange(entityIRI)
+      }, [entityIRI, setData])
 
 
       const {
@@ -201,7 +204,6 @@ const SemanticJsonForm: FunctionComponent<Props> =
 
       const handleNewData = useCallback(
           (newData: any) => {
-            console.log({newData})
             if(!newData) return
             setData(newData)
           }, [setData])
@@ -219,8 +221,19 @@ const SemanticJsonForm: FunctionComponent<Props> =
       const handleSave = useCallback(async () => {
         await save()
         await load()
+        emitToSubscribers(subscriptionKeys.GLOBAL_DATA_CHANGE, subscriptions)
         setEditMode(false)
-      }, [save, setEditMode])
+      }, [save, setEditMode, subscriptions])
+
+      useEffect(() => {
+        if(subscription) return
+        setSubscription(subscribe(subscriptionKeys.GLOBAL_DATA_CHANGE, async () => {
+          console.log('data changed')
+          await save()
+          await load()
+        }))
+        return () => { subscription &&  unsubscribe(subscriptionKeys.GLOBAL_DATA_CHANGE, subscription) }
+      },  [subscription ,subscribe, unsubscribe, load, save])
 
 
       return (<>
@@ -252,6 +265,7 @@ const SemanticJsonForm: FunctionComponent<Props> =
 
                 />
                 {debugEnabled && [data, jsonldData, formData].map((data_, idx) => (<>
+                  {entityIRI}
                   <JsonView key={idx} data={data_} shouldInitiallyExpand={(lvl) => lvl < 5}/>
                   <hr/>
                 </>))}

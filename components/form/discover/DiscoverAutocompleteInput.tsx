@@ -1,7 +1,7 @@
 import {variable} from '@rdfjs/data-model'
 import {SELECT} from '@tpluscode/sparql-builder'
 import parse from 'html-react-parser'
-import React, {FunctionComponent, useCallback, useMemo, useState} from 'react'
+import React, {FunctionComponent, useCallback, useEffect, useMemo, useState} from 'react'
 
 import {useSettings} from '../../state/useLocalSettings'
 import findEntityByClass from '../../utils/discover/findEntityByClass'
@@ -14,27 +14,28 @@ interface OwnProps {
   onSelectionChange?: (selection: AutocompleteSuggestion | null) => void
   typeIRI?: string
   title?: string
+  readonly?: boolean
+  defaultSelected?: AutocompleteSuggestion | null
 }
 
 type Props = OwnProps;
 
-const DiscoverAutocompleteInput: FunctionComponent<Props> = ({title = 'etwas', selected, onSelectionChange, typeIRI: classType}) => {
-  const [_selected, setSelected] = useState<AutocompleteSuggestion | null>(null)
+const DiscoverAutocompleteInput: FunctionComponent<Props> = ({title = 'etwas', readonly, defaultSelected, selected, onSelectionChange, typeIRI: classType}) => {
   const { activeEndpoint } = useSettings()
-
-  const __selected = useMemo(() => selected || _selected, [selected, _selected])
+  const [ selected__, setSelected__] = useState<AutocompleteSuggestion | null>(selected  || defaultSelected || null)
 
   const handleChange = useCallback(
       (_e: Event, item: AutocompleteSuggestion | null) => {
-        const __onSelectionChange = onSelectionChange || setSelected
-        __onSelectionChange(item)
+        onSelectionChange && onSelectionChange(item)
+        setSelected__(item)
       },
-      [onSelectionChange, setSelected],
+      [onSelectionChange, setSelected__],
   )
 
 
   return (<>
         <DebouncedAutocomplete
+            readOnly={readonly}
             // @ts-ignore
             load={async (searchString) => ((searchString && classType && activeEndpoint?.endpoint)
                 ? (await findEntityByClass(searchString, classType, activeEndpoint.endpoint)).map(({name= '', value}) => {
@@ -44,7 +45,7 @@ const DiscoverAutocompleteInput: FunctionComponent<Props> = ({title = 'etwas', s
                   }
                 })
                 : [])}
-            value={__selected}
+            value={selected__}
             placeholder={`Search for ${title} within the current knowledge base`}
             renderOption={(props, option: any) => (
                 <li {...props} key={option.value}>

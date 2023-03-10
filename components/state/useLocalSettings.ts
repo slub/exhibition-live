@@ -1,5 +1,5 @@
 import useLocalState from '@phntms/use-local-state'
-import {useEffect, useState} from 'react'
+import {useCallback, useEffect, useState} from 'react'
 import {create} from 'zustand'
 
 type SparqlEndpoint = {
@@ -8,8 +8,15 @@ type SparqlEndpoint = {
   active: boolean
 }
 
+type Features = {
+  enablePreview?: boolean
+  enableDebug?: boolean
+}
+
 type Settings = {
   sparqlEndpoints: SparqlEndpoint[]
+
+  features: Features
 }
 
 type UseLocalSettings = {
@@ -42,21 +49,32 @@ export const useLocalSettings = create<UseLocalSettings>((set, get) => ({
   getActiveEndpoint: () => get().sparqlEndpoints.find(e => e.active)
 }))
 
-type UseSettings = {
-  sparqlEndpoints: SparqlEndpoint[];
+type UseSettings = Settings & {
   activeEndpoint: SparqlEndpoint | undefined;
   setSparqlEndpoints: (endpoints: SparqlEndpoint[]) => void
+  setFeatures: (features: Features) => void
 }
 
 export const useSettings: () => UseSettings = () => {
-  const [ settings, setSettings ] = useLocalState<Settings>('settings', { sparqlEndpoints: [] })
+  const [ settings, setSettings ] = useLocalState<Settings>('settings',
+      {
+        sparqlEndpoints: [],
+        features: { enableDebug: false, enablePreview: false }})
   const [ activeEndpoint, setActiveEndpoint ] = useState<SparqlEndpoint | undefined>(settings.sparqlEndpoints?.find(e => e.active))
+
+  const setSparqlEndpoints = useCallback((endpoints: SparqlEndpoint[]) => {
+    setSettings(settings_ => ({...settings_, sparqlEndpoints: endpoints }))
+  },[setSettings])
+
+  const setFeatures = useCallback((features: Features) => {
+   setSettings(settings_ => ({...settings_, features }))
+  }, [setSettings])
 
   useEffect(() => {
     if(!Array.isArray(settings.sparqlEndpoints) || settings.sparqlEndpoints.length === 0) {
-      setSettings({ sparqlEndpoints: defaultSparqlEndpoints })
+      setSparqlEndpoints(defaultSparqlEndpoints)
     }
-  }, [settings.sparqlEndpoints, setSettings])
+  }, [settings.sparqlEndpoints, setSettings, setSparqlEndpoints])
 
   useEffect(() => {
     setActiveEndpoint(settings.sparqlEndpoints.find(e => e.active))
@@ -64,7 +82,8 @@ export const useSettings: () => UseSettings = () => {
 
   return {
     ...settings,
-    setSparqlEndpoints: (endpoints: SparqlEndpoint[]) => setSettings({ sparqlEndpoints: endpoints }),
+    setSparqlEndpoints,
+    setFeatures,
     activeEndpoint
   }
 }

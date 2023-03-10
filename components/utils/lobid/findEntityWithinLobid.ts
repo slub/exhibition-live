@@ -12,8 +12,7 @@
  * @param typeName
  * @param limit
  */
-const getProtocol = () => (!global && window.location.protocol === 'https:') ? 'https://' : 'http://'
-const lobidURL = `${getProtocol()}lobid.org/gnd/search`
+const lobidURL = 'https://lobid.org/gnd/search'
 
 const LobidTypemap: Record<string, string> ={
   'Organization': 'CorporateBody'

@@ -39,6 +39,7 @@ import React, { ComponentType, Dispatch, Fragment, ReducerAction, useCallback,us
 
 import InlineSemanticFormsRenderer from './InlineSemanticFormsRenderer'
 import InlineSemanticFormsRendererModal from './InlineSemanticFormsRendererModal'
+import find from "lodash/find";
 
 const iconStyle: any = { float: 'right' }
 
@@ -290,6 +291,19 @@ export const ctxDispatchToExpandPanelProps: (
   }, [dispatch])
 })
 
+export const getFirstPrimitivePropExceptJsonLD = (schema: any) => {
+  if (schema.properties) {
+    return find(Object.keys(schema.properties), propName => {
+      const prop = schema.properties[propName];
+      return ((
+          prop.type === 'string' ||
+          prop.type === 'number' ||
+          prop.type === 'integer') && !propName.startsWith('@')
+      );
+    });
+  }
+  return undefined;
+};
 /**
  * Map state to control props.
  * @param state the JSON Forms state
@@ -309,7 +323,8 @@ export const withContextToExpandPanelProps = (
   const childData = Resolve.data(ctx.core.data, childPath)
   const childLabel = childLabelProp
     ? get(childData, childLabelProp, '')
-    : get(childData, getFirstPrimitiveProp(schema), '')
+      // @ts-ignore
+    : get(childData, getFirstPrimitivePropExceptJsonLD(schema), '')
   const avatar = get(childData, 'image') || get(childData, 'logo')
 
   return (

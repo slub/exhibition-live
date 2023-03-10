@@ -28,9 +28,10 @@ const createStubLayout = (defs: string, baseIRI: string, label?: string) => ({
 
 const createUiSchema: (key: string, baseIRI: string, label?: string) => JsonFormsUISchemaRegistryEntry = (key, baseIRI,label) => ({
     tester: (schema) => {
-        return schema.properties?.['@type']?.const === `${baseIRI}${key}` ? 11 : -1
+      const rank = schema.properties?.['@type']?.const === `${baseIRI}${key}` ? 21 : -1
+      return rank
     },
     uischema: createStubLayout(key, baseIRI, label)
 
 })
-export const uischemas: JsonFormsUISchemaRegistryEntry[] = ['Person', 'Work', 'Organization', 'Location', 'Resource'].map((key) => createUiSchema(key, BASE_IRI))
+export const uischemas: JsonFormsUISchemaRegistryEntry[] = ['Person', 'Work', 'Organization', 'Location', 'Resource', 'ExhibitionType'].map((key) => createUiSchema(key, BASE_IRI))

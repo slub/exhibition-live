@@ -13,20 +13,24 @@ import {materialCells, materialRenderers} from '@jsonforms/material-renderers'
 import {JsonForms, JsonFormsInitStateProps} from '@jsonforms/react'
 import {Edit, EditOff} from '@mui/icons-material'
 import {Button, Grid, Hidden, IconButton, Switch} from '@mui/material'
+import {useQuery} from '@tanstack/react-query'
 import {JSONSchema7} from 'json-schema'
 import {JsonLdContext} from 'jsonld-context-parser'
 import {isEmpty} from 'lodash'
-import React, {FunctionComponent, useCallback, useEffect, useState} from 'react'
+import React, {FunctionComponent, useCallback, useEffect, useMemo,useState} from 'react'
 import {JsonView} from 'react-json-view-lite'
 
+import {BASE_IRI} from '../config'
 import AutocompleteGNDFieldRenderer from '../renderer/AutocompleteGNDFieldRenderer'
 import AutocompleteURIFieldRenderer from '../renderer/AutocompleteURIFieldRenderer'
 import AutoIdentifierRenderer from '../renderer/AutoIdentifierRenderer'
+import InlineCondensedSemanticFormsRenderer from '../renderer/InlineCondensedSemanticFormsRenderer'
 import InlineSemanticFormsRenderer from '../renderer/InlineSemanticFormsRenderer'
 import MaterialArrayOfLinkedItemRenderer from '../renderer/MaterialArrayOfLinkedItemRenderer'
 import MaterialCustomAnyOfRenderer, {materialCustomAnyOfControlTester} from '../renderer/MaterialCustomAnyOfRenderer'
 import TypeOfRenderer from '../renderer/TypeOfRenderer'
 import {useJsonldParser} from '../state/useJsonldParser'
+import {useSettings} from '../state/useLocalSettings'
 import {CrudOptions, SparqlBuildOptions, useSPARQL_CRUD} from '../state/useSPARQL_CRUD'
 import {emitToSubscribers, subscriptionKeys, useSubscriptions} from '../state/useSubscriptions'
 import SimilarityFinder from './SimilarityFinder'
@@ -93,7 +97,7 @@ const renderers = [
     tester: rankWith(5, isObjectArray),
     renderer: MaterialArrayOfLinkedItemRenderer
   }, {
-    tester: rankWith(10,
+    tester: rankWith(13,
         (uischema: UISchemaElement): boolean => {
           if (isEmpty(uischema)) {
             return false
@@ -102,6 +106,16 @@ const renderers = [
           return !isEmpty(options) && options['inline']
         }),
     renderer: InlineSemanticFormsRenderer
+  },{
+  tester: rankWith(14,
+        (uischema: UISchemaElement, schema, ctx): boolean => {
+          if (isEmpty(uischema) ||  isObjectArrayControl(uischema, schema, ctx)) {
+            return false
+          }
+          const options = uischema.options
+          return !isEmpty(options) && options['inline']
+        }),
+    renderer: InlineCondensedSemanticFormsRenderer
   }
 ]
 
@@ -136,11 +150,13 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> =
       //const {formData, setFormData} = useFormEditor()
       const [formData, setFormData] = useState<any | undefined>()
       const [initiallyLoaded, setInitiallyLoaded] = useState<string | undefined>(undefined)
+      const [jsonViewerEnabled, setJsonViewerEnabled] = useState(false)
       const [editMode, setEditMode] = useState(!Boolean(readonly))
-      const [debugEnabled, setDebugEnabled] = useState(false)
       const [hideSimilarityFinder, setHideSimilarityFinder] = useState(true)
       const { subscribe, unsubscribe, subscriptions } = useSubscriptions()
       const [ subscription, setSubscription] =  useState<string | undefined>()
+      const {features } = useSettings()
+      const typeName = useMemo(() => typeIRI.substring(BASE_IRI.length, typeIRI.length), [typeIRI])
 
       const {parseJSONLD} = useJsonldParser(
           data,
@@ -245,10 +261,11 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> =
                   <Button onClick={remove}>entfernen</Button>
                   <Button onClick={load}>laden</Button>
               </>}
-              <Switch checked={debugEnabled} onChange={e => setDebugEnabled(Boolean(e.target.checked))}
-                      title={'debug'}/>
-              {debugEnabled && <>
-                  <Switch checked={isUpdate} onChange={e => setIsUpdate(Boolean(e.target.checked))} title={'upsert'}/>
+              {features?.enableDebug && <>
+                <Switch checked={jsonViewerEnabled} onChange={e => setJsonViewerEnabled(Boolean(e.target.checked))}
+                        title={'debug'}/>
+                {jsonViewerEnabled &&
+                  <Switch checked={isUpdate} onChange={e => setIsUpdate(Boolean(e.target.checked))} title={'upsert'}/>}
               </>
               }
             </Hidden>
@@ -264,7 +281,7 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> =
                     {...jsonFormsProps}
 
                 />
-                {debugEnabled && [data, jsonldData, formData].map((data_, idx) => (<>
+                {jsonViewerEnabled && [data, jsonldData, formData].map((data_, idx) => (<>
                   {entityIRI}
                   <JsonView key={idx} data={data_} shouldInitiallyExpand={(lvl) => lvl < 5}/>
                   <hr/>

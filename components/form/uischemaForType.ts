@@ -1,12 +1,19 @@
-import Exhibition from '../../schema/exhibition-form-ui-schema-simple.json'
-import Person from '../../schema/exhibition-person-ui-schema-simple.json'
+import {useQuery} from '@tanstack/react-query'
+import {useMemo} from 'react'
+
 import {BASE_IRI} from '../config'
 
-const uischemaTypeIRIMap =  Object.fromEntries(
-    Object.entries({
-      Exhibition,
-      Person
-    }).map(([key, uischema]) => [`${BASE_IRI}${key}`, uischema])
-)
-
-export const uischemaForType = (typeIRI: string) => uischemaTypeIRIMap[typeIRI] || undefined
+export const useUISchemaForType = (typeIRI: string) => {
+  const typeName = useMemo(() => typeIRI.substring(BASE_IRI.length, typeIRI.length), [typeIRI])
+  const {data} = useQuery(['uischema', typeIRI], () => fetch(`/uischema/${typeName}.uischema.json`).then(async res => {
+    const schema = await res.json()
+    return schema
+  }).catch(() => {
+    //probably not found, silently fail
+    return null
+  }), {
+    retry: false,
+    onError: (err) => {}
+  })
+  return data
+}

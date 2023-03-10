@@ -6,9 +6,9 @@ import merge from 'lodash/merge'
 import React, {useCallback, useEffect, useMemo, useState} from 'react'
 import {v4 as uuidv4} from 'uuid'
 
-import {defaultJsonldContext, defaultPrefix, defaultQueryBuilderOptions} from '../form/formConfigs'
+import {defaultJsonldContext, defaultPrefix, defaultQueryBuilderOptions, slent} from '../form/formConfigs'
 import SemanticJsonForm from '../form/SemanticJsonForm'
-import {uischemaForType} from '../form/uischemaForType'
+import {useUISchemaForType} from '../form/uischemaForType'
 import {uischemas} from '../form/uischemas'
 import {useSettings} from '../state/useLocalSettings'
 import {oxigraphCrudOptions} from '../utils/sparql/remoteOxigraph'
@@ -37,16 +37,18 @@ const InlineSemanticFormsRenderer = (props: ControlProps) => {
 
     const handleChange_ = useCallback(
         (v?: string) => {
+            //FIXME: this is a workaround for a bug, that causes this to be called with the same value eternally
+            if(v === data) return
             handleChange(path, v)
         },
-        [path, handleChange],
+        [path, handleChange, data],
     )
 
     //console.log({config})
 
     const init = useCallback(() => {
         if (!data && !editMode) {
-            const prefix = schema.title || 'http://ontologies.slub-dresden.de/exhibition/entity#'
+            const prefix = schema.title || slent[''].value
             const newURI = `${prefix}${uuidv4()}`
             handleChange_(newURI)
             console.log({data})
@@ -57,7 +59,8 @@ const InlineSemanticFormsRenderer = (props: ControlProps) => {
         init()
     }, [init])
 
-    const {$ref, typeIRI, useModal} = uischema.options?.context || {}
+    const {$ref, typeIRI} = uischema.options?.context || {}
+    const uischemaExternal =  useUISchemaForType(typeIRI || '')
 
     const subSchema = useMemo(() => {
         if (!$ref) return
@@ -97,10 +100,10 @@ const InlineSemanticFormsRenderer = (props: ControlProps) => {
                                     queryBuildOptions={defaultQueryBuilderOptions}
                                     schema={subSchema as JSONSchema7}
                                     jsonFormsProps={{
-                                        uischema: uischemaForType(typeIRI),
+                                        uischema: uischemaExternal || undefined,
                                         uischemas: uischemas
                                     }}
-                                    //onEntityChange={entityIRI => console.log({entityIRI})}
+                                    onEntityChange={handleChange_}
                                 />
                             </Grid>
                         </Grid>)

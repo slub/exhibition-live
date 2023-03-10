@@ -8,9 +8,9 @@ import React, {useCallback, useMemo, useState} from 'react'
 import {v4 as uuidv4} from 'uuid'
 
 import DiscoverAutocompleteInput from '../form/discover/DiscoverAutocompleteInput'
-import {defaultJsonldContext, defaultPrefix, defaultQueryBuilderOptions} from '../form/formConfigs'
+import {defaultJsonldContext, defaultPrefix, defaultQueryBuilderOptions, slent} from '../form/formConfigs'
 import SemanticJsonForm, {CRUDOpsType} from '../form/SemanticJsonForm'
-import {uischemaForType} from '../form/uischemaForType'
+import {useUISchemaForType} from '../form/uischemaForType'
 import {uischemas} from '../form/uischemas'
 import {useSettings} from '../state/useLocalSettings'
 import {oxigraphCrudOptions} from '../utils/sparql/remoteOxigraph'
@@ -51,7 +51,7 @@ const InlineSemanticFormsRendererModal = (props: ControlProps) => {
 
 
   const handleToggle = useCallback(() => {
-    const prefix = schema.title || 'http://ontologies.slub-dresden.de/exhibition/entity#'
+    const prefix = schema.title || slent[''].value
     if (!data && !modalIsOpen) {
       const newURI = `${prefix}${uuidv4()}`
       handleChange_(newURI)
@@ -60,6 +60,7 @@ const InlineSemanticFormsRendererModal = (props: ControlProps) => {
   }, [schema, data, handleChange_, setModalIsOpen, modalIsOpen])
 
   const {$ref, typeIRI, useModal} = uischema.options?.context || {}
+  const uischemaExternal = useUISchemaForType(typeIRI)
 
   const subSchema = useMemo(() => {
     if (!$ref) return
@@ -109,12 +110,12 @@ const InlineSemanticFormsRendererModal = (props: ControlProps) => {
                   onCancel={handleToggle}
                   onSave={handleSave}
                   onReload={load}
-                  search={<>
+                  search={
                     <DiscoverAutocompleteInput
                         typeIRI={typeIRI}
                         title={label || ''}
                         onSelectionChange={selection => handleChange_(selection?.value)}/>
-                  </>}
+                  }
                   onRemove={handleRemove}><>
                 <SemanticJsonForm
                     data={formData}
@@ -129,7 +130,7 @@ const InlineSemanticFormsRendererModal = (props: ControlProps) => {
                     queryBuildOptions={defaultQueryBuilderOptions}
                     schema={subSchema as JSONSchema7}
                     jsonFormsProps={{
-                      uischema: uischemaForType(typeIRI),
+                      uischema: uischemaExternal || undefined,
                       uischemas: uischemas
                     }}
                     onEntityChange={handleChange_}

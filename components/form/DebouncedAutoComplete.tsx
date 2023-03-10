@@ -66,6 +66,7 @@ export const DebouncedAutocomplete: FunctionComponent<
             onChange={handleOnChange}
             InputProps={{
               ...params.InputProps,
+              disabled: props.readOnly,
               startAdornment: (
                 <>
                   {loading ? (

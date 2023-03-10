@@ -1,6 +1,5 @@
-import {JsonFormsUISchemaRegistryEntry} from '@jsonforms/core'
-import {CreateNewFolder as NewIcon} from '@mui/icons-material'
-import {Box, Button, Container, IconButton} from '@mui/material'
+import {AddBox as NewIcon} from '@mui/icons-material'
+import {Button, Container, IconButton} from '@mui/material'
 import {JSONSchema7} from 'json-schema'
 import Head from 'next/head'
 import {useCallback, useState} from 'react'

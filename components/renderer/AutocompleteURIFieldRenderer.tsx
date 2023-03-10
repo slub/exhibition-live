@@ -21,12 +21,10 @@ const AutocompleteURIFieldRenderer = (props: ControlProps) => {
     config,
     data,
     handleChange,
-    path,
-      readonly
+    path
   } = props
   const isValid = errors.length === 0
   const appliedUiSchemaOptions = merge({}, config, uischema.options)
-  const [editMode, setEditMode] = useState(false)
   const [selected, setSelected] = useState<AutocompleteSuggestion | null>(null)
 
 

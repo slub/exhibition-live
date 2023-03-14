@@ -143,18 +143,18 @@ sladb:version a owl:DatatypeProperty ;
 
 sladb:DateModifier a owl:Class ;
     rdfs:label "DateModifier" ;
-    owl:unionOf ( <http://ontologies.slub-dresden.de/exhibition#DateModifier#BEFORE> <http://ontologies.slub-dresden.de/exhibition#DateModifier#AFTER> <http://ontologies.slub-dresden.de/exhibition#DateModifier#VAGUE> ) ;
-    linkml:permissible_values <http://ontologies.slub-dresden.de/exhibition#DateModifier#AFTER>,
-        <http://ontologies.slub-dresden.de/exhibition#DateModifier#BEFORE>,
-        <http://ontologies.slub-dresden.de/exhibition#DateModifier#VAGUE> .
+    owl:unionOf ( <http://ontologies.slub-dresden.de/exhibition#DateModifier_BEFORE> <http://ontologies.slub-dresden.de/exhibition#DateModifier_AFTER> <http://ontologies.slub-dresden.de/exhibition#DateModifier_VAGUE> ) ;
+    linkml:permissible_values <http://ontologies.slub-dresden.de/exhibition#DateModifier_AFTER>,
+        <http://ontologies.slub-dresden.de/exhibition#DateModifier_BEFORE>,
+        <http://ontologies.slub-dresden.de/exhibition#DateModifier_VAGUE> .
 
-<http://ontologies.slub-dresden.de/exhibition#DateModifier#AFTER> a owl:Class ;
+<http://ontologies.slub-dresden.de/exhibition#DateModifier_AFTER> a owl:Class ;
     rdfs:label "AFTER" .
 
-<http://ontologies.slub-dresden.de/exhibition#DateModifier#BEFORE> a owl:Class ;
+<http://ontologies.slub-dresden.de/exhibition#DateModifier_BEFORE> a owl:Class ;
     rdfs:label "BEFORE" .
 
-<http://ontologies.slub-dresden.de/exhibition#DateModifier#VAGUE> a owl:Class ;
+<http://ontologies.slub-dresden.de/exhibition#DateModifier_VAGUE> a owl:Class ;
     rdfs:label "VAGUE" .
 
 sladb:Exhibition a owl:Class ;

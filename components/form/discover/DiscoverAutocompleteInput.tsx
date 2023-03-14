@@ -3,6 +3,7 @@ import {SELECT} from '@tpluscode/sparql-builder'
 import parse from 'html-react-parser'
 import React, {FunctionComponent, useCallback, useEffect, useMemo, useState} from 'react'
 
+import {useGlobalCRUDOptions} from '../../state/useGlobalCRUDOptions'
 import {useSettings} from '../../state/useLocalSettings'
 import findEntityByClass from '../../utils/discover/findEntityByClass'
 import {defaultQuerySelect} from '../../utils/sparql/remoteOxigraph'
@@ -21,7 +22,7 @@ interface OwnProps {
 type Props = OwnProps;
 
 const DiscoverAutocompleteInput: FunctionComponent<Props> = ({title = 'etwas', readonly, defaultSelected, selected, onSelectionChange, typeIRI: classType}) => {
-  const { activeEndpoint } = useSettings()
+  const { crudOptions } = useGlobalCRUDOptions()
   const [ selected__, setSelected__] = useState<AutocompleteSuggestion | null>(selected  || defaultSelected || null)
 
   const handleChange = useCallback(
@@ -37,8 +38,8 @@ const DiscoverAutocompleteInput: FunctionComponent<Props> = ({title = 'etwas', r
         <DebouncedAutocomplete
             readOnly={readonly}
             // @ts-ignore
-            load={async (searchString) => ((searchString && classType && activeEndpoint?.endpoint)
-                ? (await findEntityByClass(searchString, classType, activeEndpoint.endpoint)).map(({name= '', value}) => {
+            load={async (searchString) => ((searchString && classType && crudOptions)
+                ? (await findEntityByClass(searchString, classType, crudOptions.selectFetch)).map(({name= '', value}: {name: string, value: any}) => {
                   return {
                     label: name,
                     value

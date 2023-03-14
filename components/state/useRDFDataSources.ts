@@ -1,32 +1,32 @@
+import {useQueries, useQuery} from '@tanstack/react-query'
 import {RDFMimetype} from 'async-oxigraph'
-import {useEffect, useState} from 'react'
+import {useCallback, useEffect, useState} from 'react'
 
 import {BASE_IRI} from '../config'
 import {useOxigraph} from './useOxigraph'
 
-export const useRDFDataSources = (sources: string[]) => {
-  const {init, bulkLoaded, setBulkLoaded} = useOxigraph()
+export const useRDFDataSources = (source: string) => {
+  const {oxigraph, init, bulkLoaded, setBulkLoaded} = useOxigraph()
   const [bulkLoading, setBulkLoading] = useState(false)
+  const {data} = useQuery(['exhibition', 'ontology'], () => fetch(source).then(r => r.text()))
+
+  const load = useCallback(
+async (ao: any) => {
+  setBulkLoading(true)
+  await ao.load(data, RDFMimetype.TURTLE, BASE_IRI)
+  setBulkLoading(false)
+  setBulkLoaded(true)
+
+}, [setBulkLoading, setBulkLoaded,data])
 
   useEffect(() => {
-    init().then(ao => {
-          setBulkLoading(true)
-          Promise.all(
-              sources.map(source => fetch(source)
-                  .then(r => r.text())
-                  .then(exhibitionData => ao.load(exhibitionData, RDFMimetype.TURTLE, BASE_IRI))
-              )
-          )
-              .then(() => {
-                console.log('successfullt bulk loaded data')
-              })
-              .catch(e => {
-                console.error('some error occurred while bulk loading',e )
-              })
-              .finally(() =>{
-            setBulkLoading(false)
-            setBulkLoaded(true)
-          })})}, [init, setBulkLoading, setBulkLoaded])
+    if (!data) return
+    if(oxigraph) {
+      load(oxigraph.ao)
+    } else {
+      init()
+    }
+  }, [init, oxigraph, data])
 
   return {
     bulkLoading,

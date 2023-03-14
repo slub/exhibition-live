@@ -13,16 +13,22 @@ export interface SparqlBuildOptions {
     base?: string;
     prefixes?: Record<string, string | NamespaceBuilder>;
 }
-export type CrudOptions = {
-    updateFetch: (query: string) => Promise<ResultStream<any> | boolean | void | ResultStream<Bindings> | ResultStream<Quad>>
-    constructFetch: (query: string) => Promise<DatasetCore>
-    askFetch: (query: string) => Promise<boolean>
+
+export type CRUDFunctions = {
+  updateFetch: (query: string) => Promise<ResultStream<any> | boolean | void | ResultStream<Bindings> | ResultStream<Quad>>
+  constructFetch: (query: string) => Promise<DatasetCore>
+  selectFetch: (query: string) => Promise<any>
+  askFetch: (query: string) => Promise<boolean>
+}
+
+export type CRUDOptions = CRUDFunctions & {
     defaultPrefix: string
     data: any
     setData: (data: any) => void
     walkerOptions?: Partial<WalkerOptions>
     queryBuildOptions?: SparqlBuildOptions
     upsertByDefault?: boolean
+    ready?: boolean
 }
 
 export const useSPARQL_CRUD = (entityIRI: string | undefined, typeIRI: string | undefined, schema: JSONSchema7,
@@ -36,7 +42,7 @@ export const useSPARQL_CRUD = (entityIRI: string | undefined, typeIRI: string | 
                             walkerOptions = {},
                             queryBuildOptions,
                             upsertByDefault
-                        }: CrudOptions) => {
+                        }: CRUDOptions) => {
 
     const [isUpdate, setIsUpdate] = useState(false)
     const [whereEntity, setWhereEntity] = useState<string | undefined>()
@@ -56,7 +62,7 @@ export const useSPARQL_CRUD = (entityIRI: string | undefined, typeIRI: string | 
             console.log(e)
         }
         return false
-    }, [whereEntity, setIsUpdate, defaultPrefix])
+    }, [whereEntity, setIsUpdate, defaultPrefix, askFetch])
 
     const load = useCallback(
         async () => {
@@ -81,7 +87,7 @@ export const useSPARQL_CRUD = (entityIRI: string | undefined, typeIRI: string | 
                 console.log(e)
             }
         },
-        [entityIRI, whereEntity, setData, setIsUpdate, defaultPrefix],
+        [entityIRI, whereEntity, setData, setIsUpdate, defaultPrefix, constructFetch]
     )
 
     const remove = useCallback(
@@ -94,11 +100,9 @@ export const useSPARQL_CRUD = (entityIRI: string | undefined, typeIRI: string | 
             } = jsonSchema2construct(entityIRI, schema, ['@id'], ['@id', '@type'])
             let query = DELETE` ${construct} `.WHERE`${whereEntity} ${whereRequired}\n${whereOptionals}`.build(queryBuildOptions)
             query = `PREFIX : <${defaultPrefix}> ` + query
-            console.log({query})
-            const res = await updateFetch(query)
-            console.log({res})
+            await updateFetch(query)
         },
-        [entityIRI, whereEntity, defaultPrefix],
+        [entityIRI, whereEntity, defaultPrefix, updateFetch],
     )
 
 
@@ -136,15 +140,17 @@ export const useSPARQL_CRUD = (entityIRI: string | undefined, typeIRI: string | 
                 }
             }
         },
-        [entityIRI, whereEntity, data, isUpdate, setIsUpdate, defaultPrefix])
+        [entityIRI, whereEntity, data, isUpdate, setIsUpdate, defaultPrefix, updateFetch, upsertByDefault])
 
-    return {
+  return {
         exists,
         load,
         save,
         remove,
         isUpdate,
-        setIsUpdate
+        setIsUpdate,
+        // @ts-ignore
+        ready: Boolean(askFetch && constructFetch && updateFetch)
     }
 }
 

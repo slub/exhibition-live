@@ -31,7 +31,7 @@ import MaterialCustomAnyOfRenderer, {materialCustomAnyOfControlTester} from '../
 import TypeOfRenderer from '../renderer/TypeOfRenderer'
 import {useJsonldParser} from '../state/useJsonldParser'
 import {useSettings} from '../state/useLocalSettings'
-import {CrudOptions, SparqlBuildOptions, useSPARQL_CRUD} from '../state/useSPARQL_CRUD'
+import {CRUDOptions, SparqlBuildOptions, useSPARQL_CRUD} from '../state/useSPARQL_CRUD'
 import {emitToSubscribers, subscriptionKeys, useSubscriptions} from '../state/useSubscriptions'
 import SimilarityFinder from './SimilarityFinder'
 
@@ -51,7 +51,7 @@ interface OwnProps {
   jsonldContext: JsonLdContext
   defaultPrefix: string
   debugEnabled?: boolean
-  crudOptions?: Partial<CrudOptions>
+  crudOptions?: Partial<CRUDOptions>
   queryBuildOptions?: SparqlBuildOptions
   jsonFormsProps?: Partial<JsonFormsInitStateProps>
   onEntityChange?: (entityIRI: string | undefined) => void
@@ -180,7 +180,8 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> =
         save,
         remove,
         isUpdate,
-        setIsUpdate
+        setIsUpdate,
+          ready
       } = useSPARQL_CRUD(
           entityIRI,
           typeIRI,
@@ -196,6 +197,7 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> =
 
 
       useEffect(() => {
+        if(!ready) return
         const testExistenceAndLoad = async () => {
           if (!entityIRI || !shouldLoadInitially || initiallyLoaded === entityIRI)
             return
@@ -244,7 +246,6 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> =
       useEffect(() => {
         if(subscription) return
         setSubscription(subscribe(subscriptionKeys.GLOBAL_DATA_CHANGE, async () => {
-          console.log('data changed')
           await save()
           await load()
         }))

@@ -12,6 +12,7 @@ import {useUISchemaForType} from '../form/uischemaForType'
 import {uischemas} from '../form/uischemas'
 import {useSettings} from '../state/useLocalSettings'
 import {oxigraphCrudOptions} from '../utils/sparql/remoteOxigraph'
+import {useGlobalCRUDOptions} from "../state/useGlobalCRUDOptions";
 
 const InlineSemanticFormsRenderer = (props: ControlProps) => {
     const {
@@ -32,8 +33,7 @@ const InlineSemanticFormsRenderer = (props: ControlProps) => {
     const appliedUiSchemaOptions = merge({}, config, uischema.options)
     const [editMode, setEditMode] = useState(false)
     const [formData, setFormData] = useState({'@id': data})
-    const { activeEndpoint } = useSettings()
-    const crudOptions = activeEndpoint && oxigraphCrudOptions(activeEndpoint.endpoint)
+    const {crudOptions} = useGlobalCRUDOptions()
 
     const handleChange_ = useCallback(
         (v?: string) => {

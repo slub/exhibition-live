@@ -10,8 +10,9 @@ const initAsyncOxigraph = async function () {
 
 
 type OxigraphStore = {
-  oxigraph: AsyncOxigraph | undefined
-  init: () => Promise<AsyncOxigraph>
+  oxigraph: { ao: AsyncOxigraph } | undefined
+  init: () => void
+  initialized: boolean
   bulkLoaded: boolean
   setBulkLoaded: (b: boolean) => void
 }
@@ -19,11 +20,15 @@ type OxigraphStore = {
 export const useOxigraph = create<OxigraphStore>((set, get) => ({
   oxigraph: undefined,
   bulkLoaded: false,
+  initialized: false,
   init: async () => {
-    if(get().oxigraph) return get().oxigraph as AsyncOxigraph
+    console.log('init oxigraph')
+    if(get().initialized) return
+    set({initialized: true})
+    console.log('really init oxigraph')
     const ao = await initAsyncOxigraph()
-    set({oxigraph: ao})
-    return ao
+    console.log({ao})
+    set({oxigraph: {ao}})
   },
   setBulkLoaded: (b) => set({bulkLoaded: b})
 }))

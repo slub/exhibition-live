@@ -15,6 +15,7 @@ import {oxigraphCrudOptions} from '../utils/sparql/remoteOxigraph'
 import {Edit, EditOff} from "@mui/icons-material";
 import DiscoverAutocompleteInput from "../form/discover/DiscoverAutocompleteInput";
 import get from "lodash/get";
+import {useGlobalCRUDOptions} from "../state/useGlobalCRUDOptions";
 
 const InlineCondensedSemanticFormsRenderer = (props: ControlProps ) => {
   const {
@@ -35,8 +36,7 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps ) => {
   const appliedUiSchemaOptions = merge({}, config, uischema.options)
   const [editMode, setEditMode] = useState(false)
   const [formData, setFormData] = useState({'@id': data})
-  const {activeEndpoint} = useSettings()
-  const crudOptions = activeEndpoint && oxigraphCrudOptions(activeEndpoint.endpoint)
+  const {crudOptions} = useGlobalCRUDOptions()
   const ctx = useJsonForms()
   const [ realLabel, setRealLabel ] = useState('')
 

@@ -1,6 +1,7 @@
 import {List} from '@mui/material'
 import {FunctionComponent, useCallback, useEffect, useState} from 'react'
 
+import {useGlobalCRUDOptions} from '../../state/useGlobalCRUDOptions'
 import {useSettings} from '../../state/useLocalSettings'
 import findEntityByClass from '../../utils/discover/findEntityByClass'
 import {sladb} from '../formConfigs'
@@ -26,21 +27,21 @@ const DiscoverSearchTable: FunctionComponent<Props> = ({
   const [resultTable, setResultTable] = useState<any | undefined>()
   const [selectedId, setSelectedId] = useState<string | undefined>()
   const [selectedEntry, setSelectedEntry] = useState<any | undefined>()
-  const {activeEndpoint} = useSettings()
+  const { crudOptions } = useGlobalCRUDOptions()
 
   const fetchData = useCallback(
       async () => {
-        if (!searchString || searchString.length < 1 || !activeEndpoint?.endpoint) return
+        if (!searchString || searchString.length < 1 || !crudOptions) return
         setResultTable(
-            (await findEntityByClass(searchString, classIRI, activeEndpoint.endpoint))
-                .map(({name = '', value}) => {
+            (await findEntityByClass(searchString, classIRI, crudOptions.selectFetch))
+                .map(({name = '', value}: {name: string, value: any}) => {
                   return {
                     label: name,
                     id: value as string
                   }
                 }))
       },
-      [searchString, classIRI, activeEndpoint]
+      [searchString, classIRI, crudOptions]
   )
 
   const handleSelect = useCallback(

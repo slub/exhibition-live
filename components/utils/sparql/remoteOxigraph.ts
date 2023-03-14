@@ -3,6 +3,8 @@ import {IDataSource} from '@comunica/types'
 import datasetFactory from '@rdfjs/dataset'
 import N3 from 'n3'
 
+import {CRUDFunctions} from '../../state/useSPARQL_CRUD'
+
 const cFetch = (query: string, endpoint: string) => fetch(endpoint, {
     'headers': {
         'accept': 'application/n-triples,*/*;q=0.9',
@@ -52,7 +54,7 @@ export const defaultQuerySelect: (query: string, endpoint: string) => Promise<an
     return ((await prepared.json())?.results?.bindings || []) as any[]
 }
 
-export const oxigraphCrudOptions = (endpoint: string) => ({
+export const oxigraphCrudOptions: (endpoint: string) => CRUDFunctions = (endpoint: string) => ({
     askFetch: async (query: string) => {
         const res = await askFetch(query, endpoint)
         const {boolean} = await res.json()
@@ -67,4 +69,5 @@ export const oxigraphCrudOptions = (endpoint: string) => ({
 
     },
     updateFetch: defaultQueryFetch(endpoint.replace('query', 'update')),
+    selectFetch: defaultQueryFetch(endpoint)
 })

@@ -30,15 +30,26 @@ type UseLocalSettings = {
 
 const defaultSparqlEndpoints: SparqlEndpoint[] = [
   {
+    label: 'Production',
+    endpoint: 'https://ausstellungsdatenbank.kuenste.live/query',
+    active: true
+  },
+  {
     label: 'Test',
     endpoint: 'http://sdvahndmgtest.slub-dresden.de:7878/query',
-    active: true
+    active: false
   },
   {
     label: 'Local',
     endpoint: 'http://localhost:7878/query',
     active: false
-  }]
+  },
+  {
+    label: 'in memory',
+    endpoint: 'urn:worker',
+    active: false
+  }
+  ]
 
 export const useLocalSettings = create<UseLocalSettings>((set, get) => ({
   settingsOpen: false,

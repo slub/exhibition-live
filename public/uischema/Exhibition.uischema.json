@@ -19,9 +19,27 @@
           "scope": "#/properties/title"
         },
         {
+            "type": "Control",
+            "label": "Untertitel der Ausstellung",
+            "scope": "#/properties/subtitle"
+        },
+        {
+          "type": "Control",
+          "label": "Ausstellungskatalog",
+          "scope": "#/properties/originalTitle"
+        },
+        {
           "type": "Control",
           "label": "Kurzbeschreibung",
           "scope": "#/properties/description"
+        },
+        {
+          "type": "Control",
+          "label": "Ausstellungsort",
+          "scope": "#/properties/location",
+          "options": {
+            "detail": "GENERATED"
+          }
         },
         {
           "type": "Control",

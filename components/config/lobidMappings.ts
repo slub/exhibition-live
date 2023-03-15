@@ -23,5 +23,14 @@ export const gndFieldsToOwnModelMap: GNDToOwnModelMap = {
     'preferredName': {
       'path': 'preferredName',
     }
+  },
+  'Work': {
+    'name': {
+      'path': 'preferredName',
+      'type': 'string'
+    },
+    'year': {
+      'path': 'dateOfProduction.0',
+    }
   }
 }

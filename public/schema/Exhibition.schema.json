@@ -115,6 +115,53 @@
         "@type", "name"
       ]
     },
+    "GeographicLocationStub": {
+      "description": "Ein geografischer Ort.",
+      "type": "object",
+      "properties": {
+        "@id": {
+          "title": "http://ontologies.slub-dresden.de/exhibition/entity#",
+          "type": "string"
+        },
+        "@type": {
+          "const": "http://ontologies.slub-dresden.de/exhibition#GeographicLocation",
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        }
+      }
+    },
+    "GeographicLocation": {
+      "description": "Ein geografischer Ort.",
+      "type": "object",
+      "properties": {
+        "@id": {
+          "title": "http://ontologies.slub-dresden.de/exhibition/entity#",
+          "type": "string"
+        },
+        "@type": {
+          "const": "http://ontologies.slub-dresden.de/exhibition#GeographicLocation",
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "coordinate": {
+          "type": "string",
+          "format": "wktLiteral"
+        },
+        "parent": {
+          "$ref": "#/$defs/GeographicLocationStub"
+        },
+        "gnd": {
+          "$ref": "#/$defs/GNDGeoLocation"
+        }
+      }
+    },
     "ExhibitionTypeStub": {
       "description": "The type of an exhibition.",
       "type": "object",
@@ -172,6 +219,19 @@
         "title": {
           "description": "Titel der Ausstellung",
           "type": "string"
+        },
+        "subtitle": {
+          "description": "Untertitel der Ausstellung",
+          "type": "string"
+        },
+        "originalTitle": {
+          "description": "Originaltitel der Ausstellung",
+          "type": "string"
+        },
+        "location": {
+          "description": "Ort der Ausstellung",
+          "type": "object",
+          "$ref": "#/$defs/GeographicLocationStub"
         },
         "exhibitionType": {
           "description": "Art der Ausstellung",
@@ -239,10 +299,16 @@
           "type": "string"
         },
         "year": {
-          "type": "number"
+          "type": "string"
         },
         "category": {
           "type": "string"
+        },
+        "author": {
+          "type": "array",
+            "items": {
+                "$ref": "#/$defs/PersonStub"
+            }
         }
       },
       "required": [
@@ -287,6 +353,16 @@
         "type": "string"
       }
     }
+  },
+  "GNDGeoLocation": {
+      "additionalProperties": true,
+      "title": "",
+      "properties": {
+        "@id": {
+          "format": "gndo-TerritorialCorporateBodyOrAdministrativeUnit",
+          "type": "string"
+        }
+      }
   },
   "GNDPerson": {
     "additionalProperties": true,

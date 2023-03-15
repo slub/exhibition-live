@@ -22,6 +22,15 @@
           "type": "Control",
           "label": "Kurzbeschreibung",
           "scope": "#/properties/description"
+        },
+        {
+          "type": "Control",
+          "label": "Ausstellungsart",
+          "scope": "#/properties/exhibitionType",
+          "options": {
+            "elementLabelProp": "name",
+            "detail": "GENERATED"
+          }
         }
       ]
     },

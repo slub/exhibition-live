@@ -11,18 +11,18 @@ export type GNDSearchResultEntry = {
   score: number
 }
 
-const searchPersonWithinGNDQuery = (searchString: string, limit: number = 10) => `
+const searchPersonWithinGNDQuery = (searchString: string, limit: number = 10, type: string) => `
 ${prefixes2sparqlPrefixDeclaration(gndPrefixes)}
 SELECT DISTINCT ?gndid ?score ?literal WHERE
 {
   (?gndid ?score ?literal) text:query "${searchString}~" .
-  ?gndid a gndo:DifferentiatedPerson .
+  ?gndid a gndo:${type} .
 } LIMIT ${limit}
 `
 
-const findPersonWithinGND = async (searchString: string, limit?: number) => {
+const findPersonWithinGND = async (searchString: string, limit?: number, classType?: string) => {
   const myEngine = new QueryEngine()
-  const bindingsStream: BindingsStream = await myEngine.queryBindings(searchPersonWithinGNDQuery(searchString, limit), {
+  const bindingsStream: BindingsStream = await myEngine.queryBindings(searchPersonWithinGNDQuery(searchString, limit, classType || 'DifferentiatedPerson'), {
         sources: ['http://gnd4c.digicult-verbund.de:3030/gndt/sparql'],
       }
   )

@@ -32,15 +32,17 @@ const LobidSearchTable: FunctionComponent<Props> = ({
                   const {
                     id,
                     preferredName = '',
-                    depiction
+                    depiction,
+                    professionOrOccupation = []
                   } = allProps
                   const dateOfBirth = allProps?.dateOfBirth?.[0],
                       dateOfDeath = allProps?.dateOfDeath?.[0],
-                      dateOfBirthAndDeath = allProps?.dateOfBirthAndDeath?.[0]
+                      dateOfBirthAndDeath = allProps?.dateOfBirthAndDeath?.[0],
+                      profession = professionOrOccupation.map(({label}: {label: any}) => label).join(',')
                   return ({
                     id,
                     label: preferredName,
-                    secondary: dateOfBirthAndDeath ? dateOfBirthAndDeath : (dateOfBirth || dateOfDeath ? `${dateOfBirth || ''} | ${dateOfDeath || ''}` : null),
+                    secondary: dateOfBirthAndDeath ? dateOfBirthAndDeath : (dateOfBirth || dateOfDeath ? `${dateOfBirth || ''} | ${dateOfDeath || ''} | ${profession}` : null),
                     dateOfBirth,
                     dateOfDeath,
                     dateOfBirthAndDeath,

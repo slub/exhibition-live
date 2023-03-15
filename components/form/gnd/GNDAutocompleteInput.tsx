@@ -31,7 +31,7 @@ const GNDAutocompleteInput: FunctionComponent<Props> = ({typeOf, selected, onSel
         <DebouncedAutocomplete
             minSearchLength={3}
             load={async (searchString) => searchString
-                ? (await findPersonWithinGND(searchString, 50)).map(({gndid, literal}) => ({
+                ? (await findPersonWithinGND(searchString, 50, classType)).map(({gndid, literal}) => ({
                     label: literal,
                     value: gndid
                 }))

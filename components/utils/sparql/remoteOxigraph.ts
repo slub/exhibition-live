@@ -40,7 +40,7 @@ const createCutomizedFetch: (query: string, contentType?: string) => (input: Req
     }
     return await fetch(input, newInit)
 }
-const defaultQueryFetch = (endpoint:string) => async (query: string) => {
+const defaultQueryFetch = (endpoint:string, contentType?: string) => async (query: string) => {
     const engine = new QueryEngine()
     const prepared = await engine.query(query, {
         sources: [endpoint] as [IDataSource],
@@ -69,5 +69,5 @@ export const oxigraphCrudOptions: (endpoint: string) => CRUDFunctions = (endpoin
 
     },
     updateFetch: defaultQueryFetch(endpoint.replace('query', 'update')),
-    selectFetch: defaultQueryFetch(endpoint)
+    selectFetch: defaultQueryFetch(endpoint, 'application/sparql-results+json')
 })

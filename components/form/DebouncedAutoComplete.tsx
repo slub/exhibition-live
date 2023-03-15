@@ -22,7 +22,7 @@ export type DebouncedAutocompleteProps = {
 
 export const DebouncedAutocomplete: FunctionComponent<
   DebouncedAutocompleteProps
-> = ({ load,minSearchLength = 1, ...props }) => {
+> = ({ load, title ,minSearchLength = 1, ...props }) => {
   const [suggestions, setSuggestions] = useState<
     AutocompleteSuggestion[] | undefined
   >(undefined)
@@ -61,6 +61,7 @@ export const DebouncedAutocomplete: FunctionComponent<
           // @ts-ignore
           <TextField
             {...params}
+              label={title}
             variant={'standard'}
             placeholder={props.placeholder}
             onChange={handleOnChange}

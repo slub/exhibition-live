@@ -36,6 +36,7 @@ const DiscoverAutocompleteInput: FunctionComponent<Props> = ({title = 'etwas', r
 
   return (<>
         <DebouncedAutocomplete
+            title={title}
             readOnly={readonly}
             // @ts-ignore
             load={async (searchString) => ((searchString && classType && crudOptions)

@@ -1,7 +1,8 @@
 import Head from 'next/head'
-import React from 'react'
+import React, {useState} from 'react'
 
 import MainFormNoSSR from '../components/content/main/MainFormNoSSR'
+import {sladb, slent} from '../components/form/formConfigs'
 import PerformanceFooter from '../components/layout/PerformanceFooter'
 import PerformanceHeader from '../components/layout/PerformanceHeader'
 import {useRDFDataSources} from '../components/state'
@@ -11,6 +12,22 @@ type Props = {
   children: React.ReactChild
   data: any
   classIRI: string
+}
+const classIRI = sladb.Exhibition.value
+const exampleData = {
+  '@id': slent['b7748b40-b15b-4a6d-8f13-e65088232080'].value,
+  '@type': classIRI,
+  'title': 'Otto Dix Ausstellung',
+  'subtitle': 'Das neue Metrum',
+  'description': 'Eine kontemporaere Ausstellung',
+  'startDate': {
+    'date': '2016-09-22',
+    'modifier': 'AFTER'
+  },
+  'endDate': {
+    'date': '2016-09-27',
+    'modifier': 'AFTER'
+  }
 }
 export default () => {
   const {bulkLoaded} = useRDFDataSources('./ontology/exhibition-info.owl.ttl')
@@ -25,7 +42,7 @@ export default () => {
         </Head>
         <PerformanceHeader/>
         <main className={styles.main}>
-          {bulkLoaded && <MainFormNoSSR />}
+          {bulkLoaded && <MainFormNoSSR defaultData={exampleData}/>}
         </main>
         <PerformanceFooter/>
       </>

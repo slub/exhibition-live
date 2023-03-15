@@ -20,18 +20,21 @@
         },
         {
             "type": "Control",
-            "label": "Untertitel der Ausstellung",
+            "label": "Untertitel",
             "scope": "#/properties/subtitle"
         },
         {
           "type": "Control",
-          "label": "Ausstellungskatalog",
+          "label": "Originaltitel",
           "scope": "#/properties/originalTitle"
         },
         {
           "type": "Control",
           "label": "Kurzbeschreibung",
-          "scope": "#/properties/description"
+          "scope": "#/properties/description",
+            "options": {
+                "multi": true
+            }
         },
         {
           "type": "Control",

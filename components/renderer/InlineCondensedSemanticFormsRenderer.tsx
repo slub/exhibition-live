@@ -31,6 +31,7 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps ) => {
     path,
     rootSchema,
     label,
+      description
   } = props
   const isValid = errors.length === 0
   const appliedUiSchemaOptions = merge({}, config, uischema.options)
@@ -44,7 +45,6 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps ) => {
       (v?: string) => {
         //FIXME: this is a workaround for a bug, that causes this to be called with the same value eternally
         if (v === data) return
-        console.log({v, data, path})
         handleChange(path, v)
       },
       [path, handleChange, data],
@@ -55,7 +55,7 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps ) => {
     let label_ = ''
     if(data) {
       const parentData = Resolve.data(ctx?.core?.data, path.substring(0, path.length - ('@id'.length + 1  )))
-      label_ = parentData?.label || parentData?.name || parentData?.title || parentData?.['@id'] || ''
+      label_ = parentData?.label || parentData?.name || parentData?.title || parentData?.['@id']?.value || ''
     }
     setRealLabel(label_)
   }, [data, ctx?.core?.data, path, setRealLabel]);
@@ -94,15 +94,23 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps ) => {
       <Hidden xsUp={!visible}>
         <Grid container alignItems='baseline'>
           <Grid item flex={'auto'}>
-            { realLabel && <DiscoverAutocompleteInput
+            {realLabel ? <DiscoverAutocompleteInput
+                    key={'not empty'}
                 readonly={Boolean(ctx.readonly)}
                 typeIRI={typeIRI}
-                title={label || ''}
+                title={description || label || ''}
                 defaultSelected={{value: data, label: realLabel}}
-                onSelectionChange={selection => handleChange_(selection?.value)}/> }
+                onSelectionChange={selection => handleChange_(selection?.value)}/>
+                : <DiscoverAutocompleteInput
+                    key={'empty'}
+                    readonly={Boolean(ctx.readonly)}
+                    typeIRI={typeIRI}
+                    title={description || label || ''}
+                    onSelectionChange={selection => handleChange_(selection?.value)}/>
+            }
           </Grid>
           <Grid item>
-            <IconButton onClick={() => setEditMode(editMode => !editMode)}>{editMode ? <EditOff/> :
+            <IconButton onClick={() => setEditMode(editMode => !editMode)}>{editMode ? <><EditOff/></> :
                 <Edit/>}</IconButton>
           </Grid>
         </Grid>

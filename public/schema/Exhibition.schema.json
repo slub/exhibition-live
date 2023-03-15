@@ -58,7 +58,7 @@
   },
   "Resource": {
     "additionalProperties": false,
-    "description": "A resource stub.",
+    "description": "Eine Resource/ Material zu einer Ausstellung.",
     "properties": {
       "@type": {
         "const": "http://ontologies.slub-dresden.de/exhibition#Resource",
@@ -89,7 +89,7 @@
     "type": "object"
   },
     "ExhibitionType": {
-      "description": "The type of an exhibition.",
+      "description": "Art der Ausstellung.",
       "type": "object",
       "properties": {
         "@id": {
@@ -117,6 +117,7 @@
     },
     "GeographicLocationStub": {
       "description": "Ein geografischer Ort.",
+      "title": "geografischer Ort.",
       "type": "object",
       "properties": {
         "@id": {
@@ -134,6 +135,7 @@
     },
     "GeographicLocation": {
       "description": "Ein geografischer Ort.",
+      "title": "geografischer Ort.",
       "type": "object",
       "properties": {
         "@id": {
@@ -230,11 +232,13 @@
         },
         "location": {
           "description": "Ort der Ausstellung",
+          "title": "geografischer Ort.",
           "type": "object",
           "$ref": "#/$defs/GeographicLocationStub"
         },
         "exhibitionType": {
           "description": "Art der Ausstellung",
+          "title": "Auststellungsart",
           "type": "object",
           "$ref": "#/$defs/ExhibitionTypeStub"
         },

@@ -1,5 +1,5 @@
 import {Add as NewIcon} from '@mui/icons-material'
-import {Button, Container, IconButton} from '@mui/material'
+import {Button, Container, IconButton, TextField} from '@mui/material'
 import {useQuery} from '@tanstack/react-query'
 import {JSONSchema7} from 'json-schema'
 import React, {useCallback, useState} from 'react'
@@ -57,28 +57,12 @@ const WithPreviewForm = ({classIRI, data, children}: Props) => {
 }
 const typeName = 'Exhibition'
 const classIRI = sladb.Exhibition.value
-const exampleData = {
-  '@id': slent['b7748b40-b15b-4a6d-8f13-e65088232080'].value,
-  '@type': classIRI,
-  'title': 'Otto Dix Ausstellung',
-  'subtitle': 'Das neue Metrum',
-  'description': 'Eine kontemporaere Ausstellung',
-  'startDate': {
-    'date': '2016-09-22',
-    'modifier': 'AFTER'
-  },
-  'endDate': {
-    'date': '2016-09-27',
-    'modifier': 'AFTER'
-  }
-}
 
 export type MainFormProps = {
-
+  defaultData?: any
 }
-const MainForm = (props: MainFormProps) => {
-  const [data, setData] = useState<any>(exampleData)
-  const {bulkLoaded} = useRDFDataSources('./ontology/exhibition-info.owl.ttl')
+const MainForm = ({defaultData}: MainFormProps) => {
+  const [data, setData] = useState<any>(defaultData)
   const {oxigraph} = useOxigraph()
   const {crudOptions, doLocalQuery} = useGlobalCRUDOptions()
   const {features } = useSettings()
@@ -101,6 +85,9 @@ const MainForm = (props: MainFormProps) => {
   const uischemaExternal = useUISchemaForType(classIRI)
   return (
       <>
+        <Container>
+          <TextField label={'ID'} value={data['@id']} onChange={e => setData({...data, '@id': e.target.value})} fullWidth/>
+        </Container>
           <WithPreviewForm data={data} classIRI={classIRI}>
             <>
               <Container className="default-wrapper">

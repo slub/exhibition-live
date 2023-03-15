@@ -28,9 +28,10 @@ const askFetch = (query: string, endpoint: string) => fetch(endpoint, {
     'cache': 'no-cache'
 })
 
-const createCutomizedFetch: (query: string, contentType?: string) => (input: RequestInfo | URL, init?: RequestInit) => Promise<Response> = (query, contentType = 'application/sparql-query') => async (input, init) => {
+const createCutomizedFetch: (query: string, accept?: string,contentType?: string) => (input: RequestInfo | URL, init?: RequestInit) => Promise<Response> = (query,accept,  contentType = 'application/sparql-query') => async (input, init) => {
     const headers = new Headers(init?.headers)
-    headers.set('Content-Type', contentType)
+    accept &&  headers.set('accept', accept)
+    contentType &&  headers.set('Content-Type', contentType)
     const newInit = {
         ...(typeof init === 'object' ? init : {}),
         headers,
@@ -40,11 +41,11 @@ const createCutomizedFetch: (query: string, contentType?: string) => (input: Req
     }
     return await fetch(input, newInit)
 }
-const defaultQueryFetch = (endpoint:string, contentType?: string) => async (query: string) => {
+const defaultQueryFetch = (endpoint:string, accept?: string, contentType?: string) => async (query: string) => {
     const engine = new QueryEngine()
     const prepared = await engine.query(query, {
         sources: [endpoint] as [IDataSource],
-        fetch: createCutomizedFetch(query, 'application/sparql-update')
+        fetch: createCutomizedFetch(query,accept || 'application/sparql-results+json', contentType  )
     })
     return await prepared.execute()
 }
@@ -68,6 +69,10 @@ export const oxigraphCrudOptions: (endpoint: string) => CRUDFunctions = (endpoin
         return ds
 
     },
-    updateFetch: defaultQueryFetch(endpoint.replace('query', 'update')),
-    selectFetch: defaultQueryFetch(endpoint, 'application/sparql-results+json')
+    updateFetch: defaultQueryFetch(endpoint.replace('query', 'update'), undefined, 'application/sparql-update'),
+    selectFetch:  async (query: string) => {
+        const res = await askFetch(query, endpoint)
+        const resultJson = await res.json()
+        return resultJson?.results?.bindings || []
+    },
 })

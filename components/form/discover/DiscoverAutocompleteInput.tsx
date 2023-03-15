@@ -48,7 +48,7 @@ const DiscoverAutocompleteInput: FunctionComponent<Props> = ({title = 'etwas', r
                 })
                 : [])}
             value={selected__}
-            placeholder={`Search for ${title} within the current knowledge base`}
+            placeholder={`Suche nach ${title} in der aktuellen Datenbank`}
             renderOption={(props, option: any) => (
                 <li {...props} key={option.value}>
                   {parse(`<span class="debounced_autocomplete_option_label">${option.label}</span>`)}

@@ -3,12 +3,21 @@ import {JsonFormsUISchemaRegistryEntry} from '@jsonforms/core'
 import {BASE_IRI} from '../config'
 
 
+const labels: Record<string, string> = {
+  Person: 'Person',
+  Work: 'Werk',
+  Organization: 'Organisation',
+  Location: 'Ort',
+  Resource: 'Ressource',
+  ExhibitionType: 'Ausstellungsart',
+  GeographicLocation: 'Geografischer Ort'
+}
 const createStubLayout = (defs: string, baseIRI: string, label?: string) => ({
   'type': 'VerticalLayout',
   'elements': [
     {
       'type': 'Control',
-      'label': label || defs,
+      'label': labels[defs] || label || defs,
       'options': {
         'inline': true,
         'context': {
@@ -35,3 +44,4 @@ const createUiSchema: (key: string, baseIRI: string, label?: string) => JsonForm
 
 })
 export const uischemas: JsonFormsUISchemaRegistryEntry[] = ['Person', 'Work', 'Organization', 'Location', 'Resource', 'ExhibitionType', 'GeographicLocation'].map((key) => createUiSchema(key, BASE_IRI))
+

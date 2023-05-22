@@ -29,9 +29,10 @@ import InlineSemanticFormsRenderer from '../renderer/InlineSemanticFormsRenderer
 import MaterialArrayOfLinkedItemRenderer from '../renderer/MaterialArrayOfLinkedItemRenderer'
 import MaterialCustomAnyOfRenderer, {materialCustomAnyOfControlTester} from '../renderer/MaterialCustomAnyOfRenderer'
 import TypeOfRenderer from '../renderer/TypeOfRenderer'
+import {CRUDOptions, SparqlBuildOptions} from '../state/types'
+import {useGraphQL_CRUD} from '../state/useGraphQL_CRUD'
 import {useJsonldParser} from '../state/useJsonldParser'
 import {useSettings} from '../state/useLocalSettings'
-import {CRUDOptions, SparqlBuildOptions, useSPARQL_CRUD} from '../state/useSPARQL_CRUD'
 import {emitToSubscribers, subscriptionKeys, useSubscriptions} from '../state/useSubscriptions'
 import SimilarityFinder from './SimilarityFinder'
 
@@ -182,7 +183,7 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> =
         isUpdate,
         setIsUpdate,
           ready
-      } = useSPARQL_CRUD(
+      } = useGraphQL_CRUD(
           entityIRI,
           typeIRI,
           schema,

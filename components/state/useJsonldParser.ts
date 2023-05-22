@@ -38,7 +38,8 @@ export const useJsonldParser = (data: any, jsonldContext: JsonLdContext, schema:
 
 
             onJsonldData && onJsonldData(jsonldDoc)
-
+           onFormDataChange && onFormDataChange(jsonldDoc)
+/*
             try {
                 const jsonldStream = stringToStream(JSON.stringify(jsonldDoc))
                 const parser = new Parser()
@@ -49,7 +50,7 @@ export const useJsonldParser = (data: any, jsonldContext: JsonLdContext, schema:
                 }
             } catch (e) {
                 console.error('Cannot convert JSONLD to dataset', e)
-            }
+            }*/
         },
         [onFormDataChange, onJsonldData, setEntityIRI, entityIRI],
     )

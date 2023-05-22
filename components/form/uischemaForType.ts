@@ -10,7 +10,7 @@ export const useUISchemaForType = (typeIRI: string) => {
     try {
        schema = await res.json()
     } catch (e) {
-      console.log(`No uischema found for ${typeName}``)
+      console.log(`No uischema found for ${typeName}`)
     }
     return schema
   }), {

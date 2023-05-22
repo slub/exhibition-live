@@ -10,8 +10,6 @@ import {defaultJsonldContext, defaultPrefix, defaultQueryBuilderOptions, slent} 
 import SemanticJsonForm from '../form/SemanticJsonForm'
 import {useUISchemaForType} from '../form/uischemaForType'
 import {uischemas} from '../form/uischemas'
-import {useSettings} from '../state/useLocalSettings'
-import {oxigraphCrudOptions} from '../utils/sparql/remoteOxigraph'
 import {useGlobalCRUDOptions} from "../state/useGlobalCRUDOptions";
 
 const InlineSemanticFormsRenderer = (props: ControlProps) => {
@@ -34,6 +32,7 @@ const InlineSemanticFormsRenderer = (props: ControlProps) => {
     const [editMode, setEditMode] = useState(false)
     const [formData, setFormData] = useState({'@id': data})
     const {crudOptions} = useGlobalCRUDOptions()
+    const uischemata = useMemo(() => schema ? uischemas(schema) : [], [schema])
 
     const handleChange_ = useCallback(
         (v?: string) => {
@@ -101,7 +100,7 @@ const InlineSemanticFormsRenderer = (props: ControlProps) => {
                                     schema={subSchema as JSONSchema7}
                                     jsonFormsProps={{
                                         uischema: uischemaExternal || undefined,
-                                        uischemas: uischemas
+                                        uischemas: uischemata
                                     }}
                                     onEntityChange={handleChange_}
                                 />

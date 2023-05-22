@@ -10,11 +10,8 @@ import {defaultJsonldContext, defaultPrefix, defaultQueryBuilderOptions, slent} 
 import SemanticJsonForm from '../form/SemanticJsonForm'
 import {useUISchemaForType} from '../form/uischemaForType'
 import {uischemas} from '../form/uischemas'
-import {useSettings} from '../state/useLocalSettings'
-import {oxigraphCrudOptions} from '../utils/sparql/remoteOxigraph'
 import {Edit, EditOff} from "@mui/icons-material";
 import DiscoverAutocompleteInput from "../form/discover/DiscoverAutocompleteInput";
-import get from "lodash/get";
 import {useGlobalCRUDOptions} from "../state/useGlobalCRUDOptions";
 
 const InlineCondensedSemanticFormsRenderer = (props: ControlProps ) => {
@@ -40,6 +37,7 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps ) => {
   const {crudOptions} = useGlobalCRUDOptions()
   const ctx = useJsonForms()
   const [ realLabel, setRealLabel ] = useState('')
+  const uischemata = useMemo(() => schema ? uischemas(schema) : [], [schema])
 
   const handleChange_ = useCallback(
       (v?: string) => {
@@ -139,7 +137,7 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps ) => {
                       schema={subSchema as JSONSchema7}
                       jsonFormsProps={{
                         uischema: uischemaExternal || undefined,
-                        uischemas: uischemas
+                        uischemas: uischemata
                       }}
                       onEntityChange={handleChange_}
                   />

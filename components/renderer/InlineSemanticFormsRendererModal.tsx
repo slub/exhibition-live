@@ -12,8 +12,6 @@ import {defaultJsonldContext, defaultPrefix, defaultQueryBuilderOptions, slent} 
 import SemanticJsonForm, {CRUDOpsType} from '../form/SemanticJsonForm'
 import {useUISchemaForType} from '../form/uischemaForType'
 import {uischemas} from '../form/uischemas'
-import {useSettings} from '../state/useLocalSettings'
-import {oxigraphCrudOptions} from '../utils/sparql/remoteOxigraph'
 import MuiEditDialog from './MuiEditDialog'
 import {useGlobalCRUDOptions} from "../state/useGlobalCRUDOptions";
 
@@ -39,6 +37,7 @@ const InlineSemanticFormsRendererModal = (props: ControlProps) => {
   const [CRUDOps, setCRUDOps] = useState<CRUDOpsType | undefined>()
   const {load, save, remove} = CRUDOps || {}
   const {crudOptions} = useGlobalCRUDOptions()
+  const uischemata = useMemo(() => schema ? uischemas(schema) : [], [schema])
 
   const handleChange_ = useCallback(
       (v?: string) => {
@@ -131,7 +130,7 @@ const InlineSemanticFormsRendererModal = (props: ControlProps) => {
                     schema={subSchema as JSONSchema7}
                     jsonFormsProps={{
                       uischema: uischemaExternal || undefined,
-                      uischemas: uischemas
+                      uischemas: uischemata
                     }}
                     onEntityChange={handleChange_}
                     onInit={(crudOps) => setCRUDOps(crudOps)}

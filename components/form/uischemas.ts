@@ -1,6 +1,8 @@
-import {JsonFormsUISchemaRegistryEntry} from '@jsonforms/core'
+import {JsonFormsUISchemaRegistryEntry, JsonSchema} from '@jsonforms/core'
 
 import {BASE_IRI} from '../config'
+import {JSONSchema7} from "json-schema";
+import {allDefinitions} from "./jsonforms/schemaUtils";
 
 
 const labels: Record<string, string> = {
@@ -43,5 +45,7 @@ const createUiSchema: (key: string, baseIRI: string, label?: string) => JsonForm
     uischema: createStubLayout(key, baseIRI, label)
 
 })
-export const uischemas: JsonFormsUISchemaRegistryEntry[] = ['Person', 'Work', 'Organization', 'Location', 'Resource', 'ExhibitionType', 'GeographicLocation'].map((key) => createUiSchema(key, BASE_IRI))
+
+export const uischemas: (schema: JsonSchema) => JsonFormsUISchemaRegistryEntry[] =
+        schema => allDefinitions(schema as JSONSchema7).map((key) => createUiSchema(key, BASE_IRI))
 

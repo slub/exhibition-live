@@ -1,6 +1,7 @@
-import {NamespaceBuilder} from "@rdfjs/namespace";
-import {Bindings, DatasetCore, Quad, ResultStream} from "@rdfjs/types";
-import {WalkerOptions} from "../utils/graph/jsonSchemaGraphInfuser";
+import {NamespaceBuilder} from '@rdfjs/namespace'
+import {Bindings, DatasetCore, Quad, ResultStream} from '@rdfjs/types'
+
+import {WalkerOptions} from '../utils/graph/jsonSchemaGraphInfuser'
 
 export interface SparqlBuildOptions {
   base?: string;

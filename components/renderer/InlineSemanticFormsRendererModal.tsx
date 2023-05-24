@@ -37,7 +37,7 @@ const InlineSemanticFormsRendererModal = (props: ControlProps) => {
   const [CRUDOps, setCRUDOps] = useState<CRUDOpsType | undefined>()
   const {load, save, remove} = CRUDOps || {}
   const {crudOptions} = useGlobalCRUDOptions()
-  const uischemata = useMemo(() => schema ? uischemas(schema) : [], [schema])
+  const uischemata = useMemo(() => rootSchema ? uischemas(rootSchema) : [], [rootSchema])
 
   const handleChange_ = useCallback(
       (v?: string) => {
@@ -64,12 +64,12 @@ const InlineSemanticFormsRendererModal = (props: ControlProps) => {
   const subSchema = useMemo(() => {
     if (!$ref) return
     const schema2 = {
-      ...schema,
       $ref
     }
+    const {properties: _ , ...schemaWithoutProperties} = rootSchema
     const resolvedSchema = resolveSchema(schema2 as JsonSchema, '', rootSchema as JsonSchema)
     return {
-      ...rootSchema,
+      ...schemaWithoutProperties,
       ...resolvedSchema
     }
   }, [$ref, schema, rootSchema])

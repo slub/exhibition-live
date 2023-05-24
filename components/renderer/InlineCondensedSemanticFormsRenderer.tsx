@@ -37,7 +37,7 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps ) => {
   const {crudOptions} = useGlobalCRUDOptions()
   const ctx = useJsonForms()
   const [ realLabel, setRealLabel ] = useState('')
-  const uischemata = useMemo(() => schema ? uischemas(schema) : [], [schema])
+  const uischemata = useMemo(() => rootSchema ? uischemas(rootSchema) : [], [rootSchema])
 
   const handleChange_ = useCallback(
       (v?: string) => {
@@ -80,9 +80,10 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps ) => {
       ...schema,
       $ref
     }
+    const {properties: _ , ...schemaWithoutProperties} = rootSchema
     const resolvedSchema = resolveSchema(schema2 as JsonSchema, '', rootSchema as JsonSchema)
     return {
-      ...rootSchema,
+      ...schemaWithoutProperties,
       ...resolvedSchema
     }
   }, [$ref, schema, rootSchema])

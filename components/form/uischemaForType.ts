@@ -15,6 +15,7 @@ export const useUISchemaForType = (typeIRI: string) => {
     return schema
   }), {
     retry: false,
+    refetchOnWindowFocus: false,
     onError: (err) => {}
   })
   return data

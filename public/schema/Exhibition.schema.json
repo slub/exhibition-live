@@ -179,9 +179,6 @@
           "type": "string",
           "maxLength": 50
         },
-        "imported": {
-          "$ref": "#/definitions/DataImport"
-        },
         "memberOfCorp": {
           "type": "array",
           "items": {
@@ -282,9 +279,6 @@
         "lastNormUpdate": {
           "type": "string",
           "format": "date-time"
-        },
-        "imported": {
-          "$ref": "#/definitions/DataImport"
         }
       }
     },
@@ -304,9 +298,6 @@
         "idAuthority": {
           "type": "string",
           "maxLength": 50
-        },
-        "imported": {
-          "$ref": "#/definitions/DataImport"
         },
         "tags": {
           "type": "array",
@@ -346,9 +337,6 @@
         "lastNormUpdate": {
           "type": "string",
           "format": "date-time"
-        },
-        "imported": {
-          "$ref": "#/definitions/DataImport"
         }
       }
     },
@@ -493,13 +481,13 @@
             "$ref": "#/definitions/Genre"
           }
         },
-        "relatedPersons": {
+        "involvedPersons": {
           "type": "array",
           "items": {
             "$ref": "#/definitions/ExponatsAndPersons"
           }
         },
-        "relatedCorporations": {
+        "involvedCorporations": {
           "type": "array",
           "items": {
             "$ref": "#/definitions/ExponatsAndCorporations"
@@ -670,9 +658,6 @@
         "toDateDisplay": {
           "type": "string",
           "maxLength": 200
-        },
-        "imported": {
-          "$ref": "#/definitions/DataImport"
         },
         "published": {
           "type": "boolean"

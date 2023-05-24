@@ -1,9 +1,11 @@
-import {JSONSchema7, JSONSchema7Definition} from "json-schema";
-import {BASE_IRI} from "../../config";
-import {isObject} from "lodash";
-import {filterPrimitiveProperties} from "../../utils/core/jsonSchema";
+import {JSONSchema7, JSONSchema7Definition} from 'json-schema'
+import {isObject} from 'lodash'
 
-export const defs: (schema: JSONSchema7) => JSONSchema7['definitions'] = (schema: JSONSchema7) => schema.$defs || schema.definitions || {}
+import {BASE_IRI} from '../../config'
+import {filterForPrimitiveProperties} from '../../utils/core/jsonSchema'
+import {slent} from '../formConfigs'
+
+export const defs: (schema: JSONSchema7) => NonNullable<JSONSchema7['definitions']> = (schema: JSONSchema7) => schema.$defs || schema.definitions || {}
 
 const recursivelyFindRefsAndAppendStub: (schema: JSONSchema7, rootSchema?: JSONSchema7) => JSONSchema7 = (schema: JSONSchema7, rootSchema = schema) => {
   const definitionsKey = '$defs' in rootSchema ? '$defs' : 'definitions'
@@ -29,16 +31,16 @@ const recursivelyFindRefsAndAppendStub: (schema: JSONSchema7, rootSchema?: JSONS
 }
 
 const definitionsToStubDefinitions = (definitions: JSONSchema7['definitions']) =>
-    (Object.entries(definitions).reduce((acc, [key, value]) => {
+    (Object.entries(definitions || {}).reduce((acc, [key, value]) => {
       const stubKey = `${key}Stub`
       const stub = {
-        ...value,
-        properties: isObject(value) ? filterPrimitiveProperties(value.properties) : undefined
+        ...(isObject(value) ? value : {}),
+        properties: isObject(value) ? filterForPrimitiveProperties(value.properties) : undefined
       }
       return {
         ...acc,
         [stubKey]: stub
-      };
+      }
     }, {}) as JSONSchema7['definitions'])
 
 
@@ -46,13 +48,13 @@ export const prepareStubbedSchema = (schema: JSONSchema7) => {
   const definitionsKey = '$defs' in schema ? '$defs' : 'definitions'
 
   const genJSONLDSemanticProperties = (modelName: string) => ({
-    "@type": {
-      "const": `${BASE_IRI}${modelName.replace(/Stub$/, '')}`,
-      "type": "string"
+    '@type': {
+      'const': `${BASE_IRI}${modelName.replace(/Stub$/, '')}`,
+      'type': 'string'
     },
-    "@id": {
-      "title": "http://ontologies.slub-dresden.de/exhibition/entity#",
-      "type": "string"
+    '@id': {
+      'title': slent('').value,
+      'type': 'string'
     }
   })
   const withJSONLDProperties: (name: string, schema: JSONSchema7) => JSONSchema7 = (name: string, schema: JSONSchema7) => ({
@@ -95,7 +97,7 @@ export const bringDefinitionsToTop = (schema: JSONSchema7, key: string) => {
   return ({
     ...schema,
     ...((schema[definitionsKey] as any)[key] || {})
-  });
+  })
 }
 
 export const allDefinitions = (schema: JSONSchema7) => Object.keys(defs(schema))

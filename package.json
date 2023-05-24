@@ -20,7 +20,10 @@
     "lint:fix": "next lint --fix && eslint --fix ./components ./pages",
     "lint:check": "next lint && eslint ./components ./pages",
     "docker:build": "docker build -t adb-next .",
-    "docker:run": "docker run -p 3000:3000 adb-next"
+    "docker:run": "docker run -p 3000:3000 adb-next",
+    "dep:dot":  "depcruise components --include-only \"^components\" --output-type dot | dot -T svg > analysis/dependency-graph.svg",
+    "dep:html":  "depcruise components --include-only \"^components\" --output-type html > analysis/dependencies.html",
+    "dep:mermaid":  "depcruise components --include-only \"^components\" --output-type mermaid > analysis/dependencies.md"
   },
   "dependencies": {
     "@apidevtools/json-schema-ref-parser": "^9.1.0",
@@ -109,6 +112,7 @@
     "babel-loader": "^8.3.0",
     "buffer": "^6.0.3",
     "clownface": "^1.5.1",
+    "dependency-cruiser": "^13.0.2",
     "eslint": "8.30.0",
     "eslint-config-next": "^13.1.2",
     "eslint-plugin-simple-import-sort": "^8.0.0",

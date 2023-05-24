@@ -1,7 +1,9 @@
-import {JSONSchema7} from "json-schema";
-import {filterExtendedProperties} from "../core/jsonSchema";
-import {JsonSchema, resolveSchema} from "@jsonforms/core";
-import {filterUndefOrNull} from "../core";
+import {JsonSchema, resolveSchema} from '@jsonforms/core'
+import {JSONSchema7} from 'json-schema'
+import {isObject} from 'lodash'
+
+import {filterUndefOrNull} from '../core'
+import {filterForPrimitiveProperties} from '../core/jsonSchema'
 
 
 export type GraphQLMappingOptions = {
@@ -15,11 +17,11 @@ const makeProperty = (key: string, propertyString?: string) => {
     ${propertyString} 
   }`
 }
-const jsonSchemaProperties2GraphQLQuery = (rootProperty: JSONSchema7['properties'], rootSchema: JSONSchema7, options?: GraphQLMappingOptions, level: number = 0) => {
+const jsonSchemaProperties2GraphQLQuery: (rootProperty: JSONSchema7['properties'], rootSchema: JSONSchema7, options?: GraphQLMappingOptions, level?: number) => (undefined | string) = (rootProperty: JSONSchema7['properties'], rootSchema: JSONSchema7, options?: GraphQLMappingOptions, level: number = 0) => {
   if(level > MAX_RECURSION) return undefined
-  const propertiesList = filterUndefOrNull(Object.entries(rootProperty).map(([key, p]) => {
-    if(options?.propertyBlacklist?.includes(key) || key.startsWith('@')) return undefined
-    if(p.type === 'string' || p.type === 'number' || p.type === 'boolean') {
+  const propertiesList = filterUndefOrNull(Object.entries(rootProperty || {}).map(([key, p]) => {
+    if(options?.propertyBlacklist?.includes(key) || key.startsWith('@') || !isObject(p)) return undefined
+    if( p.type === 'string' || p.type === 'number' || p.type === 'boolean') {
       return key
     }
     if(p.type === 'object' || p.$ref) {
@@ -32,9 +34,10 @@ const jsonSchemaProperties2GraphQLQuery = (rootProperty: JSONSchema7['properties
       }
       if(properties) return  makeProperty(key, jsonSchemaProperties2GraphQLQuery(properties, rootSchema, options, level + 1))
     }
-    if(p.type === 'array' && p.items || p.items?.$ref) {
-      let properties = p.items?.properties
-      if(p.items.$ref) {
+    if(p.type === 'array' && isObject(p.items)) {
+      const items = p.items as JSONSchema7
+      let properties = items.properties
+      if(items.$ref) {
         const subSchema =  resolveSchema(p.items as JsonSchema, '', rootSchema as JsonSchema ) as JSONSchema7
         if(subSchema && subSchema.properties ) {
           properties = subSchema.properties
@@ -56,7 +59,7 @@ export const jsonSchema2GraphQLQuery = (entityType: string, schema: JSONSchema7,
   const queryName = `get${entityType}`
 
 
-  const properties = Object.keys(filterExtendedProperties(schema.properties))
+  const properties = Object.keys(filterForPrimitiveProperties(schema.properties))
       .filter(p => !p.startsWith('@'))
       .filter(key => !options?.propertyBlacklist?.includes(key))
       .join('\n')

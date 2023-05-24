@@ -1,8 +1,8 @@
 import {JsonFormsUISchemaRegistryEntry, JsonSchema} from '@jsonforms/core'
+import {JSONSchema7} from 'json-schema'
 
 import {BASE_IRI} from '../config'
-import {JSONSchema7} from "json-schema";
-import {allDefinitions} from "./jsonforms/schemaUtils";
+import {allDefinitions} from './jsonforms/schemaUtils'
 
 
 const labels: Record<string, string> = {
@@ -14,7 +14,7 @@ const labels: Record<string, string> = {
   ExhibitionType: 'Ausstellungsart',
   GeographicLocation: 'Geografischer Ort'
 }
-const createStubLayout = (defs: string, baseIRI: string, label?: string) => ({
+const createStubLayout = (defs: string, baseIRI: string, label?: string, definitionsKey = '$defs') => ({
   'type': 'VerticalLayout',
   'elements': [
     {
@@ -23,7 +23,7 @@ const createStubLayout = (defs: string, baseIRI: string, label?: string) => ({
       'options': {
         'inline': true,
         'context': {
-          '$ref': `#/$defs/${defs}`,
+          '$ref': `#/${definitionsKey}/${defs}`,
           'typeIRI': `${baseIRI}${defs}`,
           'useModal': false
         }
@@ -37,15 +37,14 @@ const createStubLayout = (defs: string, baseIRI: string, label?: string) => ({
   ]
 })
 
-const createUiSchema: (key: string, baseIRI: string, label?: string) => JsonFormsUISchemaRegistryEntry = (key, baseIRI,label) => ({
+const createUiSchema: (key: string, baseIRI: string, label?: string, definitionsKey?: string) => JsonFormsUISchemaRegistryEntry = (key, baseIRI,label, definitionsKey) => ({
     tester: (schema) => {
       const rank = schema.properties?.['@type']?.const === `${baseIRI}${key}` ? 21 : -1
       return rank
     },
-    uischema: createStubLayout(key, baseIRI, label)
-
+    uischema: createStubLayout(key, baseIRI, label, definitionsKey)
 })
 
 export const uischemas: (schema: JsonSchema) => JsonFormsUISchemaRegistryEntry[] =
-        schema => allDefinitions(schema as JSONSchema7).map((key) => createUiSchema(key, BASE_IRI))
+        schema => allDefinitions(schema as JSONSchema7).map((key) => createUiSchema(key, BASE_IRI, undefined, 'definitions'))
 

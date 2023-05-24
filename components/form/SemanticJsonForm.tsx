@@ -6,6 +6,7 @@ import {
   JsonFormsCore,
   JsonSchema,
   rankWith, schemaMatches,
+  scopeEndIs,
   scopeEndsWith,
   UISchemaElement
 } from '@jsonforms/core'
@@ -86,7 +87,7 @@ const renderers = [
     renderer: AutocompleteURIFieldRenderer,
   }, {
     tester: rankWith(10,
-        scopeEndsWith('@id')
+        scopeEndIs('@id')
     ),
     renderer: AutoIdentifierRenderer
   }, {

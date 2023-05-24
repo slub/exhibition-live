@@ -3,7 +3,8 @@ import {IDataSource} from '@comunica/types'
 import datasetFactory from '@rdfjs/dataset'
 import N3 from 'n3'
 
-import {CRUDFunctions} from '../../state/useSPARQL_CRUD'
+import {CRUDFunctions} from '../../state/types'
+
 
 const cFetch = (query: string, endpoint: string) => fetch(endpoint, {
     'headers': {

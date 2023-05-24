@@ -4,9 +4,9 @@ import N3 from 'n3'
 import {useCallback, useEffect, useState} from 'react'
 
 import {oxigraphCrudOptions} from '../utils/sparql/remoteOxigraph'
+import { CRUDFunctions } from './types'
 import {useSettings} from './useLocalSettings'
 import {useOxigraph} from './useOxigraph'
-import {CRUDFunctions} from './useSPARQL_CRUD'
 
 type UseGlobalCRUDOptions = () => {
   crudOptions? : CRUDFunctions

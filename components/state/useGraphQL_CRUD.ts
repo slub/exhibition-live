@@ -8,6 +8,32 @@ import {useFetchData} from '../graphql/useFetchData'
 import {jsonSchema2GraphQLQuery} from '../utils/graphql/jsonSchema2GraphQLQuery'
 import {CRUDOptions} from './types'
 
+/**
+ * recursively go through the data and add @id for objects that have an id field
+ * @param data
+ * @param idFieldKeys the keys that are used to identify the id field
+ */
+const makeIRIsFromIDs: (data: any, idFieldKeys?: string[]) => any = (data, idFieldKeys = ['id', 'uuid']) => {
+  if(!data) return data
+  if(Array.isArray(data)) {
+    return data.map(d => makeIRIsFromIDs(d, idFieldKeys))
+  }
+  if(typeof data === 'object') {
+    const keys = Object.keys(data)
+    const idFieldKey = keys.find(k => idFieldKeys.includes(k))
+    const newData: any = Object.fromEntries(keys.map(k => [k, makeIRIsFromIDs(data[k], idFieldKeys)]))
+    if(idFieldKey) {
+      return {
+        ...newData,
+        '@id': slent(data[idFieldKey]).value
+      }
+    } else {
+      return newData
+    }
+  }
+  return data
+}
+
 export const useGraphQL_CRUD = (entityIRI: string | undefined, typeIRI: string | undefined, schema: JSONSchema7,
                                 {
                                   askFetch,
@@ -25,8 +51,7 @@ export const useGraphQL_CRUD = (entityIRI: string | undefined, typeIRI: string |
   const id = useMemo(() => typeof entityIRI === 'string' ? entityIRI.substring(entityIRI.lastIndexOf('#') + 1, entityIRI.length) : undefined, [entityIRI])
   const gqlQuery = useMemo<string | undefined>(() => {
     if (!typeIRI) return
-    const propertyBlacklist = ['idAuthority', 'lastNormUpdate', 'editorNote', 'authority', 'location', 'timeSeries']
-    return jsonSchema2GraphQLQuery(typeName, schema, {propertyBlacklist})
+    return jsonSchema2GraphQLQuery(typeName, schema)
   }, [typeName, schema])
   const {
       refetch,
@@ -39,15 +64,15 @@ export const useGraphQL_CRUD = (entityIRI: string | undefined, typeIRI: string |
     const resp = (gqlData as any)?.[`get${typeName}`]
     if(!resp) return
     const jsonldMixin = {
-      '@id':  slent(id).value,
       '@type': typeIRI,
       '@context': {
         '@vocab': BASE_IRI
       }
     }
-    const _data = Object.fromEntries(Object.entries(resp).filter(([,v]) => v !== undefined && v !== null))
+    const _data = makeIRIsFromIDs(
+        Object.fromEntries(Object.entries(resp).filter(([,v]) => v !== undefined && v !== null)))
     setData({
-      ... _data,
+      ..._data,
       ...jsonldMixin
     })
   }, [setData, gqlData, typeName, id, typeIRI])

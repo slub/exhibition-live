@@ -1,5 +1,6 @@
 import Head from 'next/head'
-import React, {useState} from 'react'
+import {useRouter} from 'next/router'
+import React, {useMemo, useState} from 'react'
 
 import MainFormNoSSR from '../components/content/main/MainFormNoSSR'
 import {sladb, slent} from '../components/form/formConfigs'
@@ -14,13 +15,17 @@ type Props = {
   classIRI: string
 }
 const classIRI = sladb.Exhibition.value
-const exampleData = {
-  '@id': slent['4'].value,
-  '@type': classIRI,
-  'title': 'Otto Dix Ausstellung'
-}
 export default () => {
   const {bulkLoaded} = useRDFDataSources('./ontology/exhibition-info.owl.ttl')
+  //get param id from nextjs router
+  const router = useRouter()
+  const {id} = router.query
+  const stardData = useMemo(() => (typeof id === 'string' ? {
+
+    '@id': slent[id].value,
+    '@type': classIRI,
+    'title': ''
+  } : {}), [id])
 
   return (
       <>
@@ -32,7 +37,7 @@ export default () => {
         </Head>
         <PerformanceHeader/>
         <main className={styles.main}>
-          {bulkLoaded && <MainFormNoSSR defaultData={exampleData}/>}
+          {bulkLoaded && <MainFormNoSSR defaultData={stardData}/>}
         </main>
         <PerformanceFooter/>
       </>

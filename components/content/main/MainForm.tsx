@@ -6,7 +6,7 @@ import React, {useCallback, useMemo, useState} from 'react'
 import {SplitPane} from 'react-collapse-pane'
 import {v4 as uuidv4} from 'uuid'
 
-import {BASE_IRI} from '../../config'
+import {BASE_IRI, ROOT_SCHEMA_URL} from '../../config'
 import ContentMainPreview from '../../content/ContentMainPreview'
 import {
   defaultJsonldContext,
@@ -93,7 +93,7 @@ const MainForm = ({defaultData}: MainFormProps) => {
       '@type': classIRI,
     })
   }, [setData])
-  const {data: loadedSchema} = useQuery(['schema', typeName], () => fetch(`./schema/${typeName}.schema.json`).then(async res => {
+  const {data: loadedSchema} = useQuery(['schema', typeName], () => fetch(ROOT_SCHEMA_URL).then(async res => {
     const jsonData: any = await res.json()
     if (!jsonData) return
     const schema = prepareStubbedSchema(jsonData)
@@ -106,7 +106,7 @@ const MainForm = ({defaultData}: MainFormProps) => {
       <>
         <WithPreviewForm data={data} classIRI={classIRI}>
           <>
-            <IRIChooser iri={data?.['@id']} onChange={iri => setData({...data, '@id': iri})}/>
+            {features?.enableDebug && <IRIChooser iri={data?.['@id']} onChange={iri => setData({...data, '@id': iri})}/>}
             <Container className="default-wrapper">
 
               {oxigraph && features?.enableDebug && <SPARQLLocalOxigraphToolkit sparqlQuery={doLocalQuery}/>}

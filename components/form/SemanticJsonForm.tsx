@@ -241,18 +241,9 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> =
       const handleSave = useCallback(async () => {
         await save()
         await load()
-        emitToSubscribers(subscriptionKeys.GLOBAL_DATA_CHANGE, subscriptions)
         setEditMode(false)
       }, [save, setEditMode, subscriptions])
 
-      useEffect(() => {
-        if(subscription) return
-        setSubscription(subscribe(subscriptionKeys.GLOBAL_DATA_CHANGE, async () => {
-          await save()
-          await load()
-        }))
-        return () => { subscription &&  unsubscribe(subscriptionKeys.GLOBAL_DATA_CHANGE, subscription) }
-      },  [subscription ,subscribe, unsubscribe, load, save])
 
 
       return (<>

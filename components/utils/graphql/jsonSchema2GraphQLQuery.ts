@@ -5,11 +5,12 @@ import {isObject} from 'lodash'
 import {filterUndefOrNull} from '../core'
 import {filterForPrimitiveProperties} from '../core/jsonSchema'
 
+const MAX_RECURSION = 2
 
 export type GraphQLMappingOptions = {
   propertyBlacklist?: string[]
+  maxRecursion?: number
 }
-const MAX_RECURSION = 2
 
 const makeProperty = (key: string, propertyString?: string) => {
   if(!propertyString || propertyString.length === 0) return undefined
@@ -18,7 +19,7 @@ const makeProperty = (key: string, propertyString?: string) => {
   }`
 }
 const jsonSchemaProperties2GraphQLQuery: (rootProperty: JSONSchema7['properties'], rootSchema: JSONSchema7, options?: GraphQLMappingOptions, level?: number) => (undefined | string) = (rootProperty: JSONSchema7['properties'], rootSchema: JSONSchema7, options?: GraphQLMappingOptions, level: number = 0) => {
-  if(level > MAX_RECURSION) return undefined
+  if(level > (options?.maxRecursion || MAX_RECURSION)) return undefined
   const propertiesList = filterUndefOrNull(Object.entries(rootProperty || {}).map(([key, p]) => {
     if(options?.propertyBlacklist?.includes(key) || key.startsWith('@') || !isObject(p)) return undefined
     if( p.type === 'string' || p.type === 'number' || p.type === 'boolean') {

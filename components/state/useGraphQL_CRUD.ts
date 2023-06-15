@@ -1,8 +1,8 @@
-import {useQuery} from '@tanstack/react-query'
+import {useMutation, useQuery} from '@tanstack/react-query'
 import {JSONSchema7} from 'json-schema'
 import {useCallback, useEffect, useMemo, useState} from 'react'
 
-import {BASE_IRI} from '../config'
+import {BASE_IRI, REST_API_URL} from '../config'
 import {slent} from '../form/formConfigs'
 import {useFetchData} from '../graphql/useFetchData'
 import {jsonSchema2GraphQLQuery} from '../utils/graphql/jsonSchema2GraphQLQuery'
@@ -34,6 +34,11 @@ const makeIRIsFromIDs: (data: any, idFieldKeys?: string[]) => any = (data, idFie
   return data
 }
 
+type MutationInput = {
+  data: any
+  id?: string
+}
+
 export const useGraphQL_CRUD = (entityIRI: string | undefined, typeIRI: string | undefined, schema: JSONSchema7,
                                 {
                                   askFetch,
@@ -51,13 +56,33 @@ export const useGraphQL_CRUD = (entityIRI: string | undefined, typeIRI: string |
   const id = useMemo(() => typeof entityIRI === 'string' ? entityIRI.substring(entityIRI.lastIndexOf('#') + 1, entityIRI.length) : undefined, [entityIRI])
   const gqlQuery = useMemo<string | undefined>(() => {
     if (!typeIRI) return
-    return jsonSchema2GraphQLQuery(typeName, schema)
+    return jsonSchema2GraphQLQuery(typeName, schema, {
+      propertyBlacklist: ['relatedPersons', 'relatedCorporations', 'lastNormUpdate', 'externalId'],
+      maxRecursion: 0
+    })
   }, [typeName, schema])
   const {
       refetch,
     data: gqlData
   } = useQuery([typeIRI, entityIRI], useFetchData(gqlQuery || '').bind(null, {pk: id}), {
-    enabled: !!(gqlQuery && id)
+    enabled: !!(gqlQuery && id),
+    retry: false,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    refetchOnMount: false,
+  })
+
+  const { mutateAsync } = useMutation<any, unknown, MutationInput>(async ({data, id}: MutationInput) => {
+    const typeNameUnderscore = typeName.replace(/([A-Z])/g, '_$1').toLowerCase().substring(1)
+    const url = `${REST_API_URL}/${typeNameUnderscore}s${id ? `/${id}` : ''}`
+    return fetch(url, {
+      method: id ? 'PUT' : 'POST',
+      body: JSON.stringify(data),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+
   })
 
   useEffect(() => {
@@ -106,10 +131,15 @@ export const useGraphQL_CRUD = (entityIRI: string | undefined, typeIRI: string |
 
   const save = useCallback(
       async () => {
-        if (!data || !entityIRI) return
-        console.warn('not implemented yet')
+        if (!data || !id) return
+        //console.warn('not implemented yet')
+        const resp = await mutateAsync({
+          data: data,
+          id: id
+        })
+
       },
-      [entityIRI, data, isUpdate, setIsUpdate, defaultPrefix, updateFetch, upsertByDefault])
+      [id, data, mutateAsync])
 
   return {
     exists,

@@ -15,7 +15,7 @@ type Props = {
 }
 const classIRI = sladb.Exhibition.value
 const exampleData = {
-  '@id': slent['b7748b40-b15b-4a6d-8f13-e6508823208'].value,
+  '@id': slent['b7748b40-b15b-4a6d-8f13-e65088232080'].value,
   '@type': classIRI,
   'title': 'Otto Dix Ausstellung'
 }

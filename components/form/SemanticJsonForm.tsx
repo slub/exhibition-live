@@ -11,7 +11,7 @@ import {
 } from '@jsonforms/core'
 import {materialCells, materialRenderers} from '@jsonforms/material-renderers'
 import {JsonForms, JsonFormsInitStateProps} from '@jsonforms/react'
-import {Edit, EditOff} from '@mui/icons-material'
+import {Delete, Edit, EditOff, Refresh, Save} from '@mui/icons-material'
 import {Button, Grid, Hidden, IconButton, Switch} from '@mui/material'
 import {useQuery} from '@tanstack/react-query'
 import {JSONSchema7} from 'json-schema'
@@ -258,9 +258,9 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> =
               <IconButton onClick={() => setEditMode(editMode => !editMode)}>{editMode ? <EditOff/> :
                   <Edit/>}</IconButton>
               {editMode && <>
-                  <Button onClick={handleSave}>speichern</Button>
-                  <Button onClick={remove}>entfernen</Button>
-                  <Button onClick={load}>laden</Button>
+                  <Button onClick={handleSave} startIcon={<Save />}>speichern</Button>
+                  <Button onClick={remove} startIcon={<Delete />}>entfernen</Button>
+                  <Button onClick={load} startIcon={<Refresh />}>neu laden</Button>
               </>}
               {features?.enableDebug && <>
                 <Switch checked={jsonViewerEnabled} onChange={e => setJsonViewerEnabled(Boolean(e.target.checked))}

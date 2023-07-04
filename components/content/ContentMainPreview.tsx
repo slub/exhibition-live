@@ -1,4 +1,5 @@
 import dayjs from 'dayjs'
+import Link from 'next/link'
 import React, {FunctionComponent} from 'react'
 
 
@@ -17,9 +18,9 @@ const format = (date?: string) => {
 const Person = ({person}: {person: any}) => {
   return (
     <dd className="persons">
-      <a href="#">
+      <Link href="#">
         {person.name || ''} {format(person.birth_date)} {person.death_date ? `- ${format(person.death_date)}` : ''}
-      </a>
+      </Link>
     </dd>
   )
 }
@@ -36,17 +37,17 @@ const ContentMain: FunctionComponent<Props> = ({exhibition}: Props) => {
             <nav className="breadcrumb">
               <ol>
                 <li>
-                  <a href="https://performance.musiconn.de/" title="Startseite">
+                  <Link href="https://performance.musiconn.de/" title="Startseite">
                     Startseite
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a
+                  <Link
                       href="/exhibition"
                       title="Veranstaltung"
                   >
                     Ausstellung
-                  </a>
+                  </Link>
                 </li>
               </ol>
             </nav>
@@ -78,37 +79,37 @@ const ContentMain: FunctionComponent<Props> = ({exhibition}: Props) => {
                   Ort
                 </dt>
                 <dd className="locations">
-                  <a href="https://performance.musiconn.de/location/alte-buchhaendlerboerse-leipzig">
+                  <Link href="https://performance.musiconn.de/location/alte-buchhaendlerboerse-leipzig">
                     {exhibition?.place2}
-                  </a>
+                  </Link>
                   →{' '}
-                  <a
+                  <Link
                       href="https://performance.musiconn.de/location/leipzig"
                       title="Leipzig"
                   >
                     {exhibition?.place1}
-                  </a>
+                  </Link>
                   →{' '}
-                  <a
+                  <Link
                       href="https://performance.musiconn.de/location/sachsen"
                       title="Sachsen"
                   >
                     Sachsen
-                  </a>
+                  </Link>
                   →{' '}
-                  <a
+                  <Link
                       href="https://performance.musiconn.de/location/deutschland"
                       title="Deutschland"
                   >
                     Deutschland
-                  </a>
+                  </Link>
                   →{' '}
-                  <a
+                  <Link
                       href="https://performance.musiconn.de/location/europa"
                       title="Europa"
                   >
                     Europa
-                  </a>
+                  </Link>
                 </dd>
                 <dt id="event_44711_serials" className="label-serials">
                   Kunstausstellung
@@ -137,31 +138,31 @@ const ContentMain: FunctionComponent<Props> = ({exhibition}: Props) => {
                   Quellen
                 </dt>
                 <dd className="sources" id="event_44711_sources_150">
-                  <a href="https://performance.musiconn.de/source/neue-zeitschrift-fuer-musik-nzfm">
+                  <Link href="https://performance.musiconn.de/source/neue-zeitschrift-fuer-musik-nzfm">
                     Neue Zeitschrift für Musik (NZfM)
-                  </a>
+                  </Link>
                   <span className="additional-inline"> (1872, S. 59f.)</span>
                 </dd>
                 <dd className="sources" id="event_44711_sources_240">
-                  <a href="https://performance.musiconn.de/source/programmzettel-113">
+                  <Link href="https://performance.musiconn.de/source/programmzettel-113">
                     Programmzettel
-                  </a>
+                  </Link>
                 </dd>
                 <dd className="sources" id="event_44711_sources_3947">
-                  <a href="https://performance.musiconn.de/source/stadtbibliothek-leipzig">
+                  <Link href="https://performance.musiconn.de/source/stadtbibliothek-leipzig">
                     Stadtbibliothek Leipzig
-                  </a>
+                  </Link>
                   <span className="additional-inline">
                   {' '}
                     (
-                  <a
+                  <Link
                       href="https://digital.slub-dresden.de/id507696093"
                       title="https://digital.slub-dresden.de/id507696093"
                       target="_blank"
                       rel="noreferrer"
                   >
                     https://digital.slub-dresden.de/id507696093
-                  </a>
+                  </Link>
                   )
                 </span>
                   <span className="additional-block">
@@ -176,13 +177,13 @@ const ContentMain: FunctionComponent<Props> = ({exhibition}: Props) => {
                         Seite 1 von 53 Seiten
                       </span>
                       <span className="pagination-next">
-                        <a
+                        <Link
                             href="https://performance.musiconn.de/event/id/44711?tx_mpeext_eventplugin%5Bpage%5D%5Bevent_44711_sources_3947%5D=2&cHash=7507e719beff129b918ffecf69e00c81"
                             title="vor"
                             data-next="/event/id/44711?plain=true&props=uid%7Csources&tx_mpeext_eventplugin%5Bpage%5D%5Bevent_44711_sources_3947%5D=2&cHash=4416f3d06e6b6da882b30822d9cfa074"
                         >
                           →
-                        </a>
+                        </Link>
                       </span>
                     </span>
                   </span>
@@ -192,9 +193,9 @@ const ContentMain: FunctionComponent<Props> = ({exhibition}: Props) => {
                   Projekte
                 </dt>
                 <dd className="projects">
-                  <a href="https://performance.musiconn.de/projects/internationalisierung-der-symphonik">
+                  <Link href="https://performance.musiconn.de/projects/internationalisierung-der-symphonik">
                     Internationalisierung der Symphonik
-                  </a>
+                  </Link>
                 </dd>
               </dl>
             </dl>

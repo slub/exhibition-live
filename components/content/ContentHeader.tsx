@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import React, { FunctionComponent } from 'react'
 
 interface OwnProps {}
@@ -11,17 +12,17 @@ const ContentHeader: FunctionComponent<Props> = (props) =>
             <nav className="breadcrumb">
               <ol>
                 <li>
-                  <a href="https://performance.musiconn.de/" title="Startseite">
+                  <Link href="/" title="Startseite">
                     Startseite
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a
+                  <Link
                       href="/exhibition"
                       title="Veranstaltung"
                   >
                     Ausstellung
-                  </a>
+                  </Link>
                 </li>
               </ol>
             </nav>
@@ -66,19 +67,6 @@ const ContentHeader: FunctionComponent<Props> = (props) =>
                     defaultValue='{"quickSearch":1}44589eadd100880923713e59da018dd16f50ce22'
                 />
               </div>
-              <label className="search-label" htmlFor="input-text">
-                Suche
-              </label>
-              <input
-                  placeholder="Suchwort"
-                  className="search-text"
-                  id="input-text"
-                  type="text"
-                  name="tx_mpeext_eventplugin[quickSearch]"
-              />
-              <button type="submit" id="search-button" className="search-button">
-                Suchen
-              </button>
             </form>
           </div>
         </div>

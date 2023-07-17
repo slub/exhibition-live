@@ -12,7 +12,7 @@ const propertiesContainStopSymbol = (properties: object, stopSymbols: string[]) 
   return false
 }
 
-const MAX_RECURSION = 40
+const MAX_RECURSION = 4
 const makePrefixed = (key: string) => key.includes(':') ? key : `:${key}`
 const doNotFollowItemsRefs = false
 export const jsonSchema2construct: (subjectURI: string, rootSchema: JSONSchema7, stopSymbols?: string[], excludedProperties?: string[]) => { whereRequired: string, whereOptionals: string; construct: string } = (subjectURI, rootSchema, stopSymbols = [], excludedProperties = []) => {

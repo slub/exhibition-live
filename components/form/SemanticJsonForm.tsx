@@ -123,8 +123,8 @@ const renderers = [
 const infuserOptions = {
   omitEmptyArrays: true,
   omitEmptyObjects: true,
-  maxRecursionEachRef: 5,
-  maxRecursion: 8
+  maxRecursionEachRef: 2,
+  maxRecursion: 2
 }
 
 

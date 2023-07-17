@@ -1,3 +1,4 @@
+import {prepareStubbedSchema} from '@graviola/crud-jsonforms'
 import {Add as NewIcon} from '@mui/icons-material'
 import {Button, Container, IconButton, TextField} from '@mui/material'
 import {useQuery} from '@tanstack/react-query'
@@ -15,6 +16,7 @@ import {
   sladb,
   slent
 } from '../../form/formConfigs'
+import genSlubJSONLDSemanticProperties from '../../form/genSlubJSONLDSemanticProperties'
 import SemanticJsonForm from '../../form/SemanticJsonForm'
 import {useUISchemaForType} from '../../form/uischemaForType'
 import {uischemas} from '../../form/uischemas'
@@ -77,10 +79,15 @@ const MainForm = ({defaultData}: MainFormProps) => {
   const {data: loadedSchema} = useQuery(['schema', typeName], () => fetch(`./schema/${typeName}.schema.json`).then(async res => {
     const jsonData: any = await res.json()
     if (!jsonData) return
-    return {
-      ...jsonData,
-      ...(jsonData.$defs?.[typeName] || {})
+    const prepared = prepareStubbedSchema(jsonData, genSlubJSONLDSemanticProperties )
+    const defsFieldName = prepared.definitions ? 'definitions' : '$defs'
+    const specificModel = prepared[defsFieldName]?.[typeName] as (object | undefined) || {}
+    const finalSchema = {
+      ...(typeof prepared === 'object' ? prepared : {}),
+      ...specificModel
     }
+    console.log('finalSchema', finalSchema)
+    return finalSchema
   }))
   const uischemaExternal = useUISchemaForType(classIRI)
   return (
@@ -90,7 +97,7 @@ const MainForm = ({defaultData}: MainFormProps) => {
         </Container>
           <WithPreviewForm data={data} classIRI={classIRI}>
             <>
-              <Container className="default-wrapper">
+              <Container className="default-wrapper inline_object_card" >
 
                 {oxigraph && features?.enableDebug && <SPARQLLocalOxigraphToolkit sparqlQuery={doLocalQuery}/>}
                 <IconButton onClick={handleNew} aria-label={'neuen Eintrag erstellen'}><NewIcon/></IconButton>
@@ -106,7 +113,6 @@ const MainForm = ({defaultData}: MainFormProps) => {
                     queryBuildOptions={defaultQueryBuilderOptions}
                     schema={loadedSchema as JSONSchema7}
                     jsonFormsProps={{
-                      uischema: uischemaExternal || undefined,
                       uischemas: uischemas
                     }}
                 />}

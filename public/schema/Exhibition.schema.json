@@ -1,531 +1,975 @@
 {
+  "$schema": "http://json-schema.org/draft-07/schema#",
   "$defs": {
-      "ResourceTypeStub": {
-    "description": "The type of a resource.",
-    "type": "object",
-    "properties": {
-      "@id": {
-        "title": "http://ontologies.slub-dresden.de/exhibition/entity#",
-        "type": "string"
-      },
-      "@type": {
-        "const": "http://ontologies.slub-dresden.de/exhibition#ResourceType",
-        "type": "string"
-      },
-      "name": {
-        "type": "string"
-      }
-    }
-  },
-  "ResourceType": {
-    "description": "The type of a resource.",
-    "type": "object",
-    "properties": {
-      "@id": {
-        "title": "http://ontologies.slub-dresden.de/exhibition/entity#",
-        "type": "string"
-      },
-      "@type": {
-        "const": "http://ontologies.slub-dresden.de/exhibition#ResourceType",
-        "type": "string"
-      },
-      "name": {
-        "type": "string"
-      }
-    }
-  },
-  "ResourceStub": {
-    "additionalProperties": false,
-    "description": "Eine Resource/ Material zu einer Ausstellung.",
-    "properties": {
-      "@type": {
-        "const": "http://ontologies.slub-dresden.de/exhibition#Resource",
-        "type": "string"
-      },
-      "@id": {
-        "title": "http://ontologies.slub-dresden.de/exhibition/entity#",
-        "type": "string"
-      },
-      "name": {
-        "type": "string"
-      }
-    },
-    "required": [
-      "@type"
-    ],
-    "title": "Resource",
-    "type": "object"
-  },
-  "Resource": {
-    "additionalProperties": false,
-    "description": "Eine Resource/ Material zu einer Ausstellung.",
-    "properties": {
-      "@type": {
-        "const": "http://ontologies.slub-dresden.de/exhibition#Resource",
-        "type": "string"
-      },
-      "@id": {
-        "title": "http://ontologies.slub-dresden.de/exhibition/entity#",
-        "type": "string"
-      },
-      "name": {
-        "type": "string"
-      },
-      "type": {
-        "type": "string"
-      },
-      "url": {
-        "type": "string"
-      },
-      "lastChecked": {
-        "type": "string",
-        "format": "date"
-      }
-    },
-    "required": [
-      "@type"
-    ],
-    "title": "Resource",
-    "type": "object"
-  },
-    "ExhibitionType": {
-      "description": "Art der Ausstellung.",
+    "Tag": {
       "type": "object",
       "properties": {
-        "@id": {
-          "title": "http://ontologies.slub-dresden.de/exhibition/entity#",
-          "type": "string"
-        },
-        "@type": {
-          "const": "http://ontologies.slub-dresden.de/exhibition#ExhibitionType",
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        },
-        "subClassOf": {
-          "title": "Unterart von",
+        "tag": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/ExhibitionTypeStub"
-          }
-        }
-      },
-      "required": [
-        "@type", "name"
-      ]
-    },
-    "GeographicLocationStub": {
-      "description": "Ein geografischer Ort.",
-      "title": "geografischer Ort.",
-      "type": "object",
-      "properties": {
-        "@id": {
-          "title": "http://ontologies.slub-dresden.de/exhibition/entity#",
-          "type": "string"
-        },
-        "@type": {
-          "const": "http://ontologies.slub-dresden.de/exhibition#GeographicLocation",
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        }
-      }
-    },
-    "GeographicLocation": {
-      "description": "Ein geografischer Ort.",
-      "title": "geografischer Ort.",
-      "type": "object",
-      "properties": {
-        "@id": {
-          "title": "http://ontologies.slub-dresden.de/exhibition/entity#",
-          "type": "string"
-        },
-        "@type": {
-          "const": "http://ontologies.slub-dresden.de/exhibition#GeographicLocation",
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        },
-        "description": {
-          "type": "string"
-        },
-        "coordinate": {
-          "type": "string",
-          "format": "wktLiteral"
-        },
-        "parent": {
-          "$ref": "#/$defs/GeographicLocationStub"
-        },
-        "gnd": {
-          "$ref": "#/$defs/GNDGeoLocation"
-        }
-      }
-    },
-    "ExhibitionTypeStub": {
-      "description": "The type of an exhibition.",
-      "type": "object",
-      "properties": {
-        "@id": {
-          "title": "http://ontologies.slub-dresden.de/exhibition/entity#",
-          "type": "string"
-        },
-        "@type": {
-          "const": "http://ontologies.slub-dresden.de/exhibition#ExhibitionType",
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        }
-      },
-      "required": [
-            "@type", "name"
-      ]
-    },
-    "Exhibition": {
-      "additionalProperties": false,
-      "description": "Eine Ausstellung an einem Ort und einer Zeit mit Objekten und Personen.",
-      "required": [
-        "@type",
-        "@id"
-      ],
-      "properties": {
-        "@type": {
-          "const": "http://ontologies.slub-dresden.de/exhibition#Exhibition",
-          "type": "string"
-        },
-        "@id": {
-          "title": "http://ontologies.slub-dresden.de/exhibition/entity#",
-          "type": "string"
-        },
-        "organizer": {
-          "items": {
-            "$ref": "#/$defs/OrganizationStub"
-          }
-        },
-        "artist": {
-          "description": "Ausstellende Künstler.",
-          "items": {
-            "$ref": "#/$defs/PersonStub"
-          },
-          "type": "array"
-        },
-        "works": {
-          "description": "Bedeutende Werke der Person",
-          "items": {
-            "$ref": "#/$defs/WorkStub"
+            "$ref": "#/$defs/Tag"
           }
         },
         "title": {
-          "description": "Titel der Ausstellung",
+          "type": "string",
+          "maxLength": 200
+        },
+        "description": {
           "type": "string"
         },
-        "subtitle": {
-          "description": "Untertitel der Ausstellung",
+        "parent": {
+          "$ref": "#/$defs/Tag"
+        },
+        "authority": {
+          "$ref": "#/$defs/Authority"
+        },
+        "idAuthority": {
+          "type": "string",
+          "maxLength": 50
+        },
+        "lastNormUpdate": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "Authority": {
+      "type": "object",
+      "properties": {
+        "tag": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Tag"
+          }
+        },
+        "exhibitionseries": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ExhibitionSeries"
+          }
+        },
+        "person": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Person"
+          }
+        },
+        "location": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Location"
+          }
+        },
+        "place": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Place"
+          }
+        },
+        "eventtype": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/EventType"
+          }
+        },
+        "corporation": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Corporation"
+          }
+        },
+        "resourcetype": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ResourceType"
+          }
+        },
+        "exhibitionexponat": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ExhibitionExponat"
+          }
+        },
+        "exhibitioncategory": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ExhibitionCategory"
+          }
+        },
+        "genre": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Genre"
+          }
+        },
+        "exhibition": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Exhibition"
+          }
+        },
+        "title": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "description": {
+          "type": "string"
+        }
+      }
+    },
+    "SeriesType": {
+      "type": "object",
+      "properties": {
+        "exhibitionseries": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ExhibitionSeries"
+          }
+        },
+        "title": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "description": {
+          "type": "string"
+        }
+      }
+    },
+    "ExhibitionSeries": {
+      "type": "object",
+      "properties": {
+        "exhibitionseries": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ExhibitionSeries"
+          }
+        },
+        "exhibition": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Exhibition"
+          }
+        },
+        "title": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "description": {
           "type": "string"
         },
-        "originalTitle": {
-          "description": "Originaltitel der Ausstellung",
+        "parent": {
+          "$ref": "#/$defs/ExhibitionSeries"
+        },
+        "seriesType": {
+          "$ref": "#/$defs/SeriesType"
+        },
+        "fromDate": {
+          "type": "integer"
+        },
+        "fromType": {
+          "type": "integer"
+        },
+        "toDate": {
+          "type": "integer"
+        },
+        "toType": {
+          "type": "integer"
+        },
+        "openingDate": {
+          "type": "string",
+          "format": "date"
+        },
+        "timeSeries": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "location": {
+          "$ref": "#/$defs/Location"
+        },
+        "authority": {
+          "$ref": "#/$defs/Authority"
+        },
+        "idAuthority": {
+          "type": "string",
+          "maxLength": 50
+        },
+        "lastNormUpdate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Tag"
+          }
+        }
+      }
+    },
+    "Person": {
+      "type": "object",
+      "properties": {
+        "workplace": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Workplace"
+          }
+        },
+        "exponatsandpersons": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ExponatsAndPersons"
+          }
+        },
+        "involvedperson": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/InvolvedPerson"
+          }
+        },
+        "name": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "nameVariants": {
+          "type": "string",
+          "maxLength": 2000
+        },
+        "gender": {
+          "type": "string",
+          "maxLength": 1,
+          "enum": [
+            "m",
+            "f",
+            "d",
+            "u"
+          ]
+        },
+        "description": {
+          "type": "string"
+        },
+        "birthDate": {
+          "type": "integer"
+        },
+        "deathDate": {
+          "type": "integer"
+        },
+        "profession": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "authority": {
+          "$ref": "#/$defs/Authority"
+        },
+        "idAuthority": {
+          "type": "string",
+          "maxLength": 50
+        },
+        "lastNormUpdate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "externalId": {
+          "type": "string",
+          "maxLength": 50
+        },
+        "memberOfCorp": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Corporation"
+          }
+        }
+      }
+    },
+    "Workplace": {
+      "type": "object",
+      "properties": {
+        "person": {
+          "$ref": "#/$defs/Person"
+        },
+        "location": {
+          "$ref": "#/$defs/Location"
+        },
+        "fromDate": {
+          "type": "integer"
+        },
+        "toDate": {
+          "type": "integer"
+        }
+      }
+    },
+    "Location": {
+      "type": "object",
+      "properties": {
+        "exhibitionseries": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ExhibitionSeries"
+          }
+        },
+        "workplace": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Workplace"
+          }
+        },
+        "location": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Location"
+          }
+        },
+        "place": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Place"
+          }
+        },
+        "corporation": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Corporation"
+          }
+        },
+        "title": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "titleVariants": {
+          "type": "string",
+          "maxLength": 600
+        },
+        "description": {
+          "type": "string"
+        },
+        "parent": {
+          "$ref": "#/$defs/Location"
+        },
+        "authority": {
+          "$ref": "#/$defs/Authority"
+        },
+        "idAuthority": {
+          "type": "string",
+          "maxLength": 50
+        },
+        "lastNormUpdate": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "PersonRole": {
+      "type": "object",
+      "properties": {
+        "exponatsandpersons": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ExponatsAndPersons"
+          }
+        },
+        "involvedperson": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/InvolvedPerson"
+          }
+        },
+        "title": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "description": {
+          "type": "string"
+        }
+      }
+    },
+    "CorporationRole": {
+      "type": "object",
+      "properties": {
+        "exponatsandcorporations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ExponatsAndCorporations"
+          }
+        },
+        "involvedcorporation": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/InvolvedCorporation"
+          }
+        },
+        "title": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "description": {
+          "type": "string"
+        }
+      }
+    },
+    "Place": {
+      "type": "object",
+      "properties": {
+        "place": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Place"
+          }
+        },
+        "title": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "titleVariants": {
+          "type": "string",
+          "maxLength": 600
+        },
+        "description": {
           "type": "string"
         },
         "location": {
-          "description": "Ort der Ausstellung",
-          "title": "geografischer Ort.",
-          "type": "object",
-          "$ref": "#/$defs/GeographicLocationStub"
+          "$ref": "#/$defs/Location"
         },
-        "exhibitionType": {
-          "description": "Art der Ausstellung",
-          "title": "Auststellungsart",
-          "type": "object",
-          "$ref": "#/$defs/ExhibitionTypeStub"
+        "parent": {
+          "$ref": "#/$defs/Place"
+        },
+        "authority": {
+          "$ref": "#/$defs/Authority"
+        },
+        "idAuthority": {
+          "type": "string",
+          "maxLength": 50
+        },
+        "lastNormUpdate": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "EventType": {
+      "type": "object",
+      "properties": {
+        "exhibition": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Exhibition"
+          }
+        },
+        "title": {
+          "type": "string",
+          "maxLength": 200
         },
         "description": {
-          "description": "Eine kurze Beschreibung der Ausstellung und Anmerkungen zur Ausstellung.",
+          "type": "string"
+        },
+        "authority": {
+          "$ref": "#/$defs/Authority"
+        },
+        "idAuthority": {
           "type": "string",
-          "format": "markdown"
+          "maxLength": 50
         },
-        "startDate": {
-          "$ref": "#/$defs/TemporalValue",
-          "description": "Start der Ausstellung."
+        "tags": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Tag"
+          }
+        }
+      }
+    },
+    "Corporation": {
+      "type": "object",
+      "properties": {
+        "corporation": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Corporation"
+          }
         },
-        "endDate": {
-          "$ref": "#/$defs/TemporalValue",
-          "description": "Datum der Ausstellung."
+        "exponatsandcorporations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ExponatsAndCorporations"
+          }
+        },
+        "involvedcorporation": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/InvolvedCorporation"
+          }
+        },
+        "sourceCorporation": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Exhibition"
+          }
+        },
+        "name": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "nameVariants": {
+          "type": "string",
+          "maxLength": 600
+        },
+        "description": {
+          "type": "string"
+        },
+        "parent": {
+          "$ref": "#/$defs/Corporation"
+        },
+        "location": {
+          "$ref": "#/$defs/Location"
+        },
+        "authority": {
+          "$ref": "#/$defs/Authority"
+        },
+        "idAuthority": {
+          "type": "string",
+          "maxLength": 50
+        },
+        "lastNormUpdate": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "ResourceType": {
+      "type": "object",
+      "properties": {
+        "resource": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Resource"
+          }
+        },
+        "title": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "description": {
+          "type": "string"
+        },
+        "authority": {
+          "$ref": "#/$defs/Authority"
+        },
+        "idAuthority": {
+          "type": "string",
+          "maxLength": 50
+        },
+        "lastNormUpdate": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "Resource": {
+      "type": "object",
+      "properties": {
+        "ressourceType": {
+          "$ref": "#/$defs/ResourceType"
+        },
+        "title": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "description": {
+          "type": "string"
+        },
+        "ppn": {
+          "type": "string",
+          "format": "uri"
+        },
+        "doi": {
+          "type": "string",
+          "format": "uri"
+        },
+        "url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "signature": {
+          "type": "string",
+          "maxLength": 200
+        }
+      }
+    },
+    "ExponatsAndPersons": {
+      "type": "object",
+      "properties": {
+        "exponat": {
+          "$ref": "#/$defs/ExhibitionExponat"
+        },
+        "person": {
+          "$ref": "#/$defs/Person"
+        },
+        "role": {
+          "$ref": "#/$defs/PersonRole"
+        }
+      }
+    },
+    "ExponatsAndCorporations": {
+      "type": "object",
+      "properties": {
+        "exponat": {
+          "$ref": "#/$defs/ExhibitionExponat"
+        },
+        "corporation": {
+          "$ref": "#/$defs/Corporation"
+        },
+        "role": {
+          "$ref": "#/$defs/CorporationRole"
+        }
+      }
+    },
+    "ExhibitionExponat": {
+      "type": "object",
+      "properties": {
+        "exponatsandpersons": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ExponatsAndPersons"
+          }
+        },
+        "exponatsandcorporations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ExponatsAndCorporations"
+          }
+        },
+        "title": {
+          "type": "string",
+          "maxLength": 500
+        },
+        "titleVariants": {
+          "type": "string",
+          "maxLength": 600
+        },
+        "description": {
+          "type": "string"
+        },
+        "externalId": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "fromDate": {
+          "type": "integer"
+        },
+        "fromType": {
+          "type": "integer"
+        },
+        "fromDateDisplay": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "toDate": {
+          "type": "integer"
+        },
+        "toType": {
+          "type": "integer"
+        },
+        "toDateDisplay": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "signature": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "authority": {
+          "$ref": "#/$defs/Authority"
+        },
+        "idAuthority": {
+          "type": "string",
+          "maxLength": 50
+        },
+        "lastNormUpdate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "exponatGenres": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Genre"
+          }
+        },
+        "relatedPersons": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ExponatsAndPersons"
+          }
+        },
+        "relatedCorporations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ExponatsAndCorporations"
+          }
         },
         "resources": {
-          "description": "Zusätzliche Ressourcen zur Ausstellung.",
-          "items": {
-            "$ref": "#/$defs/ResourceStub"
-          }
-        }
-      },
-      "title": "Exhibition",
-      "type": "object"
-    },
-    "WorkStub": {
-      "additionalProperties": false,
-      "description": "A work stub.",
-      "properties": {
-        "@type": {
-          "const": "http://ontologies.slub-dresden.de/exhibition#Work",
-          "type": "string"
-        },
-        "@id": {
-          "title": "http://ontologies.slub-dresden.de/exhibition/entity#",
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        }
-      },
-      "required": [
-        "@type"
-      ],
-      "title": "Work",
-      "type": "object"
-    },
-    "Work": {
-      "additionalProperties": false,
-      "description": "A work",
-      "properties": {
-        "@type": {
-          "const": "http://ontologies.slub-dresden.de/exhibition#Work",
-          "type": "string"
-        },
-        "@id": {
-          "title": "http://ontologies.slub-dresden.de/exhibition/entity#",
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        },
-        "year": {
-          "type": "string"
-        },
-        "category": {
-          "type": "string"
-        },
-        "author": {
           "type": "array",
-            "items": {
-                "$ref": "#/$defs/PersonStub"
-            }
-        }
-      },
-      "required": [
-        "@type",
-        "name"
-      ],
-      "title": "Work",
-      "type": "object"
-    },
-  "PersonStub": {
-    "additionalProperties": false,
-    "description": "A person stub.",
-    "properties": {
-      "@type": {
-        "const": "http://ontologies.slub-dresden.de/exhibition#Person",
-        "type": "string"
-      },
-      "@id": {
-        "title": "http://ontologies.slub-dresden.de/exhibition/entity#",
-        "type": "string"
-      },
-      "name": {
-        "type": "string"
-      },
-      "image": {
-        "type": "string",
-        "format": "uri"
-      }
-    },
-    "required": [
-      "@type"
-    ],
-    "title": "Person",
-    "type": "object"
-  },
-  "WikidataHuman": {
-    "title": "",
-    "additionalProperties": true,
-    "properties": {
-      "@id": {
-        "format": "wikidata-Q5",
-        "type": "string"
-      }
-    }
-  },
-  "GNDGeoLocation": {
-      "additionalProperties": true,
-      "title": "",
-      "properties": {
-        "@id": {
-          "format": "gndo-TerritorialCorporateBodyOrAdministrativeUnit",
-          "type": "string"
-        }
-      }
-  },
-  "GNDPerson": {
-    "additionalProperties": true,
-    "title": "",
-    "properties": {
-      "@id": {
-        "format": "gndo-DifferentiatedPerson",
-        "type": "string"
-      }
-    }
-  },
-  "OrganizationStub": {
-    "additionalProperties": false,
-    "description": "An organization.",
-    "properties": {
-      "@type": {
-        "const": "http://ontologies.slub-dresden.de/exhibition#Organization",
-        "type": "string"
-      },
-      "@id": {
-        "title": "http://ontologies.slub-dresden.de/exhibition/entity#",
-        "type": "string"
-      },
-      "name": {
-        "type": "string"
-      },
-      "description": {
-        "description": "A description of the thing.",
-        "type": "string"
-      }
-    },
-    "required": [
-      "name"
-    ],
-    "title": "Organization",
-    "type": "object"
-  },
-  "Organization": {
-    "additionalProperties": false,
-    "description": "An organization.",
-    "properties": {
-      "name": {
-        "type": "string"
-      },
-      "description": {
-        "description": "A description of the thing.",
-        "type": "string"
-      }
-    },
-    "required": [
-      "name"
-    ],
-    "title": "Organization",
-    "type": "object"
-  },
-  "Person": {
-    "additionalProperties": false,
-    "description": "A person.",
-    "properties": {
-      "@type": {
-        "const": "http://ontologies.slub-dresden.de/exhibition#Person",
-        "type": "string"
-      },
-      "@id": {
-        "title": "http://ontologies.slub-dresden.de/exhibition/entity#",
-        "type": "string"
-      },
-      "wikidata": {
-        "$ref": "#/$defs/WikidataHuman"
-      },
-      "gnd": {
-        "$ref": "#/$defs/GNDPerson"
-      },
-      "name": {
-        "title": "Name",
-        "type": "string",
-        "description": "Name der Person"
-      },
-      "birthDate": {
-        "format": "date",
-        "type": "string",
-        "title": "Geburtsdatum"
-      },
-      "deathDate": {
-        "format": "date",
-        "type": "string",
-        "title": "Sterbedatum"
-      },
-      "description": {
-        "description": "Anmerkungen zur Person",
-        "type": "string"
-      },
-      "image": {
-        "type": "string",
-        "format": "uri"
-      },
-      "occupation": {
-        "description": "Hauptberufe der Person",
-        "items": {
-          "type": "string"
-        }
-      },
-      "titleWork": {
-        "description": "Prägnatests Werk der Person",
-        "$ref": "#/$defs/WorkStub"
-      },
-      "works": {
-        "description": "Bedeutende Werke der Person",
-        "items": {
-          "$ref": "#/$defs/WorkStub"
-        }
-      }
-    },
-    "required": [
-      "name",
-      "@type"
-    ],
-    "title": "Person",
-    "type": "object"
-  },
-  "TemporalValue": {
-    "additionalProperties": false,
-    "properties": {
-      "modifier": {
-        "type": "string",
-        "title": "Genauigkeit",
-        "oneOf": [
-          {
-            "const": "EXACT",
-            "title": "exakt"
-          },
-          {
-            "const": "BEFORE",
-            "title": "Vor"
-          },
-          {
-            "const": "AFTER",
-            "title": "Nach"
-          },
-          {
-            "const": "VAGUE",
-            "title": "Um"
+          "items": {
+            "$ref": "#/$defs/Resource"
           }
-        ]
-      },
-      "date": {
-        "pattern": "[+-]?\\d{4}-\\d{2}-\\d{2}",
-        "title": "Datum",
-        "type": "string"
+        }
       }
     },
-    "type": "object"
+    "ExhibitionCategory": {
+      "type": "object",
+      "properties": {
+        "exhibition": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Exhibition"
+          }
+        },
+        "name": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "description": {
+          "type": "string"
+        },
+        "authority": {
+          "$ref": "#/$defs/Authority"
+        },
+        "idAuthority": {
+          "type": "string",
+          "maxLength": 50
+        },
+        "lastNormUpdate": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "OtherDate": {
+      "type": "object",
+      "properties": {
+        "exhibition": {
+          "$ref": "#/$defs/Exhibition"
+        },
+        "dateValue": {
+          "type": "string",
+          "maxLength": 8
+        },
+        "dateType": {
+          "type": "integer"
+        }
+      }
+    },
+    "InvolvedPerson": {
+      "type": "object",
+      "properties": {
+        "exhibition": {
+          "$ref": "#/$defs/Exhibition"
+        },
+        "person": {
+          "$ref": "#/$defs/Person"
+        },
+        "role": {
+          "$ref": "#/$defs/PersonRole"
+        }
+      }
+    },
+    "InvolvedCorporation": {
+      "type": "object",
+      "properties": {
+        "exhibition": {
+          "$ref": "#/$defs/Exhibition"
+        },
+        "corporation": {
+          "$ref": "#/$defs/Corporation"
+        },
+        "role": {
+          "$ref": "#/$defs/CorporationRole"
+        }
+      }
+    },
+    "ExhibitionWebLink": {
+      "type": "object",
+      "properties": {
+        "exhibition": {
+          "$ref": "#/$defs/Exhibition"
+        },
+        "weblink": {
+          "type": "string",
+          "format": "uri"
+        }
+      }
+    },
+    "Genre": {
+      "type": "object",
+      "properties": {
+        "exhibition": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Exhibition"
+          }
+        },
+        "title": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "description": {
+          "type": "string"
+        },
+        "authority": {
+          "$ref": "#/$defs/Authority"
+        },
+        "idAuthority": {
+          "type": "string",
+          "maxLength": 50
+        },
+        "lastNormUpdate": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "Exhibition": {
+      "type": "object",
+      "properties": {
+        "otherdate": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/OtherDate"
+          }
+        },
+        "involvedperson": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/InvolvedPerson"
+          }
+        },
+        "involvedcorporation": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/InvolvedCorporation"
+          }
+        },
+        "exhibitionweblink": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ExhibitionWebLink"
+          }
+        },
+        "externalId": {
+          "type": "string",
+          "maxLength": 50
+        },
+        "exhibitionType": {
+          "$ref": "#/$defs/EventType"
+        },
+        "title": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "subtitle": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "originalTitle": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "description": {
+          "type": "string"
+        },
+        "exhibitionSeries": {
+          "$ref": "#/$defs/ExhibitionSeries"
+        },
+        "exhibitionCategory": {
+          "$ref": "#/$defs/ExhibitionCategory"
+        },
+        "exhibitionGenre": {
+          "$ref": "#/$defs/Genre"
+        },
+        "sourceCorporation": {
+          "$ref": "#/$defs/Corporation"
+        },
+        "fromDate": {
+          "type": "integer"
+        },
+        "fromType": {
+          "type": "integer"
+        },
+        "fromDateDisplay": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "toDate": {
+          "type": "integer"
+        },
+        "toType": {
+          "type": "integer"
+        },
+        "toDateDisplay": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "published": {
+          "type": "boolean"
+        },
+        "editorNote": {
+          "type": "string",
+          "maxLength": 300
+        },
+        "authority": {
+          "$ref": "#/$defs/Authority"
+        },
+        "idAuthority": {
+          "type": "string",
+          "maxLength": 50
+        },
+        "lastNormUpdate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "involvedCorporations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/InvolvedCorporation"
+          }
+        },
+        "places": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Place"
+          }
+        },
+        "locations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Location"
+          }
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Tag"
+          }
+        },
+        "involvedPersons": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/InvolvedPerson"
+          }
+        },
+        "exponats": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ExhibitionExponat"
+          }
+        },
+        "resources": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Resource"
+          }
+        }
+      }
+    }
   }
-},
-"$id": "http://ontologies.slub-dresden.de/exhibtion",
-"$schema": "http://json-schema.org/draft-07/schema#",
-"additionalProperties": true,
-"metamodel_version": "1.7.0",
-"title": "exhibtion-info",
-"type": "object",
-"version": null
 }

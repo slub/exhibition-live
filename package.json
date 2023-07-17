@@ -27,6 +27,7 @@
     "@comunica/query-sparql": "^2.5.2",
     "@emotion/react": "^11.5.0",
     "@emotion/styled": "^11.3.0",
+    "@graviola/crud-jsonforms": "^0.0.4",
     "@inovua/reactdatagrid-community": "^5.8.1",
     "@jsonforms/core": "3.1.0-alpha.0",
     "@jsonforms/material-renderers": "3.1.0-alpha.0",

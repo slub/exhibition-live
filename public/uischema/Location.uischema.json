@@ -3,18 +3,21 @@
   "elements": [
     {
       "type": "Control",
-      "label": "Name",
-      "scope": "#/properties/name"
+      "label": "Titel",
+      "scope": "#/properties/title"
     },
     {
       "type": "Control",
-      "label": "Description",
+      "label": "Beschreibung",
       "scope": "#/properties/description"
     },
     {
       "type": "Control",
-      "label": "Geo Info",
-      "scope": "#/properties/geo"
+      "scope": "#/properties/corporation",
+      "options": {
+        "elementLabelProp": "title",
+        "detail": "GENERATED"
+      }
     }
   ]
 }

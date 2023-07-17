@@ -121,6 +121,7 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps ) => {
             id={id}
             variant={'standard'}
             sx={theme => ({marginBottom: theme.spacing(2)})}
+            className={'inline_object_card'}
         >
           {subSchema && editMode && (
               <Grid container alignItems='baseline'>

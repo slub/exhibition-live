@@ -136,6 +136,7 @@ const ExpandPanelRendererComponent = (props: ExpandPanelProps) => {
       aria-labelledby={labelHtmlId}
       expanded={expanded}
       onChange={handleExpansion(childPath)}
+      className={'inline_object_card'}
     >
       <AccordionSummary  expandIcon={<ExpandMoreIcon />}>
         <Grid container alignItems={'center'}>

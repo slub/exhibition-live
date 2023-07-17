@@ -34,10 +34,16 @@
     #00000080
   );
 
+  background-color: #dadada;
+
   --callout-rgb: 238, 240, 241;
   --callout-border-rgb: 172, 175, 176;
   --card-rgb: 180, 185, 188;
   --card-border-rgb: 131, 134, 135;
+}
+
+header {
+  background-color: unset;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -110,3 +116,16 @@ a {
   font-weight: bold;
 }
 
+
+
+.inline_object_card {
+  transition: background-color 0.5s ease;
+  background-color: rgba(255, 255, 255, 0);
+}
+
+.inline_object_card:not(:has(.inline_object_card:hover)):hover {
+  background-color: white;
+}
+.inline_object_card:not(:has(.inline_object_card:hover)):hover .inline_object_card {
+  background-color: white;
+}

@@ -20,7 +20,7 @@ export default () => {
   //get param id from nextjs router
   const router = useRouter()
   const {id} = router.query
-  const stardData = useMemo(() => (typeof id === 'string' ? {
+  const startData = useMemo(() => (typeof id === 'string' ? {
 
     '@id': slent[id].value,
     '@type': classIRI,
@@ -36,8 +36,8 @@ export default () => {
           <link rel="icon" href="/favicon.ico"/>
         </Head>
         <PerformanceHeader/>
-        <main className={styles.main}>
-          {bulkLoaded && <MainFormNoSSR defaultData={stardData}/>}
+        <main className={styles.main} >
+          {bulkLoaded && <MainFormNoSSR defaultData={startData}/>}
         </main>
         <PerformanceFooter/>
       </>

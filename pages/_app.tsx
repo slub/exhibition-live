@@ -12,16 +12,24 @@ import {ThemeProvider} from '@mui/styles'
 import {QueryClient, QueryClientProvider} from '@tanstack/react-query'
 import type { AppProps } from 'next/app'
 
+import {SettingsConsumer, SettingsProvider} from '../components/provider/settingsContext'
 import defaultTheme from '../components/theme/default-theme'
+import ThemeComponent from '../components/theme/ThemeComponent'
 
 export const queryClient = new QueryClient()
 const QueryClientProviderWrapper = ({children}: { children: React.ReactChild }) => {
   return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
 }
 export default function App({ Component, pageProps }: AppProps) {
-  return <ThemeProvider theme={defaultTheme}>
+  return <>
     <QueryClientProviderWrapper>
-      <Component {...pageProps} />
+      <SettingsProvider>
+        <SettingsConsumer>
+          {({ settings }) => {
+            return <ThemeComponent settings={settings}>{<Component {...pageProps} />}</ThemeComponent>
+          }}
+        </SettingsConsumer>
+      </SettingsProvider>
     </QueryClientProviderWrapper>
-  </ThemeProvider>
+  </>
 }

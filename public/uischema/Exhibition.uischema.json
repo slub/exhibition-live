@@ -6,67 +6,125 @@
       "label": "Allgemeine Daten der Ausstellung",
       "elements": [
         {
-          "type": "Control",
-          "scope": "#/properties/@id"
-        },
-        {
-          "type": "Control",
-          "scope": "#/properties/@type"
-        },
-        {
-          "type": "Control",
-          "label": "Titel der Ausstellung",
-          "scope": "#/properties/title"
-        },
-        {
-            "type": "Control",
-            "label": "Untertitel",
-            "scope": "#/properties/subtitle"
-        },
-        {
-          "type": "Control",
-          "label": "Originaltitel",
-          "scope": "#/properties/originalTitle"
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "label": "Titel der Ausstellung",
+              "scope": "#/properties/title"
+            },
+            {
+              "type": "Control",
+              "label": "Untertitel",
+              "scope": "#/properties/subtitle"
+            },
+            {
+              "type": "Control",
+              "label": "Originaltitel",
+              "scope": "#/properties/originalTitle"
+            }
+          ]
         },
         {
           "type": "Control",
           "label": "Kurzbeschreibung",
           "scope": "#/properties/description",
-            "options": {
-                "multi": true
+          "options": {
+            "multi": true
+          }
+        },
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "label": "Ausstellungsart",
+              "scope": "#/properties/exhibitionType"
+            },
+            {
+              "type": "Control",
+              "label": "Genre",
+              "scope": "#/properties/exhibitionGenre"
+            },
+            {
+              "type": "Control",
+              "label": "Kathegorie",
+              "scope": "#/properties/exhibitionCategory"
             }
+          ]
         },
         {
           "type": "Control",
-          "label": "Ausstellungsort",
-          "scope": "#/properties/location",
+          "label": "Schlagwörter",
+          "scope": "#/properties/tags"
+        },
+        {
+          "type": "Control",
+          "label": "Weblinks",
+          "scope": "#/properties/exhibitionweblink"
+        }
+      ]
+    },
+    {
+      "type": "Group",
+      "label": "Verortung",
+      "elements": [
+        {
+          "type": "Control",
+          "label": "Ausstellungsorte (Städte und Länder)",
+          "scope": "#/properties/places",
           "options": {
             "detail": "GENERATED"
           }
         },
         {
           "type": "Control",
-          "label": "Ausstellungsart",
-          "scope": "#/properties/exhibitionType"
+          "label": "Ausstellungsstätten (Institutionen und Räume)",
+          "scope": "#/properties/locations",
+          "options": {
+            "detail": "GENERATED"
+          }
         }
       ]
     },
     {
       "type": "Group",
       "label": "Zeitlicher Rahmen",
-       "elements": [
+      "elements": [
         {
           "type": "HorizontalLayout",
           "elements": [
             {
-              "type": "Control",
+              "type": "HorizontalLayout",
               "label": "Startdatum",
-              "scope": "#/properties/startDate"
+              "elements": [
+                {
+                  "type": "Control",
+                  "scope": "#/properties/fromType"
+                },
+                {
+                  "type": "Control",
+                  "scope": "#/properties/fromDate"
+                }
+              ]
             },
             {
-              "type": "Control",
+              "type": "Label",
+              "text": "bis"
+            },
+            {
+              "type": "HorizontalLayout",
               "label": "Enddatum",
-              "scope": "#/properties/endDate"
+              "elements": [
+                {
+                  "type": "Control",
+                  "scope": "#/properties/toType"
+                },
+                {
+                  "type": "Control",
+                  "scope": "#/properties/toDate"
+                }
+              ]
             }
           ]
         }
@@ -78,8 +136,13 @@
       "elements": [
         {
           "type": "Control",
+          "label": "Herkunftsorganisation",
+          "scope": "#/properties/sourceCorporation"
+        },
+        {
+          "type": "Control",
           "label": "Künstler",
-          "scope": "#/properties/artist",
+          "scope": "#/properties/involvedperson",
           "options": {
             "elementLabelProp": "name",
             "detail": "GENERATED"
@@ -87,8 +150,8 @@
         },
         {
           "type": "Control",
-          "label": "Organisator",
-          "scope": "#/properties/organizer",
+          "label": "Institutionen",
+          "scope": "#/properties/involvedcorporation",
           "options": {
             "elementLabelProp": "name",
             "detail": "GENERATED"
@@ -97,22 +160,78 @@
       ]
     },
     {
-      "type": "Control",
-      "label": "Resourcen",
-      "scope": "#/properties/resources",
-      "options": {
-        "elementLabelProp": "name",
-        "detail": "GENERATED"
-      }
+      "type": "Group",
+      "label": "Exponate und Ressourcen der Ausstellung",
+      "elements": [
+        {
+          "type": "Control",
+          "label": "Ausgestellte Werke",
+          "scope": "#/properties/exponats",
+          "options": {
+            "elementLabelProp": "name",
+            "detail": "GENERATED"
+          }
+        },
+        {
+          "type": "Control",
+          "label": "Ressourcen",
+          "scope": "#/properties/resources",
+          "options": {
+            "elementLabelProp": "name",
+            "detail": "GENERATED"
+          }
+        }
+      ]
     },
     {
-      "type": "Control",
-      "label": "Ausgestellte Werke",
-      "scope": "#/properties/works",
-      "options": {
-        "elementLabelProp": "name",
-        "detail": "GENERATED"
-      }
+      "type": "Group",
+      "label": "Autoritative Daten",
+      "elements": [
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "label": "Authorität",
+              "scope": "#/properties/authority"
+            },
+            {
+              "type": "Control",
+              "label": "URI",
+              "scope": "#/properties/idAuthority"
+            },
+            {
+              "type": "Control",
+              "label": "Letztes Normenupdate",
+              "scope": "#/properties/lastNormUpdate"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Group",
+      "label": "Daten zur Erfassung",
+      "elements": [
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "label": "Veröffentlicht",
+              "scope": "#/properties/published"
+            }
+          ]
+        },
+        {
+          "type": "Control",
+          "label": "Erfassungshinweise",
+          "scope": "#/properties/editorNote",
+          "options": {
+            "multi": true
+          }
+        }
+      ]
     }
   ]
 }

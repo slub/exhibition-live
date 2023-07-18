@@ -113,7 +113,7 @@ const MainForm = ({defaultData}: MainFormProps) => {
                     queryBuildOptions={defaultQueryBuilderOptions}
                     schema={loadedSchema as JSONSchema7}
                     jsonFormsProps={{
-                      uischema: uischemaExternal || uischemas[typeName],
+                      uischema: uischemaExternal || (uischemas as any)[typeName],
                       uischemas: uischemas
                     }}
                 />}

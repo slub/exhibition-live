@@ -34,7 +34,6 @@
     #00000080
   );
 
-  background-color: #dadada;
 
   --callout-rgb: 238, 240, 241;
   --callout-border-rgb: 172, 175, 176;
@@ -124,8 +123,8 @@ a {
 }
 
 .inline_object_card:not(:has(.inline_object_card:hover)):hover {
-  background-color: white;
+  background-color: #f9f5ff;
 }
 .inline_object_card:not(:has(.inline_object_card:hover)):hover .inline_object_card {
-  background-color: white;
+  background-color: #f9f5ff;
 }

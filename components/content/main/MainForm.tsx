@@ -21,6 +21,7 @@ import SemanticJsonForm from '../../form/SemanticJsonForm'
 import {useUISchemaForType} from '../../form/uischemaForType'
 import {uischemas} from '../../form/uischemas'
 import {useFormEditor, useOxigraph, useRDFDataSources} from '../../state'
+import useExtendedSchema from '../../state/useExtendedSchema'
 import {useGlobalCRUDOptions} from '../../state/useGlobalCRUDOptions'
 import {useSettings} from '../../state/useLocalSettings'
 import SPARQLLocalOxigraphToolkit from '../../utils/dev/SPARQLLocalOxigraphToolkit'
@@ -76,19 +77,7 @@ const MainForm = ({defaultData}: MainFormProps) => {
       '@type': classIRI,
     })
   }, [setData])
-  const {data: loadedSchema} = useQuery(['schema', typeName], () => fetch(`./schema/${typeName}.schema.json`).then(async res => {
-    const jsonData: any = await res.json()
-    if (!jsonData) return
-    const prepared = prepareStubbedSchema(jsonData, genSlubJSONLDSemanticProperties )
-    const defsFieldName = prepared.definitions ? 'definitions' : '$defs'
-    const specificModel = prepared[defsFieldName]?.[typeName] as (object | undefined) || {}
-    const finalSchema = {
-      ...(typeof prepared === 'object' ? prepared : {}),
-      ...specificModel
-    }
-    console.log('finalSchema', finalSchema)
-    return finalSchema
-  }))
+  const loadedSchema = useExtendedSchema({typeName, classIRI})
   const uischemaExternal = useUISchemaForType(classIRI)
   return (
       <>

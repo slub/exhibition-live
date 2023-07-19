@@ -95,8 +95,8 @@
           "type": "HorizontalLayout",
           "elements": [
             {
-              "type": "HorizontalLayout",
-              "label": "Startdatum",
+              "type": "Group",
+              "label": "Beginn",
               "elements": [
                 {
                   "type": "Control",
@@ -105,17 +105,14 @@
                 },
                 {
                   "type": "Control",
+                  "label": "",
                   "scope": "#/properties/fromDate"
                 }
               ]
             },
             {
-              "type": "Label",
-              "text": "bis"
-            },
-            {
-              "type": "HorizontalLayout",
-              "label": "Enddatum",
+              "type": "Group",
+              "label": "Ende",
               "elements": [
                 {
                   "type": "Control",
@@ -124,6 +121,7 @@
                 },
                 {
                   "type": "Control",
+                  "label": "",
                   "scope": "#/properties/toDate"
                 }
               ]

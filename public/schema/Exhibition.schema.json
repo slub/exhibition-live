@@ -167,13 +167,41 @@
           "type": "integer"
         },
         "fromType": {
-          "type": "integer"
+          "type": "integer",
+          "oneOf": [
+            {
+              "const": 1,
+              "title": "nach"
+            },
+            {
+              "const": 2,
+              "title": "vor"
+            },
+            {
+              "const": 3,
+              "title": "ca."
+            }
+          ]
         },
         "toDate": {
           "type": "integer"
         },
         "toType": {
-          "type": "integer"
+          "type": "integer",
+          "oneOf": [
+            {
+              "const": 1,
+              "title": "nach"
+            },
+            {
+              "const": 2,
+              "title": "vor"
+            },
+            {
+              "const": 3,
+              "title": "ca."
+            }
+          ]
         },
         "openingDate": {
           "type": "string",
@@ -237,11 +265,23 @@
         "gender": {
           "type": "string",
           "maxLength": 1,
-          "enum": [
-            "m",
-            "f",
-            "d",
-            "u"
+          "oneOf": [
+            {
+              "const": "m",
+              "title": "m\u00e4nnlich"
+            },
+            {
+              "const": "f",
+              "title": "weiblich"
+            },
+            {
+              "const": "d",
+              "title": "divers"
+            },
+            {
+              "const": "u",
+              "title": "unbekannt"
+            }
           ]
         },
         "description": {
@@ -654,7 +694,21 @@
           "type": "integer"
         },
         "fromType": {
-          "type": "integer"
+          "type": "integer",
+          "oneOf": [
+            {
+              "const": 1,
+              "title": "nach"
+            },
+            {
+              "const": 2,
+              "title": "vor"
+            },
+            {
+              "const": 3,
+              "title": "ca."
+            }
+          ]
         },
         "fromDateDisplay": {
           "type": "string",
@@ -664,7 +718,21 @@
           "type": "integer"
         },
         "toType": {
-          "type": "integer"
+          "type": "integer",
+          "oneOf": [
+            {
+              "const": 1,
+              "title": "nach"
+            },
+            {
+              "const": 2,
+              "title": "vor"
+            },
+            {
+              "const": 3,
+              "title": "ca."
+            }
+          ]
         },
         "toDateDisplay": {
           "type": "string",
@@ -755,7 +823,21 @@
           "maxLength": 8
         },
         "dateType": {
-          "type": "integer"
+          "type": "integer",
+          "oneOf": [
+            {
+              "const": 1,
+              "title": "Vernissage"
+            },
+            {
+              "const": 2,
+              "title": "Midissage"
+            },
+            {
+              "const": 3,
+              "title": "Finissage"
+            }
+          ]
         }
       }
     },
@@ -893,7 +975,21 @@
           "type": "integer"
         },
         "fromType": {
-          "type": "integer"
+          "type": "integer",
+          "oneOf": [
+            {
+              "const": 1,
+              "title": "nach"
+            },
+            {
+              "const": 2,
+              "title": "vor"
+            },
+            {
+              "const": 3,
+              "title": "ca."
+            }
+          ]
         },
         "fromDateDisplay": {
           "type": "string",
@@ -903,7 +999,21 @@
           "type": "integer"
         },
         "toType": {
-          "type": "integer"
+          "type": "integer",
+          "oneOf": [
+            {
+              "const": 1,
+              "title": "nach"
+            },
+            {
+              "const": 2,
+              "title": "vor"
+            },
+            {
+              "const": 3,
+              "title": "ca."
+            }
+          ]
         },
         "toDateDisplay": {
           "type": "string",

@@ -100,6 +100,7 @@
               "elements": [
                 {
                   "type": "Control",
+                  "label": "Genauigkeit",
                   "scope": "#/properties/fromType"
                 },
                 {
@@ -118,6 +119,7 @@
               "elements": [
                 {
                   "type": "Control",
+                  "label": "Genauigkeit",
                   "scope": "#/properties/toType"
                 },
                 {

@@ -21,6 +21,7 @@ import React, {FunctionComponent, useCallback, useEffect, useMemo,useState} from
 import {JsonView} from 'react-json-view-lite'
 
 import {BASE_IRI} from '../config'
+import AdbSpecialDateRenderer, {adbSpecialDateControlTester} from '../renderer/AdbSpecialDateRenderer'
 import AutocompleteGNDFieldRenderer from '../renderer/AutocompleteGNDFieldRenderer'
 import AutocompleteURIFieldRenderer from '../renderer/AutocompleteURIFieldRenderer'
 import AutoIdentifierRenderer from '../renderer/AutoIdentifierRenderer'
@@ -116,6 +117,9 @@ const renderers = [
           return !isEmpty(options) && options['inline']
         }),
     renderer: InlineCondensedSemanticFormsRenderer
+  },{
+  tester: adbSpecialDateControlTester,
+    renderer: AdbSpecialDateRenderer
   }
 ]
 

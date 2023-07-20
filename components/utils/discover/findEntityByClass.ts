@@ -4,7 +4,7 @@ import {SELECT} from '@tpluscode/sparql-builder'
 import {defaultPrefix, defaultQueryBuilderOptions} from '../../form/formConfigs'
 import {defaultQuerySelect} from '../sparql/remoteOxigraph'
 
-const findEntityByClass = async (searchString: string, typeIRI: string, doQuery: (query: string) => Promise<any>) => {
+const findEntityByClass = async (searchString: string | null, typeIRI: string, doQuery: (query: string) => Promise<any>, limit: number = 10) => {
   const subjectV = variable('subject'),
       nameV = variable('name'),
       titleV = variable('title'),
@@ -14,7 +14,8 @@ const findEntityByClass = async (searchString: string, typeIRI: string, doQuery:
       safeTitleV = variable('safeTitle'),
       safeDescriptionV = variable('safeDescription'),
       oneOfTitleV = variable('oneOfTitle')
-  let query = SELECT.DISTINCT` ${subjectV} ${oneOfTitleV}`.WHERE`
+  let query = (searchString && searchString.length > 0)
+      ? SELECT.DISTINCT` ${subjectV} ${oneOfTitleV}`.WHERE`
           ${subjectV} a <${typeIRI}> .
             OPTIONAL {${subjectV} :name ${nameV} .}
             OPTIONAL {${subjectV} :title ${titleV} .}
@@ -26,11 +27,26 @@ const findEntityByClass = async (searchString: string, typeIRI: string, doQuery:
     
             BIND (CONCAT(${safeNameV}, " ", ${safeTitleV}, " ", ${safeDescriptionV}) AS ${concatenatedV})
             BIND (COALESCE(${nameV}, ${titleV}, ${descriptionV}, "") AS ${oneOfTitleV})
-            FILTER(contains(lcase(${oneOfTitleV}), lcase("${searchString}") )) .
-`.LIMIT(10).build(defaultQueryBuilderOptions)
+            FILTER(contains(lcase(${concatenatedV}), lcase("${searchString}") )) .
+        `.LIMIT(limit).build(defaultQueryBuilderOptions)
+      : SELECT.DISTINCT` ${subjectV} ${oneOfTitleV}`.WHERE`
+          ${subjectV} a <${typeIRI}> .
+            OPTIONAL {${subjectV} :name ${nameV} .}
+            OPTIONAL {${subjectV} :title ${titleV} .}
+            OPTIONAL {${subjectV} :description ${descriptionV} .}
+            BIND (COALESCE(${nameV}, ${titleV}, ${descriptionV}, "") AS ${oneOfTitleV})
+        `.LIMIT(limit).build(defaultQueryBuilderOptions)
   query = `PREFIX : <${defaultPrefix}> ` + query
-  const bindings = await doQuery(query)
-  return bindings.map((binding: any) => ({name: binding[oneOfTitleV.value]?.value, value: binding[subjectV.value]?.value}))
+  try {
+    const bindings = await doQuery(query)
+    return bindings.map((binding: any) => ({
+      name: binding[oneOfTitleV.value]?.value,
+      value: binding[subjectV.value]?.value
+    }))
+  } catch (e) {
+    console.error('Error finding entity by class', e)
+    return []
+  }
 
 }
 

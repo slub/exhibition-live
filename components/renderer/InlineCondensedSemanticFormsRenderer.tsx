@@ -17,7 +17,7 @@ import DiscoverAutocompleteInput from "../form/discover/DiscoverAutocompleteInpu
 import get from "lodash/get";
 import {useGlobalCRUDOptions} from "../state/useGlobalCRUDOptions";
 
-const InlineCondensedSemanticFormsRenderer = (props: ControlProps ) => {
+const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
   const {
     id,
     errors,
@@ -31,7 +31,7 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps ) => {
     path,
     rootSchema,
     label,
-      description
+    description
   } = props
   const isValid = errors.length === 0
   const appliedUiSchemaOptions = merge({}, config, uischema.options)
@@ -39,7 +39,7 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps ) => {
   const [formData, setFormData] = useState({'@id': data})
   const {crudOptions} = useGlobalCRUDOptions()
   const ctx = useJsonForms()
-  const [ realLabel, setRealLabel ] = useState('')
+  const [realLabel, setRealLabel] = useState('')
 
   const handleChange_ = useCallback(
       (v?: string) => {
@@ -53,8 +53,8 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps ) => {
   //console.log({config})
   useEffect(() => {
     let label_ = ''
-    if(data) {
-      const parentData = Resolve.data(ctx?.core?.data, path.substring(0, path.length - ('@id'.length + 1  )))
+    if (data) {
+      const parentData = Resolve.data(ctx?.core?.data, path.substring(0, path.length - ('@id'.length + 1)))
       label_ = parentData?.label || parentData?.name || parentData?.title || parentData?.['@id']?.value || ''
     }
     setRealLabel(label_)
@@ -69,7 +69,7 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps ) => {
   }, [schema, data, handleChange_])
 
   useEffect(() => {
-    if(editMode)
+    if (editMode)
       newURI()
   }, [newURI, editMode])
 
@@ -94,15 +94,18 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps ) => {
       <Hidden xsUp={!visible}>
         <Grid container alignItems='baseline'>
           <Grid item flex={'auto'}>
-            {realLabel ? <DiscoverAutocompleteInput
+            {realLabel
+                ? <DiscoverAutocompleteInput
                     key={'not empty'}
-                readonly={Boolean(ctx.readonly)}
-                typeIRI={typeIRI}
-                title={description || label || ''}
-                defaultSelected={{value: data, label: realLabel}}
-                onSelectionChange={selection => handleChange_(selection?.value)}/>
+                    loadOnStart={editMode}
+                    readonly={Boolean(ctx.readonly)}
+                    typeIRI={typeIRI}
+                    title={description || label || ''}
+                    defaultSelected={{value: data, label: realLabel}}
+                    onSelectionChange={selection => handleChange_(selection?.value)}/>
                 : <DiscoverAutocompleteInput
                     key={'empty'}
+                    loadOnStart={true}
                     readonly={Boolean(ctx.readonly)}
                     typeIRI={typeIRI}
                     title={description || label || ''}

@@ -17,11 +17,13 @@ interface OwnProps {
   title?: string
   readonly?: boolean
   defaultSelected?: AutocompleteSuggestion | null
+  loadOnStart?: boolean
+  limit?: number
 }
 
 type Props = OwnProps;
 
-const DiscoverAutocompleteInput: FunctionComponent<Props> = ({title = 'etwas', readonly, defaultSelected, selected, onSelectionChange, typeIRI: classType}) => {
+const DiscoverAutocompleteInput: FunctionComponent<Props> = ({title = 'etwas', readonly, defaultSelected, selected, onSelectionChange, typeIRI: classType, loadOnStart, limit}) => {
   const { crudOptions } = useGlobalCRUDOptions()
   const [ selected__, setSelected__] = useState<AutocompleteSuggestion | null>(selected  || defaultSelected || null)
 
@@ -33,20 +35,26 @@ const DiscoverAutocompleteInput: FunctionComponent<Props> = ({title = 'etwas', r
       [onSelectionChange, setSelected__],
   )
 
+  const load = useCallback(
+      async (searchString?: string) => ( classType && crudOptions)
+            ? (await findEntityByClass(searchString || null, classType, crudOptions.selectFetch, limit)).map(({name= '', value}: {name: string, value: any}) => {
+              return {
+                label: name,
+                value
+              }
+            })
+            : [],
+      [classType, crudOptions, limit])
+
 
   return (<>
         <DebouncedAutocomplete
             title={title}
             readOnly={readonly}
+            loadOnStart={true}
+            ready={Boolean(classType && crudOptions)}
             // @ts-ignore
-            load={async (searchString) => ((searchString && classType && crudOptions)
-                ? (await findEntityByClass(searchString, classType, crudOptions.selectFetch)).map(({name= '', value}: {name: string, value: any}) => {
-                  return {
-                    label: name,
-                    value
-                  }
-                })
-                : [])}
+            load={load}
             value={selected__}
             placeholder={`Suche nach ${title} in der aktuellen Datenbank`}
             renderOption={(props, option: any) => (

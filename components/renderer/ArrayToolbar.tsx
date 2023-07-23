@@ -36,7 +36,6 @@ export const ArrayLayoutToolbar = React.memo(
   }: ArrayLayoutToolbarProps & {schema?: JsonSchema7}) => {
     const {t} = useTranslation()
     const typeIRI = useMemo(() => schema?.properties?.['@type']?.const, [schema])
-    console.log('ArrayLayoutToolbar', {label, errors, schema, addItem, path, createDefault, readonly, typeIRI})
     const handleChange_ = React.useCallback(
       (value: any) => {
         addItem(path, {

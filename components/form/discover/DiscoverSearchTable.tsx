@@ -46,7 +46,6 @@ const DiscoverSearchTable: FunctionComponent<Props> = ({
 
   const handleSelect = useCallback(
       (id: string | undefined) => {
-        console.log('select', id)
         setSelectedId(id)
         // @ts-ignore
         setSelectedEntry(id && resultTable?.find((entry) => entry.id === id))

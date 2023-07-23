@@ -59,7 +59,7 @@ export const useSPARQL_CRUD = (entityIRI: string | undefined, typeIRI: string | 
         try {
             return await askFetch(query)
         } catch (e) {
-            console.log(e)
+            console.error(e)
         }
         return false
     }, [whereEntity, setIsUpdate, defaultPrefix, askFetch])
@@ -84,7 +84,7 @@ export const useSPARQL_CRUD = (entityIRI: string | undefined, typeIRI: string | 
                 setIsUpdate(true)
                 setData(resultJSON)
             } catch (e) {
-                console.log(e)
+                console.error(e)
             }
         },
         [entityIRI, whereEntity, setData, setIsUpdate, defaultPrefix, constructFetch]

@@ -94,7 +94,6 @@ export const InlineSemanticFormsRendererModal = (props: ControlProps) => {
   )
 
   const handleEditToggle = useCallback(() => {
-    console.log('handleEditToggle', editMode)
     setEditMode(!editMode)
 
   }, [editMode, setEditMode])

@@ -51,7 +51,6 @@ const InlineSemanticFormsRenderer = (props: ControlProps) => {
             const prefix = schema.title || slent[''].value
             const newURI = `${prefix}${uuidv4()}`
             handleChange_(newURI)
-            console.log({data})
         }
     }, [schema, data, handleChange_])
 

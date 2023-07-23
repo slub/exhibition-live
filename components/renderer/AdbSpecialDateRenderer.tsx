@@ -86,7 +86,6 @@ export const AdbSpecialDateControl = (props: ControlProps) => {
             newValueNumber = Number(event.target.value)
         if (isNaN(newValueNumber) || newValueNumber > maxValue) return;
         const newValue = String(newValueNumber)
-        console.log({newValue})
         if (newValue.length > maxLength) return;
         let strData, paddedValue
         try {

@@ -144,7 +144,6 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
                 open={modalIsOpen}
                 askClose={() => setModalIsOpen(false)}
                 handleChange={(path, v) => {
-                  console.log('handleChange_', v)
                   handleChange_(v);
                 }}
             />

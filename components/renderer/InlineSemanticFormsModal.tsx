@@ -85,7 +85,6 @@ export const InlineSemanticFormsModal = (props: ControlProps & OwnProps) => {
 
 
   const handleEditToggle = useCallback(() => {
-    console.log('handleEditToggle', editMode)
     setEditMode(!editMode)
 
   }, [editMode, setEditMode])

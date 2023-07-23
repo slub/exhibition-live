@@ -1,4 +1,4 @@
-import { Search } from '@mui/icons-material'
+import {Link, Search} from '@mui/icons-material'
 import { CircularProgress } from '@mui/material'
 import Autocomplete, { AutocompleteProps } from '@mui/material/Autocomplete'
 import { debounce } from 'lodash'
@@ -17,6 +17,7 @@ export type DebouncedAutocompleteProps = {
   minSearchLength?: number;
   loadOnStart?: boolean;
   ready?: boolean;
+  readOnly?: boolean;
 } & Omit<
   AutocompleteProps<any, any, any, any>,
   'renderInput' | 'size' | 'options'
@@ -24,7 +25,7 @@ export type DebouncedAutocompleteProps = {
 
 export const DebouncedAutocomplete: FunctionComponent<
   DebouncedAutocompleteProps
-> = ({ load, title ,minSearchLength = 1, loadOnStart, ready = true, ...props }) => {
+> = ({ load, title ,minSearchLength = 1, loadOnStart, ready = true, readOnly, ...props }) => {
   const [suggestions, setSuggestions] = useState<
     AutocompleteSuggestion[] | undefined
   >(undefined)
@@ -74,6 +75,7 @@ export const DebouncedAutocomplete: FunctionComponent<
     <>
       <Autocomplete
         noOptionsText="No results"
+        readOnly={readOnly}
         {...props}
         renderInput={(params) => (
           // @ts-ignore
@@ -85,13 +87,13 @@ export const DebouncedAutocomplete: FunctionComponent<
             onChange={handleOnChange}
             InputProps={{
               ...params.InputProps,
-              disabled: props.readOnly,
+              disabled: readOnly,
               startAdornment: (
                 <>
                   {loading ? (
                     <CircularProgress color="inherit" size={16} />
                   ) : (
-                    <Search fontSize="small" />
+                      readOnly ? <Link fontSize="small" /> :  <Search fontSize="small" />
                   )}
                   {params.InputProps.startAdornment}
                 </>

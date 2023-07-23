@@ -59,6 +59,7 @@ interface OwnProps {
   onInit?: (crudOps: CRUDOpsType) => void
   hideToolbar?: boolean
   readonly?: boolean
+  forceEditMode?: boolean
 }
 
 export type SemanticJsonFormsProps = OwnProps;
@@ -149,13 +150,15 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> =
        onInit,
        hideToolbar,
        readonly,
+        forceEditMode
      }) => {
       const [jsonldData, setJsonldData] = useState<any>({})
       //const {formData, setFormData} = useFormEditor()
       const [formData, setFormData] = useState<any | undefined>()
       const [initiallyLoaded, setInitiallyLoaded] = useState<string | undefined>(undefined)
       const [jsonViewerEnabled, setJsonViewerEnabled] = useState(false)
-      const [editMode, setEditMode] = useState(!Boolean(readonly))
+      const [managedEditMode, setEditMode] = useState(false)
+      const editMode = useMemo(() => forceEditMode || managedEditMode, [managedEditMode, forceEditMode])
       const [hideSimilarityFinder, setHideSimilarityFinder] = useState(true)
       const { subscribe, unsubscribe, subscriptions } = useSubscriptions()
       const [ subscription, setSubscription] =  useState<string | undefined>()

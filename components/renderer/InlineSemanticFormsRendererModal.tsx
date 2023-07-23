@@ -1,6 +1,6 @@
 import {ControlProps, JsonSchema, resolveSchema} from '@jsonforms/core'
 import {withJsonFormsControlProps} from '@jsonforms/react'
-import {Edit, EditOff} from '@mui/icons-material'
+import {OpenInNew, OpenInNewOff} from '@mui/icons-material'
 import {FormControl, Hidden, IconButton} from '@mui/material'
 import {JSONSchema7} from 'json-schema'
 import merge from 'lodash/merge'
@@ -17,7 +17,7 @@ import {oxigraphCrudOptions} from '../utils/sparql/remoteOxigraph'
 import MuiEditDialog from './MuiEditDialog'
 import {useGlobalCRUDOptions} from "../state/useGlobalCRUDOptions";
 
-const InlineSemanticFormsRendererModal = (props: ControlProps) => {
+export const InlineSemanticFormsRendererModal = (props: ControlProps) => {
   const {
     id,
     errors,
@@ -39,6 +39,7 @@ const InlineSemanticFormsRendererModal = (props: ControlProps) => {
   const [CRUDOps, setCRUDOps] = useState<CRUDOpsType | undefined>()
   const {load, save, remove} = CRUDOps || {}
   const {crudOptions} = useGlobalCRUDOptions()
+  const [editMode, setEditMode] = useState(false)
 
   const handleChange_ = useCallback(
       (v?: string) => {
@@ -92,6 +93,12 @@ const InlineSemanticFormsRendererModal = (props: ControlProps) => {
       [remove, setModalIsOpen],
   )
 
+  const handleEditToggle = useCallback(() => {
+    console.log('handleEditToggle', editMode)
+    setEditMode(!editMode)
+
+  }, [editMode, setEditMode])
+
 
   return (
       <Hidden xsUp={!visible}>
@@ -101,7 +108,7 @@ const InlineSemanticFormsRendererModal = (props: ControlProps) => {
             variant={'standard'}
             sx={theme => ({marginBottom: theme.spacing(2)})}
         >
-          <IconButton onClick={(e) => { e.stopPropagation() ; handleToggle()}}>{modalIsOpen ? <EditOff/> : <Edit/>}</IconButton>
+          <IconButton onClick={(e) => { e.stopPropagation() ; handleToggle()}}>{modalIsOpen ? <OpenInNewOff/> : <OpenInNew />}</IconButton>
           {modalIsOpen && subSchema && (
               <MuiEditDialog
                   title={label || ''}
@@ -110,6 +117,8 @@ const InlineSemanticFormsRendererModal = (props: ControlProps) => {
                   onCancel={handleToggle}
                   onSave={handleSave}
                   onReload={load}
+                  onEdit={handleEditToggle}
+                  editMode={Boolean(editMode)}
                   search={
                     <DiscoverAutocompleteInput
                         typeIRI={typeIRI}
@@ -119,6 +128,7 @@ const InlineSemanticFormsRendererModal = (props: ControlProps) => {
                   onRemove={handleRemove}><>
                 <SemanticJsonForm
                     data={formData}
+                    forceEditMode={Boolean(editMode)}
                     hideToolbar={true}
                     entityIRI={data}
                     setData={_data => setFormData(_data)}

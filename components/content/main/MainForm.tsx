@@ -16,7 +16,6 @@ import {
   sladb,
   slent
 } from '../../form/formConfigs'
-import genSlubJSONLDSemanticProperties from '../../form/genSlubJSONLDSemanticProperties'
 import SemanticJsonForm from '../../form/SemanticJsonForm'
 import {useUISchemaForType} from '../../form/uischemaForType'
 import {uischemas} from '../../form/uischemas'

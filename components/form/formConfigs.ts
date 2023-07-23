@@ -2,7 +2,7 @@ import namespace from '@rdfjs/namespace'
 
 
 export const sladb = namespace('http://ontologies.slub-dresden.de/exhibition#')
-export const slent = namespace('http://ontologies.slub-dresden.de/exhibition/entity#')
+export const slent = namespace('http://ontologies.slub-dresden.de/exhibition/entity/')
 export const defaultPrefix = sladb[''].value
 export const defaultJsonldContext = {
     '@vocab': defaultPrefix,

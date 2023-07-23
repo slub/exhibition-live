@@ -106,9 +106,7 @@ const MaterialArrayLayoutComponent = (props: ArrayLayoutProps)=> {
               />
             )
           })
-        ) : (
-          <p>No data</p>
-        )}
+        ) : null}
       </div>
     </div>
   )

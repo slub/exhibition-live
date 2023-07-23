@@ -11,6 +11,9 @@ import * as React from 'react'
 import {useTranslation} from 'react-i18next'
 
 import ValidationIcon from './ValidationIcon'
+import DiscoverAutocompleteInput from "../form/discover/DiscoverAutocompleteInput";
+import {useMemo} from "react";
+import {JsonSchema7} from "@jsonforms/core";
 
 export interface ArrayLayoutToolbarProps {
   label: string;
@@ -19,6 +22,7 @@ export interface ArrayLayoutToolbarProps {
   addItem(path: string, data: any): () => void;
   createDefault(): any;
   readonly?: boolean
+  typeIRI?: string
 }
 export const ArrayLayoutToolbar = React.memo(
   ({
@@ -26,10 +30,19 @@ export const ArrayLayoutToolbar = React.memo(
     errors,
     addItem,
     path,
+      schema,
     createDefault,
-      readonly
-  }: ArrayLayoutToolbarProps) => {
+      readonly,
+  }: ArrayLayoutToolbarProps & {schema?: JsonSchema7}) => {
     const {t} = useTranslation()
+    const typeIRI = useMemo(() => schema?.properties?.['@type']?.const, [schema])
+    console.log('ArrayLayoutToolbar', {label, errors, schema, addItem, path, createDefault, readonly, typeIRI})
+    const handleChange_ = React.useCallback(
+      (value: any) => {
+        addItem(path, {
+          '@id': value
+        })()
+      }, [addItem, path]  )
     return (
       <Toolbar disableGutters={true}>
         <Grid container alignItems='center' justifyContent='space-between'>
@@ -43,6 +56,12 @@ export const ArrayLayoutToolbar = React.memo(
           </Hidden>
           <Grid item>
             <Grid container sx={{visibility: readonly ? 'hidden' : 'visible'}}>
+                <Grid item flex={1} sx={{minWidth: '25em'}}>
+                  <DiscoverAutocompleteInput
+                      typeIRI={typeIRI}
+                      title={label || ''}
+                      onSelectionChange={selection => handleChange_(selection?.value)}/>
+                </Grid>
               <Grid item>
                 <Tooltip
                   id='tooltip-add'

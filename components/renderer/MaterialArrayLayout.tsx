@@ -26,7 +26,7 @@ import {
   ArrayLayoutProps,
   composePaths,
   computeLabel,
-  createDefaultValue,
+  createDefaultValue, JsonSchema7,
 } from '@jsonforms/core'
 import map from 'lodash/map'
 import merge from 'lodash/merge'
@@ -78,6 +78,7 @@ const MaterialArrayLayoutComponent = (props: ArrayLayoutProps)=> {
         )}
         errors={errors}
         path={path}
+        schema={schema as JsonSchema7 | undefined}
         addItem={addItem}
         createDefault={innerCreateDefaultValue}
         readonly={readonly}

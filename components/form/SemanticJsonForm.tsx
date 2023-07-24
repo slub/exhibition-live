@@ -13,17 +13,14 @@ import {materialCells, materialRenderers} from '@jsonforms/material-renderers'
 import {JsonForms, JsonFormsInitStateProps} from '@jsonforms/react'
 import {Delete, Edit, EditOff, Refresh, Save} from '@mui/icons-material'
 import {Button, Grid, Hidden, IconButton, Switch} from '@mui/material'
-import {useQuery} from '@tanstack/react-query'
 import {JSONSchema7} from 'json-schema'
 import {JsonLdContext} from 'jsonld-context-parser'
 import {isEmpty} from 'lodash'
-import React, {FunctionComponent, useCallback, useEffect, useMemo,useState} from 'react'
+import React, {FunctionComponent, useCallback, useEffect, useMemo, useState} from 'react'
 import {JsonView} from 'react-json-view-lite'
 
 import {BASE_IRI} from '../config'
 import AdbSpecialDateRenderer, {adbSpecialDateControlTester} from '../renderer/AdbSpecialDateRenderer'
-import AutocompleteGNDFieldRenderer from '../renderer/AutocompleteGNDFieldRenderer'
-import AutocompleteURIFieldRenderer from '../renderer/AutocompleteURIFieldRenderer'
 import AutoIdentifierRenderer from '../renderer/AutoIdentifierRenderer'
 import InlineCondensedSemanticFormsRenderer from '../renderer/InlineCondensedSemanticFormsRenderer'
 import InlineSemanticFormsRenderer from '../renderer/InlineSemanticFormsRenderer'
@@ -70,22 +67,6 @@ const renderers = [
     tester: materialCustomAnyOfControlTester,
     renderer: MaterialCustomAnyOfRenderer
   }, {
-    tester: rankWith(15,
-        schemaMatches(
-            schema =>
-                Boolean(!isEmpty(schema) &&
-                    schema.format?.startsWith('gndo'))
-        )),
-    renderer: AutocompleteGNDFieldRenderer,
-  }, {
-    tester: rankWith(15,
-        schemaMatches(
-            schema =>
-                Boolean(!isEmpty(schema) &&
-                    schema.format?.startsWith('wikidata'))
-        )),
-    renderer: AutocompleteURIFieldRenderer,
-  }, {
     tester: rankWith(10,
         scopeEndsWith('@id')
     ),
@@ -108,18 +89,18 @@ const renderers = [
           return !isEmpty(options) && options['inline']
         }),
     renderer: InlineSemanticFormsRenderer
-  },{
-  tester: rankWith(14,
+  }, {
+    tester: rankWith(14,
         (uischema: UISchemaElement, schema, ctx): boolean => {
-          if (isEmpty(uischema) ||  isObjectArrayControl(uischema, schema, ctx)) {
+          if (isEmpty(uischema) || isObjectArrayControl(uischema, schema, ctx)) {
             return false
           }
           const options = uischema.options
           return !isEmpty(options) && options['inline']
         }),
     renderer: InlineCondensedSemanticFormsRenderer
-  },{
-  tester: adbSpecialDateControlTester,
+  }, {
+    tester: adbSpecialDateControlTester,
     renderer: AdbSpecialDateRenderer
   }
 ]
@@ -160,9 +141,9 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> =
       const [managedEditMode, setEditMode] = useState(false)
       const editMode = useMemo(() => forceEditMode || managedEditMode, [managedEditMode, forceEditMode])
       const [hideSimilarityFinder, setHideSimilarityFinder] = useState(true)
-      const { subscribe, unsubscribe, subscriptions } = useSubscriptions()
-      const [ subscription, setSubscription] =  useState<string | undefined>()
-      const {features } = useSettings()
+      const {subscribe, unsubscribe, subscriptions} = useSubscriptions()
+      const [subscription, setSubscription] = useState<string | undefined>()
+      const {features} = useSettings()
       const typeName = useMemo(() => typeIRI.substring(BASE_IRI.length, typeIRI.length), [typeIRI])
 
       const {parseJSONLD} = useJsonldParser(
@@ -177,7 +158,7 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> =
           })
 
       useEffect(() => {
-       // onEntityChange && onEntityChange(entityIRI)
+        // onEntityChange && onEntityChange(entityIRI)
       }, [entityIRI, setData])
 
 
@@ -188,7 +169,7 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> =
         remove,
         isUpdate,
         setIsUpdate,
-          ready
+        ready
       } = useSPARQL_CRUD(
           entityIRI,
           typeIRI,
@@ -204,7 +185,7 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> =
 
 
       useEffect(() => {
-        if(!ready) return
+        if (!ready) return
         const testExistenceAndLoad = async () => {
           if (!entityIRI || !shouldLoadInitially || initiallyLoaded === entityIRI)
             return
@@ -221,15 +202,16 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> =
       const handleFormChange = useCallback(
           (state: Pick<JsonFormsCore, 'data' | 'errors'>) => {
             setData((oldState: any) => {
-              if(oldState.name !== state.data.name) {
+              if (oldState.name !== state.data.name) {
                 setHideSimilarityFinder(false)
               }
-              return state.data })
+              return state.data
+            })
           }, [setData, setHideSimilarityFinder])
 
       const handleNewData = useCallback(
           (newData: any) => {
-            if(!newData) return
+            if (!newData) return
             setData(newData)
           }, [setData])
 
@@ -251,13 +233,15 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> =
       }, [save, setEditMode, subscriptions])
 
       useEffect(() => {
-        if(subscription) return
+        if (subscription) return
         setSubscription(subscribe(subscriptionKeys.GLOBAL_DATA_CHANGE, async () => {
           await save()
           await load()
         }))
-        return () => { subscription &&  unsubscribe(subscriptionKeys.GLOBAL_DATA_CHANGE, subscription) }
-      },  [subscription ,subscribe, unsubscribe, load, save])
+        return () => {
+          subscription && unsubscribe(subscriptionKeys.GLOBAL_DATA_CHANGE, subscription)
+        }
+      }, [subscription, subscribe, unsubscribe, load, save])
 
 
       return (<>
@@ -265,15 +249,16 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> =
               <IconButton onClick={() => setEditMode(editMode => !editMode)}>{editMode ? <EditOff/> :
                   <Edit/>}</IconButton>
               {editMode && <>
-                  <Button onClick={handleSave} startIcon={<Save />}>speichern</Button>
-                  <Button onClick={remove} startIcon={<Delete />}>entfernen</Button>
-                  <Button onClick={load} startIcon={<Refresh />}>neu laden</Button>
+                  <Button onClick={handleSave} startIcon={<Save/>}>speichern</Button>
+                  <Button onClick={remove} startIcon={<Delete/>}>entfernen</Button>
+                  <Button onClick={load} startIcon={<Refresh/>}>neu laden</Button>
               </>}
               {features?.enableDebug && <>
-                <Switch checked={jsonViewerEnabled} onChange={e => setJsonViewerEnabled(Boolean(e.target.checked))}
-                        title={'debug'}/>
+                  <Switch checked={jsonViewerEnabled} onChange={e => setJsonViewerEnabled(Boolean(e.target.checked))}
+                          title={'debug'}/>
                 {jsonViewerEnabled &&
-                  <Switch checked={isUpdate} onChange={e => setIsUpdate(Boolean(e.target.checked))} title={'upsert'}/>}
+                    <Switch checked={isUpdate} onChange={e => setIsUpdate(Boolean(e.target.checked))}
+                            title={'upsert'}/>}
               </>
               }
             </Hidden>

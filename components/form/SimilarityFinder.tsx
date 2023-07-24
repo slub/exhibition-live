@@ -77,10 +77,10 @@ const SimilarityFinder: FunctionComponent<Props> = ({
                   <KnowledgebaseIcon/>
                 </ToggleButton>
                 <ToggleButton value="gnd" aria-label="GND">
-                  <Image alt={'gnd logo'} width={24} height={24} src={'/Icons/gnd-logo.png'} />
+                  <Image alt={'gnd logo'} width={24} height={24} src={'Icons/gnd-logo.png'} />
                 </ToggleButton>
                 <ToggleButton value="wikidata" aria-label="Wikidata">
-                  <Image alt={'wikidata logo'} width={30} height={24} src={'/Icons/Wikidata-logo-en.svg'} />
+                  <Image alt={'wikidata logo'} width={30} height={24} src={'Icons/Wikidata-logo-en.svg'} />
                 </ToggleButton>
               </ToggleButtonGroup>
 

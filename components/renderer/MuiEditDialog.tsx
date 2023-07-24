@@ -6,7 +6,7 @@ import {
   Save as SaveIcon,
   Search as SearchIcon,
   Edit as EditIcon,
-  EditOff as EditOffIcon
+  EditOff as EditOffIcon, SearchOff
 } from '@mui/icons-material'
 import {alpha, AppBar, Badge, Box, Hidden, IconButton, InputBase, styled, Toolbar, Typography} from '@mui/material'
 import Button from '@mui/material/Button'
@@ -16,7 +16,7 @@ import DialogContent from '@mui/material/DialogContent'
 import {useTheme} from '@mui/material/styles'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import * as React from 'react'
-import {useState} from 'react'
+import {useCallback, useState} from 'react'
 
 const Search = styled('div')(({theme}) => ({
   position: 'relative',
@@ -63,7 +63,14 @@ export default function MuiEditDialog({
   const theme = useTheme()
   const [forceFullscreen, setForceFullscreen] = useState(false)
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'))
+  const [showSearch, setShowSearch] = useState(true);
 
+  const toggleSearch = useCallback(
+          () => {
+            setShowSearch(prev => !prev)
+          },
+      [setShowSearch],
+  );
 
   return (
       <Dialog
@@ -83,36 +90,43 @@ export default function MuiEditDialog({
             <Typography variant="h6" color="inherit" component="div">
               {title || 'Bearbeiten oder Erstellen'}
             </Typography>
-            <Box sx={{flexGrow: 3}}>
-              <Search>
-                {search}
-              </Search>
-            </Box>
+            <Hidden mdUp={true}>
+              <IconButton onClick={toggleSearch} color="inherit">
+                {showSearch ? <SearchOff /> : <SearchIcon/>}
+              </IconButton>
+            </Hidden>
+            <Hidden mdDown={true}>
+              <Box sx={{flexGrow: 3}}>
+                <Search>
+                  {search}
+                </Search>
+              </Box>
+            </Hidden>
             <Box sx={{flexGrow: 1}}/>
-            <Box sx={{display: {xs: 'none', md: 'flex'}}}>
-              <Hidden xsUp={!editMode}>
-               <>
-                  {onSave && <IconButton
-                      size="large"
-                      aria-label="save your edits!"
-                      onClick={onSave}
-                      color="inherit">
-                      <SaveIcon/>
-                  </IconButton>}
-                  {onRemove && <IconButton
-                      onClick={onRemove}
-                      color="inherit">
-                      <RemoveIcn/>
-                  </IconButton>}
-                </>
-              </Hidden>
-              {onEdit && <IconButton
+            <Box sx={{display: 'flex'}}>
+              {editMode &&
+                  <>
+                    {onSave && <IconButton
+                        size="large"
+                        aria-label="save your edits!"
+                        onClick={onSave}
+                        color="inherit">
+                        <SaveIcon/>
+                    </IconButton>}
+                    {onRemove && <IconButton
+                        onClick={onRemove}
+                        color="inherit">
+                        <RemoveIcn/>
+                    </IconButton>}
+                  </>
+              }
+              <IconButton
                   size="large"
                   aria-label="toggle edit mode"
                   onClick={onEdit}
                   color="inherit">
                 {editMode ? <EditOffIcon/> : <EditIcon/>}
-              </IconButton>}
+              </IconButton>
               {onReload && <IconButton
                   size="large"
                   aria-label="reload from server"
@@ -120,13 +134,15 @@ export default function MuiEditDialog({
                   color="inherit">
                   <ReloadIcon/>
               </IconButton>}
-              <IconButton
-                  size="large"
-                  aria-label="close without saving"
-                  onClick={() => setForceFullscreen(ff => !ff)}
-                  color="inherit">
-                <FullscreenIcon/>
-              </IconButton>
+              <Hidden mdDown={true}>
+                <IconButton
+                    size="large"
+                    aria-label="close without saving"
+                    onClick={() => setForceFullscreen(ff => !ff)}
+                    color="inherit">
+                  <FullscreenIcon/>
+                </IconButton>
+              </Hidden>
               <IconButton
                   size="large"
                   aria-label="close without saving"
@@ -138,18 +154,29 @@ export default function MuiEditDialog({
               </IconButton>
             </Box>
           </Toolbar>
+          {  showSearch && <Hidden mdUp={showSearch}>
+            <Toolbar variant="dense">
+              <Box sx={{flexGrow: 3}}>
+                <Search>
+                  {search}
+                </Search>
+              </Box>
+            </Toolbar>
+          </Hidden>}
         </AppBar>
         <DialogContent>
           {children}
         </DialogContent>
-        <DialogActions>
-          {onCancel && <Button autoFocus onClick={onCancel}>
-              abbrechen
-          </Button>}
-          {onSave && <Button onClick={onSave} autoFocus>
-              speichern
-          </Button>}
-        </DialogActions>
+        <Hidden mdDown={true}>
+          <DialogActions>
+            {onCancel && <Button autoFocus onClick={onCancel}>
+                abbrechen
+            </Button>}
+            {onSave && <Button onClick={onSave} autoFocus>
+                speichern
+            </Button>}
+          </DialogActions>
+        </Hidden>
       </Dialog>
   )
 }

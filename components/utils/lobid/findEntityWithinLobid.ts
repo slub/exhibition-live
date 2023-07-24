@@ -15,7 +15,13 @@
 const lobidURL = 'https://lobid.org/gnd/search'
 
 const LobidTypemap: Record<string, string> ={
-  'Organization': 'CorporateBody'
+  'Organization': 'CorporateBody',
+  'Person': 'DifferentiatedPerson',
+  'Corporation': 'CorporateBody',
+  'Exhibition': 'ConferenceOrEvent',
+  'Location': 'CorporateBody',
+  'Place': 'TerritorialCorporateBodyOrAdministrativeUnit',
+  'Tag': 'SubjectHeading'
 }
 
 const mapTypeName = (typeName: string) => LobidTypemap[typeName] || typeName

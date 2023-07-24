@@ -2,7 +2,7 @@ import {Link, Search} from '@mui/icons-material'
 import { CircularProgress } from '@mui/material'
 import Autocomplete, { AutocompleteProps } from '@mui/material/Autocomplete'
 import { debounce } from 'lodash'
-import React, {FunctionComponent, useCallback, useEffect, useState} from 'react'
+import React, {FunctionComponent, useCallback, useEffect, useMemo, useState} from 'react'
 
 import { TextField } from './TextField'
 
@@ -18,6 +18,7 @@ export type DebouncedAutocompleteProps = {
   loadOnStart?: boolean;
   ready?: boolean;
   readOnly?: boolean;
+  onDebouncedSearchChange?: (value: string | undefined) => void;
 } & Omit<
   AutocompleteProps<any, any, any, any>,
   'renderInput' | 'size' | 'options'
@@ -25,7 +26,7 @@ export type DebouncedAutocompleteProps = {
 
 export const DebouncedAutocomplete: FunctionComponent<
   DebouncedAutocompleteProps
-> = ({ load, title ,minSearchLength = 1, loadOnStart, ready = true, readOnly, ...props }) => {
+> = ({ load, title ,minSearchLength = 1, loadOnStart, ready = true, readOnly, onDebouncedSearchChange, ...props }) => {
   const [suggestions, setSuggestions] = useState<
     AutocompleteSuggestion[] | undefined
   >(undefined)
@@ -36,6 +37,7 @@ export const DebouncedAutocomplete: FunctionComponent<
   const debouncedRequest = useCallback(
     debounce(async (value: string) => {
       const data = await load(value)
+      onDebouncedSearchChange && onDebouncedSearchChange(value)
       if (data.length > 0) {
         setSuggestions(data)
       } else {
@@ -43,7 +45,7 @@ export const DebouncedAutocomplete: FunctionComponent<
       }
       setLoading(false)
     }, 500),
-    [setLoading, setSuggestions, load]
+    [setLoading, setSuggestions, load, onDebouncedSearchChange]
   )
 
   const handleOnChange = useCallback(

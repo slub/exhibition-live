@@ -19,11 +19,12 @@ interface OwnProps {
   defaultSelected?: AutocompleteSuggestion | null
   loadOnStart?: boolean
   limit?: number
+  onDebouncedSearchChange?: (value: string | undefined) => void;
 }
 
 type Props = OwnProps;
 
-const DiscoverAutocompleteInput: FunctionComponent<Props> = ({title = 'etwas', readonly, defaultSelected, selected, onSelectionChange, typeIRI: classType, loadOnStart, limit}) => {
+const DiscoverAutocompleteInput: FunctionComponent<Props> = ({title = 'etwas', readonly, defaultSelected, selected, onSelectionChange, typeIRI: classType, loadOnStart, limit, onDebouncedSearchChange}) => {
   const { crudOptions } = useGlobalCRUDOptions()
   const [ selected__, setSelected__] = useState<AutocompleteSuggestion | null>(selected  || defaultSelected || null)
 
@@ -47,8 +48,7 @@ const DiscoverAutocompleteInput: FunctionComponent<Props> = ({title = 'etwas', r
       [classType, crudOptions, limit])
 
 
-  return (<>
-        <DebouncedAutocomplete
+  return <DebouncedAutocomplete
             title={title}
             readOnly={readonly}
             loadOnStart={true}
@@ -64,9 +64,8 @@ const DiscoverAutocompleteInput: FunctionComponent<Props> = ({title = 'etwas', r
             )}
             // @ts-ignore
             onChange={handleChange}
+            onDebouncedSearchChange={onDebouncedSearchChange}
         />
-      </>
-  )
 }
 
 export default DiscoverAutocompleteInput

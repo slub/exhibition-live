@@ -57,6 +57,7 @@ interface OwnProps {
   hideToolbar?: boolean
   readonly?: boolean
   forceEditMode?: boolean
+  searchText?: string
 }
 
 export type SemanticJsonFormsProps = OwnProps;
@@ -131,7 +132,8 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> =
        onInit,
        hideToolbar,
        readonly,
-        forceEditMode
+       forceEditMode,
+       searchText
      }) => {
       const [jsonldData, setJsonldData] = useState<any>({})
       //const {formData, setFormData} = useFormEditor()
@@ -209,6 +211,13 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> =
             })
           }, [setData, setHideSimilarityFinder])
 
+      useEffect(() => {
+        if (searchText && searchText.length > 0) {
+          setHideSimilarityFinder(false)
+        }
+      }, [searchText, setHideSimilarityFinder])
+
+
       const handleNewData = useCallback(
           (newData: any) => {
             if (!newData) return
@@ -281,9 +290,10 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> =
                 </>))}
               </Grid>
               {!hideSimilarityFinder &&
-                <Grid item xs={6} md={4}>
-                  <SimilarityFinder data={data} classIRI={typeIRI} jsonSchema={schema} onEntityIRIChange={onEntityChange} onMappedDataAccepted={handleNewData}/>
-                </Grid>}
+                  <Grid item xs={12} md={4}>
+                      <SimilarityFinder search={searchText} data={data} classIRI={typeIRI} jsonSchema={schema}
+                                        onEntityIRIChange={onEntityChange} onMappedDataAccepted={handleNewData}/>
+                  </Grid>}
             </Grid>
           </>
       )

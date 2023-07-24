@@ -1,4 +1,5 @@
 // @flow
+import {Resolve} from '@jsonforms/core'
 import {Book as WikidataIcon, LinkedIn as GNDIcon, Storage as KnowledgebaseIcon} from '@mui/icons-material'
 import {Grid, Icon, ToggleButton, ToggleButtonGroup, Tooltip} from '@mui/material'
 import {JSONSchema7} from 'json-schema'
@@ -18,6 +19,8 @@ type Props = {
   jsonSchema: JSONSchema7
   onEntityIRIChange?: (entityIRI: string | undefined) => void
   onMappedDataAccepted?: (data: any) => void
+  searchOnDataPath?: string
+  search?: string
 };
 type State = {};
 
@@ -27,10 +30,11 @@ type SelectedEntity = {
   source: KnowledgeSources
 }
 const SimilarityFinder: FunctionComponent<Props> = ({
-                                                      data, classIRI, onEntityIRIChange, onMappedDataAccepted
+                                                      data, classIRI, onEntityIRIChange, onMappedDataAccepted,searchOnDataPath, search
                                                     }) => {
   const [selectedKnowledgeSources, setSelectedKnowledgeSources] = useState<KnowledgeSources[]>(['kb', 'gnd', 'wikidata'])
   const [entitySelected, setEntitySelected] = useState<SelectedEntity | undefined>()
+  const searchString = useMemo<string | null>(() => search || (searchOnDataPath && Resolve.data(data, searchOnDataPath)) || null, [data, searchOnDataPath, search])
 
   const handleKnowledgeSourceChange = useCallback(
       (event: React.MouseEvent<HTMLElement>, newKnowledgeSources: KnowledgeSources[]) => {
@@ -83,19 +87,19 @@ const SimilarityFinder: FunctionComponent<Props> = ({
             </Tooltip>
           </Grid>
         </Grid>
-        {(!entitySelected || entitySelected.source == 'kb') && selectedKnowledgeSources.includes('kb') &&
+        { searchString && ((!entitySelected || entitySelected.source == 'kb') && selectedKnowledgeSources.includes('kb') &&
             <DiscoverSearchTable
-                searchString={data.name}
+                searchString={searchString}
                 typeName={typeName}
                 classIRI={classIRI}
                 onAcceptItem={handleEntityChange}
-                onSelect={(id) => handleSelect(id, 'kb')}/> }
-        {(!entitySelected || entitySelected.source == 'gnd') && selectedKnowledgeSources.includes('gnd') &&
+                onSelect={(id) => handleSelect(id, 'kb')}/>)}
+        { searchString && ((!entitySelected || entitySelected.source == 'gnd') && selectedKnowledgeSources.includes('gnd') &&
           <LobidSearchTable
               onAcceptItem={handleAccept}
-              searchString={data.name}
+              searchString={searchString}
               typeName={typeName}
-              onSelect={(id) => handleSelect(id, 'gnd')}/>}
+              onSelect={(id) => handleSelect(id, 'gnd')}/>)}
       </>
   )
 }

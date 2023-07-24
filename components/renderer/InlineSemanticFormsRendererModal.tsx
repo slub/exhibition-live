@@ -40,6 +40,7 @@ export const InlineSemanticFormsRendererModal = (props: ControlProps) => {
   const {load, save, remove} = CRUDOps || {}
   const {crudOptions} = useGlobalCRUDOptions()
   const [editMode, setEditMode] = useState(false)
+  const [searchText, setSearchText] = useState<string | undefined>()
 
   const handleChange_ = useCallback(
       (v?: string) => {
@@ -98,6 +99,10 @@ export const InlineSemanticFormsRendererModal = (props: ControlProps) => {
 
   }, [editMode, setEditMode])
 
+  const handleSearchTextChange = useCallback(
+      (searchText: string | undefined) => {
+        setSearchText(searchText)
+      }, [setSearchText])
 
   return (
       <Hidden xsUp={!visible}>
@@ -122,6 +127,7 @@ export const InlineSemanticFormsRendererModal = (props: ControlProps) => {
                     <DiscoverAutocompleteInput
                         typeIRI={typeIRI}
                         title={label || ''}
+                        onDebouncedSearchChange={handleSearchTextChange}
                         onSelectionChange={selection => handleChange_(selection?.value)}/>
                   }
                   onRemove={handleRemove}><>
@@ -144,6 +150,7 @@ export const InlineSemanticFormsRendererModal = (props: ControlProps) => {
                     }}
                     onEntityChange={handleChange_}
                     onInit={(crudOps) => setCRUDOps(crudOps)}
+                    searchText={searchText}
                 />
               </>
               </MuiEditDialog>)}

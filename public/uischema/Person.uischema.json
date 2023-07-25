@@ -1,0 +1,145 @@
+{
+  "type": "VerticalLayout",
+  "elements": [
+    {
+      "type": "Group",
+      "label": "Allgemeine Daten der Person",
+      "elements": [
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "label": "Name",
+              "scope": "#/properties/name"
+            },
+            {
+              "type": "Control",
+              "label": "Namensvarianten",
+              "scope": "#/properties/nameVariants"
+            }
+          ]
+        },
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "label": "Geschlecht",
+              "scope": "#/properties/gender"
+            },
+            {
+              "type": "Control",
+              "label": "Berufe",
+              "scope": "#/properties/profession"
+            }
+          ]
+        },
+        {
+          "type": "Control",
+          "label": "Kurzbeschreibung",
+          "scope": "#/properties/description",
+          "options": {
+            "multi": true
+          }
+        },
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "VerticalLayout",
+              "elements": [
+                {
+                  "type": "Control",
+                  "label": "Geburtstag",
+                  "scope": "#/properties/birthDate"
+                },
+                {
+                  "type": "Control",
+                  "label": "verstorben",
+                  "scope": "#/properties/personDeceased"
+                }
+              ]
+            },
+            {
+              "type": "Control",
+              "label": "Sterbedatum",
+              "scope": "#/properties/deathDate",
+              "rule": {
+                "effect": "SHOW",
+                "condition": {
+                  "scope": "#/properties/personDeceased",
+                  "schema": {
+                    "const": true
+                  }
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Group",
+      "label": "autoritative Normdaten",
+      "elements": [
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "label": "Authorität",
+              "scope": "#/properties/authority"
+            },
+            {
+              "type": "Control",
+              "label": "URI",
+              "scope": "#/properties/idAuthority"
+            },
+            {
+              "type": "Control",
+              "label": "Letztes Normenupdate",
+              "scope": "#/properties/lastNormUpdate"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Group",
+      "label": "Biographische Daten",
+      "elements": [
+        {
+          "type": "Control",
+          "label": "Mitgliedschaften",
+          "scope": "#/properties/memberOfCorp"
+        },
+        {
+          "type": "Control",
+          "label": "Arbeitsorte",
+          "scope": "#/properties/workplace"
+        }
+      ]
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/exponatsandpersons"
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/involvedperson"
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/externalId"
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/@type"
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/@id"
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "type": "VerticalLayout",
+  "elements": [
+    {
+      "type": "Control",
+      "scope": "#/properties/role"
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/person"
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/@type"
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/@id"
+    }
+  ]
+}

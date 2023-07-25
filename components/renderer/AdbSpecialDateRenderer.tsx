@@ -117,16 +117,19 @@ export const AdbSpecialDateControl = (props: ControlProps) => {
           {label && label.length > 0 && <FormLabel>{label}</FormLabel>}
           <FormGroup row={true}>
             <TextField variant={'standard'}
+                       disabled={!enabled}
                        sx={{width: '4em'}}
                        label={'Tag'}
                        value={getDatePartAsString(data ?? 0, 'day')}
                        onChange={(e) => handleTextFieldChange(e, 'day')}/>
             <TextField variant={'standard'}
+                       disabled={!enabled}
                        sx={{width: '4em'}}
                        onChange={(e) => handleTextFieldChange(e, 'month')}
                        label={'Monat'}
                        value={getDatePartAsString(data ?? 0, 'month')}/>
             <TextField variant={'standard'}
+                       disabled={!enabled}
                        sx={{width: '6em'}}
                        onChange={(e) => handleTextFieldChange(e, 'year')}
                        label={'Jahr'}

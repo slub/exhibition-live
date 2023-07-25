@@ -3,7 +3,6 @@ import {Resolve} from '@jsonforms/core'
 import {Book as WikidataIcon, LinkedIn as GNDIcon, Storage as KnowledgebaseIcon} from '@mui/icons-material'
 import {Grid, Icon, ToggleButton, ToggleButtonGroup, Tooltip} from '@mui/material'
 import {JSONSchema7} from 'json-schema'
-import Image from 'next/image'
 import * as React from 'react'
 import {FunctionComponent, useCallback, useMemo,useState} from 'react'
 
@@ -77,10 +76,10 @@ const SimilarityFinder: FunctionComponent<Props> = ({
                   <KnowledgebaseIcon/>
                 </ToggleButton>
                 <ToggleButton value="gnd" aria-label="GND">
-                  <Image alt={'gnd logo'} width={24} height={24} src={'Icons/gnd-logo.png'} />
+                  <img alt={'gnd logo'} width={24} height={24} src={'./Icons/gnd-logo.png'} />
                 </ToggleButton>
                 <ToggleButton value="wikidata" aria-label="Wikidata">
-                  <Image alt={'wikidata logo'} width={30} height={24} src={'Icons/Wikidata-logo-en.svg'} />
+                  <img alt={'wikidata logo'} width={30} height={24} src={'./Icons/Wikidata-logo-en.svg'} />
                 </ToggleButton>
               </ToggleButtonGroup>
 

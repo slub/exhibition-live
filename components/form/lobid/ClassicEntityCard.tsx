@@ -31,12 +31,12 @@ const ClassicEntityCard: FunctionComponent<Props> = ({
   return (<>
     {onBack && <IconButton onClick={onBack}><ArrowBack /></IconButton>}
         <Card >
-          <CardMedia
+          {data.avatar && <CardMedia
               component="img"
               alt={'Image of ' + _label}
               height="300"
-              {...(data.avatar ? {image: data.avatar} : {})}
-          />
+              image={data.avatar}
+          />}
           <CardContent>
             <Typography gutterBottom variant="h5" component="div">
               {_label}

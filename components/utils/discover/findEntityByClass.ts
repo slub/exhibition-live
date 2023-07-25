@@ -28,6 +28,8 @@ const findEntityByClass = async (searchString: string | null, typeIRI: string, d
             BIND (CONCAT(${safeNameV}, " ", ${safeTitleV}, " ", ${safeDescriptionV}) AS ${concatenatedV})
             BIND (COALESCE(${nameV}, ${titleV}, ${descriptionV}, "") AS ${oneOfTitleV})
             FILTER(contains(lcase(${concatenatedV}), lcase("${searchString}") )) .
+            FILTER isIRI(${subjectV})
+            FILTER (strlen(${oneOfTitleV}) > 0)
         `.LIMIT(limit).build(defaultQueryBuilderOptions)
       : SELECT.DISTINCT` ${subjectV} ${oneOfTitleV}`.WHERE`
           ${subjectV} a <${typeIRI}> .
@@ -35,6 +37,8 @@ const findEntityByClass = async (searchString: string | null, typeIRI: string, d
             OPTIONAL {${subjectV} :title ${titleV} .}
             OPTIONAL {${subjectV} :description ${descriptionV} .}
             BIND (COALESCE(${nameV}, ${titleV}, ${descriptionV}, "") AS ${oneOfTitleV})
+            FILTER isIRI(${subjectV})  			
+            FILTER (strlen(${oneOfTitleV}) > 0)
         `.LIMIT(limit).build(defaultQueryBuilderOptions)
   query = `PREFIX : <${defaultPrefix}> ` + query
   try {

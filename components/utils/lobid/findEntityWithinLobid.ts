@@ -21,7 +21,8 @@ const LobidTypemap: Record<string, string> ={
   'Exhibition': 'ConferenceOrEvent',
   'Location': 'CorporateBody',
   'Place': 'TerritorialCorporateBodyOrAdministrativeUnit',
-  'Tag': 'SubjectHeading'
+  'Tag': 'SubjectHeading',
+  'ExhibitionExponat': 'Work',
 }
 
 const mapTypeName = (typeName: string) => LobidTypemap[typeName] || typeName

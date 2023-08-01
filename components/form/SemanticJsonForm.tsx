@@ -22,10 +22,14 @@ import {JsonView} from 'react-json-view-lite'
 import {BASE_IRI} from '../config'
 import AdbSpecialDateRenderer, {adbSpecialDateControlTester} from '../renderer/AdbSpecialDateRenderer'
 import AutoIdentifierRenderer from '../renderer/AutoIdentifierRenderer'
+import ImageRenderer from '../renderer/ImageRenderer'
 import InlineCondensedSemanticFormsRenderer from '../renderer/InlineCondensedSemanticFormsRenderer'
 import InlineSemanticFormsRenderer from '../renderer/InlineSemanticFormsRenderer'
 import MaterialArrayOfLinkedItemRenderer from '../renderer/MaterialArrayOfLinkedItemRenderer'
 import MaterialCustomAnyOfRenderer, {materialCustomAnyOfControlTester} from '../renderer/MaterialCustomAnyOfRenderer'
+import MaterialLinkedObjectRenderer, {
+  materialLinkedObjectControlTester,
+} from '../renderer/MaterialLinkedObjectRenderer'
 import TypeOfRenderer from '../renderer/TypeOfRenderer'
 import {useJsonldParser} from '../state/useJsonldParser'
 import {useSettings} from '../state/useLocalSettings'
@@ -67,7 +71,14 @@ const renderers = [
   {
     tester: materialCustomAnyOfControlTester,
     renderer: MaterialCustomAnyOfRenderer
-  }, {
+  },
+  {
+    tester: rankWith(10,
+        scopeEndsWith('image')
+    ),
+    renderer: ImageRenderer
+  },
+  {
     tester: rankWith(10,
         scopeEndsWith('@id')
     ),
@@ -163,6 +174,8 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> =
         // onEntityChange && onEntityChange(entityIRI)
       }, [entityIRI, setData])
 
+      const ownIRI = useMemo(() => entityIRI || jsonldData['@id'], [entityIRI, jsonldData])
+
 
       const {
         exists,
@@ -173,7 +186,7 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> =
         setIsUpdate,
         ready
       } = useSPARQL_CRUD(
-          entityIRI,
+          ownIRI,
           typeIRI,
           schema,
           //@ts-ignore

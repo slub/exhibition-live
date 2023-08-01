@@ -23,6 +23,7 @@ import {OpenInNew, OpenInNewOff} from "@mui/icons-material";
 import DiscoverAutocompleteInput from "../form/discover/DiscoverAutocompleteInput";
 import {useGlobalCRUDOptions} from "../state/useGlobalCRUDOptions";
 import { InlineSemanticFormsModal } from "./InlineSemanticFormsModal";
+import {BASE_IRI} from "../config";
 
 const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
   const {
@@ -59,7 +60,6 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
       [path, handleChange, data],
   )
 
-  //console.log({config})
   useEffect(() => {
     let label_ = ''
     if (data) {
@@ -83,6 +83,7 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
   }, [newURI, editMode])
 
   const {$ref, typeIRI} = uischema.options?.context || {}
+  const typeName = useMemo(() => typeIRI.substring(BASE_IRI.length, typeIRI.length), [typeIRI])
   const uischemaExternal = useUISchemaForType(typeIRI || '')
 
   const subSchema = useMemo(() => {
@@ -119,13 +120,14 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
       <Hidden xsUp={!visible}>
         <Grid container alignItems='baseline'>
           <Grid item flex={'auto'}>
-            {!modalIsOpen && (realLabel
-                ? <DiscoverAutocompleteInput
+            {!modalIsOpen && (realLabel ?
+                <DiscoverAutocompleteInput
                     key={'not empty'}
                     loadOnStart={editMode}
                     readonly={Boolean(ctx.readonly)}
                     typeIRI={typeIRI}
-                    title={description || label || ''}
+                    title={label || ''}
+                    typeName={typeName || ''}
                     defaultSelected={{value: data, label: `${realLabel}`}}
                     onSelectionChange={selection => handleChange_(selection?.value)}/>
                 : <DiscoverAutocompleteInput
@@ -133,7 +135,8 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
                     loadOnStart={true}
                     readonly={Boolean(ctx.readonly)}
                     typeIRI={typeIRI}
-                    title={description || label || ''}
+                    typeName={typeName || ''}
+                    title={ label || ''}
                     onSelectionChange={selection => handleChange_(selection?.value)}/>)
             }
           </Grid>

@@ -15,6 +15,7 @@ interface OwnProps {
   onSelectionChange?: (selection: AutocompleteSuggestion | null) => void
   typeIRI?: string
   title?: string
+  typeName?: string
   readonly?: boolean
   defaultSelected?: AutocompleteSuggestion | null
   loadOnStart?: boolean
@@ -24,7 +25,7 @@ interface OwnProps {
 
 type Props = OwnProps;
 
-const DiscoverAutocompleteInput: FunctionComponent<Props> = ({title = 'etwas', readonly, defaultSelected, selected, onSelectionChange, typeIRI: classType, loadOnStart, limit, onDebouncedSearchChange}) => {
+const DiscoverAutocompleteInput: FunctionComponent<Props> = ({title = 'etwas', typeName, readonly, defaultSelected, selected, onSelectionChange, typeIRI: classType, loadOnStart, limit, onDebouncedSearchChange}) => {
   const { crudOptions } = useGlobalCRUDOptions()
   const [ selected__, setSelected__] = useState<AutocompleteSuggestion | null>(selected  || defaultSelected || null)
 
@@ -56,7 +57,7 @@ const DiscoverAutocompleteInput: FunctionComponent<Props> = ({title = 'etwas', r
             // @ts-ignore
             load={load}
             value={selected__}
-            placeholder={`Suche nach ${title} in der aktuellen Datenbank`}
+            placeholder={`Suche nach ${typeName} in der aktuellen Datenbank`}
             renderOption={(props, option: any) => (
                 <li {...props} key={option.value}>
                   {parse(`<span class="debounced_autocomplete_option_label">${option.label}</span>`)}

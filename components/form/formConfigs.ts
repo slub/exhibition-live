@@ -15,6 +15,24 @@ export const defaultJsonldContext = {
     },
     'deathDate': {
         '@type': 'xs:date'
+    },
+    'image': {
+        '@type': 'xs:anyURI'
+    },
+    'fromDate': {
+        '@type': 'xs:date'
+    },
+    'toDate': {
+        '@type': 'xs:date'
+    },
+    'toType': {
+        '@type': 'xs:integer'
+    },
+    'fromType': {
+        '@type': 'xs:integer'
+    },
+    'lastNormUpdate': {
+        '@type': 'xs:datetime'
     }
 }
 

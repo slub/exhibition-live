@@ -1,17 +1,29 @@
 // @flow
 import {Resolve} from '@jsonforms/core'
-import {Book as WikidataIcon, LinkedIn as GNDIcon, Storage as KnowledgebaseIcon} from '@mui/icons-material'
+import {
+  AndroidOutlined,
+  Book as WikidataIcon,
+  LinkedIn as GNDIcon,
+  Storage as KnowledgebaseIcon
+} from '@mui/icons-material'
 import {Grid, Icon, ToggleButton, ToggleButtonGroup, Tooltip} from '@mui/material'
 import {JSONSchema7} from 'json-schema'
+import {ChatCompletionRequestMessage, Configuration, OpenAIApi} from 'openai'
 import * as React from 'react'
 import {FunctionComponent, useCallback, useMemo,useState} from 'react'
 
 import {BASE_IRI} from '../config'
 import {gndFieldsToOwnModelMap} from '../config/lobidMappings'
+import {useSettings} from '../state/useLocalSettings'
 import {mapGNDToModel} from '../utils/gnd/mapGNDToModel'
 import DiscoverSearchTable from './discover/DiscoverSearchTable'
 import LobidSearchTable from './lobid/LobidSearchTable'
 
+export const isPrimitive = (type?: string) => type === 'string' || type === 'number' || type === 'integer' ||  type === 'boolean'
+const model = 'gpt-3.5-turbo'
+// @ts-ignore
+export const filterForPrimitiveProperties = (properties: JSONSchema7['properties']) => Object.fromEntries(Object.entries(properties || {}).filter(([, value]) => typeof value === 'object' && (isPrimitive(value.type) || value.oneOf || (value.type === 'array' &&  typeof value.items === 'object' && isPrimitive(value.items.type)))))
+const GND_IRI =  'http://ontologies.slub-dresden.de/exhibition/entity/Authority#s-1'
 type Props = {
   data: any,
   classIRI: string
@@ -23,18 +35,19 @@ type Props = {
 };
 type State = {};
 
-type KnowledgeSources = 'kb' | 'gnd' | 'wikidata'
+type KnowledgeSources = 'kb' | 'gnd' | 'wikidata' | 'ai'
 type SelectedEntity = {
   id: string
   source: KnowledgeSources
 }
 const SimilarityFinder: FunctionComponent<Props> = ({
-                                                      data, classIRI, onEntityIRIChange, onMappedDataAccepted,searchOnDataPath, search
+                                                      data, classIRI, onEntityIRIChange, onMappedDataAccepted,searchOnDataPath, search, jsonSchema
                                                     }) => {
-  const [selectedKnowledgeSources, setSelectedKnowledgeSources] = useState<KnowledgeSources[]>(['kb', 'gnd', 'wikidata'])
+
+  const {openai} = useSettings()
+  const [selectedKnowledgeSources, setSelectedKnowledgeSources] = useState<KnowledgeSources[]>(['kb', 'gnd', 'wikidata', 'ai'])
   const [entitySelected, setEntitySelected] = useState<SelectedEntity | undefined>()
   const searchString = useMemo<string | null>(() => search || (searchOnDataPath && Resolve.data(data, searchOnDataPath)) || null, [data, searchOnDataPath, search])
-
   const handleKnowledgeSourceChange = useCallback(
       (event: React.MouseEvent<HTMLElement>, newKnowledgeSources: KnowledgeSources[]) => {
         setSelectedKnowledgeSources(newKnowledgeSources)
@@ -46,17 +59,109 @@ const SimilarityFinder: FunctionComponent<Props> = ({
       },
       [setEntitySelected],
   )
+  const handleMapUsingAI = useCallback(
+      async (id: string | undefined, entryData: any) => {
+        if(!openai?.organization || !openai?.apiKey) {
+          console.log('No OpenAI API Key or Organization set')
+        }
+        const configuration =  new Configuration(openai)
+        const openaiInstance = new OpenAIApi(configuration)
+        const entrySchema = {
+          type: 'object',
+          properties: filterForPrimitiveProperties(jsonSchema.properties)
+        }
+        try {
+          const firstMessages: ChatCompletionRequestMessage[] = [
+            {
+              role: 'system',
+              content: 'The task is to map complex norm data from the GND to a more simple model of a  user given JSON Schema. First listen to the next two user prompts, only respond to system commands.'
+            },
+            {
+              role: 'user',
+              content: `The JSONSchema of the object of type \`${typeName}\` is:
+           \`\`\`json
+            ${JSON.stringify(entrySchema)}
+            \`\`\``
 
-  const handleAccept = useCallback(
+            },
+            {
+              role: 'user', content: `The data returned from the GND is:
+            \`\`\`json
+            ${JSON.stringify(entryData)}
+            \`\`\``
+            }, {
+              role: 'system',
+              content: 'Output the result of mapping the GND data to the schema (minified JSON without newlines). Hint: dates tha map to an integer should be converted to YYYYMMDD, if any of the part is unknown fill it with 0.'
+            }
+          ]
+          const generateMappingMessage: ChatCompletionRequestMessage[] = [
+            {
+              role: 'system',
+              content: 'for each mapped target field, give a small declarative representation of gnd fields used as input and a strategy used for mapping. The diffrent strategies will be implemented by a developer. Output the declarations as JSON.'
+            }
+          ]
+          const response = await openaiInstance.createChatCompletion({
+            model: model,
+            messages: firstMessages,
+            max_tokens: 1200
+          })
+          const dataFromGNDRaw = response.data?.choices?.[0]?.message?.content || '{}'
+          console.log({data: response.data, dataFromGNDRaw})
+          const {['@id']: _1, ...dataFromGND} = JSON.parse(dataFromGNDRaw)
+          const inject = {
+            authority: {
+              '@id': GND_IRI
+            },
+            idAuthority: id,
+            lastNormUpdate: new Date().toISOString()
+          }
+          const newData = {...dataFromGND, ...inject}
+          onMappedDataAccepted && onMappedDataAccepted(newData)
+          const mappingResponse =  await openaiInstance.createChatCompletion({
+            model: model,
+            messages: [
+                ...firstMessages,
+              {
+                role: 'assistant',
+                content: dataFromGNDRaw
+              },
+                ...generateMappingMessage
+            ],
+            max_tokens: 1200
+          })
+          const mappingDataRaw = mappingResponse.data?.choices?.[0]?.message?.content || '{}'
+          console.log({ mappingDataRaw})
+
+        } catch (e) {
+          console.error('could not guess mapping', e)
+        }
+      }, [typeName, onMappedDataAccepted, jsonSchema])
+
+  const handleManuallyMapData = useCallback(
       (id: string | undefined, entryData: any) => {
         if(!id || ! entryData?.allProps) return
-        const newData = mapGNDToModel(typeName, entryData.allProps, gndFieldsToOwnModelMap)
-        newData['gnd'] = { '@id': id }
-        onMappedDataAccepted && onMappedDataAccepted(newData)
+        const dataFromGND = mapGNDToModel(typeName, entryData.allProps, gndFieldsToOwnModelMap)
+        console.log(typeName, entryData.allProps, gndFieldsToOwnModelMap)
+        const inject = {
+          authority: {
+            '@id': GND_IRI
+          },
+          lastNormUpdate: new Date().toISOString()
+        }
+        onMappedDataAccepted && onMappedDataAccepted({...dataFromGND, ...inject})
 
 
       },
-      [selectedKnowledgeSources, typeName, onMappedDataAccepted])
+      [ typeName, onMappedDataAccepted])
+
+  const handleAccept = useCallback(
+      (id: string | undefined, entryData: any) => {
+        if(selectedKnowledgeSources.includes('ai')) {
+          handleMapUsingAI(id, entryData)
+        } else {
+          handleManuallyMapData(id, entryData)
+        }
+      }, [handleManuallyMapData, handleMapUsingAI, selectedKnowledgeSources])
 
   const handleEntityChange = useCallback(
       (id: string |  undefined) => {
@@ -80,6 +185,9 @@ const SimilarityFinder: FunctionComponent<Props> = ({
                 </ToggleButton>
                 <ToggleButton value="wikidata" aria-label="Wikidata">
                   <img alt={'wikidata logo'} width={30} height={24} src={'./Icons/Wikidata-logo-en.svg'} />
+                </ToggleButton>
+                <ToggleButton value="ai" aria-label="use AI">
+                  <AndroidOutlined/>
                 </ToggleButton>
               </ToggleButtonGroup>
 

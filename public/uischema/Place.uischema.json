@@ -1,0 +1,86 @@
+{
+  "type": "VerticalLayout",
+  "elements": [
+    {
+      "type": "Control",
+      "scope": "#/properties/image"
+    },
+    {
+      "type": "Group",
+      "label": "Allgemeines Daten zur Stätte",
+      "elements": [
+        {
+          "type": "HorizontalLayout",
+            "elements": [
+              {
+                "type": "Control",
+                "scope": "#/properties/title"
+              },
+              {
+                "type": "Control",
+                "scope": "#/properties/titleVariants"
+              }
+            ]
+        },
+        {
+          "type": "Control",
+          "scope": "#/properties/description"
+        }
+      ]
+    },
+    {
+      "type": "Control",
+      "label": "Ortsbeziehung",
+      "scope": "#/properties/location"
+    },
+    {
+      "type": "Group",
+      "label": "Beziehungen zu anderen Stätten",
+      "elements": [
+        {
+          "type": "Control",
+          "label": "Übergeordnete Stätte",
+          "scope": "#/properties/parent"
+        },
+        {
+          "type": "Control",
+          "label": "Untergeordnete Stätten",
+          "scope": "#/properties/place"
+        }
+      ]
+    },{
+      "type": "Group",
+      "label": "autoritative Normdaten",
+      "elements": [
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "label": "Authorität",
+              "scope": "#/properties/authority"
+            },
+            {
+              "type": "Control",
+              "label": "URI",
+              "scope": "#/properties/idAuthority"
+            },
+            {
+              "type": "Control",
+              "label": "Letztes Normenupdate",
+              "scope": "#/properties/lastNormUpdate"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/@type"
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/@id"
+    }
+  ]
+}

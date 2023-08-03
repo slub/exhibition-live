@@ -2,48 +2,57 @@
   "type": "VerticalLayout",
   "elements": [
     {
-      "type": "Group",
-      "label": "Allgemeine Daten zum Werk",
+      "type": "HorizontalLayout",
       "elements": [
         {
-          "type": "HorizontalLayout",
+          "type": "Group",
+          "label": "Allgemeine Daten zum Werk",
           "elements": [
             {
-              "type": "Control",
-              "label": "Titel des Werkes",
-              "scope": "#/properties/title"
+              "type": "HorizontalLayout",
+              "elements": [
+                {
+                  "type": "Control",
+                  "label": "Titel des Werkes",
+                  "scope": "#/properties/title"
+                },
+                {
+                  "type": "Control",
+                  "label": "Varianten des Titels",
+                  "scope": "#/properties/titleVariants"
+                }
+              ]
             },
             {
               "type": "Control",
-              "label": "Varianten des Titels",
-              "scope": "#/properties/titleVariants"
+              "scope": "#/properties/description",
+              "label": "Kurzbeschreibung",
+              "options": {
+                "multi": true
+              }
+            },
+            {
+              "type": "Control",
+              "scope": "#/properties/exponatGenres"
+            },
+            {
+              "type": "HorizontalLayout",
+              "elements": [
+                {
+                  "type": "Control",
+                  "scope": "#/properties/url"
+                },
+                {
+                  "type": "Control",
+                  "scope": "#/properties/externalId"
+                }
+              ]
             }
           ]
         },
         {
           "type": "Control",
-          "scope": "#/properties/description",
-          "label": "Kurzbeschreibung",
-          "options": {
-            "multi": true
-          }
-        },
-        {
-          "type": "Control",
-          "scope": "#/properties/exponatGenres"
-        },
-        {
-          "type": "HorizontalLayout",
-          "elements": [
-            {
-              "type": "Control",
-              "scope": "#/properties/url"
-            },
-            {
-              "type": "Control",
-              "scope": "#/properties/externalId"
-            }
-          ]
+          "scope": "#/properties/image"
         }
       ]
     },
@@ -163,6 +172,10 @@
     {
       "type": "Control",
       "scope": "#/properties/exponatsandcorporations"
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/@id"
     }
   ]
 }

@@ -71,7 +71,7 @@
       "elements": [
         {
           "type": "Control",
-          "label": "Ausstellungsorte (Städte und Länder)",
+          "label": "Ausstellungsstätten (Institutionen und Räume)",
           "scope": "#/properties/places",
           "options": {
             "detail": "GENERATED"
@@ -79,7 +79,7 @@
         },
         {
           "type": "Control",
-          "label": "Ausstellungsstätten (Institutionen und Räume)",
+          "label": "Ausstellungsorte (Städte und Länder)",
           "scope": "#/properties/locations",
           "options": {
             "detail": "GENERATED"
@@ -168,7 +168,7 @@
           "label": "Ausgestellte Werke",
           "scope": "#/properties/exponats",
           "options": {
-            "elementLabelProp": "name",
+            "elementLabelProp": "title",
             "detail": "GENERATED"
           }
         },

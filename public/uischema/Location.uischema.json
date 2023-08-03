@@ -1,0 +1,97 @@
+{
+  "type": "VerticalLayout",
+  "elements": [
+    {
+      "type": "Control",
+      "scope": "#/properties/image"
+    },
+    {
+      "type": "Group",
+      "label": "Allgemeines Daten zum Ort",
+      "elements": [
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "scope": "#/properties/title"
+            },
+            {
+              "type": "Control",
+              "scope": "#/properties/titleVariants"
+            }
+          ]
+        },
+        {
+          "type": "Control",
+          "scope": "#/properties/description"
+        }
+      ]
+    },
+    {
+      "type": "Group",
+      "label": "Beziehungen zu anderen Orten",
+      "elements": [
+        {
+          "type": "Control",
+          "label": "Übergeordneter Ort",
+          "scope": "#/properties/parent"
+        },
+        {
+          "type": "Control",
+          "label": "Untergeordnete Orte",
+          "scope": "#/properties/location"
+        }
+      ]
+    },{
+      "type": "Group",
+      "label": "autoritative Normdaten",
+      "elements": [
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "label": "Authorität",
+              "scope": "#/properties/authority"
+            },
+            {
+              "type": "Control",
+              "label": "URI",
+              "scope": "#/properties/idAuthority"
+            },
+            {
+              "type": "Control",
+              "label": "Letztes Normenupdate",
+              "scope": "#/properties/lastNormUpdate"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/exhibitionseries"
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/workplace"
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/place"
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/corporation"
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/@type"
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/@id"
+    }
+  ]
+}

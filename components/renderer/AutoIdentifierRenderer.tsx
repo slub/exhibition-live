@@ -1,6 +1,6 @@
 import {ControlProps, showAsRequired} from '@jsonforms/core'
 import {withJsonFormsControlProps} from '@jsonforms/react'
-import {Edit, EditOff} from '@mui/icons-material'
+import {Edit, EditOff, Visibility, VisibilityOff} from '@mui/icons-material'
 import {FormControl, FormLabel, Grid, Hidden, IconButton} from '@mui/material'
 import merge from 'lodash/merge'
 import React, {useCallback, useEffect, useState} from 'react'
@@ -42,7 +42,7 @@ const handleChange_ = useCallback(
 
 
 return (
-    <Hidden xsUp={true}>
+    <Hidden xsUp={false}>
       <FormControl
           fullWidth={!appliedUiSchemaOptions.trim}
           id={id}
@@ -51,7 +51,7 @@ return (
       >
         <Grid container alignItems='baseline'>
           <Grid item>
-            <IconButton onClick={() => setEditMode(prev => !prev)}>{editMode ? <EditOff/> : <Edit/>}</IconButton>
+            <IconButton onClick={() => setEditMode(prev => !prev)}>{editMode ? <VisibilityOff/> : <Visibility/>}</IconButton>
           </Grid>
           {editMode && <Grid item>
             <FormLabel

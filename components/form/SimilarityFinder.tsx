@@ -91,7 +91,7 @@ const SimilarityFinder: FunctionComponent<Props> = ({
             \`\`\``
             }, {
               role: 'system',
-              content: 'Output the result of mapping the GND data to the schema (minified JSON without newlines). Hint: dates tha map to an integer should be converted to YYYYMMDD, if any of the part is unknown fill it with 0.'
+              content: 'Output the result of mapping the GND data to the schema (minified JSON without newlines). Hint: dates tha map to an integer should be converted to YYYYMMDD, if any of the part is unknown fill it with 0. Omit null values in the resultset.'
             }
           ]
           const generateMappingMessage: ChatCompletionRequestMessage[] = [

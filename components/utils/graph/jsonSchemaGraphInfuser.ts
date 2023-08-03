@@ -108,14 +108,22 @@ const propertyWalker = (baseIRI: string, node: clownface.GraphPointer, subSchema
         val = newNode.values
       }
       if (!val) {
-        if (!Array.isArray(schema.type)) {
+        if (!Array.isArray(schema.type) && newNode.values) {
           switch (schema.type) {
-            case 'object':
-              val = {}
+            case 'number':
+              val = (parseFloat(newNode.values[0]))
+                if(isNaN(val))
+                  val = undefined
               break
-            case 'array':
-              val = []
+            case 'integer':
+              val = (parseInt(newNode.values[0]))
+                if(isNaN(val))
+                  val = undefined
               break
+            case 'boolean':
+              val = newNode.values[0] === 'true'
+              break
+            case 'string':
             default:
               val = newNode.values[0]
           }

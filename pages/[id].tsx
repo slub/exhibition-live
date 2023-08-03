@@ -30,7 +30,7 @@ export default () => {
   return (
       <>
         <Head>
-          <title>Auststellungserfassung</title>
+          <title>Ausstellungserfassung</title>
           <meta name="description" content="a knowledge base about exhibitions"/>
           <meta name="viewport" content="width=device-width, initial-scale=1"/>
           <link rel="icon" href="/favicon.ico"/>

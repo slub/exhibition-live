@@ -4,7 +4,10 @@ export type GNDToOwnModelMap = {
   [gndType: string]: {
     [slubField: string]: {
       path: string
-      type?: 'string' | 'number' | 'boolean' | 'array' | 'object'
+      type?: 'string' | 'number' | 'boolean' | 'array' | 'object',
+      mapping?: {
+        strategy: 'concatenate' | 'first' | 'last'
+      }
     }
   }
 }

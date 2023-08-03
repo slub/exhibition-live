@@ -15,7 +15,7 @@ type Props = {
 }
 const classIRI = sladb.Exhibition.value
 const exampleData = {
-  '@id': slent['Exhibition#s-1'].value,
+  '@id': slent['Exhibition#s-12'].value,
   '@type': classIRI,
   'title': 'Otto Dix Ausstellung'
 }
@@ -25,7 +25,7 @@ export default () => {
   return (
       <>
         <Head>
-          <title>Auststellungserfassung</title>
+          <title>Ausstellungserfassung</title>
           <meta name="description" content="a knowledge base about exhibitions"/>
           <meta name="viewport" content="width=device-width, initial-scale=1"/>
           <link rel="icon" href="/favicon.ico"/>

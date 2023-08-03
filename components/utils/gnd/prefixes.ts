@@ -5,3 +5,4 @@
   text: 'http://jena.apache.org/text#',
   rdfs: 'http://www.w3.org/2000/01/rdf-schema#'
 }
+ export const gndBaseIRI = 'https://d-nb.info/gnd/'

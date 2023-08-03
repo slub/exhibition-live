@@ -19,6 +19,7 @@ export type DebouncedAutocompleteProps = {
   ready?: boolean;
   readOnly?: boolean;
   onDebouncedSearchChange?: (value: string | undefined) => void;
+  condensed?: boolean
 } & Omit<
   AutocompleteProps<any, any, any, any>,
   'renderInput' | 'size' | 'options'
@@ -26,7 +27,7 @@ export type DebouncedAutocompleteProps = {
 
 export const DebouncedAutocomplete: FunctionComponent<
   DebouncedAutocompleteProps
-> = ({ load, title ,minSearchLength = 1, loadOnStart, ready = true, readOnly, onDebouncedSearchChange, ...props }) => {
+> = ({ load, title ,minSearchLength = 1, loadOnStart, ready = true, readOnly, onDebouncedSearchChange, condensed, ...props }) => {
   const [suggestions, setSuggestions] = useState<
     AutocompleteSuggestion[] | undefined
   >(undefined)
@@ -83,9 +84,9 @@ export const DebouncedAutocomplete: FunctionComponent<
           // @ts-ignore
           <TextField
             {...params}
-              label={title}
+              label={ condensed ? undefined : title}
             variant={'standard'}
-            placeholder={props.placeholder}
+            placeholder={condensed ? title : props.placeholder}
             onChange={handleOnChange}
             InputProps={{
               ...params.InputProps,

@@ -21,11 +21,12 @@ interface OwnProps {
   loadOnStart?: boolean
   limit?: number
   onDebouncedSearchChange?: (value: string | undefined) => void;
+  condensed?: boolean
 }
 
 type Props = OwnProps;
 
-const DiscoverAutocompleteInput: FunctionComponent<Props> = ({title = 'etwas', typeName, readonly, defaultSelected, selected, onSelectionChange, typeIRI: classType, loadOnStart, limit, onDebouncedSearchChange}) => {
+const DiscoverAutocompleteInput: FunctionComponent<Props> = ({title = 'etwas', typeName, readonly, defaultSelected, selected, onSelectionChange, typeIRI: classType, loadOnStart, limit, onDebouncedSearchChange, condensed}) => {
   const { crudOptions } = useGlobalCRUDOptions()
   const [ selected__, setSelected__] = useState<AutocompleteSuggestion | null>(selected  || defaultSelected || null)
 
@@ -66,6 +67,8 @@ const DiscoverAutocompleteInput: FunctionComponent<Props> = ({title = 'etwas', t
             // @ts-ignore
             onChange={handleChange}
             onDebouncedSearchChange={onDebouncedSearchChange}
+            condensed={condensed}
+
         />
 }
 

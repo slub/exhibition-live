@@ -11,7 +11,7 @@ import {
 } from '@jsonforms/core'
 import {materialCells, materialRenderers} from '@jsonforms/material-renderers'
 import {JsonForms, JsonFormsInitStateProps} from '@jsonforms/react'
-import {Delete, Edit, EditOff, Refresh, Save} from '@mui/icons-material'
+import {Close,Delete, Edit, EditOff, Refresh, Save} from '@mui/icons-material'
 import {Button, Grid, Hidden, IconButton, Switch} from '@mui/material'
 import {JSONSchema7} from 'json-schema'
 import {JsonLdContext} from 'jsonld-context-parser'
@@ -62,6 +62,7 @@ interface OwnProps {
   readonly?: boolean
   forceEditMode?: boolean
   searchText?: string
+  parentIRI?: string
 }
 
 export type SemanticJsonFormsProps = OwnProps;
@@ -114,6 +115,10 @@ const renderers = [
   }, {
     tester: adbSpecialDateControlTester,
     renderer: AdbSpecialDateRenderer
+  },
+  {
+    tester: materialLinkedObjectControlTester,
+    renderer: MaterialLinkedObjectRenderer
   }
 ]
 
@@ -144,7 +149,8 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> =
        hideToolbar,
        readonly,
        forceEditMode,
-       searchText
+       searchText,
+        parentIRI
      }) => {
       const [jsonldData, setJsonldData] = useState<any>({})
       //const {formData, setFormData} = useFormEditor()
@@ -250,20 +256,30 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> =
       const handleSave = useCallback(async () => {
         await save()
         await load()
+        console.log('will emit')
         emitToSubscribers(subscriptionKeys.GLOBAL_DATA_CHANGE, subscriptions)
         setEditMode(false)
       }, [save, setEditMode, subscriptions])
 
+      const saveAndLoadFromCB = useCallback(
+          async() => {
+            console.log('callback called')
+            await save()
+            await load()
+          },
+          [save, load]
+      )
+
+
       useEffect(() => {
-        if (subscription) return
-        setSubscription(subscribe(subscriptionKeys.GLOBAL_DATA_CHANGE, async () => {
-          await save()
-          await load()
-        }))
+        subscription && unsubscribe(subscriptionKeys.GLOBAL_DATA_CHANGE, subscription)
+        setSubscription(subscribe(subscriptionKeys.GLOBAL_DATA_CHANGE,
+          saveAndLoadFromCB
+        ))
         return () => {
           subscription && unsubscribe(subscriptionKeys.GLOBAL_DATA_CHANGE, subscription)
         }
-      }, [subscription, subscribe, unsubscribe, load, save])
+      }, [subscription, subscribe, unsubscribe, saveAndLoadFromCB])
 
 
       return (<>
@@ -285,7 +301,7 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> =
               }
             </Hidden>
             <Grid container spacing={2}>
-              <Grid item flexGrow={1}>
+              <Grid item xs={12} md={hideSimilarityFinder ? undefined : 8} lg={ hideSimilarityFinder ? undefined : 6} flexGrow={1}>
                 <JsonForms
                     readonly={!editMode}
                     data={data}
@@ -302,11 +318,19 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> =
                   <hr/>
                 </>))}
               </Grid>
-              {!hideSimilarityFinder &&
-                  <Grid item xs={12} md={4}>
-                      <SimilarityFinder search={searchText} data={data} classIRI={typeIRI} jsonSchema={schema}
-                                        onEntityIRIChange={onEntityChange} onMappedDataAccepted={handleNewData}/>
-                  </Grid>}
+              {!hideSimilarityFinder && <>
+                  <Grid item xs={12} lg={6} md={4}>
+                      <IconButton onClick={() => setHideSimilarityFinder(true)} sx={{position: 'absolute'}}><Close /></IconButton>
+                      <SimilarityFinder
+                          search={searchText}
+                          data={data}
+                          classIRI={typeIRI}
+                          jsonSchema={schema}
+                          onEntityIRIChange={onEntityChange}
+                          onMappedDataAccepted={handleNewData}/>
+                  </Grid>
+              </>
+              }
             </Grid>
           </>
       )

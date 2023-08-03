@@ -1,3 +1,5 @@
+import {gndBaseIRI} from '../gnd/prefixes'
+
 /**
  * {
  *                     url: "http://lobid.org/gnd/search",
@@ -12,23 +14,24 @@
  * @param typeName
  * @param limit
  */
-const lobidURL = 'https://lobid.org/gnd/search'
+const lobidSearchURL = 'https://lobid.org/gnd/search'
+const lobidURL = 'https://lobid.org/gnd/'
 
 const LobidTypemap: Record<string, string> ={
   'Organization': 'CorporateBody',
   'Person': 'DifferentiatedPerson',
   'Corporation': 'CorporateBody',
   'Exhibition': 'ConferenceOrEvent',
-  'Location': 'CorporateBody',
-  'Place': 'TerritorialCorporateBodyOrAdministrativeUnit',
+  'Place': 'CorporateBody',
+  'Location': 'TerritorialCorporateBodyOrAdministrativeUnit',
   'Tag': 'SubjectHeading',
   'ExhibitionExponat': 'Work',
 }
 
 const mapTypeName = (typeName: string) => LobidTypemap[typeName] || typeName
-
-const findEntityWithinLobid = async (searchString: string, typeName: string, limit?: number) => {
-  const res = await fetch(lobidURL + '?' +( new URLSearchParams(
+const gndIRIToID = (iri: string) => iri.substring(gndBaseIRI.length)
+export const findEntityWithinLobid = async (searchString: string, typeName: string, limit?: number) => {
+  const res = await fetch(lobidSearchURL + '?' +( new URLSearchParams(
       {
       q: searchString,
       filter: `type:${mapTypeName(typeName)}`,
@@ -39,5 +42,11 @@ const findEntityWithinLobid = async (searchString: string, typeName: string, lim
   return await  res.json()
 }
 
+export const findEntityWithinLobidByID = async (id: string) => {
+  const res = await fetch(`${lobidURL}${id}.json` )
+  return await  res.json()
+}
 
-export default findEntityWithinLobid
+export const findEntityWithinLobidByIRI = async (iri: string) => {
+  return await findEntityWithinLobidByID(gndIRIToID(iri))
+}

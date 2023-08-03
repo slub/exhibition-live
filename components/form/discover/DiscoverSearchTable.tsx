@@ -76,6 +76,7 @@ const DiscoverSearchTable: FunctionComponent<Props> = ({
     }
 
   </List> : <ClassicEntityCard id={selectedId} data={selectedEntry} onBack={() => handleSelect(undefined)}
+                               onSelectItem={handleSelect}
                                onAcceptItem={onAcceptItem}/>)
 }
 

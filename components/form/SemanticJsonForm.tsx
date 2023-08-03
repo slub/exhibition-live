@@ -34,7 +34,7 @@ import TypeOfRenderer from '../renderer/TypeOfRenderer'
 import {useJsonldParser} from '../state/useJsonldParser'
 import {useSettings} from '../state/useLocalSettings'
 import {CRUDOptions, SparqlBuildOptions, useSPARQL_CRUD} from '../state/useSPARQL_CRUD'
-import {emitToSubscribers, subscriptionKeys, useSubscriptions} from '../state/useSubscriptions'
+import { subscriptionKeys, useSubscriptions} from '../state/useSubscriptions'
 import SimilarityFinder from './SimilarityFinder'
 
 export type CRUDOpsType = {
@@ -256,8 +256,8 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> =
       const handleSave = useCallback(async () => {
         await save()
         await load()
-        console.log('will emit')
-        emitToSubscribers(subscriptionKeys.GLOBAL_DATA_CHANGE, subscriptions)
+        console.log('will not emit')
+       // emitToSubscribers(subscriptionKeys.GLOBAL_DATA_CHANGE, subscriptions)
         setEditMode(false)
       }, [save, setEditMode, subscriptions])
 

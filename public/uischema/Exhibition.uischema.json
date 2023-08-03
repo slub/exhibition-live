@@ -55,6 +55,11 @@
         },
         {
           "type": "Control",
+          "label": "Ausstellungsserie",
+          "scope": "#/properties/exhibitionSeries"
+        },
+        {
+          "type": "Control",
           "label": "Schlagwörter",
           "scope": "#/properties/tags"
         },
@@ -232,6 +237,14 @@
           }
         }
       ]
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/@type"
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/@id"
     }
   ]
 }

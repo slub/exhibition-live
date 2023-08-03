@@ -1,10 +1,12 @@
-import {Container, Table, TableBody, TableCell, TableContainer, TableRow} from '@mui/material'
-import React, {FunctionComponent, useEffect, useState} from 'react'
+import {Container, Link, Table, TableBody, TableCell, TableContainer, TableRow} from '@mui/material'
+import React, {FunctionComponent, useCallback, useEffect, useMemo, useState} from 'react'
+import uri from 'refractor/lang/uri'
 
-import {CommonPropertyValues, getCommonPropsFromWikidata} from '../../utils/wikidata'
+import {gndBaseIRI} from '../../utils/gnd/prefixes'
 
 interface OwnProps {
-  allProps?: any[]
+  allProps?: any[],
+  onEntityChange?: (uri: string) => void
 }
 
 type Props = OwnProps;
@@ -14,10 +16,20 @@ const camelCaseToTitleCase = (str: string) => {
       .replace(/^./, function(str){ return str.toUpperCase() })
 }
 
-const LobidAllPropTable: FunctionComponent<Props> = ({allProps}) => {
+const LabledLink = ({uri, label, onClick} : {uri: string, label?: string, onClick?: () => void }) => {
+  const urlSuffix = useMemo(() => uri.substring( ( (uri.includes('#') ? uri.lastIndexOf('#')  : uri.lastIndexOf('/')) + 1 )?? 0, uri.length ), [uri])
+  return uri.startsWith(gndBaseIRI) ?  <Link onClick={onClick} component='button' >{label || urlSuffix}</Link> : <Link target='_blank' href={uri}>{label || urlSuffix}</Link>
+}
+const LobidAllPropTable: FunctionComponent<Props> = ({allProps, onEntityChange}) => {
 
-  return (
-      <TableContainer component={Container}>
+  const handleClickEntry = useCallback(
+      ({id}: {id: string}) => {
+        onEntityChange && onEntityChange(id)
+      },
+      [onEntityChange, uri],
+  )
+
+  return (<TableContainer component={Container}>
         <Table sx={{ minWidth: '100%' }} aria-label="custom table">
           <TableBody>
             {allProps && (Object.entries(allProps))
@@ -30,14 +42,14 @@ const LobidAllPropTable: FunctionComponent<Props> = ({allProps}) => {
                     {camelCaseToTitleCase(key)}
                   </TableCell>
                   <TableCell  align="right">
-                    {Array.isArray(value) && value.map(v => {
+                    {Array.isArray(value) && value.map((v, index) => {
                       if(typeof v === 'string' ) {
                         return <span key={v}>{v}, </span>
                       }
                       if(typeof v.id === 'string') {
-                        return <span key={v.id}><a href={v.id} target='_blank' referrerPolicy='no-referrer' rel="noreferrer" >{v.label}</a>, </span>
+                        return <span key={v.id}><LabledLink uri={v.id} label={v.label} onClick={() => handleClickEntry(v)} />{index < value.length -1 ? ',' : ''} </span>
                       }
-                    }) || typeof value === 'string' && value}
+                    }) || (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean' && value)}
                   </TableCell>
                 </TableRow>
             ))}

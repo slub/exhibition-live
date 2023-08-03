@@ -17,17 +17,26 @@ type Props = {
   id: string,
   onBack?: () => void,
   onAcceptItem?: (id: string | undefined) => void
+  onSelectItem?: (id: string | undefined) => void
 }
 
 const ClassicEntityCard: FunctionComponent<Props> = ({
-  data, id, onBack, onAcceptItem
+  data, id, onBack, onSelectItem, onAcceptItem
 }) => {
-  const [expanded, setExpanded] = useState(false)
+  const [expanded, setExpanded] = useState(true)
   const _label = data.label || data.title || data.name || id
+
   const handleExpandClick = useCallback(
       () => {
         setExpanded(expanded => !expanded)
       }, [setExpanded])
+
+  const handleEntityChange = useCallback(
+      (uri: string) => {
+        onSelectItem && onSelectItem(uri)
+      },
+      [onAcceptItem])
+
   return (<>
     {onBack && <IconButton onClick={onBack}><ArrowBack /></IconButton>}
         <Card >
@@ -50,7 +59,7 @@ const ClassicEntityCard: FunctionComponent<Props> = ({
             <Button size="small" onClick={handleExpandClick}>Details zeigen</Button>
           </CardActions>
         </Card>
-        {expanded &&  <LobidAllPropTable allProps={data.allProps} /> }
+        {expanded &&  <LobidAllPropTable allProps={data.allProps} onEntityChange={handleEntityChange}  /> }
       </>
   )
 }

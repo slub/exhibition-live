@@ -1,6 +1,6 @@
 import React, {FunctionComponent, useCallback, useMemo, useState} from 'react'
 
-import findEntityWithinLobid from '../../utils/lobid/findEntityWithinLobid'
+import { findEntityWithinLobid } from '../../utils/lobid/findEntityWithinLobid'
 import {AutocompleteSuggestion, DebouncedAutocomplete} from '../DebouncedAutoComplete'
 
 interface OwnProps {

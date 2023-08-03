@@ -13,10 +13,16 @@ type Features = {
   enableDebug?: boolean
 }
 
+type OpenAIConfig = {
+  organization?: string
+  apiKey?: string
+}
+
 type Settings = {
   sparqlEndpoints: SparqlEndpoint[]
 
   features: Features
+  openai: OpenAIConfig
 }
 
 type UseLocalSettings = {
@@ -64,12 +70,14 @@ type UseSettings = Settings & {
   activeEndpoint: SparqlEndpoint | undefined;
   setSparqlEndpoints: (endpoints: SparqlEndpoint[]) => void
   setFeatures: (features: Features) => void
+  setOpenAIConfig: (config: OpenAIConfig) => void
 }
 
 export const useSettings: () => UseSettings = () => {
   const [ settings, setSettings ] = useLocalState<Settings>('settings',
       {
         sparqlEndpoints: [],
+        openai: {},
         features: { enableDebug: false, enablePreview: false }})
   const [ activeEndpoint, setActiveEndpoint ] = useState<SparqlEndpoint | undefined>(settings.sparqlEndpoints?.find(e => e.active))
 
@@ -80,6 +88,13 @@ export const useSettings: () => UseSettings = () => {
   const setFeatures = useCallback((features: Features) => {
    setSettings(settings_ => ({...settings_, features }))
   }, [setSettings])
+
+  const setOpenAIConfig = useCallback(
+      (openAiConfig: OpenAIConfig) => {
+        setSettings(settings_ => ({...settings_, openai: openAiConfig}))
+      },
+      [setSettings])
+
 
   useEffect(() => {
     if(!Array.isArray(settings.sparqlEndpoints) || settings.sparqlEndpoints.length === 0) {
@@ -95,6 +110,7 @@ export const useSettings: () => UseSettings = () => {
     ...settings,
     setSparqlEndpoints,
     setFeatures,
-    activeEndpoint
-  }
+    activeEndpoint,
+    setOpenAIConfig
+    }
 }

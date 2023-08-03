@@ -1,7 +1,6 @@
 import {prepareStubbedSchema} from '@graviola/crud-jsonforms'
 import {Add as NewIcon} from '@mui/icons-material'
 import {Button, Container, IconButton, TextField} from '@mui/material'
-import {useQuery} from '@tanstack/react-query'
 import {JSONSchema7} from 'json-schema'
 import React, {useCallback, useState} from 'react'
 import {SplitPane} from 'react-collapse-pane'
@@ -9,17 +8,17 @@ import {v4 as uuidv4} from 'uuid'
 
 import {BASE_IRI} from '../../config'
 import ContentMainPreview from '../../content/ContentMainPreview'
+import DiscoverAutocompleteInput from '../../form/discover/DiscoverAutocompleteInput'
 import {
   defaultJsonldContext,
   defaultPrefix,
   defaultQueryBuilderOptions,
-  sladb,
-  slent
+  sladb
 } from '../../form/formConfigs'
 import SemanticJsonForm from '../../form/SemanticJsonForm'
 import {useUISchemaForType} from '../../form/uischemaForType'
 import {uischemas} from '../../form/uischemas'
-import {useFormEditor, useOxigraph, useRDFDataSources} from '../../state'
+import {useFormEditor, useOxigraph} from '../../state'
 import useExtendedSchema from '../../state/useExtendedSchema'
 import {useGlobalCRUDOptions} from '../../state/useGlobalCRUDOptions'
 import {useSettings} from '../../state/useLocalSettings'
@@ -68,6 +67,7 @@ const MainForm = ({defaultData}: MainFormProps) => {
   const {oxigraph} = useOxigraph()
   const {crudOptions, doLocalQuery} = useGlobalCRUDOptions()
   const {features } = useSettings()
+  const [searchText, setSearchText] = useState<string | undefined>()
 
   const handleNew = useCallback(() => {
     const newURI = `${BASE_IRI}${uuidv4()}`
@@ -75,13 +75,34 @@ const MainForm = ({defaultData}: MainFormProps) => {
       '@id': newURI,
       '@type': classIRI,
     })
-  }, [setData])
+  }, [setData, classIRI])
+  const handleChange = useCallback(
+      (v?: string) => {
+        if(!v) return
+        console.log({v})
+        setData((data: any) => ({
+          ...data,
+          '@id': v,
+          '@type': classIRI,
+        }))
+      }, [setData, classIRI])
+  const handleSearchTextChange = useCallback(
+      (searchText: string | undefined) => {
+        setSearchText(searchText)
+      }, [setSearchText])
   const loadedSchema = useExtendedSchema({typeName, classIRI})
   const uischemaExternal = useUISchemaForType(classIRI)
   return (
       <>
         <Container>
-          <TextField label={'ID'} value={data['@id']} onChange={e => setData({...data, '@id': e.target.value})} fullWidth/>
+          <DiscoverAutocompleteInput
+              typeIRI={classIRI}
+              condensed
+              title={typeName || ''}
+              typeName={typeName }
+              onDebouncedSearchChange={handleSearchTextChange}
+              onSelectionChange={selection => handleChange(selection?.value)}/>
+          {features?.enableDebug && <TextField label={'ID'} value={data['@id']} onChange={e => handleChange(e.target.value)} fullWidth/>}
         </Container>
           <WithPreviewForm data={data} classIRI={classIRI}>
             <>
@@ -93,6 +114,7 @@ const MainForm = ({defaultData}: MainFormProps) => {
                     data={data}
                     entityIRI={data['@id']}
                     setData={_data => setData(_data)}
+                    searchText={searchText}
                     shouldLoadInitially
                     typeIRI={classIRI}
                     crudOptions={crudOptions}

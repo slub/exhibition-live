@@ -7,6 +7,7 @@ import React, {FunctionComponent, useCallback, useState} from 'react'
 import {useLocalSettings} from '../../state/useLocalSettings'
 import EndpointChooser from './EndpointChooser'
 import FeatureForm from './FeatureForm'
+import OpenAISettingsForm from './OpenAISettingsForm'
 
 interface OwnProps {}
 
@@ -51,6 +52,7 @@ const SettingsModal: FunctionComponent<Props> = (props) => {
         <DialogContent>
           <EndpointChooser />
           <FeatureForm />
+          <OpenAISettingsForm />
         </DialogContent>
         <DialogActions>
           {<Button autoFocus onClick={handleClose}>

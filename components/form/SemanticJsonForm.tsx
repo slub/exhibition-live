@@ -223,7 +223,7 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> =
       const handleFormChange = useCallback(
           (state: Pick<JsonFormsCore, 'data' | 'errors'>) => {
             setData((oldState: any) => {
-              if (oldState.name !== state.data.name) {
+              if (['name', 'title'].some(key => oldState[key] !== state.data[key])) {
                 setHideSimilarityFinder(false)
               }
               return state.data
@@ -240,7 +240,11 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> =
       const handleNewData = useCallback(
           (newData: any) => {
             if (!newData) return
-            setData(newData)
+            setData((data: any) => ({
+              '@id': data['@id'],
+              '@type': data['@type'],
+              ...newData
+            }))
           }, [setData])
 
       useEffect(() => {
@@ -327,6 +331,7 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> =
                           classIRI={typeIRI}
                           jsonSchema={schema}
                           onEntityIRIChange={onEntityChange}
+                          searchOnDataPath={'title'}
                           onMappedDataAccepted={handleNewData}/>
                   </Grid>
               </>

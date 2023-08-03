@@ -71,10 +71,11 @@ const MainForm = ({defaultData}: MainFormProps) => {
 
   const handleNew = useCallback(() => {
     const newURI = `${BASE_IRI}${uuidv4()}`
-    setData({
+    const newData = {
       '@id': newURI,
-      '@type': classIRI,
-    })
+      '@type': classIRI
+    }
+    setData(newData)
   }, [setData, classIRI])
   const handleChange = useCallback(
       (v?: string) => {

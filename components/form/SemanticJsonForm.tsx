@@ -34,7 +34,6 @@ import TypeOfRenderer from '../renderer/TypeOfRenderer'
 import {useJsonldParser} from '../state/useJsonldParser'
 import {useSettings} from '../state/useLocalSettings'
 import {CRUDOptions, SparqlBuildOptions, useSPARQL_CRUD} from '../state/useSPARQL_CRUD'
-import { subscriptionKeys, useSubscriptions} from '../state/useSubscriptions'
 import SimilarityFinder from './SimilarityFinder'
 
 export type CRUDOpsType = {
@@ -160,8 +159,6 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> =
       const [managedEditMode, setEditMode] = useState(false)
       const editMode = useMemo(() => forceEditMode || managedEditMode, [managedEditMode, forceEditMode])
       const [hideSimilarityFinder, setHideSimilarityFinder] = useState(true)
-      const {subscribe, unsubscribe, subscriptions} = useSubscriptions()
-      const [subscription, setSubscription] = useState<string | undefined>()
       const {features} = useSettings()
       const typeName = useMemo(() => typeIRI.substring(BASE_IRI.length, typeIRI.length), [typeIRI])
 
@@ -176,12 +173,8 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> =
             defaultPrefix
           })
 
-      useEffect(() => {
-        // onEntityChange && onEntityChange(entityIRI)
-      }, [entityIRI, setData])
 
       const ownIRI = useMemo(() => entityIRI || jsonldData['@id'], [entityIRI, jsonldData])
-
 
       const {
         exists,
@@ -248,42 +241,26 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> =
           }, [setData])
 
       useEffect(() => {
-        parseJSONLD(data)
+        parseJSONLD(data).then(() => {})
       }, [data, parseJSONLD])
 
       useEffect(() => {
         if (onInit) {
-          onInit({load, save, remove})
+          onInit({load: async () => {await load()}, save, remove})
         }
       }, [onInit, load, save, remove])
 
       const handleSave = useCallback(async () => {
         await save()
         await load()
-        console.log('will not emit')
-       // emitToSubscribers(subscriptionKeys.GLOBAL_DATA_CHANGE, subscriptions)
-        setEditMode(false)
-      }, [save, setEditMode, subscriptions])
-
-      const saveAndLoadFromCB = useCallback(
-          async() => {
-            console.log('callback called')
-            await save()
-            await load()
-          },
-          [save, load]
-      )
-
-
-      useEffect(() => {
-        subscription && unsubscribe(subscriptionKeys.GLOBAL_DATA_CHANGE, subscription)
-        setSubscription(subscribe(subscriptionKeys.GLOBAL_DATA_CHANGE,
-          saveAndLoadFromCB
-        ))
-        return () => {
-          subscription && unsubscribe(subscriptionKeys.GLOBAL_DATA_CHANGE, subscription)
+        if(!entityIRI) {
+          console.log('no entityIRI')
+          return
         }
-      }, [subscription, subscribe, unsubscribe, saveAndLoadFromCB])
+        console.log('will emit')
+        //emitToSubscribers(entityIRI, subscriptions)
+        //setEditMode(false)
+      }, [entityIRI, save, setEditMode])
 
 
       return (<>
@@ -293,7 +270,7 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> =
               {editMode && <>
                   <Button onClick={handleSave} startIcon={<Save/>}>speichern</Button>
                   <Button onClick={remove} startIcon={<Delete/>}>entfernen</Button>
-                  <Button onClick={load} startIcon={<Refresh/>}>neu laden</Button>
+                  <Button onClick={() => load()} startIcon={<Refresh/>}>neu laden</Button>
               </>}
               {features?.enableDebug && <>
                   <Switch checked={jsonViewerEnabled} onChange={e => setJsonViewerEnabled(Boolean(e.target.checked))}

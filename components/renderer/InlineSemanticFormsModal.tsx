@@ -73,6 +73,7 @@ export const InlineSemanticFormsModal = (props: ControlProps & OwnProps) => {
         if (!save) return
         await save()
         //emitToSubscribers(subscriptionKeys.GLOBAL_DATA_CHANGE, subscriptions)
+        askClose && askClose()
       },
       [save])
   const handleRemove = useCallback(

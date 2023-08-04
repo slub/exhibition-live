@@ -40,6 +40,9 @@ import React, { ComponentType, Dispatch, Fragment, ReducerAction, useCallback,us
 import InlineSemanticFormsRenderer from './InlineSemanticFormsRenderer'
 import InlineSemanticFormsRendererModal from './InlineSemanticFormsRendererModal'
 import find from "lodash/find";
+import {useSPARQL_CRUD} from "../state/useSPARQL_CRUD";
+import {defaultPrefix, defaultQueryBuilderOptions} from "../form/formConfigs";
+import {useGlobalCRUDOptions} from "../state/useGlobalCRUDOptions";
 
 const iconStyle: any = { float: 'right' }
 
@@ -65,6 +68,8 @@ interface StatePropsOfExpandPanel extends OwnPropsOfExpandPanel {
   childLabel: string;
   childPath: string;
   avatar: string;
+  entityIRI: string;
+  typeIRI: string;
   enableMoveUp: boolean;
   enableMoveDown: boolean;
 }
@@ -112,7 +117,9 @@ const ExpandPanelRendererComponent = (props: ExpandPanelProps) => {
     cells,
     config,
     readonly,
-    avatar
+    avatar,
+      entityIRI,
+      typeIRI
   } = props
 
   const foundUISchema = useMemo(
@@ -321,13 +328,38 @@ export const withContextToExpandPanelProps = (
   const dispatchProps = ctxDispatchToExpandPanelProps(ctx.dispatch)
   const { childLabelProp, schema, path, index, uischemas } = props
   const childPath = composePaths(path, `${index}`)
-  const childData = Resolve.data(ctx.core.data, childPath)
+  const [jsonldData, setJsonldData] = useState<any>()
+  const childData =  Resolve.data(ctx.core.data, childPath)
   const childLabel = childLabelProp
-    ? get(childData, childLabelProp, '')
+    ? (get(childData, childLabelProp, '') || get(jsonldData, childLabelProp, ''))
       // @ts-ignore
-    : get(childData, getFirstPrimitivePropExceptJsonLD(schema), '')
-  const avatar = get(childData, 'image') || get(childData, 'logo')
+    : (get(childData, getFirstPrimitivePropExceptJsonLD(schema), '') || get(jsonldData, getFirstPrimitivePropExceptJsonLD(schema), ''))
+  const avatar = get(childData, 'image') || get(childData, 'logo') || get(jsonldData, 'image') || get(jsonldData, 'logo')
+  const entityIRI = get(childData, '@id') || get(jsonldData, '@id')
+  const typeIRI = get(childData, '@type') || get(jsonldData, '@type')
+  console.log({jsonldData})
 
+
+  const {crudOptions, doLocalQuery} = useGlobalCRUDOptions()
+  const {
+    load,
+    ready
+  } = useSPARQL_CRUD(
+      entityIRI,
+      typeIRI,
+      schema,
+      //@ts-ignore
+      {
+        ...crudOptions,
+        defaultPrefix,
+        setData: setJsonldData,
+        queryBuildOptions: defaultQueryBuilderOptions,
+      })
+  useEffect(() => {
+    setTimeout(() => {
+      load()
+    }, 100)
+  }, [load, entityIRI])
   return (
     <Component
       {...props}
@@ -336,6 +368,8 @@ export const withContextToExpandPanelProps = (
       childPath={childPath}
       uischemas={uischemas}
       avatar={avatar}
+      entityIRI={entityIRI}
+      typeIRI={typeIRI}
     />
   )
 }

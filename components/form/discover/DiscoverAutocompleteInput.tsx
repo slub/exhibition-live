@@ -22,11 +22,12 @@ interface OwnProps {
   limit?: number
   onDebouncedSearchChange?: (value: string | undefined) => void;
   condensed?: boolean
+  onEnterSearch?: (value: string | undefined) => void;
 }
 
 type Props = OwnProps;
 
-const DiscoverAutocompleteInput: FunctionComponent<Props> = ({title = 'etwas', typeName, readonly, defaultSelected, selected, onSelectionChange, typeIRI: classType, loadOnStart, limit, onDebouncedSearchChange, condensed}) => {
+const DiscoverAutocompleteInput: FunctionComponent<Props> = ({title = 'etwas', typeName, readonly, defaultSelected, selected,onEnterSearch, onSelectionChange, typeIRI: classType, loadOnStart, limit, onDebouncedSearchChange, condensed}) => {
   const { crudOptions } = useGlobalCRUDOptions()
   const [ selected__, setSelected__] = useState<AutocompleteSuggestion | null>(selected  || defaultSelected || null)
 
@@ -49,6 +50,14 @@ const DiscoverAutocompleteInput: FunctionComponent<Props> = ({title = 'etwas', t
             : [],
       [classType, crudOptions, limit])
 
+  const [searchString, setSearchString] = useState<string | undefined>()
+  const handleEnter = useCallback(
+      (e: React.KeyboardEvent<HTMLDivElement>) => {
+        if (e.key === 'Enter') {
+          onEnterSearch && onEnterSearch(searchString)
+        }
+      },[onEnterSearch, searchString])
+
 
   return <DebouncedAutocomplete
             title={title}
@@ -68,6 +77,8 @@ const DiscoverAutocompleteInput: FunctionComponent<Props> = ({title = 'etwas', t
             onChange={handleChange}
             onDebouncedSearchChange={onDebouncedSearchChange}
             condensed={condensed}
+            onKeyUp={handleEnter}
+            onSearchValueChange={setSearchString}
 
         />
 }

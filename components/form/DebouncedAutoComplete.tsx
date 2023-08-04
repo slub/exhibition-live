@@ -20,6 +20,7 @@ export type DebouncedAutocompleteProps = {
   readOnly?: boolean;
   onDebouncedSearchChange?: (value: string | undefined) => void;
   condensed?: boolean
+  onSearchValueChange?: (value: string | undefined) => void;
 } & Omit<
   AutocompleteProps<any, any, any, any>,
   'renderInput' | 'size' | 'options'
@@ -27,7 +28,7 @@ export type DebouncedAutocompleteProps = {
 
 export const DebouncedAutocomplete: FunctionComponent<
   DebouncedAutocompleteProps
-> = ({ load, title ,minSearchLength = 1, loadOnStart, ready = true, readOnly, onDebouncedSearchChange, condensed, ...props }) => {
+> = ({ load, title ,minSearchLength = 1, loadOnStart, ready = true, readOnly,onSearchValueChange, onDebouncedSearchChange, condensed, ...props }) => {
   const [suggestions, setSuggestions] = useState<
     AutocompleteSuggestion[] | undefined
   >(undefined)
@@ -53,8 +54,9 @@ export const DebouncedAutocomplete: FunctionComponent<
       (e: any): void => {
         setLoading(true)
         const value = e.currentTarget.value
+        onSearchValueChange && onSearchValueChange(value)
         if (value.length >=  minSearchLength) {
-          debouncedRequest(e.currentTarget.value)
+          debouncedRequest(value)
         }
       },
       [setLoading, debouncedRequest, minSearchLength],

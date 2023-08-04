@@ -9,11 +9,13 @@ import {
 } from '@mui/material'
 import * as React from 'react'
 import {useTranslation} from 'react-i18next'
+import {v4 as uuidv4} from 'uuid'
 
 import ValidationIcon from './ValidationIcon'
 import DiscoverAutocompleteInput from "../form/discover/DiscoverAutocompleteInput";
 import {useMemo} from "react";
 import {JsonSchema7} from "@jsonforms/core";
+import {sladb, slent} from "../form/formConfigs";
 
 export interface ArrayLayoutToolbarProps {
   label: string;
@@ -23,6 +25,13 @@ export interface ArrayLayoutToolbarProps {
   createDefault(): any;
   readonly?: boolean
   typeIRI?: string
+}
+
+export const getDefaultKey = (typeIRI?: string) => {
+  console.log('getDefaultKey', typeIRI)
+  if(!typeIRI) return 'title'
+  if(typeIRI === sladb.ExhibitionWebLink.value) return 'weblink'
+  return 'title'
 }
 export const ArrayLayoutToolbar = React.memo(
   ({
@@ -42,6 +51,16 @@ export const ArrayLayoutToolbar = React.memo(
           '@id': value
         })()
       }, [addItem, path]  )
+    const handleCreateNewFromSearch = React.useCallback(
+      (value?: string) => {
+        if(!value) return
+        addItem(path, {
+          '@id': slent(uuidv4()).value,
+          '@type': typeIRI,
+          [getDefaultKey(typeIRI)]: value
+        })()
+      }, [addItem, path, typeIRI]
+    )
     return (
       <Toolbar disableGutters={true}>
         <Grid container alignItems='center' justifyContent='space-between'>
@@ -59,6 +78,7 @@ export const ArrayLayoutToolbar = React.memo(
                   <DiscoverAutocompleteInput
                       typeIRI={typeIRI}
                       title={label || ''}
+                      onEnterSearch={handleCreateNewFromSearch}
                       onSelectionChange={selection => handleChange_(selection?.value)}/>
                 </Grid>
               <Grid item>

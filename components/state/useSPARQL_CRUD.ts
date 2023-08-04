@@ -157,7 +157,6 @@ export const useSPARQL_CRUD = (entityIRI: string | undefined, typeIRI: string | 
       }, {
         onSuccess: (data) => {
           if (data) {
-            console.log('onSuccess')
             setData(data)
           }
         },

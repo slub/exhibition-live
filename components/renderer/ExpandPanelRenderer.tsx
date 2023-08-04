@@ -337,7 +337,6 @@ export const withContextToExpandPanelProps = (
   const avatar = get(childData, 'image') || get(childData, 'logo') || get(jsonldData, 'image') || get(jsonldData, 'logo')
   const entityIRI = get(childData, '@id') || get(jsonldData, '@id')
   const typeIRI = get(childData, '@type') || get(jsonldData, '@type')
-  console.log({jsonldData})
 
 
   const {crudOptions, doLocalQuery} = useGlobalCRUDOptions()

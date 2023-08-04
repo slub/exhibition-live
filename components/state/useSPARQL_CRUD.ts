@@ -1,5 +1,6 @@
 import {NamespaceBuilder} from '@rdfjs/namespace'
 import {Bindings, Dataset, DatasetCore, Quad, ResultStream} from '@rdfjs/types'
+import {useQuery, useQueryClient} from '@tanstack/react-query'
 import {ASK, CONSTRUCT, DELETE, INSERT} from '@tpluscode/sparql-builder'
 import {JSONSchema7} from 'json-schema'
 import jsonld from 'jsonld'
@@ -8,7 +9,6 @@ import {useCallback, useEffect, useState} from 'react'
 
 import {jsonSchemaGraphInfuser, WalkerOptions} from '../utils/graph/jsonSchemaGraphInfuser'
 import {jsonSchema2construct} from '../utils/sparql'
-import {useQuery, useQueryClient} from '@tanstack/react-query'
 
 export interface SparqlBuildOptions {
   base?: string;

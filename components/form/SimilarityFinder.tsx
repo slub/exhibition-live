@@ -2,11 +2,10 @@
 import {Resolve} from '@jsonforms/core'
 import {
   AndroidOutlined,
-  Book as WikidataIcon,
-  LinkedIn as GNDIcon,
   Storage as KnowledgebaseIcon
 } from '@mui/icons-material'
-import {Grid, Icon, ToggleButton, ToggleButtonGroup, Tooltip} from '@mui/material'
+import {Grid, ToggleButton, ToggleButtonGroup, Tooltip} from '@mui/material'
+import {dcterms} from '@tpluscode/rdf-ns-builders'
 import {JSONSchema7} from 'json-schema'
 import {ChatCompletionRequestMessage, Configuration, OpenAIApi} from 'openai'
 import * as React from 'react'
@@ -16,7 +15,9 @@ import {BASE_IRI} from '../config'
 import {gndFieldsToOwnModelMap} from '../config/lobidMappings'
 import {useSettings} from '../state/useLocalSettings'
 import {mapGNDToModel} from '../utils/gnd/mapGNDToModel'
+import {NodePropertyItem} from '../utils/graph/nodeToPropertyTree'
 import DiscoverSearchTable from './discover/DiscoverSearchTable'
+import K10PlusSearchTable, {findFirstInProps} from './k10plus/K10PlusSearchTable'
 import LobidSearchTable from './lobid/LobidSearchTable'
 
 export const isPrimitive = (type?: string) => type === 'string' || type === 'number' || type === 'integer' ||  type === 'boolean'
@@ -35,7 +36,7 @@ type Props = {
 };
 type State = {};
 
-type KnowledgeSources = 'kb' | 'gnd' | 'wikidata' | 'ai'
+type KnowledgeSources = 'kb' | 'gnd' | 'wikidata' | 'k10plus' | 'ai'
 type SelectedEntity = {
   id: string
   source: KnowledgeSources
@@ -45,7 +46,7 @@ const SimilarityFinder: FunctionComponent<Props> = ({
                                                     }) => {
 
   const {openai} = useSettings()
-  const [selectedKnowledgeSources, setSelectedKnowledgeSources] = useState<KnowledgeSources[]>(['kb', 'gnd', 'wikidata', 'ai'])
+  const [selectedKnowledgeSources, setSelectedKnowledgeSources] = useState<KnowledgeSources[]>(['kb', 'gnd', 'wikidata', 'ai', 'k10plus'])
   const [entitySelected, setEntitySelected] = useState<SelectedEntity | undefined>()
   const searchString = useMemo<string | null>(() => search || (searchOnDataPath && Resolve.data(data, searchOnDataPath)) || null, [data, searchOnDataPath, search])
   const handleKnowledgeSourceChange = useCallback(
@@ -59,6 +60,63 @@ const SimilarityFinder: FunctionComponent<Props> = ({
       },
       [setEntitySelected],
   )
+  const handleMapAbstractAndDescUsingAI = useCallback(
+      async (id: string | undefined, entryData: any) => {
+        if(!openai?.organization || !openai?.apiKey) {
+          console.log('No OpenAI API Key or Organization set')
+        }
+        const configuration =  new Configuration(openai)
+        const openaiInstance = new OpenAIApi(configuration)
+        const entrySchema = {
+          type: 'object',
+          properties: filterForPrimitiveProperties(jsonSchema.properties)
+        }
+        try {
+          const firstMessages: ChatCompletionRequestMessage[] = [
+            {
+              role: 'system',
+              content: 'The task is to map an abstract and description of an entity from a librarian catalogue to a more simple model of a user given JSON Schema. First listen to the next two user prompts, only respond to system commands.'
+            },
+            {
+              role: 'user',
+              content: `The JSONSchema of the object of type \`${typeName}\` is:
+           \`\`\`json
+            ${JSON.stringify(entrySchema)}
+            \`\`\``
+
+            },
+            {
+              role: 'user', content: `The data returned from the library catalog is:
+            \`\`\`json
+            ${JSON.stringify(entryData)}
+            \`\`\``
+            }, {
+              role: 'system',
+              content: `Extract dates, like beginning and end of the ${typeName} from the text according to the schema. Hint: dates tha map to an integer should be converted to YYYYMMDD, if any of the part is unknown fill it with 0. Omit null values in the resultset.`
+            }
+          ]
+          const response = await openaiInstance.createChatCompletion({
+            model: model,
+            messages: firstMessages,
+            max_tokens: 1500
+          })
+          const dataFromGNDRaw = response.data?.choices?.[0]?.message?.content || '{}'
+          console.log({data: response.data, dataFromGNDRaw})
+          const {['@id']: _1, ...dataFromGND} = JSON.parse(dataFromGNDRaw)
+          const inject = {
+            authority: {
+              '@id': GND_IRI
+            },
+            idAuthority: id,
+            lastNormUpdate: new Date().toISOString()
+          }
+          const newData = {...dataFromGND, ...inject}
+          onMappedDataAccepted && onMappedDataAccepted(newData)
+
+        } catch (e) {
+          console.error('could not guess mapping', e)
+        }
+      }, [typeName, onMappedDataAccepted, jsonSchema])
   const handleMapUsingAI = useCallback(
       async (id: string | undefined, entryData: any) => {
         if(!openai?.organization || !openai?.apiKey) {
@@ -163,6 +221,21 @@ const SimilarityFinder: FunctionComponent<Props> = ({
         }
       }, [handleManuallyMapData, handleMapUsingAI, selectedKnowledgeSources])
 
+  const handleAcceptKXP = useCallback(
+      (id: string | undefined, entryData: NodePropertyItem) => {
+        if(selectedKnowledgeSources.includes('ai')) {
+          console.log('handleAcceptKXP', id, entryData)
+          const props = entryData.properties
+          if(!props) return
+          const title = findFirstInProps(props, dcterms.title)
+          const description = findFirstInProps(props, dcterms.description)
+          const abstract = findFirstInProps(props, dcterms.abstract)
+          handleMapAbstractAndDescUsingAI(id, {title, description, abstract})
+        } else {
+          handleManuallyMapData(id, entryData)
+        }
+      }, [handleManuallyMapData, handleMapUsingAI, selectedKnowledgeSources])
+
   const handleEntityChange = useCallback(
       (id: string |  undefined) => {
         onEntityIRIChange && onEntityIRIChange(id)
@@ -186,6 +259,9 @@ const SimilarityFinder: FunctionComponent<Props> = ({
                 <ToggleButton value="wikidata" aria-label="Wikidata">
                   <img alt={'wikidata logo'} width={30} height={24} src={'./Icons/Wikidata-logo-en.svg'} />
                 </ToggleButton>
+                <ToggleButton value="k10plus" aria-label="Wikidata">
+                  <img alt={'k10plus logo'} width={40} height={30} src={'./Icons/k10plus-logo.png'} />
+                </ToggleButton>
                 <ToggleButton value="ai" aria-label="use AI">
                   <AndroidOutlined/>
                 </ToggleButton>
@@ -207,6 +283,12 @@ const SimilarityFinder: FunctionComponent<Props> = ({
               searchString={searchString}
               typeName={typeName}
               onSelect={(id) => handleSelect(id, 'gnd')}/>)}
+        { searchString && ((!entitySelected || entitySelected.source == 'k10plus') && selectedKnowledgeSources.includes('k10plus') &&
+            <K10PlusSearchTable
+                onAcceptItem={handleAcceptKXP}
+                searchString={searchString}
+                typeName={typeName}
+                onSelect={(id) => handleSelect(id, 'k10plus')}/>)}
       </>
   )
 }

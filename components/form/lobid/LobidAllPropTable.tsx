@@ -43,11 +43,12 @@ const LobidAllPropTable: FunctionComponent<Props> = ({allProps, onEntityChange})
                   </TableCell>
                   <TableCell  align="right">
                     {Array.isArray(value) && value.map((v, index) => {
+                      const comma = index < value.length - 1 ? ',' : ''
                       if(typeof v === 'string' ) {
-                        return <span key={v}>{v}, </span>
+                        return <span key={v}>{v}{comma} </span>
                       }
                       if(typeof v.id === 'string') {
-                        return <span key={v.id}><LabledLink uri={v.id} label={v.label} onClick={() => handleClickEntry(v)} />{index < value.length -1 ? ',' : ''} </span>
+                        return <span key={v.id}><LabledLink uri={v.id} label={v.label} onClick={() => handleClickEntry(v)} />{comma} </span>
                       }
                     }) || (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean' && value)}
                   </TableCell>

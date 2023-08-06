@@ -7,13 +7,7 @@ export const findEntityWithinK10Plus = async (searchString: string, typeName: st
   let rawResponse
   const recordSchemaString = recordSchema ? `&recordSchema=${encodeURIComponent(recordSchema)}` : ''
   try {
-     rawResponse = await fetch(`${endpointURL}?version=1.1&query=pica.all%3D${encodeURIComponent(searchString)}&operation=searchRetrieve&maximumRecords=${limit}${recordSchemaString}`,
-         {
-            headers: {
-              'Accept': 'application/xml',
-              'Access-Control-Allow-Origin': '*',
-            },
-         })
+     rawResponse = await fetch(`${endpointURL}?version=1.1&query=pica.all%3D${encodeURIComponent(searchString)}&operation=searchRetrieve&maximumRecords=${limit}${recordSchemaString}`)
   } catch (e) {
     console.error('Error fetching from K10Plus', e)
     return

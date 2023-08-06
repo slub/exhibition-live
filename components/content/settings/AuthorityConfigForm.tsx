@@ -1,12 +1,12 @@
 import {JsonFormsCore, JsonSchema} from '@jsonforms/core'
 import {materialCells, materialRenderers} from '@jsonforms/material-renderers'
 import {JsonForms} from '@jsonforms/react'
+import {Typography} from '@mui/material'
 import {Box} from '@mui/system'
 import {JSONSchema7} from 'json-schema'
 import React, {FunctionComponent, useCallback, useEffect} from 'react'
 
 import {useSettings} from '../../state/useLocalSettings'
-import {Typography} from "@mui/material";
 
 interface OwnProps {
 }

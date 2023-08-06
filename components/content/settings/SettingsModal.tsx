@@ -17,10 +17,10 @@ import useMediaQuery from '@mui/material/useMediaQuery'
 import React, {FunctionComponent, useCallback, useState} from 'react'
 
 import {useLocalSettings} from '../../state/useLocalSettings'
+import AuthorityConfigForm from './AuthorityConfigForm'
 import EndpointChooser from './EndpointChooser'
 import FeatureForm from './FeatureForm'
 import OpenAISettingsForm from './OpenAISettingsForm'
-import AuthorityConfigForm from "./AuthorityConfigForm";
 
 interface OwnProps {
 }

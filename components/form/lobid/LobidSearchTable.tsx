@@ -1,11 +1,11 @@
 import {Avatar, Divider, List, ListItem, ListItemAvatar, ListItemButton, ListItemText} from '@mui/material'
 import React, {Fragment, FunctionComponent, useCallback, useEffect, useMemo, useState} from 'react'
 
+import {useLocalHistory} from '../../state'
 import {findEntityWithinLobid, findEntityWithinLobidByIRI} from '../../utils/lobid/findEntityWithinLobid'
 import ClassicResultListItem from '../result/ClassicResultListItem'
 import ClassicEntityCard from './ClassicEntityCard'
-import LobidAllPropTable from "./LobidAllPropTable";
-import {useLocalHistory} from "../../state";
+import LobidAllPropTable from './LobidAllPropTable'
 
 type Props = {
   searchString: string,

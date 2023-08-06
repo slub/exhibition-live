@@ -18,11 +18,11 @@ import React, {FunctionComponent, useCallback, useEffect, useMemo, useState} fro
 
 import {NodePropertyTree, nodeToPropertyTree} from '../../utils/graph/nodeToPropertyTree'
 import {findEntityWithinK10Plus} from '../../utils/k10plus/findEntityWithinK10Plus'
+import {RecordElement} from '../../utils/k10plus/searchRetrieveResponse-types'
 import ClassicEntityCard from '../lobid/ClassicEntityCard'
 import ClassicResultListItem from '../result/ClassicResultListItem'
 import {fabio, geonames, radatana} from './marc2rdfMappingDeclaration'
 import {kxp, mapDatafieldToQuads} from './marcxml2rdf'
-import {RecordElement} from '../../utils/k10plus/searchRetrieveResponse-types'
 
 type Props = {
   searchString: string,

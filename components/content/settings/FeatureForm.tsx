@@ -6,6 +6,7 @@ import {JSONSchema7} from 'json-schema'
 import React, {FunctionComponent, useCallback} from 'react'
 
 import {useSettings} from '../../state/useLocalSettings'
+import {Typography} from "@mui/material";
 
 interface OwnProps {
 }
@@ -34,6 +35,7 @@ const FeatureForm: FunctionComponent<Props> = (props) => {
       }, [setFeatures])
   // a REACT MUI paper list with checkboxes
   return (<Box>
+        <Typography variant='h6'>Funktionen</Typography>
         <JsonForms
             data={features}
             schema={schema}

@@ -6,6 +6,7 @@ import {JSONSchema7} from 'json-schema'
 import React, {FunctionComponent, useCallback} from 'react'
 
 import {useSettings} from '../../state/useLocalSettings'
+import {Typography} from "@mui/material";
 
 interface OwnProps {
 }
@@ -40,6 +41,7 @@ const EndpointChooser: FunctionComponent<Props> = (props) => {
       }, [setSparqlEndpoints])
   // a REACT MUI paper list with checkboxes
   return (<Box>
+        <Typography variant='h6'>Knowledge Base - SPARQL Endpunkte</Typography>
         <JsonForms
             data={sparqlEndpoints}
             schema={schema}

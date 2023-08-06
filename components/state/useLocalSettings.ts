@@ -18,11 +18,20 @@ type OpenAIConfig = {
   apiKey?: string
 }
 
+type ExternalAuthorityConfig = {
+  kxp?: {
+    endpoint?: string,
+    baseURL?: string,
+    recordSchema?: string
+  }
+}
+
 type Settings = {
   sparqlEndpoints: SparqlEndpoint[]
 
   features: Features
   openai: OpenAIConfig
+  externalAuthority: ExternalAuthorityConfig
 }
 
 type UseLocalSettings = {
@@ -71,6 +80,7 @@ type UseSettings = Settings & {
   setSparqlEndpoints: (endpoints: SparqlEndpoint[]) => void
   setFeatures: (features: Features) => void
   setOpenAIConfig: (config: OpenAIConfig) => void
+  setAuthorityConfig: (config: ExternalAuthorityConfig) => void
 }
 
 export const useSettings: () => UseSettings = () => {
@@ -78,6 +88,11 @@ export const useSettings: () => UseSettings = () => {
       {
         sparqlEndpoints: [],
         openai: {},
+        externalAuthority: {
+          kxp: {
+            endpoint: 'https://sru.bsz-bw.de/swbtest'
+          }
+        },
         features: { enableDebug: false, enablePreview: false }})
   const [ activeEndpoint, setActiveEndpoint ] = useState<SparqlEndpoint | undefined>(settings.sparqlEndpoints?.find(e => e.active))
 
@@ -95,6 +110,10 @@ export const useSettings: () => UseSettings = () => {
       },
       [setSettings])
 
+  const setAuthorityConfig = useCallback(
+      (authorityConfig: ExternalAuthorityConfig) => {
+        setSettings(settings_ => ({...settings_, externalAuthority: authorityConfig}))
+      }, [setSettings])
 
   useEffect(() => {
     if(!Array.isArray(settings.sparqlEndpoints) || settings.sparqlEndpoints.length === 0) {
@@ -111,6 +130,7 @@ export const useSettings: () => UseSettings = () => {
     setSparqlEndpoints,
     setFeatures,
     activeEndpoint,
-    setOpenAIConfig
+    setOpenAIConfig,
+    setAuthorityConfig
     }
 }

@@ -3,10 +3,11 @@ import {XMLParser} from 'fast-xml-parser'
 import {SearchRetrieveResponseTypes} from './searchRetrieveResponse-types'
 
 
-export const findEntityWithinK10Plus = async (searchString: string, typeName: string, limit?: number):Promise<SearchRetrieveResponseTypes> => {
+export const findEntityWithinK10Plus = async (searchString: string, typeName: string, endpointURL: string , limit?: number, recordSchema?: string):Promise<SearchRetrieveResponseTypes> => {
   let rawResponse
+  const recordSchemaString = recordSchema ? `&recordSchema=${encodeURIComponent(recordSchema)}` : ''
   try {
-     rawResponse = await fetch(`http://sru.bsz-bw.de/swbtest?version=1.1&query=pica.all%3D${encodeURIComponent(searchString)}&operation=searchRetrieve&maximumRecords=${limit}&recordSchema=marcxmlk10os`,
+     rawResponse = await fetch(`${endpointURL}?version=1.1&query=pica.all%3D${encodeURIComponent(searchString)}&operation=searchRetrieve&maximumRecords=${limit}${recordSchemaString}`,
          {
             headers: {
               'Accept': 'application/xml',

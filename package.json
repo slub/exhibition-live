@@ -51,6 +51,7 @@
     "@uiw/react-md-editor": "^3.20.2",
     "async-oxigraph": "^0.0.4",
     "dayjs": "^1.11.7",
+    "fast-xml-parser": "^4.2.7",
     "graphql-tag": "^2.12.6",
     "html-react-parser": "^3.0.7",
     "jsonld": "^8.1.0",
@@ -121,13 +122,14 @@
     "json-schema-faker": "^0.5.0-rcv.46",
     "next-remove-imports": "^1.0.8",
     "process": "^0.11.10",
+    "quicktype": "^23.0.64",
     "safe-identifier": "^0.4.2",
     "stream-browserify": "^3.0.0",
     "tbbt-ld": "^1.1.0",
     "ts-jest": "^29.0.5",
     "ts-morph": "^17.0.1",
     "ts-node": "^10.9.1",
-    "typescript": "4.9.4",
+    "typescript": "5.1.6",
     "webpack": "^5.75.0"
   }
 }

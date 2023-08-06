@@ -46,7 +46,7 @@ const SimilarityFinder: FunctionComponent<Props> = ({
                                                     }) => {
 
   const {openai} = useSettings()
-  const [selectedKnowledgeSources, setSelectedKnowledgeSources] = useState<KnowledgeSources[]>(['kb', 'gnd', 'wikidata', 'ai', 'k10plus'])
+  const [selectedKnowledgeSources, setSelectedKnowledgeSources] = useState<KnowledgeSources[]>(['kb','gnd','ai'])
   const [entitySelected, setEntitySelected] = useState<SelectedEntity | undefined>()
   const searchString = useMemo<string | null>(() => search || (searchOnDataPath && Resolve.data(data, searchOnDataPath)) || null, [data, searchOnDataPath, search])
   const handleKnowledgeSourceChange = useCallback(

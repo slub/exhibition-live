@@ -4,12 +4,12 @@ import {
   AndroidOutlined,
   Storage as KnowledgebaseIcon
 } from '@mui/icons-material'
-import {Grid, ToggleButton, ToggleButtonGroup, Tooltip} from '@mui/material'
+import {Chip, Grid, ToggleButton, ToggleButtonGroup, Tooltip} from '@mui/material'
 import {dcterms} from '@tpluscode/rdf-ns-builders'
 import {JSONSchema7} from 'json-schema'
 import {ChatCompletionRequestMessage, Configuration, OpenAIApi} from 'openai'
 import * as React from 'react'
-import {FunctionComponent, useCallback, useMemo,useState} from 'react'
+import {FunctionComponent, useCallback, useMemo, useState} from 'react'
 
 import {BASE_IRI} from '../config'
 import {gndFieldsToOwnModelMap} from '../config/lobidMappings'
@@ -20,11 +20,11 @@ import DiscoverSearchTable from './discover/DiscoverSearchTable'
 import K10PlusSearchTable, {findFirstInProps} from './k10plus/K10PlusSearchTable'
 import LobidSearchTable from './lobid/LobidSearchTable'
 
-export const isPrimitive = (type?: string) => type === 'string' || type === 'number' || type === 'integer' ||  type === 'boolean'
+export const isPrimitive = (type?: string) => type === 'string' || type === 'number' || type === 'integer' || type === 'boolean'
 const model = 'gpt-3.5-turbo'
 // @ts-ignore
-export const filterForPrimitiveProperties = (properties: JSONSchema7['properties']) => Object.fromEntries(Object.entries(properties || {}).filter(([, value]) => typeof value === 'object' && (isPrimitive(value.type) || value.oneOf || (value.type === 'array' &&  typeof value.items === 'object' && isPrimitive(value.items.type)))))
-const GND_IRI =  'http://ontologies.slub-dresden.de/exhibition/entity/Authority#s-1'
+export const filterForPrimitiveProperties = (properties: JSONSchema7['properties']) => Object.fromEntries(Object.entries(properties || {}).filter(([, value]) => typeof value === 'object' && (isPrimitive(value.type) || value.oneOf || (value.type === 'array' && typeof value.items === 'object' && isPrimitive(value.items.type)))))
+const GND_IRI = 'http://ontologies.slub-dresden.de/exhibition/entity/Authority#s-1'
 type Props = {
   data: any,
   classIRI: string
@@ -42,11 +42,17 @@ type SelectedEntity = {
   source: KnowledgeSources
 }
 const SimilarityFinder: FunctionComponent<Props> = ({
-                                                      data, classIRI, onEntityIRIChange, onMappedDataAccepted,searchOnDataPath, search, jsonSchema
+                                                      data,
+                                                      classIRI,
+                                                      onEntityIRIChange,
+                                                      onMappedDataAccepted,
+                                                      searchOnDataPath,
+                                                      search,
+                                                      jsonSchema
                                                     }) => {
 
   const {openai} = useSettings()
-  const [selectedKnowledgeSources, setSelectedKnowledgeSources] = useState<KnowledgeSources[]>(['kb','gnd','ai'])
+  const [selectedKnowledgeSources, setSelectedKnowledgeSources] = useState<KnowledgeSources[]>(['kb', 'gnd', 'ai'])
   const [entitySelected, setEntitySelected] = useState<SelectedEntity | undefined>()
   const searchString = useMemo<string | null>(() => search || (searchOnDataPath && Resolve.data(data, searchOnDataPath)) || null, [data, searchOnDataPath, search])
   const handleKnowledgeSourceChange = useCallback(
@@ -62,10 +68,10 @@ const SimilarityFinder: FunctionComponent<Props> = ({
   )
   const handleMapAbstractAndDescUsingAI = useCallback(
       async (id: string | undefined, entryData: any) => {
-        if(!openai?.organization || !openai?.apiKey) {
+        if (!openai?.organization || !openai?.apiKey) {
           console.log('No OpenAI API Key or Organization set')
         }
-        const configuration =  new Configuration(openai)
+        const configuration = new Configuration(openai)
         const openaiInstance = new OpenAIApi(configuration)
         const entrySchema = {
           type: 'object',
@@ -119,10 +125,10 @@ const SimilarityFinder: FunctionComponent<Props> = ({
       }, [typeName, onMappedDataAccepted, jsonSchema])
   const handleMapUsingAI = useCallback(
       async (id: string | undefined, entryData: any) => {
-        if(!openai?.organization || !openai?.apiKey) {
+        if (!openai?.organization || !openai?.apiKey) {
           console.log('No OpenAI API Key or Organization set')
         }
-        const configuration =  new Configuration(openai)
+        const configuration = new Configuration(openai)
         const openaiInstance = new OpenAIApi(configuration)
         const entrySchema = {
           type: 'object',
@@ -175,20 +181,20 @@ const SimilarityFinder: FunctionComponent<Props> = ({
           }
           const newData = {...dataFromGND, ...inject}
           onMappedDataAccepted && onMappedDataAccepted(newData)
-          const mappingResponse =  await openaiInstance.createChatCompletion({
+          const mappingResponse = await openaiInstance.createChatCompletion({
             model: model,
             messages: [
-                ...firstMessages,
+              ...firstMessages,
               {
                 role: 'assistant',
                 content: dataFromGNDRaw
               },
-                ...generateMappingMessage
+              ...generateMappingMessage
             ],
             max_tokens: 1200
           })
           const mappingDataRaw = mappingResponse.data?.choices?.[0]?.message?.content || '{}'
-          console.log({ mappingDataRaw})
+          console.log({mappingDataRaw})
 
         } catch (e) {
           console.error('could not guess mapping', e)
@@ -197,7 +203,7 @@ const SimilarityFinder: FunctionComponent<Props> = ({
 
   const handleManuallyMapData = useCallback(
       (id: string | undefined, entryData: any) => {
-        if(!id || ! entryData?.allProps) return
+        if (!id || !entryData?.allProps) return
         const dataFromGND = mapGNDToModel(typeName, entryData.allProps, gndFieldsToOwnModelMap)
         console.log(typeName, entryData.allProps, gndFieldsToOwnModelMap)
         const inject = {
@@ -210,11 +216,11 @@ const SimilarityFinder: FunctionComponent<Props> = ({
 
 
       },
-      [ typeName, onMappedDataAccepted])
+      [typeName, onMappedDataAccepted])
 
   const handleAccept = useCallback(
       (id: string | undefined, entryData: any) => {
-        if(selectedKnowledgeSources.includes('ai')) {
+        if (selectedKnowledgeSources.includes('ai')) {
           handleMapUsingAI(id, entryData)
         } else {
           handleManuallyMapData(id, entryData)
@@ -223,10 +229,10 @@ const SimilarityFinder: FunctionComponent<Props> = ({
 
   const handleAcceptKXP = useCallback(
       (id: string | undefined, entryData: NodePropertyItem) => {
-        if(selectedKnowledgeSources.includes('ai')) {
+        if (selectedKnowledgeSources.includes('ai')) {
           console.log('handleAcceptKXP', id, entryData)
           const props = entryData.properties
-          if(!props) return
+          if (!props) return
           const title = findFirstInProps(props, dcterms.title)
           const description = findFirstInProps(props, dcterms.description)
           const abstract = findFirstInProps(props, dcterms.abstract)
@@ -237,53 +243,54 @@ const SimilarityFinder: FunctionComponent<Props> = ({
       }, [handleManuallyMapData, handleMapUsingAI, selectedKnowledgeSources])
 
   const handleEntityChange = useCallback(
-      (id: string |  undefined) => {
+      (id: string | undefined) => {
         onEntityIRIChange && onEntityIRIChange(id)
       }, [onEntityIRIChange])
 
   return (<>
-        <Grid container justifyContent="center">
+        <Grid container alignItems="center" direction={'column'} spacing={2}>
           <Grid item>
-            <Tooltip title={'Suche nach ähnlichen Einträgen in anderen Verzeichnis'}>
-              <ToggleButtonGroup
-                  value={selectedKnowledgeSources}
-                  onChange={handleKnowledgeSourceChange}
-                  aria-label="Suche über verschiedene Wissensquellen"
-              >
-                <ToggleButton value="kb" aria-label="lokale Datenbank">
-                  <KnowledgebaseIcon/>
-                </ToggleButton>
-                <ToggleButton value="gnd" aria-label="GND">
-                  <img alt={'gnd logo'} width={24} height={24} src={'./Icons/gnd-logo.png'} />
-                </ToggleButton>
-                <ToggleButton value="wikidata" aria-label="Wikidata">
-                  <img alt={'wikidata logo'} width={30} height={24} src={'./Icons/Wikidata-logo-en.svg'} />
-                </ToggleButton>
-                <ToggleButton value="k10plus" aria-label="Wikidata">
-                  <img alt={'k10plus logo'} width={40} height={30} src={'./Icons/k10plus-logo.png'} />
-                </ToggleButton>
-                <ToggleButton value="ai" aria-label="use AI">
-                  <AndroidOutlined/>
-                </ToggleButton>
-              </ToggleButtonGroup>
-
-            </Tooltip>
+            <ToggleButtonGroup
+                value={selectedKnowledgeSources}
+                onChange={handleKnowledgeSourceChange}
+                aria-label="Suche über verschiedene Wissensquellen"
+            >
+              <ToggleButton value="kb" aria-label="lokale Datenbank">
+                <KnowledgebaseIcon/>
+              </ToggleButton>
+              <ToggleButton value="gnd" aria-label="GND">
+                <img alt={'gnd logo'} width={24} height={24} src={'./Icons/gnd-logo.png'}/>
+              </ToggleButton>
+              <ToggleButton value="wikidata" aria-label="Wikidata">
+                <img alt={'wikidata logo'} width={30} height={24} src={'./Icons/Wikidata-logo-en.svg'}/>
+              </ToggleButton>
+              <ToggleButton value="k10plus" aria-label="Wikidata">
+                <img alt={'k10plus logo'} width={40} height={30} src={'./Icons/k10plus-logo.png'}/>
+              </ToggleButton>
+              <ToggleButton value="ai" aria-label="use AI">
+                <AndroidOutlined/>
+              </ToggleButton>
+            </ToggleButtonGroup>
+          </Grid>
+          <Grid item>
+          {entitySelected && <Chip label={`${entitySelected.source}:${entitySelected.id}`} onDelete={() => handleSelect(undefined, entitySelected.source)}/>}
+          {searchString && <Chip label={`Suchwort:${searchString}`} />}
           </Grid>
         </Grid>
-        { searchString && ((!entitySelected || entitySelected.source == 'kb') && selectedKnowledgeSources.includes('kb') &&
+        {searchString && ((!entitySelected || entitySelected.source == 'kb') && selectedKnowledgeSources.includes('kb') &&
             <DiscoverSearchTable
                 searchString={searchString}
                 typeName={typeName}
                 classIRI={classIRI}
                 onAcceptItem={handleEntityChange}
                 onSelect={(id) => handleSelect(id, 'kb')}/>)}
-        { searchString && ((!entitySelected || entitySelected.source == 'gnd') && selectedKnowledgeSources.includes('gnd') &&
-          <LobidSearchTable
-              onAcceptItem={handleAccept}
-              searchString={searchString}
-              typeName={typeName}
-              onSelect={(id) => handleSelect(id, 'gnd')}/>)}
-        { searchString && ((!entitySelected || entitySelected.source == 'k10plus') && selectedKnowledgeSources.includes('k10plus') &&
+        {searchString && ((!entitySelected || entitySelected.source == 'gnd') && selectedKnowledgeSources.includes('gnd') &&
+            <LobidSearchTable
+                onAcceptItem={handleAccept}
+                searchString={searchString}
+                typeName={typeName}
+                onSelect={(id) => handleSelect(id, 'gnd')}/>)}
+        {searchString && ((!entitySelected || entitySelected.source == 'k10plus') && selectedKnowledgeSources.includes('k10plus') &&
             <K10PlusSearchTable
                 onAcceptItem={handleAcceptKXP}
                 searchString={searchString}

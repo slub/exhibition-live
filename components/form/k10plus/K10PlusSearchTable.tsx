@@ -16,6 +16,8 @@ import {dcterms, foaf, geo, rdfs, skos} from '@tpluscode/rdf-ns-builders'
 import clownface from 'clownface'
 import React, {FunctionComponent, useCallback, useEffect, useMemo, useState} from 'react'
 
+import {useLocalHistory} from '../../state'
+import {useSettings} from '../../state/useLocalSettings'
 import {NodePropertyTree, nodeToPropertyTree} from '../../utils/graph/nodeToPropertyTree'
 import {findEntityWithinK10Plus} from '../../utils/k10plus/findEntityWithinK10Plus'
 import {RecordElement} from '../../utils/k10plus/searchRetrieveResponse-types'
@@ -70,31 +72,22 @@ const K10PlusSearchTable: FunctionComponent<Props> = ({
                                                       }
 ) => {
   const [resultTable, setResultTable] = useState<KXPEntry[] | undefined>()
-  const [history, setHistory] = useState<(string | undefined)[]>([undefined])
+  const {history, pushHistory, popHistory} = useLocalHistory()
   const [selectedId, setSelectedId] = useState<string | undefined>()
   const [selectedEntry, setSelectedEntry] = useState<KXPEntry | undefined>()
-
-  const pushHistory = useCallback((historyElement?: string) => {
-        setHistory(h => [...h, historyElement])
-        return historyElement
-      },
-      [setHistory])
-  const popHistory = useCallback(() => {
-        const input = history[history.length - 1]
-        setHistory(h => h.slice(0, h.length - 1))
-        return input
-      },
-      [setHistory, history])
-
+  const {externalAuthority} = useSettings()
+  const k10PlusEndpointURL = externalAuthority.kxp?.endpoint || 'https://sru.bsz-bw.de/swbtest',
+      k10PlusBaseURL = externalAuthority.kxp?.baseURL || 'https://kxp.k10plus.de',
+      k10PlusDetailURL = `${k10PlusBaseURL}/DB=2.1/PPNSET?PPN=`
 
   const fetchData = useCallback(
       async () => {
         if (!searchString || searchString.length < 1) return
-        const mappedFields = (await findEntityWithinK10Plus(searchString, typeName, 10)).searchRetrieveResponse.records?.record?.map(
+        const mappedFields = (await findEntityWithinK10Plus(searchString, typeName, k10PlusEndpointURL, 10, externalAuthority.kxp?.recordSchema)).searchRetrieveResponse.records?.record?.map(
             (record) => marcRecord2RDF(record))
         setResultTable(mappedFields)
       },
-      [searchString, typeName, setResultTable],
+      [searchString, typeName, k10PlusEndpointURL, externalAuthority.kxp?.recordSchema, setResultTable],
   )
 
   const handleSelect = useCallback(
@@ -102,7 +95,11 @@ const K10PlusSearchTable: FunctionComponent<Props> = ({
         setSelectedId(id)
         push && pushHistory(id)
         const cachedEntry = id && resultTable?.find((entry) => String(entry.id) === id)
-        if (!cachedEntry) throw new Error('No entry found')
+        if (!cachedEntry) {
+          setSelectedEntry(undefined)
+          onSelect && onSelect(undefined)
+          return
+        }
         setSelectedEntry(cachedEntry)
         onSelect && onSelect(id)
       }, [setSelectedId, resultTable, setSelectedEntry, onSelect])
@@ -126,18 +123,21 @@ const K10PlusSearchTable: FunctionComponent<Props> = ({
         }}
         onBack={() => handleSelect(popHistory(), false)}
         onAcceptItem={handleAccept}
-        id={selectedId}/>
-    <KXPAllPropTable entry={selectedEntry}/>
+        id={selectedId}
+        detailView={
+          <KXPAllPropTable entry={selectedEntry}/>
+        }
+    />
   </>}
-  <List>
-    {resultTable?.map((entry, idx) => <ClassicResultListItem
-        key={entry.id}
-        id={String(entry.id)}
-        onSelected={handleSelect}
-        label={entry.properties[dcterms.title.value]?.[0]?.value || String(entry.id)}
-        secondary={findFirstInProps(entry.properties, fabio.hasSubtitle, dcterms.description, dcterms.abstract)}
-        altAvatar={String(idx + 1)}/>)}
-  </List>
+    <List>
+      {resultTable?.map((entry, idx) => <ClassicResultListItem
+          key={entry.id}
+          id={String(entry.id)}
+          onSelected={handleSelect}
+          label={entry.properties[dcterms.title.value]?.[0]?.value || String(entry.id)}
+          secondary={findFirstInProps(entry.properties, fabio.hasSubtitle, dcterms.description, dcterms.abstract)}
+          altAvatar={String(idx + 1)}/>)}
+    </List>
   </>
 
 }

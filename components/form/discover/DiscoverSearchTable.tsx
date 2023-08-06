@@ -1,11 +1,11 @@
 import {List} from '@mui/material'
-import {FunctionComponent, useCallback, useEffect, useState} from 'react'
+import React, {FunctionComponent, useCallback, useEffect, useState} from 'react'
 
 import {useGlobalCRUDOptions} from '../../state/useGlobalCRUDOptions'
-import {useSettings} from '../../state/useLocalSettings'
 import findEntityByClass from '../../utils/discover/findEntityByClass'
 import {sladb} from '../formConfigs'
 import ClassicEntityCard from '../lobid/ClassicEntityCard'
+import LobidAllPropTable from '../lobid/LobidAllPropTable'
 import ClassicResultListItem from '../result/ClassicResultListItem'
 
 type Props = {
@@ -27,14 +27,14 @@ const DiscoverSearchTable: FunctionComponent<Props> = ({
   const [resultTable, setResultTable] = useState<any | undefined>()
   const [selectedId, setSelectedId] = useState<string | undefined>()
   const [selectedEntry, setSelectedEntry] = useState<any | undefined>()
-  const { crudOptions } = useGlobalCRUDOptions()
+  const {crudOptions} = useGlobalCRUDOptions()
 
   const fetchData = useCallback(
       async () => {
         if (!searchString || searchString.length < 1 || !crudOptions) return
         setResultTable(
             (await findEntityByClass(searchString, classIRI, crudOptions.selectFetch))
-                .map(({name = '', value}: {name: string, value: any}) => {
+                .map(({name = '', value}: { name: string, value: any }) => {
                   return {
                     label: name,
                     id: value as string
@@ -58,26 +58,29 @@ const DiscoverSearchTable: FunctionComponent<Props> = ({
   }, [searchString, typeName, fetchData])
 
 
-  return (!selectedId ? <List>
-    {
-      // @ts-ignore
-      resultTable?.map(({id, label, avatar, secondary}, idx) => {
-        return (
-            <ClassicResultListItem
-                key={id}
-                id={id}
-                onSelected={handleSelect}
-                label={label}
-                secondary={secondary}
-                avatar={avatar}
-                altAvatar={idx + 1}/>
-        )
-      })
-    }
-
-  </List> : <ClassicEntityCard id={selectedId} data={selectedEntry} onBack={() => handleSelect(undefined)}
-                               onSelectItem={handleSelect}
-                               onAcceptItem={onAcceptItem}/>)
+  return <>
+    {selectedEntry && <ClassicEntityCard
+        id={selectedId}
+        data={selectedEntry} onBack={() => handleSelect(undefined)}
+        onSelectItem={handleSelect}
+        onAcceptItem={onAcceptItem}
+        detailView={<LobidAllPropTable allProps={selectedEntry.allProps} onEntityChange={handleSelect}/>}/>}
+    <List>
+      {
+        // @ts-ignore
+        resultTable?.map(({id, label, avatar, secondary}, idx) => {
+          return (
+              <ClassicResultListItem
+                  key={id}
+                  id={id}
+                  onSelected={handleSelect}
+                  label={label}
+                  secondary={secondary}
+                  avatar={avatar}
+                  altAvatar={idx + 1}/>
+          )})}
+    </List>
+  </>
 }
 
 

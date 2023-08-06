@@ -1,9 +1,11 @@
 import {Avatar, Divider, List, ListItem, ListItemAvatar, ListItemButton, ListItemText} from '@mui/material'
-import {Fragment, FunctionComponent, useCallback, useEffect, useMemo, useState} from 'react'
+import React, {Fragment, FunctionComponent, useCallback, useEffect, useMemo, useState} from 'react'
 
 import {findEntityWithinLobid, findEntityWithinLobidByIRI} from '../../utils/lobid/findEntityWithinLobid'
 import ClassicResultListItem from '../result/ClassicResultListItem'
 import ClassicEntityCard from './ClassicEntityCard'
+import LobidAllPropTable from "./LobidAllPropTable";
+import {useLocalHistory} from "../../state";
 
 type Props = {
   searchString: string,
@@ -49,21 +51,9 @@ const LobidSearchTable: FunctionComponent<Props> = ({
                                                     }
 ) => {
   const [resultTable, setResultTable] = useState<LobIDEntry[] | undefined>()
-  const [history, setHistory] = useState<(string | undefined)[]>([undefined])
+  const {history, pushHistory, popHistory} = useLocalHistory()
   const [selectedId, setSelectedId] = useState<string | undefined>()
   const [selectedEntry, setSelectedEntry] = useState<LobIDEntry | undefined>()
-
-  const pushHistory =  useCallback((historyElement?: string) => {
-        setHistory(h => [...h, historyElement])
-    return historyElement
-      },
-      [setHistory])
-  const popHistory = useCallback(() => {
-        const input = history[history.length - 1]
-        setHistory(h => h.slice(0, h.length - 1))
-        return input
-      },
-      [setHistory, history])
 
 
 
@@ -91,6 +81,8 @@ const LobidSearchTable: FunctionComponent<Props> = ({
           onSelect && onSelect(id)
         } catch (e) {
           console.error('Error while fetching data from lobid', e)
+          setSelectedEntry(undefined)
+          onSelect && onSelect(undefined)
         }
       }, [setSelectedId, resultTable, setSelectedEntry, onSelect])
 
@@ -104,7 +96,13 @@ const LobidSearchTable: FunctionComponent<Props> = ({
         onAcceptItem && onAcceptItem(id, selectedEntry)
       }, [onAcceptItem, selectedEntry, pushHistory])
 
-  return (!selectedId ? <List>
+  return <>{selectedId && <ClassicEntityCard
+      id={selectedId}
+      data={selectedEntry} onBack={() => handleSelect(undefined)}
+      onSelectItem={handleSelect}
+      onAcceptItem={(id) => onAcceptItem(id, selectedEntry)}
+      detailView={<LobidAllPropTable allProps={selectedEntry.allProps} onEntityChange={handleSelect}/>}/>}
+    <List>
     {
       // @ts-ignore
       resultTable?.map(({id, label, dateOfBirthAndDeath, dateOfBirth, dateOfDeath, avatar, secondary}, idx) => {
@@ -120,14 +118,8 @@ const LobidSearchTable: FunctionComponent<Props> = ({
         )
       })
     }
-
-  </List> : <ClassicEntityCard
-      id={selectedId}
-      data={selectedEntry as any}
-      onSelectItem={(id) => handleSelect(id)}
-      onBack={() => handleSelect(popHistory(), false)}
-      onAcceptItem={handleAccept}/>)
-
+  </List>
+</>
 }
 
 

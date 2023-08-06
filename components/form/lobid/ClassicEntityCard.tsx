@@ -1,28 +1,31 @@
-import { ArrowBack } from '@mui/icons-material'
+import {ArrowBack, ExpandLess, ExpandMore} from '@mui/icons-material'
 import {Button, Card, CardActions, CardContent, CardMedia, IconButton, Typography} from '@mui/material'
-import {FunctionComponent, useCallback, useState} from 'react'
+import React, {FunctionComponent, useCallback, useState} from 'react'
 
 import LobidAllPropTable from './LobidAllPropTable'
 
+export type EntityCardData = Partial<{
+  id: string,
+  label: string,
+  title: string,
+  name: string,
+  description: string,
+  avatar: string
+  allProps: any
+}>
+
 type Props = {
-  data: Partial<{
-    id: string,
-    label: string,
-    title: string,
-    name: string,
-    description: string,
-    avatar: string
-    allProps: any
-  }>,
+  data: EntityCardData,
   id: string,
   onBack?: () => void,
   onAcceptItem?: (id: string | undefined) => void
   onSelectItem?: (id: string | undefined) => void
+  detailView?: React.ReactNode
 }
 
 const ClassicEntityCard: FunctionComponent<Props> = ({
-  data, id, onBack, onSelectItem, onAcceptItem
-}) => {
+                                                       data, id, onBack, onSelectItem, onAcceptItem, detailView
+                                                     }) => {
   const [expanded, setExpanded] = useState(true)
   const _label = data.label || data.title || data.name || id
 
@@ -35,11 +38,11 @@ const ClassicEntityCard: FunctionComponent<Props> = ({
       (uri: string) => {
         onSelectItem && onSelectItem(uri)
       },
-      [onAcceptItem])
+      [onSelectItem])
 
   return (<>
-    {onBack && <IconButton onClick={onBack}><ArrowBack /></IconButton>}
-        <Card >
+        {onBack && <IconButton onClick={onBack}><ArrowBack/></IconButton>}
+        <Card>
           {data.avatar && <CardMedia
               component="img"
               alt={'Image of ' + _label}
@@ -55,11 +58,21 @@ const ClassicEntityCard: FunctionComponent<Props> = ({
             </Typography>
           </CardContent>
           <CardActions>
-            <Button size="small" onClick={() => onAcceptItem && onAcceptItem(data?.id)}>Eintrag übernehmen</Button>
-            <Button size="small" onClick={handleExpandClick}>Details zeigen</Button>
+            {onAcceptItem && <Button
+                size="small"
+                color='primary'
+                variant='contained'
+                onClick={() => onAcceptItem(data?.id)}>Eintrag übernehmen</Button>}
+            {detailView &&
+                <Button
+                    size="small"
+                    onClick={handleExpandClick}
+                    startIcon={expanded ? <ExpandLess />  : <ExpandMore/>}>
+                  Details {expanded ? 'verbergen' : 'zeigen'}
+                </Button>}
           </CardActions>
+          {expanded && detailView || null}
         </Card>
-        {expanded &&  <LobidAllPropTable allProps={data.allProps} onEntityChange={handleEntityChange}  /> }
       </>
   )
 }

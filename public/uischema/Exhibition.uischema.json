@@ -1,8 +1,8 @@
 {
-  "type": "VerticalLayout",
+  "type": "Categorization",
   "elements": [
     {
-      "type": "Group",
+      "type": "Category",
       "label": "Allgemeine Daten der Ausstellung",
       "elements": [
         {
@@ -71,7 +71,7 @@
       ]
     },
     {
-      "type": "Group",
+      "type": "Category",
       "label": "Verortung",
       "elements": [
         {
@@ -93,7 +93,7 @@
       ]
     },
     {
-      "type": "Group",
+      "type": "Category",
       "label": "Zeitlicher Rahmen",
       "elements": [
         {
@@ -136,7 +136,7 @@
       ]
     },
     {
-      "type": "Group",
+      "type": "Category",
       "label": "Beteiligte Personen und Institutionen",
       "elements": [
         {
@@ -165,7 +165,7 @@
       ]
     },
     {
-      "type": "Group",
+      "type": "Category",
       "label": "Exponate und Ressourcen der Ausstellung",
       "elements": [
         {
@@ -189,8 +189,9 @@
       ]
     },
     {
-      "type": "Group",
-      "label": "autoritative Normdaten",
+      "type": "Category",
+      "label": "Normdaten",
+
       "elements": [
         {
           "type": "HorizontalLayout",
@@ -215,7 +216,7 @@
       ]
     },
     {
-      "type": "Group",
+      "type": "Category",
       "label": "Daten zur Erfassung",
       "elements": [
         {
@@ -237,14 +238,10 @@
           }
         }
       ]
-    },
-    {
-      "type": "Control",
-      "scope": "#/properties/@type"
-    },
-    {
-      "type": "Control",
-      "scope": "#/properties/@id"
     }
-  ]
+  ],
+  "options": {
+  "variant": "stepper",
+  "showNavButtons": true
+}
 }

@@ -1,3 +1,4 @@
+import {TextFieldProps} from '@mui/material'
 import {variable} from '@rdfjs/data-model'
 import {SELECT} from '@tpluscode/sparql-builder'
 import parse from 'html-react-parser'
@@ -23,11 +24,12 @@ interface OwnProps {
   onDebouncedSearchChange?: (value: string | undefined) => void;
   condensed?: boolean
   onEnterSearch?: (value: string | undefined) => void;
+  inputProps?: TextFieldProps
 }
 
 type Props = OwnProps;
 
-const DiscoverAutocompleteInput: FunctionComponent<Props> = ({title = 'etwas', typeName, readonly, defaultSelected, selected,onEnterSearch, onSelectionChange, typeIRI: classType, loadOnStart, limit, onDebouncedSearchChange, condensed}) => {
+const DiscoverAutocompleteInput: FunctionComponent<Props> = ({title = 'etwas', typeName, readonly, defaultSelected, selected,onEnterSearch, onSelectionChange, typeIRI: classType, loadOnStart, limit, onDebouncedSearchChange, condensed, inputProps}) => {
   const { crudOptions } = useGlobalCRUDOptions()
   const [ selected__, setSelected__] = useState<AutocompleteSuggestion | null>(selected  || defaultSelected || null)
 
@@ -79,6 +81,7 @@ const DiscoverAutocompleteInput: FunctionComponent<Props> = ({title = 'etwas', t
             condensed={condensed}
             onKeyUp={handleEnter}
             onSearchValueChange={setSearchString}
+            inputProps={inputProps}
 
         />
 }

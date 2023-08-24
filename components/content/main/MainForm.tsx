@@ -53,7 +53,7 @@ const WithPreviewForm = ({classIRI, data, children}: Props) => {
             </SplitPane>
             : children}
       </>
-      : children
+      : <>{children}</>
 
 }
 const typeName = 'Exhibition'
@@ -96,8 +96,7 @@ const MainForm = ({defaultData}: MainFormProps) => {
       }, [setSearchText])
   const loadedSchema = useExtendedSchema({typeName, classIRI})
   const uischemaExternal = useUISchemaForType(classIRI)
-  return (
-      <>
+  return <>
         {mode === 'search' && <Container>
             <Grid container spacing={2}>
                 <Grid item xs={11}>
@@ -155,7 +154,6 @@ const MainForm = ({defaultData}: MainFormProps) => {
             </Container>
         </WithPreviewForm>}
       </>
-  )
 }
 
 export default MainForm

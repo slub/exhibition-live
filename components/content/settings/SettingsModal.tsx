@@ -36,6 +36,8 @@ const SettingsModal: FunctionComponent<Props> = (props) => {
 
   const handleClose = useCallback(() => {
     closeSettings()
+    //reload
+    window && window.location.reload()
 
   }, [closeSettings])
 

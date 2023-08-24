@@ -44,10 +44,10 @@ return (
           sx={theme => ({marginBottom: theme.spacing(2)})}
       >
         <Grid container direction={'column'} alignItems='baseline'>
-          <Grid item>
+          {/*<Grid item>
             <IconButton onClick={() => setEditMode(prev => !prev)}>{editMode ? <VisibilityOff/> : <Visibility/>}</IconButton>
             {editMode && <TextField variant={'standard'} onChange={e => handleChange_(e.target.value)} value={data} fullWidth={true} /> }
-          </Grid>
+          </Grid>*/}
           <Grid item>
             <Image src={data} alt={data} style={{width: '100%'}}/>
           </Grid>

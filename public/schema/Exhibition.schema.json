@@ -29,7 +29,8 @@
         },
         "lastNormUpdate": {
           "type": "string",
-          "format": "date-time"
+          "format": "date-time",
+          "readOnly": true
         }
       }
     },
@@ -223,7 +224,8 @@
         },
         "lastNormUpdate": {
           "type": "string",
-          "format": "date-time"
+          "format": "date-time",
+          "readOnly": true
         },
         "tags": {
           "type": "array",
@@ -309,7 +311,8 @@
         },
         "lastNormUpdate": {
           "type": "string",
-          "format": "date-time"
+          "format": "date-time",
+          "readOnly": true
         },
         "externalId": {
           "type": "string",
@@ -396,7 +399,8 @@
         },
         "lastNormUpdate": {
           "type": "string",
-          "format": "date-time"
+          "format": "date-time",
+          "readOnly": true
         }
       }
     },
@@ -483,7 +487,8 @@
         },
         "lastNormUpdate": {
           "type": "string",
-          "format": "date-time"
+          "format": "date-time",
+          "readOnly": true
         }
       }
     },
@@ -571,7 +576,8 @@
         },
         "lastNormUpdate": {
           "type": "string",
-          "format": "date-time"
+          "format": "date-time",
+          "readOnly": true
         }
       }
     },
@@ -600,7 +606,8 @@
         },
         "lastNormUpdate": {
           "type": "string",
-          "format": "date-time"
+          "format": "date-time",
+          "readOnly": true
         }
       }
     },
@@ -758,7 +765,8 @@
         },
         "lastNormUpdate": {
           "type": "string",
-          "format": "date-time"
+          "format": "date-time",
+          "readOnly": true
         },
         "exponatGenres": {
           "type": "array",
@@ -811,7 +819,8 @@
         },
         "lastNormUpdate": {
           "type": "string",
-          "format": "date-time"
+          "format": "date-time",
+          "readOnly": true
         }
       }
     },
@@ -909,7 +918,8 @@
         },
         "lastNormUpdate": {
           "type": "string",
-          "format": "date-time"
+          "format": "date-time",
+          "readOnly": true
         }
       }
     },
@@ -1038,7 +1048,8 @@
         },
         "lastNormUpdate": {
           "type": "string",
-          "format": "date-time"
+          "format": "date-time",
+          "readOnly": true
         },
         "involvedCorporations": {
           "type": "array",

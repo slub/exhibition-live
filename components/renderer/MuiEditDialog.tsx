@@ -148,7 +148,7 @@ export default function MuiEditDialog({
                   aria-label="close without saving"
                   onClick={onClose}
                   color="inherit">
-                <Badge badgeContent={1} color="error">
+                <Badge color="error">
                   <CloseIcon/>
                 </Badge>
               </IconButton>

@@ -5,8 +5,7 @@ import {
   isObjectArrayControl,
   JsonFormsCore,
   JsonSchema,
-  rankWith, schemaMatches,
-  scopeEndsWith,
+  rankWith, scopeEndsWith,
   UISchemaElement
 } from '@jsonforms/core'
 import {materialCells, materialRenderers} from '@jsonforms/material-renderers'
@@ -281,7 +280,14 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> =
               </>
               }
             </Hidden>
-            <Grid container spacing={2}>
+        {hideToolbar && features?.enableDebug && <>
+            <Switch checked={jsonViewerEnabled} onChange={e => setJsonViewerEnabled(Boolean(e.target.checked))}
+                    title={'debug'}/>
+          {jsonViewerEnabled &&
+              <Switch checked={isUpdate} onChange={e => setIsUpdate(Boolean(e.target.checked))}
+                      title={'upsert'}/>}
+        </>}
+            <Grid container spacing={2} sx={{marginTop: '2em', marginBottom: '2em'}}>
               <Grid item xs={12} md={hideSimilarityFinder ? undefined : 8} lg={ hideSimilarityFinder ? undefined : 6} flexGrow={1}>
                 <JsonForms
                     readonly={!editMode}

@@ -10,16 +10,15 @@ interface OwnProps {
 
 type Props = OwnProps;
 
-const Logo = () => (<img src={  './logo.png'} alt="Ausstellungsdatenbank" width="150"/>)
+const Logo = () => (<img src={  './logo.png'} alt="Ausstellungsdatenbank" width="400"/>)
 const PerformanceHeader: FunctionComponent<Props> = (props) => {
   const {openSettings} = useLocalSettings()
   return (
       <>
       <header className="page-header">
-        <Grid container justifyContent={'center'}>
+        <Grid container justifyContent={'center'} sx={{margin: '2em'}}>
           <Grid item>
           {/* Header logo */}
-          <div className="brand">
             <a
                 className="logo"
                 title="zur Homepage"
@@ -27,12 +26,12 @@ const PerformanceHeader: FunctionComponent<Props> = (props) => {
             >
               <Logo />
             </a>
-          </div>
           </Grid>
+          </Grid>
+        <Grid container justifyContent={'flex-end'}>
           {/* Main navigation */}
          <Grid  item>
                 <Button startIcon={<Settings />} onClick={openSettings} >
-                  Einstellungen
                 </Button>
          </Grid>
         </Grid>

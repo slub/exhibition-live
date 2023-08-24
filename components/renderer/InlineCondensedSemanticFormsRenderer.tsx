@@ -19,10 +19,10 @@ import {defaultJsonldContext, defaultPrefix, defaultQueryBuilderOptions, slent} 
 import SemanticJsonForm from '../form/SemanticJsonForm'
 import {useUISchemaForType} from '../form/uischemaForType'
 import {uischemas} from '../form/uischemas'
-import {OpenInNew, OpenInNewOff} from "@mui/icons-material";
+import {OpenInNew, OpenInNewOff, Add} from "@mui/icons-material";
 import DiscoverAutocompleteInput from "../form/discover/DiscoverAutocompleteInput";
 import {useGlobalCRUDOptions} from "../state/useGlobalCRUDOptions";
-import { InlineSemanticFormsModal } from "./InlineSemanticFormsModal";
+import {InlineSemanticFormsModal} from "./InlineSemanticFormsModal";
 import {BASE_IRI} from "../config";
 
 const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
@@ -33,7 +33,7 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
     uischema,
     visible,
     required,
-      renderers,
+    renderers,
     config,
     data,
     handleChange,
@@ -70,15 +70,13 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
   }, [data, ctx?.core?.data, path, setRealLabel]);
 
   const newURI = useCallback(() => {
-    if (!data) {
-      const prefix = schema.title || slent[''].value
-      const newURI = `${prefix}${uuidv4()}`
-      handleChange_(newURI)
-    }
+    const prefix = schema.title || slent[''].value
+    const newURI = `${prefix}${uuidv4()}`
+    handleChange_(newURI)
   }, [schema, data, handleChange_])
 
   useEffect(() => {
-    if (editMode)
+    if (editMode && !data)
       newURI()
   }, [newURI, editMode])
 
@@ -115,7 +113,12 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
 
   const handleToggle = useCallback(() => {
     setModalIsOpen(!modalIsOpen)
-  }, [ setModalIsOpen, modalIsOpen])
+  }, [setModalIsOpen, modalIsOpen])
+
+  const handleAddNew = useCallback(() => {
+    newURI()
+    setModalIsOpen(true)
+  }, [setModalIsOpen, newURI])
   return (
       <Hidden xsUp={!visible}>
         <Grid container alignItems='baseline'>
@@ -136,20 +139,37 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
                     readonly={Boolean(ctx.readonly)}
                     typeIRI={typeIRI}
                     typeName={typeName || ''}
-                    title={ label || ''}
+                    title={label || ''}
                     onSelectionChange={selection => handleChange_(selection?.value)}/>)
             }
           </Grid>
           {!ctx.readonly && <Grid item>
-            <IconButton onClick={(e) => { e.stopPropagation() ; handleToggle()}}>{modalIsOpen ? <OpenInNewOff/> : <OpenInNew />}</IconButton>
-            <InlineSemanticFormsModal
-                {...props}
-                open={modalIsOpen}
-                askClose={() => setModalIsOpen(false)}
-                handleChange={(path, v) => {
-                  handleChange_(v);
-                }}
-            />
+              <Grid container direction='column'>
+                {(typeof data == 'string' && data.length > 0) && <Grid item>
+                      <IconButton
+                          sx={{padding: 0}}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleToggle()
+                          }}>{modalIsOpen ? <OpenInNewOff/> : <OpenInNew/>}</IconButton>
+                  </Grid>}
+                  <Grid item>
+                      <IconButton
+                          sx={{padding: 0}}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleAddNew()
+                          }}>{<Add/>}</IconButton>
+                  </Grid>
+              </Grid>
+              <InlineSemanticFormsModal
+                  {...props}
+                  open={modalIsOpen}
+                  askClose={() => setModalIsOpen(false)}
+                  handleChange={(path, v) => {
+                    handleChange_(v);
+                  }}
+              />
           </Grid>}
         </Grid>
 
@@ -161,30 +181,7 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
             sx={theme => ({marginBottom: theme.spacing(2)})}
             className={'inline_object_card'}
         >
-          {subSchema && editMode && (
-              <Grid container alignItems='baseline'>
-                  <Grid item flex={'auto'}>
-                  <SemanticJsonForm
-                      readonly={false}
-                      data={formData}
-                      entityIRI={data}
-                      setData={_data => setFormData(_data)}
-                      shouldLoadInitially
-                      typeIRI={typeIRI}
-                      crudOptions={crudOptions}
-                      defaultPrefix={defaultPrefix}
-                      jsonldContext={defaultJsonldContext}
-                      queryBuildOptions={defaultQueryBuilderOptions}
-                      schema={subSchema as JSONSchema7}
-                      jsonFormsProps={{
-                        uischema: uischemaExternal || undefined,
-                        uischemas: uischemas
-                      }}
-                      onEntityChange={handleChange_}
-                  />
-                </Grid>
-              </Grid>)
-          }
+
         </FormControl>
       </Hidden>
   )

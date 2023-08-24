@@ -16,6 +16,7 @@ import DiscoverAutocompleteInput from "../form/discover/DiscoverAutocompleteInpu
 import {useMemo} from "react";
 import {JsonSchema7} from "@jsonforms/core";
 import {sladb, slent} from "../form/formConfigs";
+import {BASE_IRI} from "../config";
 
 export interface ArrayLayoutToolbarProps {
   label: string;
@@ -61,6 +62,7 @@ export const ArrayLayoutToolbar = React.memo(
         })()
       }, [addItem, path, typeIRI]
     )
+    const typeName = useMemo(() => typeIRI.substring(BASE_IRI.length, typeIRI.length), [typeIRI])
     return (
       <Toolbar disableGutters={true}>
         <Grid container alignItems='center' justifyContent='space-between'>
@@ -77,6 +79,7 @@ export const ArrayLayoutToolbar = React.memo(
                 <Grid item flex={1} sx={{minWidth: '25em'}}>
                   <DiscoverAutocompleteInput
                       typeIRI={typeIRI}
+                      typeName={typeName}
                       title={label || ''}
                       onEnterSearch={handleCreateNewFromSearch}
                       onSelectionChange={selection => handleChange_(selection?.value)}/>

@@ -16,6 +16,7 @@ import {useSettings} from '../state/useLocalSettings'
 import {oxigraphCrudOptions} from '../utils/sparql/remoteOxigraph'
 import MuiEditDialog from './MuiEditDialog'
 import {useGlobalCRUDOptions} from "../state/useGlobalCRUDOptions";
+import {BASE_IRI} from "../config";
 
 export const InlineSemanticFormsRendererModal = (props: ControlProps) => {
   const {
@@ -39,7 +40,7 @@ export const InlineSemanticFormsRendererModal = (props: ControlProps) => {
   const [CRUDOps, setCRUDOps] = useState<CRUDOpsType | undefined>()
   const {load, save, remove} = CRUDOps || {}
   const {crudOptions} = useGlobalCRUDOptions()
-  const [editMode, setEditMode] = useState(false)
+  const [editMode, setEditMode] = useState(true)
   const [searchText, setSearchText] = useState<string | undefined>()
 
   const handleChange_ = useCallback(
@@ -63,6 +64,7 @@ export const InlineSemanticFormsRendererModal = (props: ControlProps) => {
 
   const {$ref, typeIRI, useModal} = uischema.options?.context || {}
   const uischemaExternal = useUISchemaForType(typeIRI)
+  const typeName = useMemo(() => typeIRI.substring(BASE_IRI.length, typeIRI.length), [typeIRI])
 
   const subSchema = useMemo(() => {
     if (!$ref) return
@@ -127,6 +129,7 @@ export const InlineSemanticFormsRendererModal = (props: ControlProps) => {
                     <DiscoverAutocompleteInput
                         typeIRI={typeIRI}
                         title={label || ''}
+                        typeName={typeName || ''}
                         onDebouncedSearchChange={handleSearchTextChange}
                         onSelectionChange={selection => handleChange_(selection?.value)}/>
                   }

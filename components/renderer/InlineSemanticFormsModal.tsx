@@ -10,6 +10,7 @@ import {useUISchemaForType} from '../form/uischemaForType'
 import {uischemas} from '../form/uischemas'
 import MuiEditDialog from './MuiEditDialog'
 import {useGlobalCRUDOptions} from "../state/useGlobalCRUDOptions";
+import {BASE_IRI} from "../config";
 
 
 type OwnProps = {
@@ -39,7 +40,7 @@ export const InlineSemanticFormsModal = (props: ControlProps & OwnProps) => {
   const [CRUDOps, setCRUDOps] = useState<CRUDOpsType | undefined>()
   const {load, save, remove} = CRUDOps || {}
   const {crudOptions} = useGlobalCRUDOptions()
-  const [editMode, setEditMode] = useState(false)
+  const [editMode, setEditMode] = useState(true)
   const [searchText, setSearchText] = useState<string | undefined>()
 
   const handleChange_ = useCallback(
@@ -48,12 +49,12 @@ export const InlineSemanticFormsModal = (props: ControlProps & OwnProps) => {
         if(v === data) return
         handleChange(path, v)
       },
-      [path, handleChange, data],
-  )
+      [path, handleChange, data])
 
 
   const {$ref, typeIRI, useModal} = uischema.options?.context || {}
   const uischemaExternal = useUISchemaForType(typeIRI)
+  const typeName = useMemo(() => typeIRI && typeIRI.substring(BASE_IRI.length, typeIRI.length), [typeIRI])
 
   const subSchema = useMemo(() => {
     if (!$ref) return
@@ -108,6 +109,7 @@ export const InlineSemanticFormsModal = (props: ControlProps & OwnProps) => {
                     <DiscoverAutocompleteInput
                         typeIRI={typeIRI}
                         title={label || ''}
+                        typeName={typeName || ''}
                         onDebouncedSearchChange={handleSearchTextChange}
                         onSelectionChange={selection => handleChange_(selection?.value)}/>
                   }

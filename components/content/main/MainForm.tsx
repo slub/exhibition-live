@@ -23,6 +23,9 @@ import useExtendedSchema from '../../state/useExtendedSchema'
 import {useGlobalCRUDOptions} from '../../state/useGlobalCRUDOptions'
 import {useSettings} from '../../state/useLocalSettings'
 import SPARQLLocalOxigraphToolkit from '../../utils/dev/SPARQLLocalOxigraphToolkit'
+import {
+  materialCategorizationStepperLayoutWithPortal
+} from "../../renderer/MaterialCategorizationStepperLayoutWithPortal";
 
 type Props = {
   children: React.ReactChild
@@ -148,8 +151,11 @@ const MainForm = ({defaultData}: MainFormProps) => {
                       schema={loadedSchema as JSONSchema7}
                       jsonFormsProps={{
                         uischema: uischemaExternal || (uischemas as any)[typeName],
-                        uischemas: uischemas
-                      }}/>
+                        uischemas: uischemas,
+                      renderers: [
+                          materialCategorizationStepperLayoutWithPortal
+                      ],
+                    }}/>
               }
             </Container>
         </WithPreviewForm>}

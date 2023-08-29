@@ -195,7 +195,8 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> =
             data: jsonldData,
             queryBuildOptions
           })
-      const allRenderer = useMemo(() => [...renderers, ...jsonFormsProps.renderers || []], [jsonFormsProps.renderers])
+      const { renderers: jfpRenderers, ...jfpProps } = jsonFormsProps
+      const allRenderer = useMemo(() => [...renderers, ...jfpRenderers || []], [jfpRenderers])
 
 
       useEffect(() => {
@@ -297,7 +298,7 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> =
                     cells={materialCells}
                     onChange={handleFormChange}
                     schema={schema as JsonSchema}
-                    {...jsonFormsProps}
+                    {...jfpProps}
 
                 />
                 {jsonViewerEnabled && [data, jsonldData, formData].map((data_, idx) => (<>

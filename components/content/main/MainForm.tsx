@@ -2,7 +2,7 @@ import {prepareStubbedSchema} from '@graviola/crud-jsonforms'
 import {Add as NewIcon, Search} from '@mui/icons-material'
 import {Button, Container, Grid, IconButton, TextField} from '@mui/material'
 import {JSONSchema7} from 'json-schema'
-import React, {useCallback, useState} from 'react'
+import React, {useCallback, useRef, useState} from 'react'
 import {SplitPane} from 'react-collapse-pane'
 import {v4 as uuidv4} from 'uuid'
 
@@ -18,14 +18,14 @@ import {
 import SemanticJsonForm from '../../form/SemanticJsonForm'
 import {useUISchemaForType} from '../../form/uischemaForType'
 import {uischemas} from '../../form/uischemas'
+import {
+  materialCategorizationStepperLayoutWithPortal
+} from '../../renderer/MaterialCategorizationStepperLayoutWithPortal'
 import {useFormEditor, useOxigraph} from '../../state'
 import useExtendedSchema from '../../state/useExtendedSchema'
 import {useGlobalCRUDOptions} from '../../state/useGlobalCRUDOptions'
 import {useSettings} from '../../state/useLocalSettings'
 import SPARQLLocalOxigraphToolkit from '../../utils/dev/SPARQLLocalOxigraphToolkit'
-import {
-  materialCategorizationStepperLayoutWithPortal
-} from "../../renderer/MaterialCategorizationStepperLayoutWithPortal";
 
 type Props = {
   children: React.ReactChild
@@ -99,67 +99,77 @@ const MainForm = ({defaultData}: MainFormProps) => {
       }, [setSearchText])
   const loadedSchema = useExtendedSchema({typeName, classIRI})
   const uischemaExternal = useUISchemaForType(classIRI)
+  const stepperAreaRef = useRef<HTMLDivElement>()
+
   return <>
-        {mode === 'search' && <Container>
-            <Grid container spacing={2}>
-                <Grid item xs={11}>
-                    <DiscoverAutocompleteInput
-                        typeIRI={classIRI}
-                        limit={1000}
-                        condensed
-                        title={typeName || ''}
-                        inputProps={
-                          {
-                            placeholder: 'Suche nach Ausstellungen',
-                            variant: 'outlined',
-                          }
-                        }
-                        typeName={typeName}
-                        onDebouncedSearchChange={handleSearchTextChange}
-                        onSelectionChange={selection => handleChange(selection?.value)}/>
-                </Grid>
-                <Grid item xs={1}>
-                    <Button onClick={handleNew} aria-label={'neuen Eintrag erstellen'} startIcon={<NewIcon/>}> neu
-                        aufnehmen</Button>
-                </Grid>
-            </Grid>
-        </Container>
-        }
-        {features?.enableDebug &&
-            <TextField label={'ID'} value={data['@id']} onChange={e => handleChange(e.target.value)} fullWidth/>}
-        {mode === 'edit'
-            && <WithPreviewForm data={data} classIRI={classIRI}>
-            <Container className="default-wrapper inline_object_card">
-              {oxigraph && features?.enableDebug && <SPARQLLocalOxigraphToolkit sparqlQuery={doLocalQuery}/>}
-              <IconButton onClick={handleNew} aria-label={'neuen Eintrag erstellen'}><NewIcon/></IconButton>
-              <IconButton
-                  onClick={() => setMode('search')}
-                  aria-label={'vorhandenen Eintrag suchen'}><Search/>
-              </IconButton>
-              {loadedSchema &&
-                  <SemanticJsonForm
-                      data={data}
-                      entityIRI={data['@id']}
-                      setData={_data => setData(_data)}
-                      searchText={searchText}
-                      shouldLoadInitially
-                      typeIRI={classIRI}
-                      crudOptions={crudOptions}
-                      defaultPrefix={defaultPrefix}
-                      jsonldContext={defaultJsonldContext}
-                      queryBuildOptions={defaultQueryBuilderOptions}
-                      schema={loadedSchema as JSONSchema7}
-                      jsonFormsProps={{
-                        uischema: uischemaExternal || (uischemas as any)[typeName],
-                        uischemas: uischemas,
-                      renderers: [
-                          materialCategorizationStepperLayoutWithPortal
-                      ],
-                    }}/>
+    {mode === 'search' && <Container>
+      <Grid container spacing={2}>
+        <Grid item xs={11}>
+          <DiscoverAutocompleteInput
+              typeIRI={classIRI}
+              limit={1000}
+              condensed
+              title={typeName || ''}
+              inputProps={
+                {
+                  placeholder: 'Suche nach Ausstellungen',
+                  variant: 'outlined',
+                }
               }
-            </Container>
+              typeName={typeName}
+              onDebouncedSearchChange={handleSearchTextChange}
+              onSelectionChange={selection => handleChange(selection?.value)}/>
+        </Grid>
+        <Grid item xs={1}>
+          <Button onClick={handleNew} aria-label={'neuen Eintrag erstellen'} startIcon={<NewIcon/>}> neu
+            aufnehmen</Button>
+        </Grid>
+      </Grid>
+    </Container>
+    }
+    {features?.enableDebug &&
+        <TextField label={'ID'} value={data['@id']} onChange={e => handleChange(e.target.value)} fullWidth/>}
+    {mode === 'edit'
+        && <WithPreviewForm data={data} classIRI={classIRI}>
+          <Container className="default-wrapper inline_object_card">
+            <Grid container spacing={4} direction={'row'}>
+              <Grid item xs={2}>
+                <div ref={stepperAreaRef}></div>
+              </Grid>
+              <Grid item xs={10}>
+
+                {oxigraph && features?.enableDebug && <SPARQLLocalOxigraphToolkit sparqlQuery={doLocalQuery}/>}
+                <IconButton onClick={handleNew} aria-label={'neuen Eintrag erstellen'}><NewIcon/></IconButton>
+                <IconButton
+                    onClick={() => setMode('search')}
+                    aria-label={'vorhandenen Eintrag suchen'}><Search/>
+                </IconButton>
+                {loadedSchema &&
+                    <SemanticJsonForm
+                        data={data}
+                        entityIRI={data['@id']}
+                        setData={_data => setData(_data)}
+                        searchText={searchText}
+                        shouldLoadInitially
+                        typeIRI={classIRI}
+                        crudOptions={crudOptions}
+                        defaultPrefix={defaultPrefix}
+                        jsonldContext={defaultJsonldContext}
+                        queryBuildOptions={defaultQueryBuilderOptions}
+                        schema={loadedSchema as JSONSchema7}
+                        jsonFormsProps={{
+                          uischema: uischemaExternal || (uischemas as any)[typeName],
+                          uischemas: uischemas,
+                          renderers: [
+                            materialCategorizationStepperLayoutWithPortal(stepperAreaRef.current)
+                          ]
+                        }}/>
+                }
+              </Grid>
+            </Grid>
+          </Container>
         </WithPreviewForm>}
-      </>
+  </>
 }
 
 export default MainForm

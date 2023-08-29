@@ -195,6 +195,7 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> =
             data: jsonldData,
             queryBuildOptions
           })
+      const allRenderer = useMemo(() => [...renderers, ...jsonFormsProps.renderers || []], [jsonFormsProps.renderers])
 
 
       useEffect(() => {
@@ -292,7 +293,7 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> =
                 <JsonForms
                     readonly={!editMode}
                     data={data}
-                    renderers={renderers}
+                    renderers={allRenderer}
                     cells={materialCells}
                     onChange={handleFormChange}
                     schema={schema as JsonSchema}

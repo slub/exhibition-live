@@ -115,7 +115,6 @@ export const InlineSemanticFormsRendererModal = (props: ControlProps) => {
             sx={theme => ({marginBottom: theme.spacing(2)})}
         >
           <IconButton onClick={(e) => { e.stopPropagation() ; handleToggle()}}>{modalIsOpen ? <OpenInNewOff/> : <OpenInNew />}</IconButton>
-          {modalIsOpen && subSchema && (
               <MuiEditDialog
                   title={label || ''}
                   open={modalIsOpen}
@@ -134,7 +133,7 @@ export const InlineSemanticFormsRendererModal = (props: ControlProps) => {
                         onSelectionChange={selection => handleChange_(selection?.value)}/>
                   }
                   onRemove={handleRemove}><>
-                <SemanticJsonForm
+                {subSchema && <SemanticJsonForm
                     data={formData}
                     forceEditMode={Boolean(editMode)}
                     hideToolbar={true}
@@ -154,9 +153,9 @@ export const InlineSemanticFormsRendererModal = (props: ControlProps) => {
                     onEntityChange={handleChange_}
                     onInit={(crudOps) => setCRUDOps(crudOps)}
                     searchText={searchText}
-                />
+                />}
               </>
-              </MuiEditDialog>)}
+              </MuiEditDialog>
         </FormControl>
       </Hidden>
   )

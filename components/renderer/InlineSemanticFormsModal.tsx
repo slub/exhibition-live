@@ -20,8 +20,8 @@ type OwnProps = {
 export const InlineSemanticFormsModal = (props: ControlProps & OwnProps) => {
   const {
     id,
-      open,
-      errors,
+    open,
+    errors,
     schema,
     uischema,
     visible,
@@ -32,7 +32,7 @@ export const InlineSemanticFormsModal = (props: ControlProps & OwnProps) => {
     path,
     rootSchema,
     label,
-      askClose
+    askClose
   } = props
   const isValid = errors.length === 0
   const appliedUiSchemaOptions = merge({}, config, uischema.options)
@@ -46,7 +46,7 @@ export const InlineSemanticFormsModal = (props: ControlProps & OwnProps) => {
   const handleChange_ = useCallback(
       (v?: string) => {
         //FIXME: this is a workaround for a bug, that causes this to be called with the same value eternally
-        if(v === data) return
+        if (v === data) return
         handleChange(path, v)
       },
       [path, handleChange, data])
@@ -95,48 +95,46 @@ export const InlineSemanticFormsModal = (props: ControlProps & OwnProps) => {
     setEditMode(!editMode)
 
   }, [editMode, setEditMode])
-  return subSchema ? (
-              <MuiEditDialog
-                  title={label || ''}
-                  open={open}
-                  onClose={askClose}
-                  onCancel={askClose}
-                  onSave={handleSave}
-                  onReload={load}
-                  onEdit={handleEditToggle}
-                  editMode={Boolean(editMode)}
-                  search={
-                    <DiscoverAutocompleteInput
-                        typeIRI={typeIRI}
-                        title={label || ''}
-                        typeName={typeName || ''}
-                        onDebouncedSearchChange={handleSearchTextChange}
-                        onSelectionChange={selection => handleChange_(selection?.value)}/>
-                  }
-                  onRemove={handleRemove}><>
-                <SemanticJsonForm
-                    data={formData}
-                    forceEditMode={Boolean(editMode)}
-                    hideToolbar={true}
-                    entityIRI={data}
-                    setData={_data => setFormData(_data)}
-                    shouldLoadInitially
-                    typeIRI={typeIRI}
-                    crudOptions={crudOptions}
-                    defaultPrefix={defaultPrefix}
-                    jsonldContext={defaultJsonldContext}
-                    queryBuildOptions={defaultQueryBuilderOptions}
-                    schema={subSchema as JSONSchema7}
-                    jsonFormsProps={{
-                      uischema: uischemaExternal || undefined,
-                      uischemas: uischemas
-                    }}
-                    onEntityChange={handleChange_}
-                    onInit={(crudOps) => setCRUDOps(crudOps)}
-                    searchText={searchText}
-                />
-              </>
-              </MuiEditDialog>
-  ) : null
+  return <MuiEditDialog
+      title={label || ''}
+      open={open}
+      onClose={askClose}
+      onCancel={askClose}
+      onSave={handleSave}
+      onReload={load}
+      onEdit={handleEditToggle}
+      editMode={Boolean(editMode)}
+      search={
+        <DiscoverAutocompleteInput
+            typeIRI={typeIRI}
+            title={label || ''}
+            typeName={typeName || ''}
+            onDebouncedSearchChange={handleSearchTextChange}
+            onSelectionChange={selection => handleChange_(selection?.value)}/>
+      }
+      onRemove={handleRemove}><>
+    {subSchema && <SemanticJsonForm
+        data={formData}
+        forceEditMode={Boolean(editMode)}
+        hideToolbar={true}
+        entityIRI={data}
+        setData={_data => setFormData(_data)}
+        shouldLoadInitially
+        typeIRI={typeIRI}
+        crudOptions={crudOptions}
+        defaultPrefix={defaultPrefix}
+        jsonldContext={defaultJsonldContext}
+        queryBuildOptions={defaultQueryBuilderOptions}
+        schema={subSchema as JSONSchema7}
+        jsonFormsProps={{
+          uischema: uischemaExternal || undefined,
+          uischemas: uischemas
+        }}
+        onEntityChange={handleChange_}
+        onInit={(crudOps) => setCRUDOps(crudOps)}
+        searchText={searchText}
+    />}
+  </>
+  </MuiEditDialog>
 }
 

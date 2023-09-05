@@ -8,7 +8,19 @@ import {
   Edit as EditIcon,
   EditOff as EditOffIcon, SearchOff
 } from '@mui/icons-material'
-import {alpha, AppBar, Badge, Box, Hidden, IconButton, InputBase, styled, Toolbar, Typography} from '@mui/material'
+import {
+  alpha,
+  AppBar,
+  Backdrop,
+  Badge,
+  Box,
+  Hidden,
+  IconButton,
+  InputBase,
+  styled,
+  Toolbar,
+  Typography
+} from '@mui/material'
 import Button from '@mui/material/Button'
 import Dialog from '@mui/material/Dialog'
 import DialogActions from '@mui/material/DialogActions'
@@ -83,6 +95,13 @@ export default function MuiEditDialog({
           disableScrollLock={false}
           aria-labelledby="responsive-dialog-title"
           onClick={e => e.stopPropagation()}
+          closeAfterTransition
+          slots={{ backdrop: Backdrop }}
+          slotProps={{
+            backdrop: {
+              timeout: 500,
+            },
+          }}
       >
 
         <AppBar position="static">

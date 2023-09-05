@@ -1,6 +1,7 @@
 import {Close as CloseIcon} from '@mui/icons-material'
 import {
   AppBar,
+  Backdrop,
   Badge,
   Box,
   Button,
@@ -47,6 +48,13 @@ const SettingsModal: FunctionComponent<Props> = (props) => {
           open={settingsOpen}
           onClose={handleClose}
           aria-labelledby="responsive-dialog-title"
+          closeAfterTransition
+          slots={{ backdrop: Backdrop }}
+          slotProps={{
+            backdrop: {
+              timeout: 500,
+            },
+          }}
       >
 
         <AppBar position="static">

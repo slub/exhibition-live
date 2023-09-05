@@ -2,7 +2,7 @@ import {prepareStubbedSchema} from '@graviola/crud-jsonforms'
 import {Add as NewIcon, Search} from '@mui/icons-material'
 import {Button, Container, Grid, IconButton, TextField} from '@mui/material'
 import {JSONSchema7} from 'json-schema'
-import React, {useCallback, useRef, useState} from 'react'
+import React, {useCallback, useMemo, useRef, useState} from 'react'
 import {SplitPane} from 'react-collapse-pane'
 import {v4 as uuidv4} from 'uuid'
 
@@ -101,6 +101,12 @@ const MainForm = ({defaultData}: MainFormProps) => {
   const uischemaExternal = useUISchemaForType(classIRI)
   const stepperAreaRef = useRef<HTMLDivElement>()
 
+  const handleChangeData = useCallback((data: any) => {
+    setData(data)
+  }, [setData])
+  const mainFormRenderers = useMemo(() => [
+      materialCategorizationStepperLayoutWithPortal(stepperAreaRef.current)], [stepperAreaRef.current])
+
   return <>
     {mode === 'search' && <Container>
       <Grid container spacing={2}>
@@ -148,7 +154,7 @@ const MainForm = ({defaultData}: MainFormProps) => {
                     <SemanticJsonForm
                         data={data}
                         entityIRI={data['@id']}
-                        setData={_data => setData(_data)}
+                        setData={handleChangeData}
                         searchText={searchText}
                         shouldLoadInitially
                         typeIRI={classIRI}
@@ -160,9 +166,7 @@ const MainForm = ({defaultData}: MainFormProps) => {
                         jsonFormsProps={{
                           uischema: uischemaExternal || (uischemas as any)[typeName],
                           uischemas: uischemas,
-                          renderers: [
-                            materialCategorizationStepperLayoutWithPortal(stepperAreaRef.current)
-                          ]
+                          renderers: mainFormRenderers
                         }}/>
                 }
               </Grid>

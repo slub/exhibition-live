@@ -236,6 +236,14 @@
           "options": {
             "multi": true
           }
+        },
+        {
+          "type": "Control",
+          "scope": "#/properties/@type"
+        },
+        {
+          "type": "Control",
+          "scope": "#/properties/@id"
         }
       ]
     }

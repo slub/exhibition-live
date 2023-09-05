@@ -48,9 +48,9 @@ return (
             <IconButton onClick={() => setEditMode(prev => !prev)}>{editMode ? <VisibilityOff/> : <Visibility/>}</IconButton>
             {editMode && <TextField variant={'standard'} onChange={e => handleChange_(e.target.value)} value={data} fullWidth={true} /> }
           </Grid>*/}
-          <Grid item>
+          {data && <Grid item>
             <Image src={data} alt={data} style={{width: '100%'}}/>
-          </Grid>
+          </Grid>}
         </Grid>
       </FormControl>
     </Hidden>

@@ -86,6 +86,7 @@ export const MaterialCategorizationStepperLayout = (props: MaterialCategorizatio
   };
   return !container ? null : (
       <Hidden xsUp={!visible}>
+        <>
         {createPortal(
             <Stepper activeStep={activeCategory} nonLinear orientation={'vertical'}>
               {categories.map((e: Category, idx: number) => (
@@ -119,7 +120,8 @@ export const MaterialCategorizationStepperLayout = (props: MaterialCategorizatio
           >
             Previous
           </Button>
-        </div>) : (<></>)}
+        </div>) : null}
+          </>
       </Hidden>
   );
 };

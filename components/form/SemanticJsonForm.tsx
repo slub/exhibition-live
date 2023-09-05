@@ -216,12 +216,7 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> =
 
       const handleFormChange = useCallback(
           (state: Pick<JsonFormsCore, 'data' | 'errors'>) => {
-            setData((oldState: any) => {
-              if (['name', 'title'].some(key => oldState[key] !== state.data[key])) {
-                setHideSimilarityFinder(false)
-              }
-              return state.data
-            })
+            setData(state.data)
           }, [setData, setHideSimilarityFinder])
 
       useEffect(() => {

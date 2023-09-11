@@ -10,14 +10,6 @@
           "elements": [
             {
               "type": "Control",
-              "scope": "#/properties/@type"
-            },
-            {
-              "type": "Control",
-              "scope": "#/properties/@id"
-            },
-            {
-              "type": "Control",
               "label": "Titel der Ausstellung",
               "scope": "#/properties/title"
             },
@@ -75,6 +67,19 @@
           "type": "Control",
           "label": "Weblinks",
           "scope": "#/properties/exhibitionweblink"
+        }, 
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "scope": "#/properties/@id"
+            },
+            {
+              "type": "Control",
+              "scope": "#/properties/@type"
+            }
+          ]
         }
       ]
     },

@@ -38,7 +38,12 @@ export interface MaterialCategorizationStepperLayoutRendererProps
     extends StatePropsOfLayout, AjvProps {
   data: any;
   container?: HTMLElement;
+  actionContainer?: HTMLElement
 }
+
+
+const optionallyCreatePortal = (children: React.ReactNode, container?: HTMLElement) => container ? createPortal(children, container) : children
+
 
 export const MaterialCategorizationStepperLayout = (props: MaterialCategorizationStepperLayoutRendererProps) => {
   const [activeCategory, setActiveCategory] = useState<number>(0);
@@ -57,7 +62,8 @@ export const MaterialCategorizationStepperLayout = (props: MaterialCategorizatio
     cells,
     config,
     ajv,
-    container
+    container,
+    actionContainer
   } = props;
   const categorization = uischema as Categorization;
   const appliedUiSchemaOptions = merge({}, config, uischema.options);
@@ -67,7 +73,6 @@ export const MaterialCategorizationStepperLayout = (props: MaterialCategorizatio
     margin: '1em auto'
   };
   const buttonNextStyle = {
-    float: 'right' as 'right'
   };
   const buttonStyle = {
     marginRight: '1em'
@@ -101,16 +106,7 @@ export const MaterialCategorizationStepperLayout = (props: MaterialCategorizatio
         <div>
           <MaterialLayoutRenderer {...childProps} />
         </div>
-        {!!appliedUiSchemaOptions.showNavButtons ? (<div style={buttonWrapperStyle}>
-          <Button
-              style={buttonNextStyle}
-              variant="contained"
-              color="primary"
-              disabled={activeCategory >= categories.length - 1}
-              onClick={() => handleStep(activeCategory + 1)}
-          >
-            Next
-          </Button>
+        {!!appliedUiSchemaOptions.showNavButtons ? optionallyCreatePortal(<>
           <Button
               style={buttonStyle}
               color="secondary"
@@ -118,25 +114,35 @@ export const MaterialCategorizationStepperLayout = (props: MaterialCategorizatio
               disabled={activeCategory <= 0}
               onClick={() => handleStep(activeCategory - 1)}
           >
-            Previous
+            zurück
           </Button>
-        </div>) : null}
+          <Button
+              style={buttonNextStyle}
+              variant="contained"
+              color="primary"
+              disabled={activeCategory >= categories.length - 1}
+              onClick={() => handleStep(activeCategory + 1)}
+          >
+            weiter
+          </Button>
+        </>, actionContainer) : null}
           </>
       </Hidden>
   );
 };
-const withAjvProps = <P extends {}>(Component: ComponentType<AjvProps & P>, container: HTMLElement | undefined) =>
+const withAjvProps = <P extends {}>(Component: ComponentType<AjvProps & P>, container: HTMLElement | undefined, actionContainer: HTMLElement | undefined) =>
     (props: P) => {
       const ctx = useJsonForms();
       const ajv = getAjv({jsonforms: {...ctx}});
 
-      return (<Component {...props} ajv={ajv} container={container}/>);
+      return (<Component {...props} ajv={ajv} container={container} actionContainer={actionContainer}/>);
     };
 
-export const materialCategorizationStepperLayoutWithPortal = (container: HTMLElement | undefined) => ({
+export const materialCategorizationStepperLayoutWithPortal = (container: HTMLElement | undefined, actionContainer: HTMLElement | undefined) => ({
   tester: materialCategorizationStepperTester,
   renderer: withJsonFormsLayoutProps(withAjvProps(
       MaterialCategorizationStepperLayout,
-      container
+      container,
+      actionContainer
   ))
 })

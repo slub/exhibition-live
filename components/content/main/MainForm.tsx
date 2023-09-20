@@ -100,12 +100,16 @@ const MainForm = ({defaultData}: MainFormProps) => {
   const loadedSchema = useExtendedSchema({typeName, classIRI})
   const uischemaExternal = useUISchemaForType(classIRI)
   const stepperAreaRef = useRef<HTMLDivElement>()
+  const actionButtonAreaRef = useRef<HTMLDivElement>()
 
   const handleChangeData = useCallback((data: any) => {
     setData(data)
   }, [setData])
-  const mainFormRenderers = useMemo(() => [
-      materialCategorizationStepperLayoutWithPortal(stepperAreaRef.current)], [stepperAreaRef.current])
+  const mainFormRenderers = useMemo(() => {
+    console.log({stepperAreaRef, actionButtonAreaRef})
+    return [
+      materialCategorizationStepperLayoutWithPortal(stepperAreaRef.current, actionButtonAreaRef.current)]
+  }, [stepperAreaRef.current, actionButtonAreaRef.current])
 
   return <>
     {mode === 'search' && <Container>
@@ -163,6 +167,7 @@ const MainForm = ({defaultData}: MainFormProps) => {
                         jsonldContext={defaultJsonldContext}
                         queryBuildOptions={defaultQueryBuilderOptions}
                         schema={loadedSchema as JSONSchema7}
+                        toolbarChildren={<span ref={actionButtonAreaRef} style={{float: 'right'}}></span> }
                         jsonFormsProps={{
                           uischema: uischemaExternal || (uischemas as any)[typeName],
                           uischemas: uischemas,

@@ -60,7 +60,8 @@ interface OwnProps {
   readonly?: boolean
   forceEditMode?: boolean
   searchText?: string
-  parentIRI?: string
+  parentIRI?: string,
+  toolbarChildren?: React.ReactNode
 }
 
 export type SemanticJsonFormsProps = OwnProps;
@@ -148,7 +149,8 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> =
        readonly,
        forceEditMode,
        searchText,
-        parentIRI
+        parentIRI,
+        toolbarChildren
      }) => {
       const [jsonldData, setJsonldData] = useState<any>({})
       //const {formData, setFormData} = useFormEditor()
@@ -276,6 +278,7 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> =
                             title={'upsert'}/>}
               </>
               }
+              {toolbarChildren}
             </Hidden>
         {hideToolbar && features?.enableDebug && <>
             <Switch checked={jsonViewerEnabled} onChange={e => setJsonViewerEnabled(Boolean(e.target.checked))}

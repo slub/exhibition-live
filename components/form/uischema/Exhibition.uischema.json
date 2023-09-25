@@ -43,15 +43,15 @@
             },
             {
               "type": "Control",
-              "label": "Genre",
-              "scope": "#/properties/exhibitionGenre"
-            },
-            {
-              "type": "Control",
               "label": "Kategorie",
               "scope": "#/properties/exhibitionCategory"
             }
           ]
+        },
+        {
+          "type": "Control",
+          "label": "Genre",
+          "scope": "#/properties/exhibitionGenre"
         },
         {
           "type": "Control",

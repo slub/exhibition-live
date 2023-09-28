@@ -44,7 +44,7 @@ const LobidAutocompleteSearch: FunctionComponent<Props> = ({selected, onSelectio
                     label: `${preferredName} | ${dateOfBirthAndDeath?.[0] ? dateOfBirthAndDeath[0] : `${dateOfBirth[0] || ''} | ${dateOfDeath[0] || ''}`}`
                 }))
                 : []}
-            placeholder="Search a person within Lobid"
+            placeholder={`Search a ${typeName} within Lobid`}
             getOptionLabel={buildLabelFromSuggestion}
             onChange={(_event: any, item: AutocompleteSuggestion | null) => {
                 onSelectionChange && onSelectionChange(item)

@@ -156,6 +156,7 @@ const MainForm = ({defaultData}: MainFormProps) => {
                 </IconButton>
                 {loadedSchema &&
                     <SemanticJsonForm
+                        forceEditMode={true}
                         data={data}
                         entityIRI={data['@id']}
                         setData={handleChangeData}

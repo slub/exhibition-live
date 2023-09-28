@@ -1,11 +1,26 @@
-import {Container, Link, Table, TableBody, TableCell, TableContainer, TableRow} from '@mui/material'
+import { MoreVert as MoreVertIcon } from '@mui/icons-material'
+import {
+  Button,
+  Container,
+  IconButton,
+  Link,
+  Menu,
+  MenuItem, MenuList,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableRow
+} from '@mui/material'
 import React, {FunctionComponent, useCallback, useEffect, useMemo, useState} from 'react'
 import uri from 'refractor/lang/uri'
 
+import {MappingConfigurationDialog} from '../../mapping/MappingConfigurationDialog'
 import {gndBaseIRI} from '../../utils/gnd/prefixes'
 
 interface OwnProps {
-  allProps?: any[],
+  allProps?: any,
   onEntityChange?: (uri: string) => void
 }
 
@@ -20,6 +35,97 @@ const LabledLink = ({uri, label, onClick} : {uri: string, label?: string, onClic
   const urlSuffix = useMemo(() => uri.substring( ( (uri.includes('#') ? uri.lastIndexOf('#')  : uri.lastIndexOf('/')) + 1 )?? 0, uri.length ), [uri])
   return uri.startsWith(gndBaseIRI) ?  <Link onClick={onClick} component='button' >{label || urlSuffix}</Link> : <Link target='_blank' href={uri}>{label || urlSuffix}</Link>
 }
+
+
+const useMenuState = () => {
+  const [menuAnchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+  const menuOpen = Boolean(menuAnchorEl)
+  const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget)
+  }
+  const handleMenuClose = () => {
+    setAnchorEl(null)
+  }
+
+  return {
+    menuAnchorEl,
+    menuOpen,
+    handleMenuClick,
+    handleMenuClose
+  }
+}
+
+const PropertyContextMenu = ( {onClose, property}: {onClose?:  () => void , property: string}) => {
+
+  const [mappingModalOpen, setMappingModalOpen] = useState<boolean>(false)
+  const handleCreateMapping = useCallback(() => {
+    setMappingModalOpen(true)
+  }, [onClose, setMappingModalOpen] )
+
+  const handleMappingModalClose = useCallback(
+      () => {
+        setMappingModalOpen(false)
+        onClose && onClose()
+      },
+      [setMappingModalOpen, onClose],
+  )
+
+
+  return (<>
+      <MappingConfigurationDialog mapping={{ source: { path: property} }} open={mappingModalOpen} onClose={handleMappingModalClose}/>
+        <MenuList dense>
+          <MenuItem onClick={handleCreateMapping}>
+            create Mapping
+          </MenuItem>
+          <MenuItem onClick={onClose}>Property info</MenuItem>
+        </MenuList>
+  </>)
+}
+
+const PropertyItem = ({property, value}: {property: string, value: any}) => {
+const {menuAnchorEl, menuOpen, handleMenuClick, handleMenuClose} = useMenuState()
+  return (
+      <TableRow>
+        <TableCell style={{ width: 100 }} component="th" scope="row">
+          <Button
+              id={'menu-button-' + property}
+              sx={{
+                textAlign: 'left',
+                textTransform: 'none'
+              }}
+              size={'small'}
+              variant={'text'}
+              aria-label={'mapping'}
+                  onClick={handleMenuClick}
+                  startIcon={<MoreVertIcon />}>
+              {camelCaseToTitleCase(property)}
+          </Button>
+          <Menu
+              id="basic-menu"
+              anchorEl={menuAnchorEl}
+              open={menuOpen}
+              onClose={handleMenuClose}
+              MenuListProps={{
+                'aria-labelledby': 'menu-button' + property
+              }}
+          >
+            <PropertyContextMenu onClose={handleMenuClose} property={property}/>
+          </Menu>
+        </TableCell>
+        <TableCell  align="right">
+          {Array.isArray(value) && value.map((v, index) => {
+            const comma = index < value.length - 1 ? ',' : ''
+            if(typeof v === 'string' ) {
+              return <span key={v}>{v}{comma} </span>
+            }
+            if(typeof v.id === 'string') {
+              return <span key={v.id}><LabledLink uri={v.id} label={v.label} />{comma} </span>
+            }
+          }) || (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean' && value)}
+        </TableCell>
+      </TableRow>
+  )
+}
 const LobidAllPropTable: FunctionComponent<Props> = ({allProps, onEntityChange}) => {
 
   const handleClickEntry = useCallback(
@@ -29,6 +135,7 @@ const LobidAllPropTable: FunctionComponent<Props> = ({allProps, onEntityChange})
       [onEntityChange, uri],
   )
 
+
   return (<TableContainer component={Container}>
         <Table sx={{ minWidth: '100%' }} aria-label="custom table">
           <TableBody>
@@ -37,22 +144,7 @@ const LobidAllPropTable: FunctionComponent<Props> = ({allProps, onEntityChange})
                     typeof value === 'string' || Array.isArray(value) && value.length > 0
                 ) )
                 .map(([key, value]) => (
-                <TableRow key={key}>
-                  <TableCell style={{ width: 100 }} component="th" scope="row">
-                    {camelCaseToTitleCase(key)}
-                  </TableCell>
-                  <TableCell  align="right">
-                    {Array.isArray(value) && value.map((v, index) => {
-                      const comma = index < value.length - 1 ? ',' : ''
-                      if(typeof v === 'string' ) {
-                        return <span key={v}>{v}{comma} </span>
-                      }
-                      if(typeof v.id === 'string') {
-                        return <span key={v.id}><LabledLink uri={v.id} label={v.label} onClick={() => handleClickEntry(v)} />{comma} </span>
-                      }
-                    }) || (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean' && value)}
-                  </TableCell>
-                </TableRow>
+                    <PropertyItem key={key} property={key} value={value} />
             ))}
           </TableBody>
         </Table>

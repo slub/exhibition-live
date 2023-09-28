@@ -4,19 +4,21 @@ import {
   AndroidOutlined,
   Storage as KnowledgebaseIcon
 } from '@mui/icons-material'
-import {Chip, Grid, ToggleButton, ToggleButtonGroup, Tooltip} from '@mui/material'
+import {Chip, Divider, Grid, ToggleButton, ToggleButtonGroup, Tooltip} from '@mui/material'
 import {dcterms} from '@tpluscode/rdf-ns-builders'
 import {JSONSchema7} from 'json-schema'
 import {ChatCompletionRequestMessage, Configuration, OpenAIApi} from 'openai'
 import * as React from 'react'
 import {FunctionComponent, useCallback, useMemo, useState} from 'react'
+import {v4 as uuidv4} from 'uuid'
 
 import {BASE_IRI} from '../config'
-import {gndFieldsToOwnModelMap} from '../config/lobidMappings'
+import {exhibitionDeclarativeMapping, gndFieldsToOwnModelMap} from '../config/lobidMappings'
 import {useSettings} from '../state/useLocalSettings'
-import {mapGNDToModel} from '../utils/gnd/mapGNDToModel'
+import {mapGNDToModel, mapGNDToModel2, StrategyContext} from '../utils/gnd/mapGNDToModel'
 import {NodePropertyItem} from '../utils/graph/nodeToPropertyTree'
 import DiscoverSearchTable from './discover/DiscoverSearchTable'
+import {slent} from './formConfigs'
 import K10PlusSearchTable, {findFirstInProps} from './k10plus/K10PlusSearchTable'
 import LobidSearchTable from './lobid/LobidSearchTable'
 
@@ -41,6 +43,18 @@ type SelectedEntity = {
   id: string
   source: KnowledgeSources
 }
+
+
+const strategyContext: StrategyContext = {
+  getPrimaryIRIBySecondaryIRI: async (secondaryIRI: string, authorityIRI: string, typeIRI: string) => {
+    console.warn('using stub method')
+    return null//'http://example.com/1231231'
+  },
+  authorityIRI: 'http://d-nb.info/gnd',
+  newIRI: (typeIRI: string) => {
+    return slent(uuidv4()).value
+  }
+}
 const SimilarityFinder: FunctionComponent<Props> = ({
                                                       data,
                                                       classIRI,
@@ -52,7 +66,7 @@ const SimilarityFinder: FunctionComponent<Props> = ({
                                                     }) => {
 
   const {openai} = useSettings()
-  const [selectedKnowledgeSources, setSelectedKnowledgeSources] = useState<KnowledgeSources[]>(['kb', 'gnd', 'ai'])
+  const [selectedKnowledgeSources, setSelectedKnowledgeSources] = useState<KnowledgeSources[]>(['kb', 'gnd'])
   const [entitySelected, setEntitySelected] = useState<SelectedEntity | undefined>()
   const searchString = useMemo<string | null>(() => search || (searchOnDataPath && Resolve.data(data, searchOnDataPath)) || null, [data, searchOnDataPath, search])
   const handleKnowledgeSourceChange = useCallback(
@@ -202,19 +216,22 @@ const SimilarityFinder: FunctionComponent<Props> = ({
       }, [typeName, onMappedDataAccepted, jsonSchema])
 
   const handleManuallyMapData = useCallback(
-      (id: string | undefined, entryData: any) => {
+      async (id: string | undefined, entryData: any) => {
         if (!id || !entryData?.allProps) return
-        const dataFromGND = mapGNDToModel(typeName, entryData.allProps, gndFieldsToOwnModelMap)
-        console.log(typeName, entryData.allProps, gndFieldsToOwnModelMap)
+        try {
+
+        const dataFromGND = typeName === 'Exhibition' ?  await mapGNDToModel2(entryData.allProps, { }, exhibitionDeclarativeMapping, strategyContext) : mapGNDToModel(typeName, entryData.allProps, gndFieldsToOwnModelMap)
         const inject = {
           authority: {
             '@id': GND_IRI
           },
           lastNormUpdate: new Date().toISOString()
         }
-        onMappedDataAccepted && onMappedDataAccepted({...dataFromGND, ...inject})
-
-
+          console.log({dataFromGND})
+          onMappedDataAccepted && onMappedDataAccepted({...dataFromGND, ...inject})
+        } catch (e) {
+            console.error('could not map from authority', e)
+        }
       },
       [typeName, onMappedDataAccepted])
 
@@ -277,19 +294,23 @@ const SimilarityFinder: FunctionComponent<Props> = ({
           {searchString && <Chip label={`Suchwort:${searchString}`} />}
           </Grid>
         </Grid>
-        {searchString && ((!entitySelected || entitySelected.source == 'kb') && selectedKnowledgeSources.includes('kb') &&
+        {searchString && ((!entitySelected || entitySelected.source == 'kb') && selectedKnowledgeSources.includes('kb') && <>
             <DiscoverSearchTable
                 searchString={searchString}
                 typeName={typeName}
                 classIRI={classIRI}
                 onAcceptItem={handleEntityChange}
-                onSelect={(id) => handleSelect(id, 'kb')}/>)}
-        {searchString && ((!entitySelected || entitySelected.source == 'gnd') && selectedKnowledgeSources.includes('gnd') &&
+                onSelect={(id) => handleSelect(id, 'kb')}/>
+            <Divider />
+        </>)}
+        {searchString && ((!entitySelected || entitySelected.source == 'gnd') && selectedKnowledgeSources.includes('gnd') && <>
             <LobidSearchTable
                 onAcceptItem={handleAccept}
                 searchString={searchString}
                 typeName={typeName}
-                onSelect={(id) => handleSelect(id, 'gnd')}/>)}
+                onSelect={(id) => handleSelect(id, 'gnd')}/>
+        <Divider />
+        </>)}
         {searchString && ((!entitySelected || entitySelected.source == 'k10plus') && selectedKnowledgeSources.includes('k10plus') &&
             <K10PlusSearchTable
                 onAcceptItem={handleAcceptKXP}

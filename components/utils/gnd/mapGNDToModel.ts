@@ -60,7 +60,7 @@ type AppendStrategy = Strategy & {
 
 const append = (values: any[], targetData: any[], options?: AppendStrategy['options']): any[] => {
   const {allowDuplicates} = options || {}
-  const all = [...targetData, ...values]
+  const all = [...(targetData || []), ...values]
   if (allowDuplicates)
     return all
   // @ts-ignore

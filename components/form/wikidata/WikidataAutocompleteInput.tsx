@@ -92,7 +92,7 @@ const WikidataAutocompleteInput: FunctionComponent<Props> = ({selected, onSelect
             // @ts-ignore
             onChange={handleChange}
         />
-        { __selected?.value ? ( classType === 'Q5'
+        { __selected?.value ? ( classType === 'Q27968055'
             ? <WikidataHumanCard personIRI={__selected.value} />
                 : <WikidataThingCard thingIRI={__selected.value} />  ) : null}
       </>

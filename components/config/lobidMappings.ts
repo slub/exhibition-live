@@ -117,7 +117,7 @@ export const exhibitionDeclarativeMapping: DeclarativeMappings = [
       path: 'placeOfConferenceOrEvent'
     },
     target: {
-      path: 'location'
+      path: 'locations'
     },
     mapping: {
       strategy: {

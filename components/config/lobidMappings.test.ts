@@ -2,7 +2,7 @@ import {describe, expect, test} from '@jest/globals'
 import {randomUUID} from 'crypto'
 
 import exampleData from '../../fixtures/lobid/documeta-1257120557.json'
-import {mapGNDToModel2} from '../utils/gnd/mapGNDToModel'
+import {mapGNDToModel2, StrategyContext} from '../utils/gnd/mapGNDToModel'
 import {exhibitionDeclarativeMapping} from './lobidMappings'
 
 

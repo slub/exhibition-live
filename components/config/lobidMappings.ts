@@ -1,5 +1,5 @@
 import {sladb} from '../form/formConfigs'
-import {DeclarativeMappings, GNDToOwnModelMap} from '../utils/gnd/mapGNDToModel'
+import {DeclarativeMappings, GNDToOwnModelMap} from '../utils/mapping/mappingStrategies'
 
 export const exhibitionDeclarativeMapping: DeclarativeMappings = [
   {
@@ -123,7 +123,7 @@ export const exhibitionDeclarativeMapping: DeclarativeMappings = [
       strategy: {
         id: 'createEntity',
         options: {
-          typeIRI: sladb('Place').value,
+          typeIRI: sladb('Location').value,
           subFieldMapping: {
             fromEntity: [
               {
@@ -184,6 +184,119 @@ export const exhibitionDeclarativeMapping: DeclarativeMappings = [
     }
   }
 ]
+
+export const personDeclarativeMapping: DeclarativeMappings = [
+  {
+    source: {
+      path: 'preferredName',
+      expectedSchema: {
+        type: 'string'
+      }
+    },
+    target: {
+      path: 'name'
+    }
+  },
+  {
+    source: {
+      path: 'variantName',
+      expectedSchema: {
+        type: 'array',
+        items: {
+          type: 'string'
+        }
+      }
+    },
+    target: {
+      path: 'nameVariant'
+    },
+    mapping: {
+      strategy: {
+        id: 'append'
+      }
+    }
+  },
+  {
+    source: {
+      path: 'dateOfBirth',
+      expectedSchema: {
+        type: 'string'
+      }
+    },
+    target: {
+      path: 'birthDate'
+    },
+    mapping: {
+      strategy: {
+        id: 'takeFirst'
+      }
+    }
+  },
+  {
+    source: {
+      path: 'dateOfDeath',
+      expectedSchema: {
+        type: 'string'
+      }
+    },
+    target: {
+      path: 'deathDate'
+    },
+    mapping: {
+      strategy: {
+        id: 'takeFirst'
+      }
+    }
+  },
+  {
+    source: {
+      path: 'depiction.0.thumbnail'
+    },
+    target: {
+      path: 'image'
+    }
+  }]
+
+export const corporateBodyDeclarativeMapping: DeclarativeMappings = [
+  {
+    source: {
+      path: 'preferredName',
+      expectedSchema: {
+        type: 'string'
+      }
+    },
+    target: {
+      path: 'name'
+    }
+  }]
+
+export const workDeclarativeMapping: DeclarativeMappings = [
+  {
+    source: {
+      path: 'preferredName',
+      expectedSchema: {
+        type: 'string'
+      }
+    },
+    target: {
+      path: 'title'
+    }
+  },
+  {
+    source: {
+      path: 'dateOfProduction.0'
+    },
+    target: {
+      path: 'fromDate'
+    }
+  }]
+
+export const declarativeMappings: { [key: string]: DeclarativeMappings } = {
+  'Exhibition': exhibitionDeclarativeMapping,
+  'Person': personDeclarativeMapping,
+  'Corporation': corporateBodyDeclarativeMapping,
+  'ExhibitionExponat': workDeclarativeMapping
+}
 export const gndFieldsToOwnModelMap: GNDToOwnModelMap = {
   'Person': {
     'name': {

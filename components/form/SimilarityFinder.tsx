@@ -4,7 +4,7 @@ import {
   AndroidOutlined,
   Storage as KnowledgebaseIcon
 } from '@mui/icons-material'
-import {Chip, Divider, Grid, ToggleButton, ToggleButtonGroup, Tooltip} from '@mui/material'
+import {Chip, Divider, Grid, ToggleButton, ToggleButtonGroup} from '@mui/material'
 import {dcterms} from '@tpluscode/rdf-ns-builders'
 import {JSONSchema7} from 'json-schema'
 import {ChatCompletionRequestMessage, Configuration, OpenAIApi} from 'openai'
@@ -13,10 +13,11 @@ import {FunctionComponent, useCallback, useMemo, useState} from 'react'
 import {v4 as uuidv4} from 'uuid'
 
 import {BASE_IRI} from '../config'
-import {exhibitionDeclarativeMapping, gndFieldsToOwnModelMap} from '../config/lobidMappings'
+import {declarativeMappings} from '../config/lobidMappings'
 import {useSettings} from '../state/useLocalSettings'
-import {mapGNDToModel, mapGNDToModel2, StrategyContext} from '../utils/gnd/mapGNDToModel'
 import {NodePropertyItem} from '../utils/graph/nodeToPropertyTree'
+import {mapByConfig} from '../utils/mapping/mapByConfig'
+import {StrategyContext} from '../utils/mapping/mappingStrategies'
 import DiscoverSearchTable from './discover/DiscoverSearchTable'
 import {slent} from './formConfigs'
 import K10PlusSearchTable, {findFirstInProps} from './k10plus/K10PlusSearchTable'
@@ -218,10 +219,16 @@ const SimilarityFinder: FunctionComponent<Props> = ({
   const handleManuallyMapData = useCallback(
       async (id: string | undefined, entryData: any) => {
         if (!id || !entryData?.allProps) return
+        const mappingConfig = declarativeMappings[typeName]
+        if (!mappingConfig) {
+          console.warn(`no mapping config for ${typeName}`)
+          return
+        }
         try {
 
-        const dataFromGND = typeName === 'Exhibition' ?  await mapGNDToModel2(entryData.allProps, { }, exhibitionDeclarativeMapping, strategyContext) : mapGNDToModel(typeName, entryData.allProps, gndFieldsToOwnModelMap)
+        const dataFromGND = await mapByConfig(entryData.allProps, { }, mappingConfig, strategyContext)
         const inject = {
+          '@type': classIRI,
           authority: {
             '@id': GND_IRI
           },

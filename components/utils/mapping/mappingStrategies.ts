@@ -1,12 +1,10 @@
 import {JsonSchema} from '@jsonforms/core'
-import Ajv from 'ajv'
 import dayjs from 'dayjs'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
-import cloneDeep from 'lodash/cloneDeep'
 import get from 'lodash/get'
-import set from 'lodash/set'
 
 import {getPaddedDate} from '../core/specialDate'
+import {mapByConfig} from './mapByConfig'
 
 dayjs.extend(customParseFormat)
 
@@ -41,7 +39,7 @@ type ConcatenateStrategy = Strategy & {
   }
 }
 
-const concatenate = (sourceData: any[], _targetData: string, options?: ConcatenateStrategy['options']): string => {
+export const concatenate = (sourceData: any[], _targetData: string, options?: ConcatenateStrategy['options']): string => {
   const separator = options?.separator || ''
   return sourceData.join(separator)
 }
@@ -49,7 +47,7 @@ const concatenate = (sourceData: any[], _targetData: string, options?: Concatena
 type TakeFirstStrategy = Strategy & {
   id: 'takeFirst'
 }
-const takeFirst = (sourceData: any[], _targetData: any): any => sourceData[0]
+export const takeFirst = (sourceData: any[], _targetData: any): any => sourceData[0]
 
 type AppendStrategy = Strategy & {
   id: 'append',
@@ -58,7 +56,7 @@ type AppendStrategy = Strategy & {
   }
 }
 
-const append = (values: any[], targetData: any[], options?: AppendStrategy['options']): any[] => {
+export const append = (values: any[], targetData: any[], options?: AppendStrategy['options']): any[] => {
   const {allowDuplicates} = options || {}
   const all = [...(targetData || []), ...values]
   if (allowDuplicates)
@@ -78,7 +76,7 @@ type CreateEntityStrategy = Strategy & {
   }
 }
 
-const createEntity = async (sourceData: any, _targetData: any, options?: CreateEntityStrategy['options'], context?: StrategyContext): Promise<any> => {
+export const createEntity = async (sourceData: any, _targetData: any, options?: CreateEntityStrategy['options'], context?: StrategyContext): Promise<any> => {
   if (!context) throw new Error('No context provided')
   const {typeIRI, subFieldMapping} = options || {}
   const isArray = Array.isArray(sourceData)
@@ -93,7 +91,7 @@ const createEntity = async (sourceData: any, _targetData: any, options?: CreateE
         '@type': typeIRI
       }
       const entityIRI = primaryIRI || newIRI(typeIRI)
-      newDataElements.push(await mapGNDToModel2(sourceDataElement, targetData, subFieldMapping.fromEntity || [], context ))
+      newDataElements.push(await mapByConfig(sourceDataElement, targetData, subFieldMapping.fromEntity || [], context ))
     } else {
       newDataElements.push({
         '@id': primaryIRI
@@ -107,17 +105,19 @@ type DateStringToSpecialInt = Strategy & {
   id: 'dateStringToSpecialInt'
 }
 
-const dayJsDateToSpecialInt = (date: dayjs.Dayjs): number | null => {
+const dayJsDateToSpecialInt = (date: dayjs.Dayjs, yearOnly?: boolean): number | null => {
   if(date.isValid()) {
+    if(yearOnly) return Number(`${date.format('YYYY')}0000`)
     const paddedDateString =  getPaddedDate(date.toDate())
     return Number(paddedDateString)
   }
   return null
 }
-const dateStringToSpecialInt = (sourceData: string | string[], _targetData: any): number | null => {
+export const dateStringToSpecialInt = (sourceData: string | string[], _targetData: any): number | null => {
   const data = Array.isArray(sourceData) ? sourceData[0] : sourceData
   if(!data) return null
-  return dayJsDateToSpecialInt(dayjs(data, 'DD.MM.YYYY'))
+  const yearOnly = data.length === 4
+  return dayJsDateToSpecialInt(dayjs(data, yearOnly ? 'YYYY' : 'DD.MM.YYYY'), yearOnly)
 }
 
 type DateRangeStringToSpecialInt = Strategy & {
@@ -127,7 +127,7 @@ type DateRangeStringToSpecialInt = Strategy & {
   }
 }
 
-const dateRangeStringToSpecialInt = (sourceData: string | string[], _targetData: any, options?: DateRangeStringToSpecialInt['options']): number | null => {
+export const dateRangeStringToSpecialInt = (sourceData: string | string[], _targetData: any, options?: DateRangeStringToSpecialInt['options']): number | null => {
   const {extractElement} = options || {}
   const data = Array.isArray(sourceData) ? sourceData[0] : sourceData
   if(!data) return null
@@ -143,15 +143,6 @@ type AnyStrategy =
     | CreateEntityStrategy
     | DateRangeStringToSpecialInt
     | DateStringToSpecialInt
-
-const strategyFunctionMap: { [k: string]: StrategyFunction } = {
-  concatenate,
-  takeFirst,
-  append,
-  createEntity,
-  dateStringToSpecialInt,
-  dateRangeStringToSpecialInt
-}
 
 
 export type DeclarativeSimpleMapping = {
@@ -169,39 +160,16 @@ export type DeclarativeSimpleMapping = {
 
 export type DeclarativeMappings = DeclarativeSimpleMapping[]
 
-export const mapGNDToModel2 = async (gndEntryData: Record<string, any>, targetData: any, mappingConfig: DeclarativeMappings, strategyContext: StrategyContext): Promise<any> => {
-  const newData = cloneDeep(targetData)
-  const ajv = new Ajv()
-  await Promise.all(mappingConfig.map(async ({source, target, mapping}) => {
-    const {path: sourcePath, expectedSchema} = source
-    const {path: targetPath} = target
-    const sourceValue = get(gndEntryData, sourcePath)
-    if (sourceValue) {
-      if (!expectedSchema || ajv.validate(expectedSchema, sourceValue)) {
-        if(!mapping?.strategy) {
-          //take value as is
-          set(newData, targetPath, sourceValue)
-        } else {
-          const strategyFunction = strategyFunctionMap[mapping.strategy.id]
-          if(typeof strategyFunction !== 'function') {
-            throw new Error(`Strategy ${mapping.strategy.id} is not implemented`)
-          }
-          const strategyOptions = (mapping.strategy as any).options
-          try {
-            const value = await strategyFunction(sourceValue, get(newData, targetPath), strategyOptions, strategyContext)
-            set(newData, targetPath, value)
-          } catch (e) {
-            console.error('Error while executing mapping strategy', e)
-          }
-        }
-      } else {
-        console.warn(`Value does not match expected schema ${JSON.stringify(expectedSchema)}`)
-      }
-    }
-  }))
-  return newData
+export const strategyFunctionMap: { [strategyId: string]: StrategyFunction } = {
+  concatenate,
+  takeFirst,
+  append,
+  createEntity,
+  dateStringToSpecialInt,
+  dateRangeStringToSpecialInt
 }
-export const mapGNDToModel = (gndType: string, gndEntryData: Record<string, any>, mappingModel: GNDToOwnModelMap): any => {
+
+export const mappingStrategies = (gndType: string, gndEntryData: Record<string, any>, mappingModel: GNDToOwnModelMap): any => {
   const fields = mappingModel[gndType]
   if (!fields) {
     return {}

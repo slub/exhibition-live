@@ -1,12 +1,12 @@
 import {describe, expect, test} from '@jest/globals'
-import {randomUUID} from 'crypto'
 
 import exampleData from '../../fixtures/lobid/documeta-1257120557.json'
-import {mapGNDToModel2, StrategyContext} from '../utils/gnd/mapGNDToModel'
+import {mapByConfig} from '../utils/mapping/mapByConfig'
+import {StrategyContext} from '../utils/mapping/mappingStrategies'
 import {exhibitionDeclarativeMapping} from './lobidMappings'
 
 
-
+let i = 0
 
 const strategyContext: StrategyContext = {
   getPrimaryIRIBySecondaryIRI: async (secondaryIRI: string, authorityIRI: string, typeIRI: string) => {
@@ -16,19 +16,29 @@ const strategyContext: StrategyContext = {
   authorityIRI: 'http://d-nb.info/gnd',
   newIRI: (typeIRI: string) => {
     console.warn('using stub method')
-    return `http://example.com/${randomUUID()}`
+    return `http://example.com/${i++}`
   }
 }
-describe('can apply different mapping strategies', () => {
+describe('apply different mapping strategies', () => {
 
-  test('can use simple mapping', () => {
-    const mappedData = mapGNDToModel2(exampleData, {'@id': 'http://example.com/testcase'}, exhibitionDeclarativeMapping, strategyContext)
+  test('can map simple exhibition', () => {
+    const mappedData = mapByConfig(exampleData, {'@id': 'http://example.com/testcase'}, exhibitionDeclarativeMapping, strategyContext)
     mappedData.then(data => {
       expect(data).toStrictEqual({
-        '@id': 'http://example.com/testcase',
-        title: 'Documenta (15. : 2022 : Kassel)',
-        location: {'@id': 'http://example.com/1231231'}
-      })
+      '@id': 'http://example.com/testcase',
+      title: 'Documenta (15. : 2022 : Kassel)',
+      titleVariant: [],
+      toDate: 20220925,
+      fromDate: 20220618,
+      locations: [
+        {
+          '@id': 'http://example.com/0',
+          '@type': 'http://ontologies.slub-dresden.de/exhibition#Location',
+          title: 'Kassel',
+          idAuthority: 'https://d-nb.info/gnd/4029869-3'
+        }
+      ]}
+      )
     })
 
   })

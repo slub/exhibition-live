@@ -2,7 +2,7 @@ import { Close as CloseIcon } from '@mui/icons-material'
 import {Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Typography} from '@mui/material'
 import {useCallback, useState} from 'react'
 
-import {DeclarativeSimpleMapping} from '../utils/gnd/mapGNDToModel'
+import {DeclarativeSimpleMapping} from '../utils/mapping/mappingStrategies'
 import {MappingConiguration} from './MappingConiguration'
 
 type MappingConfigurationDialogProps = {

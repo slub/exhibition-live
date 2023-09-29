@@ -5,7 +5,7 @@ import React, {useCallback, useMemo, useState} from 'react'
 
 import DiscoverAutocompleteInput from '../form/discover/DiscoverAutocompleteInput'
 import {defaultJsonldContext, defaultPrefix, defaultQueryBuilderOptions} from '../form/formConfigs'
-import SemanticJsonForm, {CRUDOpsType} from '../form/SemanticJsonForm'
+import SemanticJsonForm, {CRUDOpsType, SemanticJsonFormsProps} from '../form/SemanticJsonForm'
 import {useUISchemaForType} from '../form/uischemaForType'
 import {uischemas} from '../form/uischemas'
 import MuiEditDialog from './MuiEditDialog'
@@ -16,8 +16,9 @@ import {BASE_IRI} from "../config";
 type OwnProps = {
   open: boolean
   askClose: () => void
+  semanticJsonFormsProps?: Partial<SemanticJsonFormsProps>
 }
-export const InlineSemanticFormsModal = (props: ControlProps & OwnProps) => {
+export const InlineSemanticFormsModal = (props:  ControlProps & OwnProps) => {
   const {
     id,
     open,
@@ -32,7 +33,8 @@ export const InlineSemanticFormsModal = (props: ControlProps & OwnProps) => {
     path,
     rootSchema,
     label,
-    askClose
+    askClose,
+    semanticJsonFormsProps
   } = props
   const isValid = errors.length === 0
   const appliedUiSchemaOptions = merge({}, config, uischema.options)
@@ -114,6 +116,7 @@ export const InlineSemanticFormsModal = (props: ControlProps & OwnProps) => {
       }
       onRemove={handleRemove}><>
     {subSchema && <SemanticJsonForm
+        {...semanticJsonFormsProps}
         data={formData}
         forceEditMode={Boolean(editMode)}
         hideToolbar={true}

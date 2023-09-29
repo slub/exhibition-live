@@ -1,15 +1,10 @@
-import {TextFieldProps} from '@mui/material'
-import {variable} from '@rdfjs/data-model'
-import {SELECT} from '@tpluscode/sparql-builder'
+import {TextFieldProps, useControlled} from '@mui/material'
 import parse from 'html-react-parser'
 import React, {FunctionComponent, useCallback, useEffect, useMemo, useState} from 'react'
 
 import {useGlobalCRUDOptions} from '../../state/useGlobalCRUDOptions'
-import {useSettings} from '../../state/useLocalSettings'
 import findEntityByClass from '../../utils/discover/findEntityByClass'
-import {defaultQuerySelect} from '../../utils/sparql/remoteOxigraph'
 import {AutocompleteSuggestion, DebouncedAutocomplete} from '../DebouncedAutoComplete'
-import {defaultPrefix, defaultQueryBuilderOptions} from '../formConfigs'
 
 interface OwnProps {
   selected?: AutocompleteSuggestion | null
@@ -31,14 +26,18 @@ type Props = OwnProps;
 
 const DiscoverAutocompleteInput: FunctionComponent<Props> = ({title = 'etwas', typeName, readonly, defaultSelected, selected,onEnterSearch, onSelectionChange, typeIRI: classType, loadOnStart, limit, onDebouncedSearchChange, condensed, inputProps}) => {
   const { crudOptions } = useGlobalCRUDOptions()
-  const [ selected__, setSelected__] = useState<AutocompleteSuggestion | null>(selected  || defaultSelected || null)
+  const [selectedValue, setSelectedUncontrolled] = useControlled({
+    name: 'DiscoverAutocompleteInput',
+    controlled: selected,
+    default: defaultSelected || null,
+  })
 
   const handleChange = useCallback(
       (_e: Event, item: AutocompleteSuggestion | null) => {
         onSelectionChange && onSelectionChange(item)
-        setSelected__(item)
+        setSelectedUncontrolled(item)
       },
-      [onSelectionChange, setSelected__],
+      [onSelectionChange, setSelectedUncontrolled],
   )
 
   const load = useCallback(
@@ -61,14 +60,15 @@ const DiscoverAutocompleteInput: FunctionComponent<Props> = ({title = 'etwas', t
       },[onEnterSearch, searchString])
 
 
-  return <DebouncedAutocomplete
+  return <>
+    <DebouncedAutocomplete
             title={title}
             readOnly={readonly}
             loadOnStart={true}
             ready={Boolean(classType && crudOptions)}
             // @ts-ignore
             load={load}
-            value={selected__}
+            value={selectedValue || null}
             placeholder={`Suche nach ${typeName} in der aktuellen Datenbank`}
             renderOption={(props, option: any) => (
                 <li {...props} key={option.value}>
@@ -83,7 +83,7 @@ const DiscoverAutocompleteInput: FunctionComponent<Props> = ({title = 'etwas', t
             onSearchValueChange={setSearchString}
             inputProps={inputProps}
 
-        />
+        /></>
 }
 
 export default DiscoverAutocompleteInput

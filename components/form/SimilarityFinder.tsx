@@ -49,10 +49,12 @@ type SelectedEntity = {
 const strategyContext: StrategyContext = {
   getPrimaryIRIBySecondaryIRI: async (secondaryIRI: string, authorityIRI: string, typeIRI: string) => {
     console.warn('using stub method')
+
     return null//'http://example.com/1231231'
   },
   authorityIRI: 'http://d-nb.info/gnd',
   newIRI: (typeIRI: string) => {
+
     return slent(uuidv4()).value
   }
 }

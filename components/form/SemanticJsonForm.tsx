@@ -61,7 +61,8 @@ interface OwnProps {
   forceEditMode?: boolean
   searchText?: string
   parentIRI?: string,
-  toolbarChildren?: React.ReactNode
+  toolbarChildren?: React.ReactNode,
+  onLoad?: (data: any) => void
 }
 
 export type SemanticJsonFormsProps = OwnProps;
@@ -150,7 +151,8 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> =
        forceEditMode,
        searchText,
         parentIRI,
-        toolbarChildren
+        toolbarChildren,
+        onLoad
      }) => {
       const [jsonldData, setJsonldData] = useState<any>({})
       //const {formData, setFormData} = useFormEditor()
@@ -195,7 +197,8 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> =
             defaultPrefix,
             setData: setData,
             data: jsonldData,
-            queryBuildOptions
+            queryBuildOptions,
+            onLoad
           })
       const { renderers: jfpRenderers, ...jfpProps } = jsonFormsProps
       const allRenderer = useMemo(() => [...renderers, ...jfpRenderers || []], [jfpRenderers])

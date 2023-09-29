@@ -31,6 +31,7 @@ export type CRUDOptions = CRUDFunctions & {
   upsertByDefault?: boolean
   ready?: boolean,
   refetchInterval?: number | false
+  onLoad?: (data: any) => void
 }
 
 export const useSPARQL_CRUD = (entityIRI: string | undefined, typeIRI: string | undefined, schema: JSONSchema7,
@@ -44,7 +45,8 @@ export const useSPARQL_CRUD = (entityIRI: string | undefined, typeIRI: string | 
                                  walkerOptions = {},
                                  queryBuildOptions,
                                  upsertByDefault,
-                                   refetchInterval
+                                   refetchInterval,
+                                   onLoad
                                }: CRUDOptions) => {
 
   const [isUpdate, setIsUpdate] = useState(false)
@@ -87,6 +89,7 @@ export const useSPARQL_CRUD = (entityIRI: string | undefined, typeIRI: string | 
           const resultJSON = jsonSchemaGraphInfuser(defaultPrefix, entityIRI, ds as Dataset, schema, walkerOptions)
           setIsUpdate(true)
           //setData(resultJSON)
+          onLoad && onLoad(resultJSON)
           return resultJSON
         } catch (e) {
           console.error(e)

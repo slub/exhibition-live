@@ -36,6 +36,5 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-/theme
 /docker/data/
 /jsonldtest.mjs

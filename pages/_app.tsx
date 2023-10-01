@@ -8,12 +8,10 @@ import '../styles/layout.css'
 import '../styles/temp.css'
 import 'leaflet/dist/leaflet.css'
 
-import {ThemeProvider} from '@mui/styles'
 import {QueryClient, QueryClientProvider} from '@tanstack/react-query'
 import type { AppProps } from 'next/app'
 
 import {SettingsConsumer, SettingsProvider} from '../components/provider/settingsContext'
-import defaultTheme from '../components/theme/default-theme'
 import ThemeComponent from '../components/theme/ThemeComponent'
 
 export const queryClient = new QueryClient()

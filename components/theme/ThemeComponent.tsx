@@ -1,21 +1,17 @@
 // ** React Imports
 // ** MUI Imports
-import CssBaseline from '@mui/material/CssBaseline'
-import GlobalStyles from '@mui/material/GlobalStyles'
-import { createTheme, responsiveFontSizes,ThemeProvider } from '@mui/material/styles'
-import { ReactNode } from 'react'
+import { CssBaseline, GlobalStyles, ThemeProvider } from '@mui/material'
+import {ReactNode, useMemo} from 'react'
 
 // ** Type Imports
 // ** Theme Config
-import themeConfig from '../config/themeConfig'
 import {Settings} from '../provider/settingsContext'
+import {useThemeSettings} from '../state'
+import theme from './berry-theme'
 // ** Global Styles
 import GlobalStyling from './globalStyles'
 // ** Theme Override Imports
-import overrides from './overrides'
 // ** Theme
-import themeOptions from './ThemeOptions'
-import typography from './typography'
 
 interface Props {
   settings: Settings
@@ -23,30 +19,17 @@ interface Props {
 }
 
 const ThemeComponent = (props: Props) => {
+  const themeSettings = useThemeSettings()
   // ** Props
-  const { settings, children } = props
+  const {  children } = props
 
-  // ** Merged ThemeOptions of Core and User
-  const coreThemeConfig = themeOptions(settings)
+  const themeFinal = useMemo(() => theme(themeSettings), [themeSettings])
 
-  // ** Pass ThemeOptions to CreateTheme Function to create partial theme without component overrides
-  let theme = createTheme(coreThemeConfig)
-
-  // ** Continue theme creation and pass merged component overrides to CreateTheme function
-  theme = createTheme(theme, {
-    components: { ...overrides(theme) },
-    typography: { ...typography(theme) }
-  })
-
-  // ** Set responsive font sizes to true
-  if (themeConfig.responsiveFontSizes) {
-    theme = responsiveFontSizes(theme)
-  }
 
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={themeFinal}>
       <CssBaseline />
-      <GlobalStyles styles={() => GlobalStyling(theme) as any} />
+      <GlobalStyles styles={() => GlobalStyling(themeFinal) as any} />
       {children}
     </ThemeProvider>
   )

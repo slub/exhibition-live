@@ -27,6 +27,7 @@ const MenuList = () => {
 const MenuCard = () => {
   const { stepperRef} = useFormRefsContext()
 
+  // @ts-ignore
   return (<div ref={stepperRef}></div>)
 }
 

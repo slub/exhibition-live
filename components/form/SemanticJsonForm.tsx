@@ -318,10 +318,10 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> =
                     />
                   </CardContent>
                 </Card>
-                {jsonViewerEnabled && [data, jsonldData, formData].map((data_, idx) => (<Card>
+                {jsonViewerEnabled && [data, jsonldData, formData].map((data_, idx) => (<Card  key={idx}>
                   <CardContent>
                     {entityIRI}
-                    <JsonView key={idx} data={data_} shouldInitiallyExpand={(lvl) => lvl < 5}/>
+                    <JsonView data={data_} shouldInitiallyExpand={(lvl) => lvl < 5}/>
                     <Divider />
                   </CardContent>
                 </Card>))}

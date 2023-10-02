@@ -1,4 +1,3 @@
-import {prepareStubbedSchema} from '@graviola/crud-jsonforms'
 import {Add as NewIcon, Search} from '@mui/icons-material'
 import {Button, Container, Grid, IconButton, TextField} from '@mui/material'
 import {JSONSchema7} from 'json-schema'

@@ -285,13 +285,13 @@ const SimilarityFinder: FunctionComponent<Props> = ({
                 <KnowledgebaseIcon/>
               </ToggleButton>
               <ToggleButton value="gnd" aria-label="GND">
-                <img alt={'gnd logo'} width={24} height={24} src={'./Icons/gnd-logo.png'}/>
+                <img alt={'gnd logo'} width={24} height={24} src={'/Icons/gnd-logo.png'}/>
               </ToggleButton>
               <ToggleButton value="wikidata" aria-label="Wikidata">
-                <img alt={'wikidata logo'} width={30} height={24} src={'./Icons/Wikidata-logo-en.svg'}/>
+                <img alt={'wikidata logo'} width={30} height={24} src={'/Icons/Wikidata-logo-en.svg'}/>
               </ToggleButton>
               <ToggleButton value="k10plus" aria-label="Wikidata">
-                <img alt={'k10plus logo'} width={40} height={30} src={'./Icons/k10plus-logo.png'}/>
+                <img alt={'k10plus logo'} width={40} height={30} src={'/Icons/k10plus-logo.png'}/>
               </ToggleButton>
               <ToggleButton value="ai" aria-label="use AI">
                 <AndroidOutlined/>

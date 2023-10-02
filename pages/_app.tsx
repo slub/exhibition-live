@@ -11,6 +11,7 @@ import 'leaflet/dist/leaflet.css'
 import {QueryClient, QueryClientProvider} from '@tanstack/react-query'
 import type { AppProps } from 'next/app'
 
+import {FormRefsProvider} from '../components/provider/formRefsContext'
 import {SettingsConsumer, SettingsProvider} from '../components/provider/settingsContext'
 import ThemeComponent from '../components/theme/ThemeComponent'
 
@@ -23,9 +24,10 @@ export default function App({ Component, pageProps }: AppProps) {
     <QueryClientProviderWrapper>
       <SettingsProvider>
         <SettingsConsumer>
-          {({ settings }) => {
-            return <ThemeComponent settings={settings}>{<Component {...pageProps} />}</ThemeComponent>
-          }}
+          {({ settings }) =>
+              <FormRefsProvider>
+                <ThemeComponent settings={settings}>{<Component {...pageProps} />}</ThemeComponent>
+              </FormRefsProvider>}
         </SettingsConsumer>
       </SettingsProvider>
     </QueryClientProviderWrapper>

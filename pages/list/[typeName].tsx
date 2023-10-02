@@ -1,9 +1,10 @@
 import Head from 'next/head'
+import {useRouter} from 'next/router'
 import React from 'react'
 
-import {sladb, slent} from '../components/form/formConfigs'
-import {MainLayout} from '../components/layout/main-layout'
-import {useRDFDataSources} from '../components/state'
+import {sladb, slent} from '../../components/form/formConfigs'
+import {MainLayout} from '../../components/layout/main-layout'
+import {useRDFDataSources} from '../../components/state'
 
 type Props = {
   children: React.ReactChild
@@ -18,17 +19,19 @@ const exampleData = {
 }
 export default () => {
   const {bulkLoaded} = useRDFDataSources('./ontology/exhibition-info.owl.ttl')
+  const router = useRouter()
+  const {typeName} = router.query
 
   return (
       <>
         <Head>
-          <title>Ausstellungserfassung</title>
+          <title>Ausstellungserfassung - {typeName}</title>
           <meta name="description" content="a knowledge base about exhibitions"/>
           <meta name="viewport" content="width=device-width, initial-scale=1"/>
           <link rel="icon" href="/favicon.ico"/>
         </Head>
         <MainLayout >
-          Welcome to the exhibition data entry app.
+          List all {typeName} here.
         </MainLayout>
       </>
   )

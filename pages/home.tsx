@@ -17,16 +17,13 @@ export default () => (
       <main className={styles.main}>
         <div className="page-wrapper">
           {/* Page header */}
-          <PerformanceHeader/>
           {/* Content wrapper */}
           <div className="default-wrapper">
             {/* Header area for content */}
-            <ContentHeader/>
+            test
             {/* Content area */}
-            <ContentMain/>
           </div>
           {/* Page footer */}
-          <PerformanceFooter/>
         </div>
       </main>
     </>

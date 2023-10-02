@@ -11,7 +11,7 @@ import PersonUISchema from './uischema/Person.uischema.json'
 import PlaceUISchema from './uischema/Place.uischema.json'
 
 
-const uischemata = {
+export const uischemata = {
   'Exhibition': ExhibitionUISchema,
   'ExhibitionExponat': ExhibitionExponatUISchema,
   'InvolvedPerson': InvolvedPersonUISchema,

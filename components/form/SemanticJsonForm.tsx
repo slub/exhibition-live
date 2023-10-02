@@ -10,15 +10,17 @@ import {
 } from '@jsonforms/core'
 import {materialCells, materialRenderers} from '@jsonforms/material-renderers'
 import {JsonForms, JsonFormsInitStateProps} from '@jsonforms/react'
-import {Close,Delete, Edit, EditOff, Refresh, Save} from '@mui/icons-material'
-import {Button, Grid, Hidden, IconButton, Switch} from '@mui/material'
+import {Close, Delete, Edit, EditOff, Refresh, Save} from '@mui/icons-material'
+import {Button, Card, CardContent, Divider, Grid, Hidden, IconButton, Switch} from '@mui/material'
 import {JSONSchema7} from 'json-schema'
 import {JsonLdContext} from 'jsonld-context-parser'
 import {isEmpty} from 'lodash'
 import React, {FunctionComponent, useCallback, useEffect, useMemo, useState} from 'react'
+import {createPortal} from 'react-dom'
 import {JsonView} from 'react-json-view-lite'
 
 import {BASE_IRI} from '../config'
+import {useFormRefsContext} from '../provider/formRefsContext'
 import AdbSpecialDateRenderer, {adbSpecialDateControlTester} from '../renderer/AdbSpecialDateRenderer'
 import AutoIdentifierRenderer from '../renderer/AutoIdentifierRenderer'
 import ImageRenderer from '../renderer/ImageRenderer'
@@ -150,9 +152,9 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> =
        readonly,
        forceEditMode,
        searchText,
-        parentIRI,
-        toolbarChildren,
-        onLoad
+       parentIRI,
+       toolbarChildren,
+       onLoad
      }) => {
       const [jsonldData, setJsonldData] = useState<any>({})
       //const {formData, setFormData} = useFormEditor()
@@ -200,9 +202,11 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> =
             queryBuildOptions,
             onLoad
           })
-      const { renderers: jfpRenderers, ...jfpProps } = jsonFormsProps
+      const {renderers: jfpRenderers, ...jfpProps} = jsonFormsProps
       const allRenderer = useMemo(() => [...renderers, ...jfpRenderers || []], [jfpRenderers])
 
+
+      const {toolbarRef} = useFormRefsContext()
 
       useEffect(() => {
         if (!ready) return
@@ -242,19 +246,24 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> =
           }, [setData])
 
       useEffect(() => {
-        parseJSONLD(data).then(() => {})
+        parseJSONLD(data).then(() => {
+        })
       }, [data, parseJSONLD])
 
       useEffect(() => {
         if (onInit) {
-          onInit({load: async () => {await load()}, save, remove})
+          onInit({
+            load: async () => {
+              await load()
+            }, save, remove
+          })
         }
       }, [onInit, load, save, remove])
 
       const handleSave = useCallback(async () => {
         await save()
         await load()
-        if(!entityIRI) {
+        if (!entityIRI) {
           console.log('no entityIRI')
           return
         }
@@ -266,59 +275,74 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> =
 
       return (<>
             <Hidden xsUp={hideToolbar}>
-              <IconButton onClick={() => setEditMode(editMode => !editMode)}>{editMode ? <EditOff/> :
-                  <Edit/>}</IconButton>
-              {editMode && <>
-                  <Button onClick={handleSave} startIcon={<Save/>}>speichern</Button>
-                  <Button onClick={remove} startIcon={<Delete/>}>entfernen</Button>
-                  <Button onClick={() => load()} startIcon={<Refresh/>}>neu laden</Button>
-              </>}
-              {features?.enableDebug && <>
-                  <Switch checked={jsonViewerEnabled} onChange={e => setJsonViewerEnabled(Boolean(e.target.checked))}
-                          title={'debug'}/>
-                {jsonViewerEnabled &&
-                    <Switch checked={isUpdate} onChange={e => setIsUpdate(Boolean(e.target.checked))}
-                            title={'upsert'}/>}
-              </>
-              }
-              {toolbarChildren}
+              {toolbarRef?.current && createPortal((<>
+                <IconButton onClick={() => setEditMode(editMode => !editMode)}>{editMode ? <EditOff/> :
+                    <Edit/>}</IconButton>
+                {editMode && <>
+                    <IconButton onClick={handleSave} aria-label='save'><Save/></IconButton>
+                    <IconButton onClick={remove} aria-lable='remove'><Delete/></IconButton>
+                    <IconButton onClick={() => load()} aria-lable='refresh'><Refresh/></IconButton>
+                </>}
+                {toolbarChildren}
+              </>), toolbarRef.current)}
             </Hidden>
-        {hideToolbar && features?.enableDebug && <>
-            <Switch checked={jsonViewerEnabled} onChange={e => setJsonViewerEnabled(Boolean(e.target.checked))}
-                    title={'debug'}/>
-          {jsonViewerEnabled &&
-              <Switch checked={isUpdate} onChange={e => setIsUpdate(Boolean(e.target.checked))}
-                      title={'upsert'}/>}
-        </>}
-            <Grid container spacing={2} sx={{marginTop: '2em', marginBottom: '2em'}}>
-              <Grid item xs={12} md={hideSimilarityFinder ? undefined : 8} lg={ hideSimilarityFinder ? undefined : 6} flexGrow={1}>
-                <JsonForms
-                    readonly={!editMode}
-                    data={data}
-                    renderers={allRenderer}
-                    cells={materialCells}
-                    onChange={handleFormChange}
-                    schema={schema as JsonSchema}
-                    {...jfpProps}
+            {features?.enableDebug && <>
+                <Switch checked={jsonViewerEnabled} onChange={e => setJsonViewerEnabled(Boolean(e.target.checked))}
+                        title={'debug'}/>
+              {jsonViewerEnabled &&
+                  <Switch checked={isUpdate} onChange={e => setIsUpdate(Boolean(e.target.checked))}
+                          title={'upsert'}/>}
+            </>
+            }
+            {hideToolbar && features?.enableDebug && <>
+                <Switch checked={jsonViewerEnabled} onChange={e => setJsonViewerEnabled(Boolean(e.target.checked))}
+                        title={'debug'}/>
+              {jsonViewerEnabled &&
+                  <Switch checked={isUpdate} onChange={e => setIsUpdate(Boolean(e.target.checked))}
+                          title={'upsert'}/>}
+            </>}
+            <Grid container spacing={2} sx={{marginTop: '1em', marginBottom: '2em', width: '100%'}}>
+              <Grid item xs={12} md={hideSimilarityFinder ? undefined : 8} lg={hideSimilarityFinder ? undefined : 6}
+                    flexGrow={1}>
+                <Card>
+                  <CardContent>
+                    <JsonForms
+                        readonly={!editMode}
+                        data={data}
+                        renderers={allRenderer}
+                        cells={materialCells}
+                        onChange={handleFormChange}
+                        schema={schema as JsonSchema}
+                        {...jfpProps}
 
-                />
-                {jsonViewerEnabled && [data, jsonldData, formData].map((data_, idx) => (<>
-                  {entityIRI}
-                  <JsonView key={idx} data={data_} shouldInitiallyExpand={(lvl) => lvl < 5}/>
-                  <hr/>
-                </>))}
+                    />
+                  </CardContent>
+                </Card>
+                {jsonViewerEnabled && [data, jsonldData, formData].map((data_, idx) => (<Card>
+                  <CardContent>
+                    {entityIRI}
+                    <JsonView key={idx} data={data_} shouldInitiallyExpand={(lvl) => lvl < 5}/>
+                    <Divider />
+                  </CardContent>
+                </Card>))}
               </Grid>
               {!hideSimilarityFinder && <>
                   <Grid item xs={12} lg={6} md={4}>
-                      <IconButton onClick={() => setHideSimilarityFinder(true)} sx={{position: 'absolute'}}><Close /></IconButton>
-                      <SimilarityFinder
-                          search={searchText}
-                          data={data}
-                          classIRI={typeIRI}
-                          jsonSchema={schema}
-                          onEntityIRIChange={onEntityChange}
-                          searchOnDataPath={'title'}
-                          onMappedDataAccepted={handleNewData}/>
+                      <Card>
+                          <CardContent>
+
+                              <IconButton onClick={() => setHideSimilarityFinder(true)}
+                                          sx={{position: 'absolute'}}><Close/></IconButton>
+                              <SimilarityFinder
+                                  search={searchText}
+                                  data={data}
+                                  classIRI={typeIRI}
+                                  jsonSchema={schema}
+                                  onEntityIRIChange={onEntityChange}
+                                  searchOnDataPath={'title'}
+                                  onMappedDataAccepted={handleNewData}/>
+                          </CardContent>
+                      </Card>
                   </Grid>
               </>
               }

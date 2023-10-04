@@ -8,7 +8,7 @@ import { TextField } from './TextField'
 
 export type AutocompleteSuggestion = {
   label: string;
-  value: string;
+  value: string | null;
 };
 
 export type DebouncedAutocompleteProps = {
@@ -27,12 +27,18 @@ export type DebouncedAutocompleteProps = {
   'renderInput' | 'size' | 'options'
 >
 
+const emptySuggetions: AutocompleteSuggestion[] = [
+  {
+    label: '',
+    value: null,
+  }
+]
 export const DebouncedAutocomplete: FunctionComponent<
   DebouncedAutocompleteProps
 > = ({ load, title ,minSearchLength = 1, loadOnStart, ready = true, readOnly,onSearchValueChange, onDebouncedSearchChange, condensed, inputProps, ...props }) => {
   const [suggestions, setSuggestions] = useState<
     AutocompleteSuggestion[] | undefined
-  >(undefined)
+  >(emptySuggetions)
   const [loading, setLoading] = useState<boolean>(false)
 
   const [initiallyLoaded, setInitiallyLoaded] = useState(false)
@@ -42,9 +48,9 @@ export const DebouncedAutocomplete: FunctionComponent<
       const data = await load(value)
       onDebouncedSearchChange && onDebouncedSearchChange(value)
       if (data.length > 0) {
-        setSuggestions(data)
+        setSuggestions([...data, ...emptySuggetions])
       } else {
-        setSuggestions(undefined)
+        setSuggestions(emptySuggetions)
       }
       setLoading(false)
     }, 500),
@@ -68,7 +74,7 @@ export const DebouncedAutocomplete: FunctionComponent<
       setLoading(true)
       load().then((data) => {
         if (data?.length > 0) {
-          setSuggestions(data)
+          setSuggestions([...data, ...emptySuggetions])
         }
         setLoading(false)
         setInitiallyLoaded(true)
@@ -108,7 +114,7 @@ export const DebouncedAutocomplete: FunctionComponent<
             {...inputProps}
           />
         )}
-        options={suggestions || []}
+        options={suggestions}
 
       />
     </>

@@ -18,7 +18,7 @@ const exampleData = {
   'title': 'Otto Dix Ausstellung'
 }
 export default () => {
-  const {bulkLoaded} = useRDFDataSources('./ontology/exhibition-info.owl.ttl')
+  const {bulkLoaded} = useRDFDataSources('/ontology/exhibition-info.owl.ttl')
   const router = useRouter()
   const {typeName} = router.query
 

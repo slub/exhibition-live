@@ -16,7 +16,7 @@ type Props = {
 }
 const classIRI = sladb.Exhibition.value
 export default () => {
-  const {bulkLoaded} = useRDFDataSources('./ontology/exhibition-info.owl.ttl')
+  const {bulkLoaded} = useRDFDataSources('/ontology/exhibition-info.owl.ttl')
   //get param id from nextjs router
   const router = useRouter()
   const {id} = router.query

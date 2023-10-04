@@ -114,7 +114,7 @@ const TypedForm = ({defaultData, typeName, classIRI}: MainFormProps) => {
             {oxigraph && features?.enableDebug && <SPARQLLocalOxigraphToolkit sparqlQuery={doLocalQuery}/>}
             {loadedSchema  &&
                 <SemanticJsonForm
-                    forceEditMode={true}
+                    defaultEditMode={true}
                     data={data}
                     entityIRI={data['@id']}
                     setData={handleChangeData}

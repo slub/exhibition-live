@@ -7,12 +7,14 @@ import {shouldForwardProp} from '@mui/system'
 import {useRouter} from 'next/router'
 import PropTypes from 'prop-types'
 import React, {useCallback, useState} from 'react'
+import {v4 as uuidv4} from 'uuid'
 
 // third-party
 // project imports
 import DiscoverAutocompleteInput from '../../form/discover/DiscoverAutocompleteInput'
-import {sladb} from '../../form/formConfigs'
+import {sladb, slent} from '../../form/formConfigs'
 import {useGlobalSearch} from '../../state'
+import {encodeIRI} from '../../utils/core'
 
 // styles
 const PopperStyle = styled(Popper, {shouldForwardProp})(({theme}) => ({
@@ -80,50 +82,50 @@ export const SearchSection = () => {
   const {typeName} = router.query as { typeName: string | null | undefined }
   const classIRI: string | undefined = typeof typeName === 'string' ? sladb(typeName).value : undefined
 
-  const handleChange = useCallback(
-      (value?: string | null) => {
-        value && router.push(`/create/${typeName}/${encodeURIComponent(value)}`)
-      }
-      , [typeName])
+  const handleChange = useCallback((value?: string | null) => {
+        value && router.push(`/create/${typeName}/${encodeIRI(value)}`)
+      }, [typeName])
 
   const handleNew = useCallback(() => {
-    router.push(`/create/${typeName}`)
+    const newId = slent( uuidv4() ).value
+    router.push(`/create/${typeName}/${encodeIRI(newId)}`)
   }, [typeName])
 
-  const handleSearchTextChange = useCallback(
-      (search) => {
+  const handleSearchTextChange = useCallback((search) => {
         setSearch(search)
-      },
-      [setSearch])
+      }, [setSearch])
 
-  return (
-      <>
-        <Box>
+  return !typeName ? null : (
+        <Box
+            sx={{
+              paddingLeft: 4,
+              paddingRight: 2,
+            }}
+        >
           <Grid container spacing={2}>
             {classIRI && typeName && <>
                 <Grid item xs={11}>
                     <DiscoverAutocompleteInput
+                        key={typeName}
                         typeIRI={classIRI}
                         limit={1000}
                         condensed
-                        title={typeName || ''}
                         inputProps={
                           {
                             placeholder: `Suche nach ${typeName}`,
                             variant: 'outlined',
                           }
                         }
+                        title={typeName}
                         typeName={typeName}
                         onDebouncedSearchChange={handleSearchTextChange}
                         onSelectionChange={selection => handleChange(selection?.value)}/>
                 </Grid>
                 <Grid item xs={1}>
-                    <Button onClick={handleNew} aria-label={'neuen Eintrag erstellen'} startIcon={<NewIcon/>}> neu
-                        aufnehmen</Button>
+                    <Button onClick={handleNew} aria-label={'neuen Eintrag erstellen'} startIcon={<NewIcon/>}> neue {typeName} </Button>
                 </Grid>
             </>}
           </Grid>
         </Box>
-      </>
   )
 }

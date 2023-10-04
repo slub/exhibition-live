@@ -63,7 +63,7 @@ export const Sidebar = ({drawerOpen, drawerToggle}: SidebarProps) => {
           >
             <MenuCard/>
             <MenuList/>
-            <NavItem item={{id: 'setttings', type: 'item', url: '#', icon: () => <Settings />, title: 'Einstellungen'}} onClick={openSettings} />
+            <NavItem item={{id: 'setttings', type: 'item', url: '#', icon: () => <Settings />, title: 'Einstellungen'}} level={0} onClick={openSettings} />
             <Stack direction="row" justifyContent="center" sx={{mb: 2}}>
               <Chip label={'Version 1.3.122'} disabled color="secondary" size="small" sx={{cursor: 'pointer'}}/>
             </Stack>

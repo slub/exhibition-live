@@ -11,9 +11,10 @@ import {MenuItem} from './types'
 
 type NavItemProps = {
   item: MenuItem,
-  level: number
+  level: number,
+  onClick?: () => void
 }
-export const NavItem = ({ item, level }: NavItemProps) => {
+export const NavItem = ({ item, level,onClick }: NavItemProps) => {
   const theme = useTheme()
   const { pathname } = useRouter()
   const customization = useThemeSettings()
@@ -75,7 +76,7 @@ export const NavItem = ({ item, level }: NavItemProps) => {
             pl: `${level * 24}px`
           }}
           selected={customization.isOpen.findIndex((id) => id === item.id) > -1}
-          onClick={() => itemHandler(item.id)}
+          onClick={() => onClick ? onClick() : itemHandler(item.id)}
       >
         <ListItemIcon sx={{ my: 'auto', minWidth: !item?.icon ? 18 : 36 }}>{itemIcon}</ListItemIcon>
         <ListItemText

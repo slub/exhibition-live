@@ -1,15 +1,18 @@
-import {Box, Chip, Drawer, Stack, useMediaQuery, useTheme} from '@mui/material'
+import {Settings} from '@mui/icons-material'
+import {Box, Button, Chip, Drawer, Stack, useMediaQuery, useTheme} from '@mui/material'
 import {useQuery} from '@tanstack/react-query'
 import {JSONSchema7} from 'json-schema'
-import {ForwardedRef, useMemo} from 'react'
+import React, {ForwardedRef, useMemo} from 'react'
 import {BrowserView, MobileView} from 'react-device-detect'
 import PerfectScrollbar from 'react-perfect-scrollbar'
 
 import loadedSchema from '../../../public/schema/Exhibition.schema.json'
+import SettingsModal from '../../content/settings/SettingsModal'
 import {sladb} from '../../form/formConfigs'
 import {useFormRefsContext} from '../../provider/formRefsContext'
+import {useLocalSettings} from '../../state/useLocalSettings'
 import {drawerWidth} from './MainLayout'
-import {MenuGroup, NavGroup} from './menu'
+import {MenuGroup, NavGroup, NavItem} from './menu'
 import menuLists from './menu/menuLists'
 
 
@@ -40,6 +43,7 @@ type SidebarProps = {
 export const Sidebar = ({drawerOpen, drawerToggle}: SidebarProps) => {
   const theme = useTheme()
   const matchUpMd = useMediaQuery(theme.breakpoints.up('md'))
+  const {openSettings} = useLocalSettings()
 
   const drawer = (
       <>
@@ -57,8 +61,9 @@ export const Sidebar = ({drawerOpen, drawerToggle}: SidebarProps) => {
                 paddingRight: '16px'
               }}
           >
-            <MenuList/>
             <MenuCard/>
+            <MenuList/>
+            <NavItem item={{id: 'setttings', type: 'item', url: '#', icon: () => <Settings />, title: 'Einstellungen'}} onClick={openSettings} />
             <Stack direction="row" justifyContent="center" sx={{mb: 2}}>
               <Chip label={'Version 1.3.122'} disabled color="secondary" size="small" sx={{cursor: 'pointer'}}/>
             </Stack>
@@ -66,13 +71,14 @@ export const Sidebar = ({drawerOpen, drawerToggle}: SidebarProps) => {
         </BrowserView>
         <MobileView>
           <Box sx={{px: 2}}>
-            <MenuList/>
             <MenuCard/>
+            <MenuList/>
             <Stack direction="row" justifyContent="center" sx={{mb: 2}}>
               <Chip label={'Version 1.3.122'} disabled color="secondary" size="small" sx={{cursor: 'pointer'}}/>
             </Stack>
           </Box>
         </MobileView>
+        <SettingsModal />
       </>
   )
 

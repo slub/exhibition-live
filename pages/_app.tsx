@@ -7,6 +7,7 @@ import '../styles/tooltipster-sideTip-shadow.min.css'
 import '../styles/layout.css'
 import '../styles/temp.css'
 import 'leaflet/dist/leaflet.css'
+import '../components/i18n/i18n'
 
 import {QueryClient, QueryClientProvider} from '@tanstack/react-query'
 import type { AppProps } from 'next/app'

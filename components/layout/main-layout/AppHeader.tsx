@@ -10,7 +10,8 @@ import {useLocalSettings} from '../../state/useLocalSettings'
 import { SearchSection } from './SearchSection'
 
 
-const LogoSection = ()  => (<>LogoSection</>)
+const Logo = () => (<img src={  '/logo.png'} alt="Ausstellungsdatenbank" width="100"/>)
+const LogoSection = ()  => (<><Logo /></>)
 const ProfileSection = ()  => (<>ProfileSection</>)
 
 type AppHeaderProps = {
@@ -18,7 +19,6 @@ type AppHeaderProps = {
 }
 export const AppHeader = ({ handleLeftDrawerToggle }) => {
   const theme = useTheme()
-  const {openSettings} = useLocalSettings()
 
   const [open, setOpen] = useState(false)
   const { actionRef, toolbarRef} = useFormRefsContext()
@@ -39,10 +39,7 @@ export const AppHeader = ({ handleLeftDrawerToggle }) => {
         }}
       >
         <Box component="span" sx={{ display: { xs: 'none', md: 'block' }, flexGrow: 1 }}>
-          <Button startIcon={<Settings />} onClick={openSettings} >
-          </Button>
           <LogoSection />
-          <SettingsModal />
         </Box>
         <ButtonBase sx={{ borderRadius: '12px', overflow: 'hidden' }}>
           <Avatar

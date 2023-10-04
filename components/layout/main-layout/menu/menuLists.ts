@@ -10,20 +10,20 @@ const topLevel = ['Exhibition', 'Person']
 
 const lists: (schema: JSONSchema7)  => MenuGroup = (exhibitionSchema) => ({
   id: 'lists',
-  title: 'Abfrage',
+  title: 'Erstellen',
   type: 'group',
   children: [
     {
       id: 'list_default',
       title: 'Austellungen',
       type: 'item',
-      url: '/list/Exhibition'
+      url: '/create/Exhibition'
     },
     {
       id: 'list_person',
       title: 'Personen',
       type: 'item',
-      url: '/list/Person'
+      url: '/create/Person'
     },
     {
       id: 'list_other',
@@ -37,7 +37,7 @@ const lists: (schema: JSONSchema7)  => MenuGroup = (exhibitionSchema) => ({
           id: `list_${key}`,
           title: (value as any).title || key,
           type: 'item',
-          url: `/list/${key}`
+          url: `/create/${key}`
         }))
     }
   ]

@@ -17,6 +17,7 @@ import {
 import SemanticJsonForm from '../../form/SemanticJsonForm'
 import {useUISchemaForType} from '../../form/uischemaForType'
 import {uischemas} from '../../form/uischemas'
+import {useFormRefsContext} from '../../provider/formRefsContext'
 import {
   materialCategorizationStepperLayoutWithPortal
 } from '../../renderer/MaterialCategorizationStepperLayoutWithPortal'
@@ -71,6 +72,7 @@ const MainForm = ({defaultData}: MainFormProps) => {
   const {features} = useSettings()
   const [searchText, setSearchText] = useState<string | undefined>()
   const [mode, setMode] = useState<'search' | 'edit'>('search')
+  const { actionRef, toolbarRef} = useFormRefsContext()
 
   const handleNew = useCallback(() => {
     setMode('edit')
@@ -148,14 +150,16 @@ const MainForm = ({defaultData}: MainFormProps) => {
               <Grid item xs={10}>
 
                 {oxigraph && features?.enableDebug && <SPARQLLocalOxigraphToolkit sparqlQuery={doLocalQuery}/>}
+                <span ref={toolbarRef} />
                 <IconButton onClick={handleNew} aria-label={'neuen Eintrag erstellen'}><NewIcon/></IconButton>
                 <IconButton
                     onClick={() => setMode('search')}
                     aria-label={'vorhandenen Eintrag suchen'}><Search/>
                 </IconButton>
+                <span ref={actionRef} />
                 {loadedSchema &&
                     <SemanticJsonForm
-                        forceEditMode={true}
+                        defaultEditMode={ true}
                         data={data}
                         entityIRI={data['@id']}
                         setData={handleChangeData}

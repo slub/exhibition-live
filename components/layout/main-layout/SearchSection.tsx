@@ -7,6 +7,7 @@ import {shouldForwardProp} from '@mui/system'
 import {useRouter} from 'next/router'
 import PropTypes from 'prop-types'
 import React, {useCallback, useState} from 'react'
+import {useTranslation} from 'react-i18next'
 import {v4 as uuidv4} from 'uuid'
 
 // third-party
@@ -76,7 +77,7 @@ MobileSearch.propTypes = {
 // ==============================|| SEARCH INPUT ||============================== //
 
 export const SearchSection = () => {
-  const theme = useTheme()
+  const { t } = useTranslation()
   const {search, setSearch} = useGlobalSearch()
   const router = useRouter()
   const {typeName} = router.query as { typeName: string | null | undefined }
@@ -122,7 +123,7 @@ export const SearchSection = () => {
                         onSelectionChange={selection => handleChange(selection?.value)}/>
                 </Grid>
                 <Grid item xs={1}>
-                    <Button onClick={handleNew} aria-label={'neuen Eintrag erstellen'} startIcon={<NewIcon/>}> neue {typeName} </Button>
+                    <Button onClick={handleNew} aria-label={'neuen Eintrag erstellen'} startIcon={<NewIcon/>}> {t(typeName)} </Button>
                 </Grid>
             </>}
           </Grid>

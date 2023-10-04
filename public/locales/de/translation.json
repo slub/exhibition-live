@@ -1,0 +1,13 @@
+{
+  "exhibition database": "Ausstellungsdatenbank",
+  "main": {
+    "Exhibition": "Ausstellung",
+    "Person": "Person",
+    "Work": "Werk",
+    "Organization": "Organisation",
+    "Location": "Ort",
+    "Resource": "Ressource",
+    "ExhibitionType": "Ausstellungsart",
+    "GeographicLocation": "Geographische Position"
+  }
+}

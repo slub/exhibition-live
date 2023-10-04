@@ -1,0 +1,11 @@
+{
+  "exhibition database": "Exhibition Database",
+  "Exhibition": "Exhibition",
+  "Person": "Person",
+  "Work": "Work",
+  "Organization": "Organisation",
+  "Location": "Location",
+  "Resource": "Resource",
+  "ExhibitionType": "exhibition type",
+  "GeographicLocation": "geographic location"
+}

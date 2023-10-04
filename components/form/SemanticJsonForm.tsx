@@ -61,6 +61,7 @@ interface OwnProps {
   hideToolbar?: boolean
   readonly?: boolean
   forceEditMode?: boolean
+  defaultEditMode?: boolean
   searchText?: string
   parentIRI?: string,
   toolbarChildren?: React.ReactNode,
@@ -151,6 +152,7 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> =
        hideToolbar,
        readonly,
        forceEditMode,
+       defaultEditMode,
        searchText,
        parentIRI,
        toolbarChildren,
@@ -161,13 +163,13 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> =
       const [formData, setFormData] = useState<any | undefined>()
       const [initiallyLoaded, setInitiallyLoaded] = useState<string | undefined>(undefined)
       const [jsonViewerEnabled, setJsonViewerEnabled] = useState(false)
-      const [managedEditMode, setEditMode] = useState(false)
+      const [managedEditMode, setEditMode] = useState(defaultEditMode || false)
       const editMode = useMemo(() => forceEditMode || managedEditMode, [managedEditMode, forceEditMode])
       const [hideSimilarityFinder, setHideSimilarityFinder] = useState(true)
       const {features} = useSettings()
-      const typeName = useMemo(() => typeIRI.substring(BASE_IRI.length, typeIRI.length), [typeIRI])
+      //const typeName = useMemo(() => typeIRI.substring(BASE_IRI.length, typeIRI.length), [typeIRI])
 
-      const {parseJSONLD} = useJsonldParser(
+      useJsonldParser(
           data,
           jsonldContext,
           schema,
@@ -175,7 +177,8 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> =
             onJsonldData: setJsonldData,
             onFormDataChange: setFormData,
             walkerOptions: infuserOptions,
-            defaultPrefix
+            defaultPrefix,
+            enabled: true
           })
 
 
@@ -245,10 +248,6 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> =
             }))
           }, [setData])
 
-      useEffect(() => {
-        parseJSONLD(data).then(() => {
-        })
-      }, [data, parseJSONLD])
 
       useEffect(() => {
         if (onInit) {
@@ -263,13 +262,6 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> =
       const handleSave = useCallback(async () => {
         await save()
         await load()
-        if (!entityIRI) {
-          console.log('no entityIRI')
-          return
-        }
-        console.log('will emit')
-        //emitToSubscribers(entityIRI, subscriptions)
-        //setEditMode(false)
       }, [entityIRI, save, setEditMode])
 
 

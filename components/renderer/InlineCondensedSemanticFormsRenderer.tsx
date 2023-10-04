@@ -35,15 +35,22 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
   const isValid = errors.length === 0
   const appliedUiSchemaOptions = merge({}, config, uischema.options)
   const [editMode, setEditMode] = useState(false)
-  const [formData, setFormData] = useState({'@id': data})
-  const {crudOptions} = useGlobalCRUDOptions()
   const ctx = useJsonForms()
   const [realLabel, setRealLabel] = useState('')
   const [modalIsOpen, setModalIsOpen] = useState(false)
+  const selected = useMemo(() => ({value: data || null, label: realLabel}), [data, realLabel])
+
+  useEffect(() => {
+    if(!data) setRealLabel('')
+  }, [data, setRealLabel]);
+
 
   const handleSelectedChange = useCallback(
       (v: AutocompleteSuggestion) => {
-        //FIXME: this is a workaround for a bug, that causes this to be called with the same value eternally
+        if(!v) {
+          handleChange(path, undefined)
+          return
+        }
         if (v.value !== data) handleChange(path, v.value)
         setRealLabel(v.label)
       },
@@ -71,9 +78,9 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
 
   const {$ref, typeIRI} = uischema.options?.context || {}
   const typeName = useMemo(() => typeIRI.substring(BASE_IRI.length, typeIRI.length), [typeIRI])
-  const uischemaExternal = useUISchemaForType(typeIRI || '')
+  //const uischemaExternal = useUISchemaForType(typeIRI || '')
 
-  const subSchema = useMemo(() => {
+  /*const subSchema = useMemo(() => {
     if (!$ref) return
     const schema2 = {
       ...schema,
@@ -98,7 +105,7 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
               rootSchema
           ),
       [uischemas, schema, uischema.scope, path, uischema, rootSchema]
-  )
+  )*/
 
   const handleToggle = useCallback(() => {
     setModalIsOpen(!modalIsOpen)
@@ -113,14 +120,12 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
         <Grid container alignItems='baseline'>
           <Grid item flex={'auto'}>
             <DiscoverAutocompleteInput
-                key={'not empty'}
                 loadOnStart={editMode}
                 readonly={Boolean(ctx.readonly)}
                 typeIRI={typeIRI}
                 title={label || ''}
                 typeName={typeName || ''}
-                defaultSelected={{value: data, label: `${realLabel}`}}
-                selected={{value: data, label: `${realLabel}`}}
+                selected={selected}
                 onSelectionChange={selection => handleSelectedChange(selection)}/>
           </Grid>
           {!ctx.readonly && <Grid item>

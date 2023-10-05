@@ -52,7 +52,7 @@ jobs:
         run: yarn install
       - name: Build with Next.js
         env:
-          NEXT_PUBLIC_BASE_PATH:  ${{ github.event.repository.name }}
+          NEXT_PUBLIC_BASE_PATH:  /${{ github.event.repository.name }}
         run: yarn build
       - name: Static HTML export with Next.js
         run: npx next export

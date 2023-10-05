@@ -17,7 +17,6 @@ export default () => {
   //const {bulkLoaded} = useRDFDataSources('/ontology/exhibition-info.owl.ttl')
   const router = useRouter()
   const {typeName, id: encodedID} = router.query as { typeName: string | null | undefined, id: string | null | undefined }
-  //get query parm ?id=...
   const classIRI: string | undefined = typeof typeName === 'string' ? sladb(typeName).value : undefined
   const id = useMemo(() => (typeof encodedID === 'string' ? decodeIRI(encodedID) : undefined), [encodedID])
 

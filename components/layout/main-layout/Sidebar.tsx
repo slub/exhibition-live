@@ -11,12 +11,12 @@ import SettingsModal from '../../content/settings/SettingsModal'
 import {sladb} from '../../form/formConfigs'
 import {useFormRefsContext} from '../../provider/formRefsContext'
 import {useLocalSettings} from '../../state/useLocalSettings'
+import {Logo} from './Logo'
 import {drawerWidth} from './MainLayout'
 import {MenuGroup, NavGroup, NavItem} from './menu'
 import menuLists from './menu/menuLists'
 
 
-const LogoSection = () => (<>LogoSection</>)
 
 const MenuList = () => {
 
@@ -49,7 +49,7 @@ export const Sidebar = ({drawerOpen, drawerToggle}: SidebarProps) => {
       <>
         <Box sx={{display: {xs: 'block', md: 'none'}}}>
           <Box sx={{display: 'flex', p: 2, mx: 'auto'}}>
-            <LogoSection/>
+            <Logo/>
           </Box>
         </Box>
         <BrowserView>

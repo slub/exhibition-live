@@ -4,13 +4,14 @@ import React, {FunctionComponent} from 'react'
 
 import SettingsModal from '../content/settings/SettingsModal'
 import {useLocalSettings} from '../state/useLocalSettings'
+import {Img} from '../utils/image/Img'
 
 interface OwnProps {
 }
 
 type Props = OwnProps;
 
-const Logo = () => (<img src={  './logo.png'} alt="Ausstellungsdatenbank" width="400"/>)
+const Logo = () => (<Img src={  '/logo.png'} alt="Ausstellungsdatenbank" width="400"/>)
 const PerformanceHeader: FunctionComponent<Props> = (props) => {
   const {openSettings} = useLocalSettings()
   return (

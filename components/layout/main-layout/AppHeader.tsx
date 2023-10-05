@@ -1,16 +1,13 @@
-import {Menu as IconMenu, Settings} from '@mui/icons-material'
+import {Menu as IconMenu} from '@mui/icons-material'
 // material-ui
-import {Avatar, Box, Button, ButtonBase, useTheme} from '@mui/material'
-import PropTypes from 'prop-types'
-import React, {useRef, useState} from 'react'
+import {Avatar, Box, ButtonBase, useTheme} from '@mui/material'
+import React, {useState} from 'react'
 
-import SettingsModal from '../../content/settings/SettingsModal'
 import {useFormRefsContext} from '../../provider/formRefsContext'
-import {useLocalSettings} from '../../state/useLocalSettings'
-import { SearchSection } from './SearchSection'
+import {Logo} from './Logo'
+import {SearchSection} from './SearchSection'
 
 
-const Logo = () => (<img src={  '/logo.png'} alt="Ausstellungsdatenbank" width="100"/>)
 const LogoSection = ()  => (<><Logo /></>)
 const ProfileSection = ()  => (<>ProfileSection</>)
 

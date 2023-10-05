@@ -16,6 +16,7 @@ import {BASE_IRI} from '../config'
 import {declarativeMappings} from '../config/lobidMappings'
 import {useSettings} from '../state/useLocalSettings'
 import {NodePropertyItem} from '../utils/graph/nodeToPropertyTree'
+import {Img} from '../utils/image/Img'
 import {mapByConfig} from '../utils/mapping/mapByConfig'
 import {StrategyContext} from '../utils/mapping/mappingStrategies'
 import DiscoverSearchTable from './discover/DiscoverSearchTable'
@@ -285,13 +286,13 @@ const SimilarityFinder: FunctionComponent<Props> = ({
                 <KnowledgebaseIcon/>
               </ToggleButton>
               <ToggleButton value="gnd" aria-label="GND">
-                <img alt={'gnd logo'} width={24} height={24} src={'/Icons/gnd-logo.png'}/>
+                <Img alt={'gnd logo'} width={24} height={24} src={'/Icons/gnd-logo.png'}/>
               </ToggleButton>
               <ToggleButton value="wikidata" aria-label="Wikidata">
-                <img alt={'wikidata logo'} width={30} height={24} src={'/Icons/Wikidata-logo-en.svg'}/>
+                <Img alt={'wikidata logo'} width={30} height={24} src={'/Icons/Wikidata-logo-en.svg'}/>
               </ToggleButton>
               <ToggleButton value="k10plus" aria-label="Wikidata">
-                <img alt={'k10plus logo'} width={40} height={30} src={'/Icons/k10plus-logo.png'}/>
+                <Img alt={'k10plus logo'} width={40} height={30} src={'/Icons/k10plus-logo.png'}/>
               </ToggleButton>
               <ToggleButton value="ai" aria-label="use AI">
                 <AndroidOutlined/>

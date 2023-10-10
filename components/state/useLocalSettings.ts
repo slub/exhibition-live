@@ -46,7 +46,7 @@ type UseLocalSettings = {
 const defaultSparqlEndpoints: SparqlEndpoint[] = [
   {
     label: 'Production',
-    endpoint: 'https://ausstellungsdatenbank.kuenste.live/query',
+    endpoint: 'https://sdv-ahn-adbtest.slub-dresden.de/query',
     active: true
   },
   {

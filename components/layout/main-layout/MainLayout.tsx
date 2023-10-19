@@ -80,10 +80,10 @@ export const MainLayout = ({ children }: {children: React.ReactNode}) => {
           </Toolbar>
         </AppBar>
 
-        <Sidebar drawerOpen={!matchDownMd ? leftDrawerOpened : !leftDrawerOpened} drawerToggle={handleLeftDrawerToggle} />
+        <Sidebar drawerOpen={ true } drawerToggle={handleLeftDrawerToggle} />
 
         {/*@ts-ignore */}
-        <Main theme={theme} open={leftDrawerOpened}>
+        <Main theme={theme} open={ true }>
           {children}
         </Main>
       </Box>

@@ -60,19 +60,6 @@ const HeaderAvatarStyle = styled(Avatar, {shouldForwardProp})(({theme}) => ({
   }
 }))
 
-// ==============================|| SEARCH INPUT - MOBILE||============================== //
-
-export const MobileSearch = ({value, setValue, popupState}) => {
-  const theme = useTheme()
-
-  return (<>mobile</>)
-
-}
-
-MobileSearch.propTypes = {
-  value: PropTypes.string,
-  setValue: PropTypes.func,
-}
 
 // ==============================|| SEARCH INPUT ||============================== //
 

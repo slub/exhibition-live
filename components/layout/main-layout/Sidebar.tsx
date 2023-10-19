@@ -69,15 +69,6 @@ export const Sidebar = ({drawerOpen, drawerToggle}: SidebarProps) => {
             </Stack>
           </PerfectScrollbar>
         </BrowserView>
-        <MobileView>
-          <Box sx={{px: 2}}>
-            <MenuCard/>
-            <MenuList/>
-            <Stack direction="row" justifyContent="center" sx={{mb: 2}}>
-              <Chip label={'Version 1.3.122'} disabled color="secondary" size="small" sx={{cursor: 'pointer'}}/>
-            </Stack>
-          </Box>
-        </MobileView>
         <SettingsModal />
       </>
   )

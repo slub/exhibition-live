@@ -35,12 +35,9 @@ const MenuCard = () => {
 }
 
 type SidebarProps = {
-  drawerOpen: boolean,
-  drawerToggle: () => void
-
 }
 
-export const Sidebar = ({drawerOpen, drawerToggle}: SidebarProps) => {
+export const Sidebar = () => {
   const theme = useTheme()
   const matchUpMd = useMediaQuery(theme.breakpoints.up('md'))
   const {openSettings} = useLocalSettings()
@@ -81,8 +78,7 @@ export const Sidebar = ({drawerOpen, drawerToggle}: SidebarProps) => {
             //container={container}
             variant={matchUpMd ? 'persistent' : 'temporary'}
             anchor="left"
-            open={drawerOpen}
-            onClose={drawerToggle}
+            open
             sx={{
               '& .MuiDrawer-paper': {
                 width: drawerWidth,

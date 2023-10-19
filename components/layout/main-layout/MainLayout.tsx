@@ -11,29 +11,16 @@ export const drawerWidth = 260
 export const appDrawerWidth = 320
 
 type MainProps = {
-  theme: Theme,
-  open: boolean
+  theme: Theme
 }
 
-const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(({ theme, open }: MainProps) => ({
+const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(({ theme }: MainProps) => ({
   // @ts-ignore
   ...theme.typography.mainContent,
   borderBottomLeftRadius: 0,
   borderBottomRightRadius: 0,
-  transition: theme.transitions.create(
-      'margin',
-      open
-          ? {
-            easing: theme.transitions.easing.easeOut,
-            duration: theme.transitions.duration.enteringScreen
-          }
-          : {
-            easing: theme.transitions.easing.sharp,
-            duration: theme.transitions.duration.leavingScreen
-          }
-  ),
   [theme.breakpoints.up('md')]: {
-    marginLeft: open ? 0 : -(drawerWidth - 20),
+    marginLeft: 0,
     width: `calc(100% - ${drawerWidth}px)`
   },
   [theme.breakpoints.down('md')]: {
@@ -53,12 +40,6 @@ const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(({
 export const MainLayout = ({ children }: {children: React.ReactNode}) => {
   const theme = useTheme()
   const matchDownMd = useMediaQuery(theme.breakpoints.down('md'))
-  // Handle left drawer
-  const [leftDrawerOpened, setLeftDrawerOpened] = useState<boolean>(false)
-  const handleLeftDrawerToggle = useCallback(() => {
-        setLeftDrawerOpened(o => !o)
-      },
-      [setLeftDrawerOpened])
 
 
   return (
@@ -71,19 +52,18 @@ export const MainLayout = ({ children }: {children: React.ReactNode}) => {
             color="inherit"
             elevation={0}
             sx={{
-              bgcolor: theme.palette.background.default,
-              transition: leftDrawerOpened ? theme.transitions.create('width') : 'none'
+              bgcolor: theme.palette.background.default
             }}
         >
           <Toolbar>
-            <AppHeader handleLeftDrawerToggle={handleLeftDrawerToggle} />
+            <AppHeader />
           </Toolbar>
         </AppBar>
 
-        <Sidebar drawerOpen={ true } drawerToggle={handleLeftDrawerToggle} />
+        <Sidebar />
 
         {/*@ts-ignore */}
-        <Main theme={theme} open={ true }>
+        <Main theme={theme} >
           {children}
         </Main>
       </Box>

@@ -59,27 +59,28 @@ const DiscoverSearchTable: FunctionComponent<Props> = ({
 
 
   return <>
-    {selectedEntry && <ClassicEntityCard
+    { selectedEntry 
+      ? <ClassicEntityCard
         id={selectedId}
         data={selectedEntry} onBack={() => handleSelect(undefined)}
         onSelectItem={handleSelect}
         onAcceptItem={onAcceptItem}
-        detailView={<LobidAllPropTable allProps={selectedEntry.allProps} onEntityChange={handleSelect}/>}/>}
-    <List>
-      {
+        detailView={<LobidAllPropTable allProps={selectedEntry.allProps} onEntityChange={handleSelect}/>}/>
+      : <List>
+        {
         // @ts-ignore
-        resultTable?.map(({id, label, avatar, secondary}, idx) => {
-          return (
+          resultTable?.map(({id, label, avatar, secondary}, idx) => {
+            return (
               <ClassicResultListItem
-                  key={id}
-                  id={id}
-                  onSelected={handleSelect}
-                  label={label}
-                  secondary={secondary}
-                  avatar={avatar}
-                  altAvatar={idx + 1}/>
+                key={id}
+                id={id}
+                onSelected={handleSelect}
+                label={label}
+                secondary={secondary}
+                avatar={avatar}
+                altAvatar={idx + 1}/>
           )})}
-    </List>
+      </List> }
   </>
 }
 

@@ -96,18 +96,20 @@ const LobidSearchTable: FunctionComponent<Props> = ({
         onAcceptItem && onAcceptItem(id, selectedEntry)
       }, [onAcceptItem, selectedEntry, pushHistory])
 
-  return <>{selectedId && <ClassicEntityCard
-      id={selectedId}
-      data={selectedEntry} onBack={() => handleSelect(undefined)}
-      onSelectItem={handleSelect}
-      onAcceptItem={(id) => onAcceptItem(id, selectedEntry)}
-      detailView={<LobidAllPropTable allProps={selectedEntry.allProps} onEntityChange={handleSelect}/>}/>}
-    <List>
-    {
-      // @ts-ignore
-      resultTable?.map(({id, label, dateOfBirthAndDeath, dateOfBirth, dateOfDeath, avatar, secondary}, idx) => {
-        return (
-            <ClassicResultListItem
+  return <>
+    { selectedId 
+      ? <ClassicEntityCard
+        id={selectedId}
+        data={selectedEntry} onBack={() => handleSelect(undefined)}
+        onSelectItem={handleSelect}
+        onAcceptItem={(id) => onAcceptItem(id, selectedEntry)}
+        detailView={<LobidAllPropTable allProps={selectedEntry.allProps} onEntityChange={handleSelect}/>}/>
+      : <List>
+        {
+          // @ts-ignore
+          resultTable?.map(({id, label, dateOfBirthAndDeath, dateOfBirth, dateOfDeath, avatar, secondary}, idx) => {
+            return (
+              <ClassicResultListItem
                 key={id}
                 id={id}
                 onSelected={handleSelect}
@@ -115,10 +117,10 @@ const LobidSearchTable: FunctionComponent<Props> = ({
                 secondary={secondary}
                 avatar={avatar}
                 altAvatar={String(idx + 1)}/>
-        )
-      })
-    }
-  </List>
+            )
+          })
+        }
+      </List> } 
 </>
 }
 

@@ -110,7 +110,7 @@ export const SearchSection = () => {
                         onSelectionChange={selection => handleChange(selection?.value)}/>
                 </Grid>
                 <Grid item xs={1}>
-                    <Button onClick={handleNew} aria-label={'neuen Eintrag erstellen'} startIcon={<NewIcon/>}> {t(typeName)} </Button>
+                    <Button onClick={handleNew} aria-label={'neuen Eintrag erstellen'} startIcon={<NewIcon/>} />
                 </Grid>
             </>}
           </Grid>

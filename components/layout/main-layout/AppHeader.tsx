@@ -3,21 +3,14 @@ import {Menu as IconMenu} from '@mui/icons-material'
 import {Avatar, Box, ButtonBase, useTheme} from '@mui/material'
 import React, {useState} from 'react'
 
-import {useFormRefsContext} from '../../provider/formRefsContext'
 import {Logo} from './Logo'
-import {SearchSection} from './SearchSection'
-
 
 const LogoSection = ()  => (<><Logo /></>)
 const ProfileSection = ()  => (<>ProfileSection</>)
 
-type AppHeaderProps = {
-}
 export const AppHeader = () => {
   const theme = useTheme()
-
-  const { actionRef, toolbarRef} = useFormRefsContext()
-
+  
   return (
     <>
       {/* logo */}
@@ -34,15 +27,6 @@ export const AppHeader = () => {
           <LogoSection />
         </Box>
       </Box>
-
-      {/* header search */}
-      <SearchSection />
-      <Box sx={{flexGrow: 1}} />
-      <Box sx={{ flexGrow: 1 }}   ref={actionRef}/>
-
-      {/* notification & profile */}
-      {/* @ts-ignore */}
-      <div ref={toolbarRef} />
     </>
   )
 }

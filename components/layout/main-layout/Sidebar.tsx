@@ -50,21 +50,12 @@ export const Sidebar = () => {
           </Box>
         </Box>
         <BrowserView>
-          <PerfectScrollbar
-              component="div"
-              style={{
-                height: !matchUpMd ? 'calc(100vh - 56px)' : 'calc(100vh - 88px)',
-                paddingLeft: '16px',
-                paddingRight: '16px'
-              }}
-          >
             <MenuCard/>
             <MenuList/>
             <NavItem item={{id: 'setttings', type: 'item', url: '#', icon: () => <Settings />, title: 'Einstellungen'}} level={0} onClick={openSettings} />
             <Stack direction="row" justifyContent="center" sx={{mb: 2}}>
               <Chip label={'Version 1.3.122'} disabled color="secondary" size="small" sx={{cursor: 'pointer'}}/>
             </Stack>
-          </PerfectScrollbar>
         </BrowserView>
         <SettingsModal />
       </>
@@ -82,6 +73,7 @@ export const Sidebar = () => {
             sx={{
               '& .MuiDrawer-paper': {
                 width: drawerWidth,
+                padding: '0 16px',
                 background: theme.palette.background.default,
                 color: theme.palette.text.primary,
                 borderRight: 'none',

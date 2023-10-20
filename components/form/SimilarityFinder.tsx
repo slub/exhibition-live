@@ -75,9 +75,9 @@ const SimilarityFinder: FunctionComponent<Props> = ({
   const searchString = useMemo<string | null>(() => search || (searchOnDataPath && Resolve.data(data, searchOnDataPath)) || null, [data, searchOnDataPath, search])
   const handleKnowledgeSourceChange = useCallback(
       (event: React.MouseEvent<HTMLElement>, newKnowledgeSources: KnowledgeSources[]) => {
-        if (entitySelected)  { handleSelect(undefined, entitySelected.source) }
+        if (entitySelected)  { setEntitySelected(undefined) }
         setSelectedKnowledgeSources(newKnowledgeSources)
-      }, [setSelectedKnowledgeSources])
+      }, [entitySelected, setEntitySelected, setSelectedKnowledgeSources])
   const typeName = useMemo(() => classIRI.substring(BASE_IRI.length, classIRI.length), [classIRI])
   const handleSelect = useCallback(
       (id: string | undefined, source: KnowledgeSources) => {

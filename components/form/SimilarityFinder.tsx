@@ -70,11 +70,12 @@ const SimilarityFinder: FunctionComponent<Props> = ({
                                                     }) => {
 
   const {openai} = useSettings()
-  const [selectedKnowledgeSources, setSelectedKnowledgeSources] = useState<KnowledgeSources[]>(['kb', 'gnd'])
+  const [selectedKnowledgeSources, setSelectedKnowledgeSources] = useState<KnowledgeSources[]>(['kb'])
   const [entitySelected, setEntitySelected] = useState<SelectedEntity | undefined>()
   const searchString = useMemo<string | null>(() => search || (searchOnDataPath && Resolve.data(data, searchOnDataPath)) || null, [data, searchOnDataPath, search])
   const handleKnowledgeSourceChange = useCallback(
       (event: React.MouseEvent<HTMLElement>, newKnowledgeSources: KnowledgeSources[]) => {
+        if (entitySelected)  { handleSelect(undefined, entitySelected.source) }
         setSelectedKnowledgeSources(newKnowledgeSources)
       }, [setSelectedKnowledgeSources])
   const typeName = useMemo(() => classIRI.substring(BASE_IRI.length, classIRI.length), [classIRI])
@@ -247,7 +248,7 @@ const SimilarityFinder: FunctionComponent<Props> = ({
 
   const handleAccept = useCallback(
       (id: string | undefined, entryData: any) => {
-        if (selectedKnowledgeSources.includes('ai')) {
+        if (selectedKnowledgeSources?.includes('ai')) {
           handleMapUsingAI(id, entryData)
         } else {
           handleManuallyMapData(id, entryData)
@@ -256,7 +257,7 @@ const SimilarityFinder: FunctionComponent<Props> = ({
 
   const handleAcceptKXP = useCallback(
       (id: string | undefined, entryData: NodePropertyItem) => {
-        if (selectedKnowledgeSources.includes('ai')) {
+        if (selectedKnowledgeSources?.includes('ai')) {
           console.log('handleAcceptKXP', id, entryData)
           const props = entryData.properties
           if (!props) return
@@ -279,6 +280,7 @@ const SimilarityFinder: FunctionComponent<Props> = ({
           <Grid item>
             <ToggleButtonGroup
                 value={selectedKnowledgeSources}
+                exclusive
                 onChange={handleKnowledgeSourceChange}
                 aria-label="Suche über verschiedene Wissensquellen"
             >
@@ -288,7 +290,7 @@ const SimilarityFinder: FunctionComponent<Props> = ({
               <ToggleButton value="gnd" aria-label="GND">
                 <Img alt={'gnd logo'} width={24} height={24} src={'/Icons/gnd-logo.png'}/>
               </ToggleButton>
-              <ToggleButton value="wikidata" aria-label="Wikidata">
+              {/*<ToggleButton value="wikidata" aria-label="Wikidata">
                 <Img alt={'wikidata logo'} width={30} height={24} src={'/Icons/Wikidata-logo-en.svg'}/>
               </ToggleButton>
               <ToggleButton value="k10plus" aria-label="Wikidata">
@@ -296,7 +298,7 @@ const SimilarityFinder: FunctionComponent<Props> = ({
               </ToggleButton>
               <ToggleButton value="ai" aria-label="use AI">
                 <AndroidOutlined/>
-              </ToggleButton>
+              </ToggleButton>*/}
             </ToggleButtonGroup>
           </Grid>
           <Grid item>
@@ -304,7 +306,7 @@ const SimilarityFinder: FunctionComponent<Props> = ({
           {searchString && <Chip label={`Suchwort:${searchString}`} />}
           </Grid>
         </Grid>
-        {searchString && ((!entitySelected || entitySelected.source == 'kb') && selectedKnowledgeSources.includes('kb') && <>
+        {searchString && ((!entitySelected || entitySelected.source == 'kb') && selectedKnowledgeSources?.includes('kb') && <>
             <DiscoverSearchTable
                 searchString={searchString}
                 typeName={typeName}
@@ -313,7 +315,7 @@ const SimilarityFinder: FunctionComponent<Props> = ({
                 onSelect={(id) => handleSelect(id, 'kb')}/>
             <Divider />
         </>)}
-        {searchString && ((!entitySelected || entitySelected.source == 'gnd') && selectedKnowledgeSources.includes('gnd') && <>
+        {searchString && ((!entitySelected || entitySelected.source == 'gnd') && selectedKnowledgeSources?.includes('gnd') && <>
             <LobidSearchTable
                 onAcceptItem={handleAccept}
                 searchString={searchString}
@@ -321,7 +323,7 @@ const SimilarityFinder: FunctionComponent<Props> = ({
                 onSelect={(id) => handleSelect(id, 'gnd')}/>
         <Divider />
         </>)}
-        {searchString && ((!entitySelected || entitySelected.source == 'k10plus') && selectedKnowledgeSources.includes('k10plus') &&
+        {searchString && ((!entitySelected || entitySelected.source == 'k10plus') && selectedKnowledgeSources?.includes('k10plus') &&
             <K10PlusSearchTable
                 onAcceptItem={handleAcceptKXP}
                 searchString={searchString}

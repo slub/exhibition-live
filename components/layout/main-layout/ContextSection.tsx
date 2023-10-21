@@ -1,10 +1,10 @@
-import React, {useState} from 'react'
-import {SearchSection} from './SearchSection'
-import {Box, Grid, Card, CardContent, Typography} from '@mui/material'
-import {useFormRefsContext} from '../../provider/formRefsContext'
-
+import {Box, Card, CardContent, Grid, Typography} from '@mui/material'
 import {useRouter} from 'next/router'
+import React, {useState} from 'react'
 import {useTranslation} from 'react-i18next'
+
+import {useFormRefsContext} from '../../provider/formRefsContext'
+import {SearchSection} from './SearchSection'
 
 
 export const ContextSection = () => {

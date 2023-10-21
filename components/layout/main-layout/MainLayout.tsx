@@ -4,8 +4,8 @@ import { AppBar, Box, CssBaseline, styled, Theme, Toolbar, useMediaQuery, useThe
 import {useCallback, useState} from 'react'
 
 import {AppHeader} from './AppHeader'
-import {Sidebar} from './Sidebar'
 import {ContextSection} from './ContextSection'
+import {Sidebar} from './Sidebar'
 
 export const gridSpacing = 3
 export const drawerWidth = 260

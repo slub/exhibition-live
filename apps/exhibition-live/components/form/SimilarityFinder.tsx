@@ -1,4 +1,3 @@
-// @flow
 import { Resolve } from "@jsonforms/core";
 import {
   AndroidOutlined,
@@ -46,11 +45,11 @@ export const filterForPrimitiveProperties = (
     Object.entries(properties || {}).filter(
       ([, value]) =>
         typeof value === "object" &&
-        (isPrimitive(value.type) ||
+        (isPrimitive(String(value.type)) ||
           value.oneOf ||
           (value.type === "array" &&
             typeof value.items === "object" &&
-            isPrimitive(value.items.type))),
+            isPrimitive(String((value.items as any).type)))),
     ),
   );
 const GND_IRI =
@@ -280,6 +279,7 @@ const SimilarityFinder: FunctionComponent<Props> = ({
 
   const handleManuallyMapData = useCallback(
     async (id: string | undefined, entryData: any) => {
+      console.log('map manually')
       if (!id || !entryData?.allProps) return;
       const mappingConfig = declarativeMappings[typeName];
       if (!mappingConfig) {

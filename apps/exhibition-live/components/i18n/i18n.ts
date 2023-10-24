@@ -12,7 +12,7 @@ i18n
       loadPath: `${base}/locales/{{lng}}/{{ns}}.json`,
     },
     fallbackLng: "de",
-    debug: true,
+    debug: false,
     interpolation: {
       escapeValue: false,
     },

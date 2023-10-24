@@ -6,9 +6,9 @@ import React, {
 } from "react";
 
 type FormRefsContextValue = {
-  stepperRef: RefObject<HTMLElement | undefined>;
-  actionRef: RefObject<HTMLElement | undefined>;
-  toolbarRef?: RefObject<HTMLElement | undefined>;
+  stepperRef: RefObject<any | HTMLElement | undefined>;
+  actionRef: RefObject<any | HTMLElement | undefined>;
+  toolbarRef?: RefObject<any | HTMLElement | undefined>;
 };
 export const FormRefsContext = createContext<FormRefsContextValue>({
   stepperRef: undefined,

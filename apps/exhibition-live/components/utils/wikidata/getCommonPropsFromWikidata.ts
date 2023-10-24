@@ -60,22 +60,20 @@ export const getCommonPropsFromWikidata: (
     const object = binding.get("object");
     if (!object) continue;
     const objectLabel = binding.get("objectLabel")?.value;
-    const objects = properties.get(property)?.objects || [];
+    const objects = properties.get(property)?.objects as any;
     if (object.termType === "NamedNode") {
-      // @ts-ignore
       properties.set(property, {
         label: propLabel || "",
         objects: [
           ...objects,
           { termType: "NamedNode", label: objectLabel, uri: object.value },
         ],
-      });
+      } as any);
     } else {
-      // @ts-ignore
       properties.set(property, {
         label: propLabel || "",
         objects: [...objects, object],
-      });
+      } as any);
     }
   }
 

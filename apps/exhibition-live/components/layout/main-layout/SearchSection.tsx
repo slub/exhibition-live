@@ -15,7 +15,6 @@ import { styled, useTheme } from "@mui/material/styles";
 import { shouldForwardProp } from "@mui/system";
 // assets
 import { useRouter } from "next/router";
-import PropTypes from "prop-types";
 import React, { useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { v4 as uuidv4 } from "uuid";

@@ -77,9 +77,10 @@ export type MainFormProps = {
   typeName: string;
   classIRI: string;
 };
+const oxigraph = false
 const TypedForm = ({ defaultData, typeName, classIRI }: MainFormProps) => {
   const { formData: data, setFormData: setData } = useFormData();
-  const { oxigraph } = useOxigraph();
+  //const { oxigraph } = useOxigraph();
   const { crudOptions, doLocalQuery } = useGlobalCRUDOptions();
   const { features } = useSettings();
   const { search: searchText, setSearch } = useGlobalSearch();

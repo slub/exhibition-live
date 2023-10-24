@@ -21,7 +21,6 @@ import React, {
   useMemo,
   useState,
 } from "react";
-import uri from "refractor/lang/uri";
 
 import { MappingConfigurationDialog } from "../../mapping/MappingConfigurationDialog";
 import { gndBaseIRI } from "../../utils/gnd/prefixes";
@@ -192,7 +191,7 @@ const LobidAllPropTable: FunctionComponent<Props> = ({
     ({ id }: { id: string }) => {
       onEntityChange && onEntityChange(id);
     },
-    [onEntityChange, uri],
+    [onEntityChange],
   );
 
   return (

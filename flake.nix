@@ -13,6 +13,7 @@
           buildInputs = with pkgs; [
             nodejs_latest
             nodePackages_latest.yarn
+            nodePackages_latest.pnpm
           ];
         };
       }

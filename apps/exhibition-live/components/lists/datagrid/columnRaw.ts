@@ -1,7 +1,7 @@
 import {
   Array2StringTransformOptions,
   DateToISOTransformOptions,
-} from './tableValueMapper'
+} from "./tableValueMapper";
 
 export type ColumnOptions = {
   dateFormat?: string;

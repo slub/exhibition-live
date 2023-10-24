@@ -1,4 +1,4 @@
-import {create} from 'zustand'
+import { create } from "zustand";
 
 type UseThemeSettings = {
   isOpen: string[];
@@ -6,19 +6,17 @@ type UseThemeSettings = {
   borderRadius: number;
   opened: boolean;
   defaultId: string;
-  navType: 'light' | 'dark'
-}
+  navType: "light" | "dark";
+};
 
 export const useThemeSettings = create<UseThemeSettings>((set, get) => ({
   isOpen: [], // for active default menu
-  defaultId: 'default',
-  fontFamily: '\'Roboto\', sans-serif',
+  defaultId: "default",
+  fontFamily: "'Roboto', sans-serif",
   borderRadius: 12,
   opened: true,
-  navType: 'light'
-
-}))
-
+  navType: "light",
+}));
 
 /*
 

@@ -1,10 +1,16 @@
-import {Link, Search} from '@mui/icons-material'
-import { CircularProgress } from '@mui/material'
-import Autocomplete, { AutocompleteProps } from '@mui/material/Autocomplete'
-import { debounce } from 'lodash'
-import React, {FunctionComponent, useCallback, useEffect, useMemo, useState} from 'react'
+import { Link, Search } from "@mui/icons-material";
+import { CircularProgress } from "@mui/material";
+import Autocomplete, { AutocompleteProps } from "@mui/material/Autocomplete";
+import { debounce } from "lodash";
+import React, {
+  FunctionComponent,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 
-import { TextField } from './TextField'
+import { TextField } from "./TextField";
 
 export type AutocompleteSuggestion = {
   label: string;
@@ -19,69 +25,88 @@ export type DebouncedAutocompleteProps = {
   ready?: boolean;
   readOnly?: boolean;
   onDebouncedSearchChange?: (value: string | undefined) => void;
-  condensed?: boolean
+  condensed?: boolean;
   onSearchValueChange?: (value: string | undefined) => void;
   inputProps?: any;
 } & Omit<
   AutocompleteProps<any, any, any, any>,
-  'renderInput' | 'size' | 'options'
->
+  "renderInput" | "size" | "options"
+>;
 
 const emptySuggetions: AutocompleteSuggestion[] = [
   {
-    label: '',
+    label: "",
     value: null,
-  }
-]
+  },
+];
 export const DebouncedAutocomplete: FunctionComponent<
   DebouncedAutocompleteProps
-> = ({ load, title ,minSearchLength = 1, loadOnStart, ready = true, readOnly,onSearchValueChange, onDebouncedSearchChange, condensed, inputProps, ...props }) => {
+> = ({
+  load,
+  title,
+  minSearchLength = 1,
+  loadOnStart,
+  ready = true,
+  readOnly,
+  onSearchValueChange,
+  onDebouncedSearchChange,
+  condensed,
+  inputProps,
+  ...props
+}) => {
   const [suggestions, setSuggestions] = useState<
     AutocompleteSuggestion[] | undefined
-  >(emptySuggetions)
-  const [loading, setLoading] = useState<boolean>(false)
+  >(emptySuggetions);
+  const [loading, setLoading] = useState<boolean>(false);
 
-  const [initiallyLoaded, setInitiallyLoaded] = useState(false)
+  const [initiallyLoaded, setInitiallyLoaded] = useState(false);
 
   const debouncedRequest = useCallback(
     debounce(async (value: string) => {
-      const data = await load(value)
-      onDebouncedSearchChange && onDebouncedSearchChange(value)
+      const data = await load(value);
+      onDebouncedSearchChange && onDebouncedSearchChange(value);
       if (data.length > 0) {
-        setSuggestions([...data, ...emptySuggetions])
+        setSuggestions([...data, ...emptySuggetions]);
       } else {
-        setSuggestions(emptySuggetions)
+        setSuggestions(emptySuggetions);
       }
-      setLoading(false)
+      setLoading(false);
     }, 500),
-    [setLoading, setSuggestions, load, onDebouncedSearchChange]
-  )
+    [setLoading, setSuggestions, load, onDebouncedSearchChange],
+  );
 
   const handleOnChange = useCallback(
-      (e: any): void => {
-        setLoading(true)
-        const value = e.currentTarget.value
-        onSearchValueChange && onSearchValueChange(value)
-        if (value.length >=  minSearchLength) {
-          debouncedRequest(value)
-        }
-      },
-      [setLoading, debouncedRequest, minSearchLength],
-  )
+    (e: any): void => {
+      setLoading(true);
+      const value = e.currentTarget.value;
+      onSearchValueChange && onSearchValueChange(value);
+      if (value.length >= minSearchLength) {
+        debouncedRequest(value);
+      }
+    },
+    [setLoading, debouncedRequest, minSearchLength],
+  );
 
   useEffect(() => {
     if (loadOnStart && ready && !initiallyLoaded) {
-      setLoading(true)
+      setLoading(true);
       load().then((data) => {
         if (data?.length > 0) {
-          setSuggestions([...data, ...emptySuggetions])
+          setSuggestions([...data, ...emptySuggetions]);
         }
-        setLoading(false)
-        setInitiallyLoaded(true)
-      })
+        setLoading(false);
+        setInitiallyLoaded(true);
+      });
     }
-  }, [setLoading, setSuggestions, load, initiallyLoaded, setInitiallyLoaded, loadOnStart, ready])
-
+  }, [
+    setLoading,
+    setSuggestions,
+    load,
+    initiallyLoaded,
+    setInitiallyLoaded,
+    loadOnStart,
+    ready,
+  ]);
 
   return (
     <>
@@ -93,8 +118,8 @@ export const DebouncedAutocomplete: FunctionComponent<
           // @ts-ignore
           <TextField
             {...params}
-              label={ condensed ? undefined : title}
-            variant={'standard'}
+            label={condensed ? undefined : title}
+            variant={"standard"}
             placeholder={condensed ? title : props.placeholder}
             onChange={handleOnChange}
             InputProps={{
@@ -104,8 +129,10 @@ export const DebouncedAutocomplete: FunctionComponent<
                 <>
                   {loading ? (
                     <CircularProgress color="inherit" size={16} />
+                  ) : readOnly ? (
+                    <Link fontSize="small" />
                   ) : (
-                      readOnly ? <Link fontSize="small" /> :  <Search fontSize="small" />
+                    <Search fontSize="small" />
                   )}
                   {params.InputProps.startAdornment}
                 </>
@@ -115,8 +142,7 @@ export const DebouncedAutocomplete: FunctionComponent<
           />
         )}
         options={suggestions}
-
       />
     </>
-  )
-}
+  );
+};

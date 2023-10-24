@@ -1,164 +1,210 @@
-import {JsonSchema} from '@jsonforms/core'
-import dayjs from 'dayjs'
-import customParseFormat from 'dayjs/plugin/customParseFormat'
-import get from 'lodash/get'
+import { JsonSchema } from "@jsonforms/core";
+import dayjs from "dayjs";
+import customParseFormat from "dayjs/plugin/customParseFormat";
+import get from "lodash/get";
 
-import {getPaddedDate} from '../core/specialDate'
-import {mapByConfig} from './mapByConfig'
+import { getPaddedDate } from "../core/specialDate";
+import { mapByConfig } from "./mapByConfig";
 
-dayjs.extend(customParseFormat)
+dayjs.extend(customParseFormat);
 
 export type GNDToOwnModelMap = {
   [gndType: string]: {
     [slubField: string]: {
-      path: string
-      type?: 'string' | 'number' | 'boolean' | 'array' | 'object',
+      path: string;
+      type?: "string" | "number" | "boolean" | "array" | "object";
       mapping?: {
-        strategy: 'concatenate' | 'first' | 'last'
-      }
-    }
-  }
-}
+        strategy: "concatenate" | "first" | "last";
+      };
+    };
+  };
+};
 
 interface Strategy {
-  id: string
+  id: string;
 }
 
 export type StrategyContext = {
-  getPrimaryIRIBySecondaryIRI: (secondaryIRI: string, authorityIRI: string, typeIRI: string) => Promise<string | null>
-  authorityIRI: string,
-  newIRI: (typeIRI: string) => string
-}
+  getPrimaryIRIBySecondaryIRI: (
+    secondaryIRI: string,
+    authorityIRI: string,
+    typeIRI: string,
+  ) => Promise<string | null>;
+  authorityIRI: string;
+  newIRI: (typeIRI: string) => string;
+};
 
-export type StrategyFunction = (sourceData: any, targetData: any, options?: any, context?: StrategyContext) => Promise<any> | any
+export type StrategyFunction = (
+  sourceData: any,
+  targetData: any,
+  options?: any,
+  context?: StrategyContext,
+) => Promise<any> | any;
 
 type ConcatenateStrategy = Strategy & {
-  id: 'concatenate'
+  id: "concatenate";
   options?: {
-    separator?: string
-  }
-}
+    separator?: string;
+  };
+};
 
-export const concatenate = (sourceData: any[], _targetData: string, options?: ConcatenateStrategy['options']): string => {
-  const separator = options?.separator || ''
-  return sourceData.join(separator)
-}
+export const concatenate = (
+  sourceData: any[],
+  _targetData: string,
+  options?: ConcatenateStrategy["options"],
+): string => {
+  const separator = options?.separator || "";
+  return sourceData.join(separator);
+};
 
 type TakeFirstStrategy = Strategy & {
-  id: 'takeFirst'
-}
-export const takeFirst = (sourceData: any[], _targetData: any): any => sourceData[0]
+  id: "takeFirst";
+};
+export const takeFirst = (sourceData: any[], _targetData: any): any =>
+  sourceData[0];
 
 type AppendStrategy = Strategy & {
-  id: 'append',
+  id: "append";
   options?: {
-    allowDuplicates?: boolean
-  }
-}
+    allowDuplicates?: boolean;
+  };
+};
 
-export const append = (values: any[], targetData: any[], options?: AppendStrategy['options']): any[] => {
-  const {allowDuplicates} = options || {}
-  const all = [...(targetData || []), ...values]
-  if (allowDuplicates)
-    return all
+export const append = (
+  values: any[],
+  targetData: any[],
+  options?: AppendStrategy["options"],
+): any[] => {
+  const { allowDuplicates } = options || {};
+  const all = [...(targetData || []), ...values];
+  if (allowDuplicates) return all;
   // @ts-ignore
-  return [...(new Set(all)).values()]
-}
+  return [...new Set(all).values()];
+};
 
 type CreateEntityStrategy = Strategy & {
-  id: 'createEntity',
+  id: "createEntity";
   options?: {
-    typeIRI?: string,
+    typeIRI?: string;
     subFieldMapping: {
-      fromSelf?: DeclarativeMappings,
-      fromEntity?: DeclarativeMappings
-    }
-  }
-}
+      fromSelf?: DeclarativeMappings;
+      fromEntity?: DeclarativeMappings;
+    };
+  };
+};
 
-export const createEntity = async (sourceData: any, _targetData: any, options?: CreateEntityStrategy['options'], context?: StrategyContext): Promise<any> => {
-  if (!context) throw new Error('No context provided')
-  const {typeIRI, subFieldMapping} = options || {}
-  const isArray = Array.isArray(sourceData)
-  const sourceDataArray = isArray ? sourceData : [sourceData]
-  const {getPrimaryIRIBySecondaryIRI, newIRI, authorityIRI} = context
-  const newDataElements = []
-  for(const sourceDataElement of sourceDataArray) {
-    const primaryIRI = await getPrimaryIRIBySecondaryIRI(sourceDataElement.id, authorityIRI, typeIRI || '')
+export const createEntity = async (
+  sourceData: any,
+  _targetData: any,
+  options?: CreateEntityStrategy["options"],
+  context?: StrategyContext,
+): Promise<any> => {
+  if (!context) throw new Error("No context provided");
+  const { typeIRI, subFieldMapping } = options || {};
+  const isArray = Array.isArray(sourceData);
+  const sourceDataArray = isArray ? sourceData : [sourceData];
+  const { getPrimaryIRIBySecondaryIRI, newIRI, authorityIRI } = context;
+  const newDataElements = [];
+  for (const sourceDataElement of sourceDataArray) {
+    const primaryIRI = await getPrimaryIRIBySecondaryIRI(
+      sourceDataElement.id,
+      authorityIRI,
+      typeIRI || "",
+    );
     if (!primaryIRI) {
       const targetData = {
-        '@id': newIRI(typeIRI || ''),
-        '@type': typeIRI
-      }
-      const entityIRI = primaryIRI || newIRI(typeIRI)
-      newDataElements.push(await mapByConfig(sourceDataElement, targetData, subFieldMapping.fromEntity || [], context ))
+        "@id": newIRI(typeIRI || ""),
+        "@type": typeIRI,
+      };
+      const entityIRI = primaryIRI || newIRI(typeIRI);
+      newDataElements.push(
+        await mapByConfig(
+          sourceDataElement,
+          targetData,
+          subFieldMapping.fromEntity || [],
+          context,
+        ),
+      );
     } else {
       newDataElements.push({
-        '@id': primaryIRI
-      })
+        "@id": primaryIRI,
+      });
     }
   }
-  return isArray ? newDataElements : newDataElements[0]
-}
+  return isArray ? newDataElements : newDataElements[0];
+};
 
 type DateStringToSpecialInt = Strategy & {
-  id: 'dateStringToSpecialInt'
-}
+  id: "dateStringToSpecialInt";
+};
 
-const dayJsDateToSpecialInt = (date: dayjs.Dayjs, yearOnly?: boolean): number | null => {
-  if(date.isValid()) {
-    if(yearOnly) return Number(`${date.format('YYYY')}0000`)
-    const paddedDateString =  getPaddedDate(date.toDate())
-    return Number(paddedDateString)
+const dayJsDateToSpecialInt = (
+  date: dayjs.Dayjs,
+  yearOnly?: boolean,
+): number | null => {
+  if (date.isValid()) {
+    if (yearOnly) return Number(`${date.format("YYYY")}0000`);
+    const paddedDateString = getPaddedDate(date.toDate());
+    return Number(paddedDateString);
   }
-  return null
-}
-export const dateStringToSpecialInt = (sourceData: string | string[], _targetData: any): number | null => {
-  const data = Array.isArray(sourceData) ? sourceData[0] : sourceData
-  if(!data) return null
-  const yearOnly = data.length === 4
-  return dayJsDateToSpecialInt(dayjs(data, yearOnly ? 'YYYY' : 'DD.MM.YYYY'), yearOnly)
-}
+  return null;
+};
+export const dateStringToSpecialInt = (
+  sourceData: string | string[],
+  _targetData: any,
+): number | null => {
+  const data = Array.isArray(sourceData) ? sourceData[0] : sourceData;
+  if (!data) return null;
+  const yearOnly = data.length === 4;
+  return dayJsDateToSpecialInt(
+    dayjs(data, yearOnly ? "YYYY" : "DD.MM.YYYY"),
+    yearOnly,
+  );
+};
 
 type DateRangeStringToSpecialInt = Strategy & {
-  id: 'dateRangeStringToSpecialInt'
+  id: "dateRangeStringToSpecialInt";
   options?: {
-    extractElement: 'start' | 'end'
-  }
-}
+    extractElement: "start" | "end";
+  };
+};
 
-export const dateRangeStringToSpecialInt = (sourceData: string | string[], _targetData: any, options?: DateRangeStringToSpecialInt['options']): number | null => {
-  const {extractElement} = options || {}
-  const data = Array.isArray(sourceData) ? sourceData[0] : sourceData
-  if(!data) return null
-  const [start, end] = data.split('-')
-  return dayJsDateToSpecialInt(dayjs(extractElement === 'start' ? start : end, 'DD.MM.YYYY'))
-}
-
+export const dateRangeStringToSpecialInt = (
+  sourceData: string | string[],
+  _targetData: any,
+  options?: DateRangeStringToSpecialInt["options"],
+): number | null => {
+  const { extractElement } = options || {};
+  const data = Array.isArray(sourceData) ? sourceData[0] : sourceData;
+  if (!data) return null;
+  const [start, end] = data.split("-");
+  return dayJsDateToSpecialInt(
+    dayjs(extractElement === "start" ? start : end, "DD.MM.YYYY"),
+  );
+};
 
 type AnyStrategy =
-    ConcatenateStrategy
-    | TakeFirstStrategy
-    | AppendStrategy
-    | CreateEntityStrategy
-    | DateRangeStringToSpecialInt
-    | DateStringToSpecialInt
-
+  | ConcatenateStrategy
+  | TakeFirstStrategy
+  | AppendStrategy
+  | CreateEntityStrategy
+  | DateRangeStringToSpecialInt
+  | DateStringToSpecialInt;
 
 export type DeclarativeSimpleMapping = {
   source: {
-    path: string
-    expectedSchema?: JsonSchema
-  },
+    path: string;
+    expectedSchema?: JsonSchema;
+  };
   target: {
-    path: string
-  },
+    path: string;
+  };
   mapping?: {
-    strategy: AnyStrategy
-  }
-}
+    strategy: AnyStrategy;
+  };
+};
 
-export type DeclarativeMappings = DeclarativeSimpleMapping[]
+export type DeclarativeMappings = DeclarativeSimpleMapping[];
 
 export const strategyFunctionMap: { [strategyId: string]: StrategyFunction } = {
   concatenate,
@@ -166,36 +212,40 @@ export const strategyFunctionMap: { [strategyId: string]: StrategyFunction } = {
   append,
   createEntity,
   dateStringToSpecialInt,
-  dateRangeStringToSpecialInt
-}
+  dateRangeStringToSpecialInt,
+};
 
-export const mappingStrategies = (gndType: string, gndEntryData: Record<string, any>, mappingModel: GNDToOwnModelMap): any => {
-  const fields = mappingModel[gndType]
+export const mappingStrategies = (
+  gndType: string,
+  gndEntryData: Record<string, any>,
+  mappingModel: GNDToOwnModelMap,
+): any => {
+  const fields = mappingModel[gndType];
   if (!fields) {
-    return {}
+    return {};
   }
-  const ownModel: Record<string, any> = {}
+  const ownModel: Record<string, any> = {};
   Object.entries(fields).map(([slubField, fieldMapping]) => {
-    const {path, type} = fieldMapping
-    const value = get(gndEntryData, path)
+    const { path, type } = fieldMapping;
+    const value = get(gndEntryData, path);
     if (value) {
       switch (type) {
-        case 'number':
-          ownModel[slubField] = Number(value)
-          break
-        case 'boolean':
-          ownModel[slubField] = Boolean(value)
-          break
-        case 'array':
-          ownModel[slubField] = Array.isArray(value) ? value : [value]
-          break
-        case 'object':
-        case 'string':
+        case "number":
+          ownModel[slubField] = Number(value);
+          break;
+        case "boolean":
+          ownModel[slubField] = Boolean(value);
+          break;
+        case "array":
+          ownModel[slubField] = Array.isArray(value) ? value : [value];
+          break;
+        case "object":
+        case "string":
         default:
-          ownModel[slubField] = value
-          break
+          ownModel[slubField] = value;
+          break;
       }
     }
-  })
-  return ownModel
-}
+  });
+  return ownModel;
+};

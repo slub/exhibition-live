@@ -1,4 +1,4 @@
-import {Prefixes} from '../types'
+import { Prefixes } from "../types";
 /*
 PREFIX bd: <http://www.bigdata.com/rdf#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -12,10 +12,10 @@ PREFIX p: <http://www.wikidata.org/prop/>
 PREFIX ps: <http://www.wikidata.org/prop/statement/>
  */
 export const wikidataPrefixes: Prefixes = {
-  bd: 'http://www.bigdata.com/rdf#',
-  rdfs: 'http://www.w3.org/2000/01/rdf-schema#',
-  schema: 'http://schema.org/',
-  wd: 'http://www.wikidata.org/entity/',
-  wikibase: 'http://wikiba.se/ontology#',
-  wdt: 'http://www.wikidata.org/prop/direct/'
-}
+  bd: "http://www.bigdata.com/rdf#",
+  rdfs: "http://www.w3.org/2000/01/rdf-schema#",
+  schema: "http://schema.org/",
+  wd: "http://www.wikidata.org/entity/",
+  wikibase: "http://wikiba.se/ontology#",
+  wdt: "http://www.wikidata.org/prop/direct/",
+};

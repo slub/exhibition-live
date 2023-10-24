@@ -26,13 +26,13 @@ import {
   ArrayLayoutProps,
   isObjectArrayWithNesting,
   RankedTester,
-  rankWith
-} from '@jsonforms/core'
-import { withJsonFormsArrayLayoutProps } from '@jsonforms/react'
-import { Hidden } from '@mui/material'
-import React, { useCallback } from 'react'
+  rankWith,
+} from "@jsonforms/core";
+import { withJsonFormsArrayLayoutProps } from "@jsonforms/react";
+import { Hidden } from "@mui/material";
+import React, { useCallback } from "react";
 
-import { MaterialArrayLayout } from './MaterialArrayLayout'
+import { MaterialArrayLayout } from "./MaterialArrayLayout";
 
 export const MaterialArrayOfLinkedItemRenderer = ({
   visible,
@@ -48,11 +48,12 @@ export const MaterialArrayOfLinkedItemRenderer = ({
   path,
   errors,
   uischemas,
-  addItem
+  addItem,
 }: ArrayLayoutProps) => {
-  const addItemCb = useCallback((p: string, value: any) => addItem(p, value), [
-    addItem
-  ])
+  const addItemCb = useCallback(
+    (p: string, value: any) => addItem(p, value),
+    [addItem],
+  );
   return (
     <Hidden xsUp={!visible}>
       <MaterialArrayLayout
@@ -72,11 +73,11 @@ export const MaterialArrayOfLinkedItemRenderer = ({
         uischemas={uischemas}
       />
     </Hidden>
-  )
-}
+  );
+};
 
 export const materialArrayLayoutTester: RankedTester = rankWith(
   4,
-  isObjectArrayWithNesting
-)
-export default withJsonFormsArrayLayoutProps(MaterialArrayOfLinkedItemRenderer)
+  isObjectArrayWithNesting,
+);
+export default withJsonFormsArrayLayoutProps(MaterialArrayOfLinkedItemRenderer);

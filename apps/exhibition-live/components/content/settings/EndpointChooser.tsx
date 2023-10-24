@@ -1,56 +1,61 @@
-import {JsonFormsCore, JsonSchema} from '@jsonforms/core'
-import {materialCells, materialRenderers} from '@jsonforms/material-renderers'
-import {JsonForms} from '@jsonforms/react'
-import {Typography} from '@mui/material'
-import {Box} from '@mui/system'
-import {JSONSchema7} from 'json-schema'
-import React, {FunctionComponent, useCallback} from 'react'
+import { JsonFormsCore, JsonSchema } from "@jsonforms/core";
+import {
+  materialCells,
+  materialRenderers,
+} from "@jsonforms/material-renderers";
+import { JsonForms } from "@jsonforms/react";
+import { Typography } from "@mui/material";
+import { Box } from "@mui/system";
+import { JSONSchema7 } from "json-schema";
+import React, { FunctionComponent, useCallback } from "react";
 
-import {useSettings} from '../../state/useLocalSettings'
+import { useSettings } from "../../state/useLocalSettings";
 
-interface OwnProps {
-}
+interface OwnProps {}
 
 type Props = OwnProps;
 
 const schema: JsonSchema = {
-  '$schema': 'http://json-schema.org/draft-07/schema#',
-  'type': 'array',
-  'items': {
-    'type': 'object',
-    'properties': {
-      'endpoint': {
-        'type': 'string'
+  $schema: "http://json-schema.org/draft-07/schema#",
+  type: "array",
+  items: {
+    type: "object",
+    properties: {
+      endpoint: {
+        type: "string",
       },
-      'label': {
-        'type': 'string'
+      label: {
+        type: "string",
       },
-      'active': {
-        'type': 'boolean'
-      }
-    }
-  }
-}
+      active: {
+        type: "boolean",
+      },
+    },
+  },
+};
 
 const EndpointChooser: FunctionComponent<Props> = (props) => {
-  const {sparqlEndpoints, setSparqlEndpoints} = useSettings()
+  const { sparqlEndpoints, setSparqlEndpoints } = useSettings();
 
   const handleFormChange = useCallback(
-      (state: Pick<JsonFormsCore, 'data' | 'errors'>) => {
-        setSparqlEndpoints(state.data)
-      }, [setSparqlEndpoints])
+    (state: Pick<JsonFormsCore, "data" | "errors">) => {
+      setSparqlEndpoints(state.data);
+    },
+    [setSparqlEndpoints],
+  );
   // a REACT MUI paper list with checkboxes
-  return (<Box>
-        <Typography variant='h6'>Knowledge Base - SPARQL Endpunkte</Typography>
-        <JsonForms
-            data={sparqlEndpoints}
-            schema={schema}
-            renderers={materialRenderers}
-            cells={materialCells}
-            onChange={handleFormChange}/>
-      </Box>
-  )
-}
+  return (
+    <Box>
+      <Typography variant="h6">Knowledge Base - SPARQL Endpunkte</Typography>
+      <JsonForms
+        data={sparqlEndpoints}
+        schema={schema}
+        renderers={materialRenderers}
+        cells={materialCells}
+        onChange={handleFormChange}
+      />
+    </Box>
+  );
+};
 
-
-export default EndpointChooser
+export default EndpointChooser;

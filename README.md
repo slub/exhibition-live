@@ -1,4 +1,4 @@
-The adb-next project is an exhibition-catalog, that uses [Next.js](https://nextjs.org/). 
+The adb-next project is an exhibition-catalog, that uses [Next.js](https://nextjs.org/).
 
 ## Getting Started
 
@@ -30,11 +30,10 @@ Other SPARQL Endpoints, like Jena Fuseki, Virtuoso, Blazegraph or GraphDB can be
 Additional effort might be needed to configure CORS and authentication and to get along with some
 Endpoints not beeing fully SPARQL 1.1 compliant.
 
-
 ## Storybook
 
 This project uses [Storybooks](https://storybook.js.org/) to enforce reusable component based development and to document them with
-all of their props and options. It also gives an  overview over the frontend components used for this project.
+all of their props and options. It also gives an overview over the frontend components used for this project.
 
 ```bash
 yarn && yarn storybook
@@ -42,10 +41,9 @@ yarn && yarn storybook
 
 Open [http://localhost:6006](http://localhost:6006) with your browser to see the storybook.
 
-
 ## Technologies
 
-### NextJS 
+### NextJS
 
 To learn more about Next.js, take a look at the following resources:
 
@@ -65,7 +63,7 @@ Some of the following libraries are being used within this project:
 - @rdfjs/dataset as a temporary in memory RDF store
 - oxigraph for SPARQL 1.1 compliant RDF storage within a ServiceWorker (browser) or on the server
 - RDF/JS for RDF processing
-- @tpluscode/rdfine for common RDF Vocabularies and typesafe namespaces 
+- @tpluscode/rdfine for common RDF Vocabularies and typesafe namespaces
 - SPARQL.js for SPARQL query generation
 - sparql-http-client for SPARQL compliant query execution and easier triple streaming
 - clownface for RDF graph traversal
@@ -94,9 +92,3 @@ that provide additional information for the frontend, like:
 
 - the UI-Schemate for form layout and style hints
 - data mapping declarations for data conversion from and to norm data repositiories
-
-
-
-
-
-

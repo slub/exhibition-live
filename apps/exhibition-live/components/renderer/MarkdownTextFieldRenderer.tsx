@@ -1,16 +1,20 @@
-import {ControlProps, showAsRequired} from '@jsonforms/core'
-import {withJsonFormsControlProps} from '@jsonforms/react'
-import {Edit, EditOff} from '@mui/icons-material'
-import {FormControl, FormLabel, Grid, Hidden, IconButton} from '@mui/material'
-import merge from 'lodash/merge'
-import React, {useCallback, useMemo, useState} from 'react'
-import {PluggableList} from 'react-markdown/lib/react-markdown'
-import rehypeExternalLinks from 'rehype-external-links'
-import rehypeSanitize from 'rehype-sanitize'
+import { ControlProps, showAsRequired } from "@jsonforms/core";
+import { withJsonFormsControlProps } from "@jsonforms/react";
+import { Edit, EditOff } from "@mui/icons-material";
+import {
+  FormControl,
+  FormLabel,
+  Grid,
+  Hidden,
+  IconButton,
+} from "@mui/material";
+import merge from "lodash/merge";
+import React, { useCallback, useMemo, useState } from "react";
+import { PluggableList } from "react-markdown/lib/react-markdown";
+import rehypeExternalLinks from "rehype-external-links";
+import rehypeSanitize from "rehype-sanitize";
 
-import MDEditor, { MDEditorMarkdown } from './MDEditor'
-
-
+import MDEditor, { MDEditorMarkdown } from "./MDEditor";
 
 const MarkdownTextFieldRenderer = (props: ControlProps) => {
   const {
@@ -23,61 +27,74 @@ const MarkdownTextFieldRenderer = (props: ControlProps) => {
     config,
     data,
     handleChange,
-    path
-  } = props
-  const isValid = errors.length === 0
-  const appliedUiSchemaOptions = merge({}, config, uischema.options)
-  const [editMode, setEditMode] = useState(false)
-
+    path,
+  } = props;
+  const isValid = errors.length === 0;
+  const appliedUiSchemaOptions = merge({}, config, uischema.options);
+  const [editMode, setEditMode] = useState(false);
 
   const handleChange_ = useCallback(
     (v?: string) => {
-      handleChange(path, v || '')
+      handleChange(path, v || "");
     },
     [path, handleChange],
-  )
-  const rehypePlugins = useMemo<PluggableList>(() => [[rehypeSanitize],[rehypeExternalLinks, { target: '_blank' }]], [])
-
+  );
+  const rehypePlugins = useMemo<PluggableList>(
+    () => [[rehypeSanitize], [rehypeExternalLinks, { target: "_blank" }]],
+    [],
+  );
 
   return (
     <Hidden xsUp={!visible}>
       <FormControl
         fullWidth={!appliedUiSchemaOptions.trim}
         id={id}
-        variant={'standard'}
-        sx={theme => ({marginBottom: theme.spacing(2)})}
+        variant={"standard"}
+        sx={(theme) => ({ marginBottom: theme.spacing(2) })}
       >
-        <Grid container alignItems='baseline'>
+        <Grid container alignItems="baseline">
           <Grid item>
             <FormLabel
               error={!isValid}
-              required={showAsRequired(!!required,
-                appliedUiSchemaOptions.hideRequiredAsterisk)}
+              required={showAsRequired(
+                !!required,
+                appliedUiSchemaOptions.hideRequiredAsterisk,
+              )}
             >
               {label}
             </FormLabel>
           </Grid>
           <Grid item>
-            <IconButton onClick={() =>  setEditMode(prev => !prev)}>{editMode ? <EditOff /> : <Edit/>}</IconButton>
+            <IconButton onClick={() => setEditMode((prev) => !prev)}>
+              {editMode ? <EditOff /> : <Edit />}
+            </IconButton>
           </Grid>
         </Grid>
-        {editMode
-          ? <MDEditor
+        {editMode ? (
+          <MDEditor
             textareaProps={{
-              id: id + '-input'
+              id: id + "-input",
             }}
             value={data as string}
             onChange={handleChange_}
             previewOptions={{
               rehypePlugins: rehypePlugins,
             }}
-            commandsFilter={(cmd) => cmd?.name && /(divider|code|image|checked)/.test(cmd.name) ? false : cmd}
+            commandsFilter={(cmd) =>
+              cmd?.name && /(divider|code|image|checked)/.test(cmd.name)
+                ? false
+                : cmd
+            }
           />
-          : <MDEditorMarkdown source={data as string} rehypePlugins={rehypePlugins}/>
-        }
+        ) : (
+          <MDEditorMarkdown
+            source={data as string}
+            rehypePlugins={rehypePlugins}
+          />
+        )}
       </FormControl>
     </Hidden>
-  )
-}
+  );
+};
 
-export default withJsonFormsControlProps(MarkdownTextFieldRenderer)
+export default withJsonFormsControlProps(MarkdownTextFieldRenderer);

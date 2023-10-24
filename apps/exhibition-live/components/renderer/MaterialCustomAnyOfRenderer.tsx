@@ -4,36 +4,37 @@ import {
   isAnyOfControl,
   JsonSchema,
   RankedTester,
-  rankWith, resolveSchema,
-  StatePropsOfCombinator
-} from '@jsonforms/core'
-import { JsonFormsDispatch, withJsonFormsAnyOfProps } from '@jsonforms/react'
-import { Hidden, Tab, Tabs } from '@mui/material'
-import React, {useCallback, useMemo, useState} from 'react'
+  rankWith,
+  resolveSchema,
+  StatePropsOfCombinator,
+} from "@jsonforms/core";
+import { JsonFormsDispatch, withJsonFormsAnyOfProps } from "@jsonforms/react";
+import { Hidden, Tab, Tabs } from "@mui/material";
+import React, { useCallback, useMemo, useState } from "react";
 
-import CombinatorProperties from './CombinatorProperties'
+import CombinatorProperties from "./CombinatorProperties";
 
 export const resolveSubSchemas = (
-    schema: JsonSchema,
-    rootSchema: JsonSchema,
-    keyword: CombinatorKeyword
+  schema: JsonSchema,
+  rootSchema: JsonSchema,
+  keyword: CombinatorKeyword,
 ) => {
   // resolve any $refs, otherwise the generated UI schema can't match the schema???
-  if(! Array.isArray(schema[keyword])) return schema
-  const schemas = schema[keyword] as any[]
-  if (schemas.findIndex(e => e.$ref !== undefined) !== -1) {
+  if (!Array.isArray(schema[keyword])) return schema;
+  const schemas = schema[keyword] as any[];
+  if (schemas.findIndex((e) => e.$ref !== undefined) !== -1) {
     return {
       ...schema,
-      [keyword]: (schema[keyword] as any[]).map(e =>
-          // @ts-ignore
-          e.$ref ? resolveSchema(rootSchema, e.$ref, rootSchema) : e
-      )
-    }
+      [keyword]: (schema[keyword] as any[]).map((e) =>
+        // @ts-ignore
+        e.$ref ? resolveSchema(rootSchema, e.$ref, rootSchema) : e,
+      ),
+    };
   }
-  return schema
-}
+  return schema;
+};
 
-const anyOf = 'anyOf'
+const anyOf = "anyOf";
 export const MaterialCustomAnyOfRenderer = ({
   schema,
   rootSchema,
@@ -43,36 +44,40 @@ export const MaterialCustomAnyOfRenderer = ({
   renderers,
   cells,
   uischema,
-  uischemas
+  uischemas,
 }: StatePropsOfCombinator) => {
-  const [selectedAnyOf, setSelectedAnyOf] = useState(indexOfFittingSchema || 0)
+  const [selectedAnyOf, setSelectedAnyOf] = useState(indexOfFittingSchema || 0);
   const handleChange = useCallback(
     (_ev: any, value: number) => setSelectedAnyOf(value),
-    [setSelectedAnyOf]
-  )
-  const _schema = useMemo(() => resolveSubSchemas(schema, rootSchema, anyOf), [schema, rootSchema])
+    [setSelectedAnyOf],
+  );
+  const _schema = useMemo(
+    () => resolveSubSchemas(schema, rootSchema, anyOf),
+    [schema, rootSchema],
+  );
   const anyOfRenderInfos = useMemo(() => {
     return createCombinatorRenderInfos(
-        // @ts-ignore
-        (_schema as JsonSchema).anyOf,
-        rootSchema,
-        anyOf,
-        uischema,
-        path,
-        uischemas
-    )
-  }, [_schema, rootSchema, uischema, path, uischemas])
+      // @ts-ignore
+      (_schema as JsonSchema).anyOf,
+      rootSchema,
+      anyOf,
+      uischema,
+      path,
+      uischemas,
+    );
+  }, [_schema, rootSchema, uischema, path, uischemas]);
 
   return (
     <Hidden xsUp={!visible}>
       <CombinatorProperties
         schema={_schema}
-        combinatorKeyword={'anyOf'}
+        combinatorKeyword={"anyOf"}
         path={path}
       />
       <Tabs value={selectedAnyOf} onChange={handleChange}>
-        {anyOfRenderInfos.map(anyOfRenderInfo => (
-                <Tab key={anyOfRenderInfo.label} label={anyOfRenderInfo.label}/>))}
+        {anyOfRenderInfos.map((anyOfRenderInfo) => (
+          <Tab key={anyOfRenderInfo.label} label={anyOfRenderInfo.label} />
+        ))}
       </Tabs>
       {anyOfRenderInfos.map(
         (anyOfRenderInfo, anyOfIndex) =>
@@ -85,15 +90,15 @@ export const MaterialCustomAnyOfRenderer = ({
               renderers={renderers}
               cells={cells}
             />
-          )
+          ),
       )}
     </Hidden>
-  )
-}
+  );
+};
 
 export const materialCustomAnyOfControlTester: RankedTester = rankWith(
   5,
-  isAnyOfControl
-)
+  isAnyOfControl,
+);
 
-export default withJsonFormsAnyOfProps(MaterialCustomAnyOfRenderer)
+export default withJsonFormsAnyOfProps(MaterialCustomAnyOfRenderer);

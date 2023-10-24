@@ -1,28 +1,35 @@
-import { Generate, JsonSchema, Layout, UISchemaElement } from '@jsonforms/core'
-import { JsonFormsDispatch } from '@jsonforms/react'
-import omit from 'lodash/omit'
-import React from 'react'
+import { Generate, JsonSchema, Layout, UISchemaElement } from "@jsonforms/core";
+import { JsonFormsDispatch } from "@jsonforms/react";
+import omit from "lodash/omit";
+import React from "react";
 
 interface CombinatorPropertiesProps {
   schema: JsonSchema;
-  combinatorKeyword: 'oneOf' | 'anyOf';
+  combinatorKeyword: "oneOf" | "anyOf";
   path: string;
 }
 
 export const isLayout = (uischema: UISchemaElement): uischema is Layout =>
-  uischema.hasOwnProperty('elements')
+  uischema.hasOwnProperty("elements");
 
-export class CombinatorProperties extends React.Component<CombinatorPropertiesProps, {}> {
-
+export class CombinatorProperties extends React.Component<
+  CombinatorPropertiesProps,
+  {}
+> {
   render() {
+    const { schema, combinatorKeyword, path } = this.props;
 
-    const { schema, combinatorKeyword, path } = this.props
-
-    const otherProps: JsonSchema = omit(schema, combinatorKeyword) as JsonSchema
-    const foundUISchema: UISchemaElement = Generate.uiSchema(otherProps, 'VerticalLayout')
-    let isLayoutWithElements = false
+    const otherProps: JsonSchema = omit(
+      schema,
+      combinatorKeyword,
+    ) as JsonSchema;
+    const foundUISchema: UISchemaElement = Generate.uiSchema(
+      otherProps,
+      "VerticalLayout",
+    );
+    let isLayoutWithElements = false;
     if (foundUISchema !== null && isLayout(foundUISchema)) {
-      isLayoutWithElements = foundUISchema.elements.length > 0
+      isLayoutWithElements = foundUISchema.elements.length > 0;
     }
 
     if (isLayoutWithElements) {
@@ -32,11 +39,11 @@ export class CombinatorProperties extends React.Component<CombinatorPropertiesPr
           path={path}
           uischema={foundUISchema}
         />
-      )
+      );
     }
 
-    return null
+    return null;
   }
 }
 
-export default CombinatorProperties
+export default CombinatorProperties;

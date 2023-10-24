@@ -5,8 +5,11 @@
 const makeColumnDefinition = (data: any) =>
   Object.keys(data).map((k) => ({
     name: k,
-    header: k.replace(/_/g, ' '),
-    type: (typeof data[k] === 'object' && (data[k] instanceof Date)) ? 'date' : typeof data[k],
-  }))
+    header: k.replace(/_/g, " "),
+    type:
+      typeof data[k] === "object" && data[k] instanceof Date
+        ? "date"
+        : typeof data[k],
+  }));
 
-export default makeColumnDefinition
+export default makeColumnDefinition;

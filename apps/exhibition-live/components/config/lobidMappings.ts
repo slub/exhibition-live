@@ -1,333 +1,339 @@
-import {sladb} from '../form/formConfigs'
-import {DeclarativeMappings, GNDToOwnModelMap} from '../utils/mapping/mappingStrategies'
+import { sladb } from "../form/formConfigs";
+import {
+  DeclarativeMappings,
+  GNDToOwnModelMap,
+} from "../utils/mapping/mappingStrategies";
 
 export const exhibitionDeclarativeMapping: DeclarativeMappings = [
   {
     source: {
-      path: 'preferredName',
+      path: "preferredName",
       expectedSchema: {
-        type: 'string'
-      }
+        type: "string",
+      },
     },
     target: {
-      path: 'title'
-    }
+      path: "title",
+    },
   },
   {
     source: {
-      path: 'variantName',
+      path: "variantName",
       expectedSchema: {
-        type: 'array',
+        type: "array",
         items: {
-          type: 'string'
-        }
-      }
+          type: "string",
+        },
+      },
     },
     target: {
-      path: 'titleVariant'
+      path: "titleVariant",
     },
     mapping: {
       strategy: {
-        id: 'append',
+        id: "append",
         options: {
-          allowDuplicates: false
-        }
-      }
-    }
+          allowDuplicates: false,
+        },
+      },
+    },
   },
   {
     source: {
-      path: 'dateOfConferenceOrEvent',
+      path: "dateOfConferenceOrEvent",
     },
     target: {
-      path: 'toDate'
+      path: "toDate",
     },
     mapping: {
       strategy: {
-        id: 'dateRangeStringToSpecialInt',
+        id: "dateRangeStringToSpecialInt",
         options: {
-          extractElement: 'end'
-        }
-      }
-    }
+          extractElement: "end",
+        },
+      },
+    },
   },
   {
     source: {
-      path: 'dateOfConferenceOrEvent',
+      path: "dateOfConferenceOrEvent",
     },
     target: {
-      path: 'fromDate'
+      path: "fromDate",
     },
     mapping: {
       strategy: {
-        id: 'dateRangeStringToSpecialInt',
+        id: "dateRangeStringToSpecialInt",
         options: {
-          extractElement: 'start'
-        }
-      }
-    }
+          extractElement: "start",
+        },
+      },
+    },
   },
   {
     source: {
-      path: 'dateOfEstablishment'
+      path: "dateOfEstablishment",
     },
     target: {
-      path: 'fromDate'
+      path: "fromDate",
     },
     mapping: {
       strategy: {
-        id: 'dateStringToSpecialInt'
-      }
-    }
+        id: "dateStringToSpecialInt",
+      },
+    },
   },
   {
     source: {
-      path: 'dateOfTermination',
+      path: "dateOfTermination",
       expectedSchema: {
-        type: 'integer'
-      }
+        type: "integer",
+      },
     },
     target: {
-      path: 'toDate',
+      path: "toDate",
     },
     mapping: {
       strategy: {
-        id: 'dateStringToSpecialInt'
-      }
-    }
+        id: "dateStringToSpecialInt",
+      },
+    },
   },
   {
     source: {
-      path: 'biographicalOrHistoricalInformation'
+      path: "biographicalOrHistoricalInformation",
     },
     target: {
-      path: 'description'
+      path: "description",
     },
     mapping: {
       strategy: {
-        id: 'concatenate',
+        id: "concatenate",
         options: {
-          separator: '\n'
-        }
-      }
-    }
+          separator: "\n",
+        },
+      },
+    },
   },
   {
     source: {
-      path: 'placeOfConferenceOrEvent'
+      path: "placeOfConferenceOrEvent",
     },
     target: {
-      path: 'locations'
+      path: "locations",
     },
     mapping: {
       strategy: {
-        id: 'createEntity',
+        id: "createEntity",
         options: {
-          typeIRI: sladb('Location').value,
+          typeIRI: sladb("Location").value,
           subFieldMapping: {
             fromEntity: [
               {
                 source: {
-                  path: 'label'
+                  path: "label",
                 },
                 target: {
-                  path: 'title'
-                }
+                  path: "title",
+                },
               },
               {
                 source: {
-                  path: 'id'
+                  path: "id",
                 },
                 target: {
-                  path: 'idAuthority'
-                }
-              }
-            ]
-          }
-        }
-      }
-    }
+                  path: "idAuthority",
+                },
+              },
+            ],
+          },
+        },
+      },
+    },
   },
   {
     source: {
-      path: 'topic'
+      path: "topic",
     },
     target: {
-      path: 'tag'
+      path: "tag",
     },
     mapping: {
       strategy: {
-        id: 'createEntity',
+        id: "createEntity",
         options: {
           subFieldMapping: {
             fromEntity: [
               {
                 source: {
-                  path: 'label'
+                  path: "label",
                 },
                 target: {
-                  path: 'title'
-                }
+                  path: "title",
+                },
               },
               {
                 source: {
-                  path: 'id'
+                  path: "id",
                 },
                 target: {
-                  path: 'idAuthority'
-                }
-              }
-            ]
-          }
-        }
-      }
-    }
-  }
-]
+                  path: "idAuthority",
+                },
+              },
+            ],
+          },
+        },
+      },
+    },
+  },
+];
 
 export const personDeclarativeMapping: DeclarativeMappings = [
   {
     source: {
-      path: 'preferredName',
+      path: "preferredName",
       expectedSchema: {
-        type: 'string'
-      }
+        type: "string",
+      },
     },
     target: {
-      path: 'name'
-    }
+      path: "name",
+    },
   },
   {
     source: {
-      path: 'variantName',
+      path: "variantName",
       expectedSchema: {
-        type: 'array',
+        type: "array",
         items: {
-          type: 'string'
-        }
-      }
+          type: "string",
+        },
+      },
     },
     target: {
-      path: 'nameVariant'
+      path: "nameVariant",
     },
     mapping: {
       strategy: {
-        id: 'append'
-      }
-    }
+        id: "append",
+      },
+    },
   },
   {
     source: {
-      path: 'dateOfBirth',
+      path: "dateOfBirth",
       expectedSchema: {
-        type: 'string'
-      }
+        type: "string",
+      },
     },
     target: {
-      path: 'birthDate'
+      path: "birthDate",
     },
     mapping: {
       strategy: {
-        id: 'takeFirst'
-      }
-    }
+        id: "takeFirst",
+      },
+    },
   },
   {
     source: {
-      path: 'dateOfDeath',
+      path: "dateOfDeath",
       expectedSchema: {
-        type: 'string'
-      }
+        type: "string",
+      },
     },
     target: {
-      path: 'deathDate'
+      path: "deathDate",
     },
     mapping: {
       strategy: {
-        id: 'takeFirst'
-      }
-    }
+        id: "takeFirst",
+      },
+    },
   },
   {
     source: {
-      path: 'depiction.0.thumbnail'
+      path: "depiction.0.thumbnail",
     },
     target: {
-      path: 'image'
-    }
-  }]
+      path: "image",
+    },
+  },
+];
 
 export const corporateBodyDeclarativeMapping: DeclarativeMappings = [
   {
     source: {
-      path: 'preferredName',
+      path: "preferredName",
       expectedSchema: {
-        type: 'string'
-      }
+        type: "string",
+      },
     },
     target: {
-      path: 'name'
-    }
-  }]
+      path: "name",
+    },
+  },
+];
 
 export const workDeclarativeMapping: DeclarativeMappings = [
   {
     source: {
-      path: 'preferredName',
+      path: "preferredName",
       expectedSchema: {
-        type: 'string'
-      }
+        type: "string",
+      },
     },
     target: {
-      path: 'title'
-    }
+      path: "title",
+    },
   },
   {
     source: {
-      path: 'dateOfProduction.0'
+      path: "dateOfProduction.0",
     },
     target: {
-      path: 'fromDate'
-    }
-  }]
+      path: "fromDate",
+    },
+  },
+];
 
 export const declarativeMappings: { [key: string]: DeclarativeMappings } = {
-  'Exhibition': exhibitionDeclarativeMapping,
-  'Person': personDeclarativeMapping,
-  'Corporation': corporateBodyDeclarativeMapping,
-  'ExhibitionExponat': workDeclarativeMapping
-}
+  Exhibition: exhibitionDeclarativeMapping,
+  Person: personDeclarativeMapping,
+  Corporation: corporateBodyDeclarativeMapping,
+  ExhibitionExponat: workDeclarativeMapping,
+};
 export const gndFieldsToOwnModelMap: GNDToOwnModelMap = {
-  'Person': {
-    'name': {
-      'path': 'preferredName',
-      'type': 'string'
+  Person: {
+    name: {
+      path: "preferredName",
+      type: "string",
     },
-    'birthDate': {
-      'path': 'dateOfBirth.0',
-      'type': 'string'
+    birthDate: {
+      path: "dateOfBirth.0",
+      type: "string",
     },
-    'deathDate': {
-      'path': 'dateOfDeath.0',
-      'type': 'string'
+    deathDate: {
+      path: "dateOfDeath.0",
+      type: "string",
     },
-    'image': {
+    image: {
       //depiction?.[0]?.thumbnail
-      'path': 'depiction.0.thumbnail',
-    }
-  },
-  'CorporateBody': {
-    'preferredName': {
-      'path': 'preferredName',
-    }
-  },
-  'Work': {
-    'name': {
-      'path': 'preferredName',
-      'type': 'string'
+      path: "depiction.0.thumbnail",
     },
-    'year': {
-      'path': 'dateOfProduction.0',
-    }
-  }
-}
+  },
+  CorporateBody: {
+    preferredName: {
+      path: "preferredName",
+    },
+  },
+  Work: {
+    name: {
+      path: "preferredName",
+      type: "string",
+    },
+    year: {
+      path: "dateOfProduction.0",
+    },
+  },
+};

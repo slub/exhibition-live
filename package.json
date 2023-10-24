@@ -1,0 +1,29 @@
+{
+  "name": "edb-next",
+  "version": "0.1.0",
+  "description": "monorepo of the Ereignisdatenbank project",
+  "main": "index.js",
+  "repository": "git@github.com:slub/exhibition-live",
+  "author": "Sebastian Tilsch <sebastian.tilsch@slub-dresden.de>",
+  "keywords": ["jsonforms", "form", "forms", "semantic", "rdf", "schema", "jsonschema", "jsonld", "frontend", "oxigraph", "database", "knowledge-base", "library-institution", "slub", "slub-dresden"],
+  "license": "MIT",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev --parallel",
+    "lint": "turbo run lint",
+    "lint:fix": "turbo run lint:fix",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+  },
+  "devDependencies": {
+    "@turbo/gen": "^1.10.16",
+    "eslint": "^8.52.0",
+    "prettier": "^3.0.3",
+    "turbo": "^1.10.16"
+  },
+ "packageManager": "yarn@1.22.19"
+}

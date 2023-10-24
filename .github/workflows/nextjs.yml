@@ -25,11 +25,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
-          node-version: "16"
-          cache: yarn
+          cache: 'pnpm'
       - name: Setup Pages
         uses: actions/configure-pages@v2
         with:
@@ -49,17 +51,17 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json', '**/yarn.lock') }}-
       - name: Install dependencies
-        run: yarn install
+        run: pnpm install --no-frozen-lockfile
       - name: Build with Next.js
         env:
           NEXT_PUBLIC_BASE_PATH:  /${{ github.event.repository.name }}
-        run: yarn build
+        run: pnpm build
       - name: Static HTML export with Next.js
-        run: npx next export
+        run: pnpm build:pages
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:
-          path: ./out
+          path: ./_site
 
   # Deployment job
   deploy:

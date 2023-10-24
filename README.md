@@ -5,7 +5,7 @@ The adb-next project is an exhibition-catalog, that uses [Next.js](https://nextj
 First, run the development server:
 
 ```bash
-yarn && yarn dev
+pnpm i && pnpm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
@@ -36,7 +36,8 @@ This project uses [Storybooks](https://storybook.js.org/) to enforce reusable co
 all of their props and options. It also gives an overview over the frontend components used for this project.
 
 ```bash
-yarn && yarn storybook
+cd app/exhibition-live
+pnpm i && pnpm run storybook
 ```
 
 Open [http://localhost:6006](http://localhost:6006) with your browser to see the storybook.

@@ -17,11 +17,9 @@ const useExtendedSchema = ({ typeName, classIRI }: UseExtendedSchemaProps) => {
       schema as JSONSchema7,
       genSlubJSONLDSemanticProperties,
       {
-        exclude: [
-          "involvedperson",
-          "involvedcorporation",
-          "involvedPersons",
-          "involvedCorporations",
+        excludeType: [
+          "InvolvedPerson",
+          "InvolvedCorporation",
         ],
       },
     );

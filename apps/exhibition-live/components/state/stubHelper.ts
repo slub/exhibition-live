@@ -20,29 +20,29 @@ export const defs: (
   schema.$defs || schema.definitions || {};
 
 type RefAppendOptions = {
-  exclude?: string[];
+  excludeType?: string[];
+  excludeField?: string[];
 };
 
 export const recursivelyFindRefsAndAppendStub: (
   field: string,
   schema: JSONSchema7,
+  options: RefAppendOptions,
   rootSchema?: JSONSchema7,
-  options?: RefAppendOptions,
 ) => JSONSchema7 = (
   field,
   schema: JSONSchema7,
-  rootSchema = schema,
   options,
+  rootSchema = schema,
 ) => {
-  const exclude = options?.exclude || [];
-  //console.log({options})
-  //console.log({'field': field, exclude})
-  if (exclude.includes(field)) {
-    console.log(field);
+  if (options?.excludeField?.includes(field)) {
     return schema;
   }
   const definitionsKey = "$defs" in rootSchema ? "$defs" : "definitions";
   if (schema.$ref) {
+    if (options?.excludeType.includes(schema.$ref.substring(`#/${definitionsKey}/`.length, schema.$ref.length) )) {
+      return schema;
+    }
     return {
       ...schema,
       $ref: `${schema.$ref}Stub`,
@@ -54,8 +54,8 @@ export const recursivelyFindRefsAndAppendStub: (
       items: recursivelyFindRefsAndAppendStub(
         field,
         schema.items as JSONSchema7,
-        rootSchema,
         options,
+        rootSchema,
       ),
     };
   }
@@ -67,7 +67,7 @@ export const recursivelyFindRefsAndAppendStub: (
           ([k, s]) =>
             [
               k,
-              recursivelyFindRefsAndAppendStub(k, s as JSONSchema7, rootSchema),
+              recursivelyFindRefsAndAppendStub(k, s as JSONSchema7, options, rootSchema),
             ] as [string, JSONSchema7Definition],
           options,
         ),
@@ -82,7 +82,7 @@ export const recursivelyFindRefsAndAppendStub: (
           ([k, s]) =>
             [
               k,
-              recursivelyFindRefsAndAppendStub(k, s as JSONSchema7, rootSchema),
+              recursivelyFindRefsAndAppendStub(k, s as JSONSchema7, options, rootSchema),
             ] as [string, JSONSchema7Definition],
           options,
         ),
@@ -94,8 +94,14 @@ export const recursivelyFindRefsAndAppendStub: (
 
 export const definitionsToStubDefinitions = (
   definitions: JSONSchema7["definitions"],
+  options?: RefAppendOptions,
 ) =>
   Object.entries(definitions || {}).reduce((acc, [key, value]) => {
+    if(options?.excludeType?.includes(key))
+      return {
+      ...acc,
+      [key]: value
+    }
     const stubKey = `${key}Stub`;
     const stub = {
       ...(isObject(value) ? value : {}),
@@ -130,13 +136,12 @@ export const prepareStubbedSchema = (
       },
     }) as JSONSchema7;
 
-  const stubDefinitions = definitionsToStubDefinitions(defs(schema));
-  //console.log({options})
+  const stubDefinitions = definitionsToStubDefinitions(defs(schema), options);
   const schemaWithRefStub = recursivelyFindRefsAndAppendStub(
     "root",
     schema,
-    schema,
     options,
+    schema,
   );
 
   const stubbedSchema = {

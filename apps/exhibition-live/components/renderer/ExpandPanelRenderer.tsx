@@ -58,6 +58,8 @@ import { useGlobalCRUDOptions } from "../state/useGlobalCRUDOptions";
 
 const iconStyle: any = { float: "right" };
 
+import dot from "dot"
+
 interface OwnPropsOfExpandPanel {
   index: number;
   path: string;
@@ -72,6 +74,7 @@ interface OwnPropsOfExpandPanel {
   enableMoveDown: boolean;
   config: any;
   childLabelProp?: string;
+  childLabelTemplate?: string;
   handleExpansion(panel: string): (event: any, expanded: boolean) => void;
   readonly?: boolean;
 }
@@ -359,16 +362,28 @@ export const withContextToExpandPanelProps =
   ): ComponentType<OwnPropsOfExpandPanel> =>
   ({ ctx, props }: JsonFormsStateContext & ExpandPanelProps) => {
     const dispatchProps = ctxDispatchToExpandPanelProps(ctx.dispatch);
-    const { childLabelProp, schema, path, index, uischemas } = props;
+    const { childLabelTemplate ,childLabelProp, schema, path, index, uischemas } = props;
     const childPath = composePaths(path, `${index}`);
     const [jsonldData, setJsonldData] = useState<any>();
     const childData = Resolve.data(ctx.core.data, childPath);
-    const childLabel = childLabelProp
-      ? get(childData, childLabelProp, "") ||
+    console.log("childData", childData)
+
+    let childLabel = "";
+    if(childLabelTemplate) {
+      try {
+        const template = dot.template(childLabelTemplate)
+        childLabel = template(childData)
+      } catch (e) {
+        console.warn("could not render childLabelTemplate", e)
+      }
+    } else if (childLabelProp) {
+      childLabel = get(childData, childLabelProp, "") ||
         get(jsonldData, childLabelProp, "")
-      : // @ts-ignore
-        get(childData, getFirstPrimitivePropExceptJsonLD(schema), "") ||
-        get(jsonldData, getFirstPrimitivePropExceptJsonLD(schema), "");
+    } else {
+     // @ts-ignore
+      childLabel = get(childData, getFirstPrimitivePropExceptJsonLD(schema), "") ||
+      get(jsonldData, getFirstPrimitivePropExceptJsonLD(schema), "");
+    }
     const avatar =
       get(childData, "image") ||
       get(childData, "logo") ||

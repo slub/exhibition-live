@@ -133,7 +133,7 @@
     "@types/react-dom": "18.0.10",
     "@types/sparql-http-client": "^2.2.8",
     "@types/uuid": "^9.0.0",
-    "@types/dot": "^2.0.0-beta.1",
+    "@types/dot": "^1.1.6",
     "@zazuko/rdf-vocabularies": "^2023.1.19",
     "babel-loader": "^8.3.0",
     "buffer": "^6.0.3",

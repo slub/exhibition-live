@@ -67,7 +67,7 @@
           "type": "Control",
           "label": "Weblinks",
           "scope": "#/properties/exhibitionweblink"
-        }, 
+        },
         {
           "type": "HorizontalLayout",
           "elements": [
@@ -162,7 +162,7 @@
           "label": "Künstler",
           "scope": "#/properties/involvedperson",
           "options": {
-            "elementLabelProp": "name",
+            "elementLabelTemplate": "{{=it.person?.name || ''}} ({{=it.role?.title || ''}})",
             "detail": "GENERATED"
           }
         },
@@ -171,7 +171,7 @@
           "label": "Institutionen",
           "scope": "#/properties/involvedcorporation",
           "options": {
-            "elementLabelProp": "name",
+            "elementLabelTemplate": "{{=it.corporation?.name || ''}} ({{=it.role?.title || ''}})",
             "detail": "GENERATED"
           }
         }

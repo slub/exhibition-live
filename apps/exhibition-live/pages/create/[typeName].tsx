@@ -3,15 +3,13 @@ import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/router";
 import React, { useMemo } from "react";
 
-import TypedForm from "../../components/content/main/TypedForm";
+import TypedForm from "../../components/content/main/TypedFormNoSSR";
 import { sladb, slent } from "../../components/form/formConfigs";
 import { MainLayout } from "../../components/layout/main-layout";
 import schema from "../../public/schema/Exhibition.schema.json";
 
 type Props = {
-  children: React.ReactChild;
-  data: any;
-  classIRI: string;
+  typeName: string;
 };
 export async function getStaticPaths() {
   const paths = Object.keys(schema.$defs || {}).map((typeName) => ({
@@ -23,18 +21,15 @@ export async function getStaticPaths() {
 
 export async function getStaticProps({ params }) {
   const typeName = params.typeName;
-  const classIRI = sladb[typeName].value;
   return {
     props: {
       typeName,
     },
   };
 }
-export default () => {
+export default (props: Props) => {
   const router = useRouter();
-  const { typeName } = router.query as { typeName: string | null | undefined };
-  //get query parm ?id=...
-  //const {id: encodedID} = router.
+  const { typeName } = props
   const searchParam = useSearchParams();
   const id = searchParam.get("id") as string | null | undefined;
 

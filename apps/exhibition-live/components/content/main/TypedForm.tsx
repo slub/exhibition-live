@@ -115,7 +115,7 @@ const TypedForm = ({ defaultData, typeName, classIRI }: MainFormProps) => {
   const stepperAreaRef = useRef<HTMLDivElement>();
   const actionButtonAreaRef = useRef<HTMLDivElement>();
 
-  const { stepperRef, actionRef } = useFormRefsContext();
+  //const { stepperRef, actionRef } = useFormRefsContext();
   const handleChangeData = useCallback(
     (data: any) => {
       setData(data);
@@ -124,12 +124,10 @@ const TypedForm = ({ defaultData, typeName, classIRI }: MainFormProps) => {
   );
   const mainFormRenderers = useMemo(() => {
     return [
-      materialCategorizationStepperLayoutWithPortal(
-        stepperRef?.current,
-        actionRef?.current,
-      ),
+      // @ts-ignore
+      materialCategorizationStepperLayoutWithPortal(stepperAreaRef.current),
     ];
-  }, [stepperRef, actionRef]);
+  }, [stepperAreaRef]);
 
   return (
     <>
@@ -142,8 +140,11 @@ const TypedForm = ({ defaultData, typeName, classIRI }: MainFormProps) => {
         />
       )}
       <WithPreviewForm data={data} classIRI={classIRI}>
-        <Grid container spacing={0} direction={"column"}>
-          <Grid item>
+        <Grid container spacing={4} direction={"row"}>
+          <Grid item xs={2}>
+            <div ref={stepperAreaRef}></div>
+          </Grid>
+          <Grid item xs={10}>
             {oxigraph && features?.enableDebug && (
               <SPARQLLocalOxigraphToolkit sparqlQuery={doLocalQuery} />
             )}

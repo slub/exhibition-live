@@ -2,7 +2,7 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import React, { useEffect, useMemo } from "react";
 
-import TypedForm from "../../../components/content/main/TypedForm";
+import TypedForm from "../../../components/content/main/TypedFormNoSSR";
 import { sladb } from "../../../components/form/formConfigs";
 import { MainLayout } from "../../../components/layout/main-layout";
 import { useFormData } from "../../../components/state";

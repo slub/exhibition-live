@@ -366,7 +366,6 @@ export const withContextToExpandPanelProps =
     const childPath = composePaths(path, `${index}`);
     const [jsonldData, setJsonldData] = useState<any>();
     const childData = Resolve.data(ctx.core.data, childPath);
-    console.log("childData", childData)
 
     let childLabel = "";
     if(childLabelTemplate) {

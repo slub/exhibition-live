@@ -93,10 +93,10 @@ export const MaterialCategorizationStepperLayout = (
     renderers,
     cells,
   };
-  return !container ? null : (
+  return (
     <Hidden xsUp={!visible}>
       <>
-        {createPortal(
+        {optionallyCreatePortal(
           <Stepper
             activeStep={activeCategory}
             nonLinear
@@ -165,8 +165,8 @@ const withAjvProps =
   };
 
 export const materialCategorizationStepperLayoutWithPortal = (
-  container: HTMLElement | undefined,
-  actionContainer: HTMLElement | undefined,
+  container?: HTMLElement | undefined,
+  actionContainer?: HTMLElement | undefined,
 ) => ({
   tester: materialCategorizationStepperTester,
   renderer: withJsonFormsLayoutProps(

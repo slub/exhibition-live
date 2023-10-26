@@ -2,11 +2,11 @@
 const nextConfig = {
   reactStrictMode: true,
   distDir: 'dist',
-  output: 'export',
+  output: 'standalone',
   images: {
-      unoptimized: true,
+    unoptimized: true,
   },
-  basePath: '/exhibition-live'
+  basePath: process.env.NEXT_PUBLIC_BASE_PATH || '',
 }
 
 module.exports = nextConfig

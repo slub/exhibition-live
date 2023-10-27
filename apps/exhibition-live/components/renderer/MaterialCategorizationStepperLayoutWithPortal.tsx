@@ -142,21 +142,13 @@ export const MaterialCategorizationStepperLayout = (
 const withAjvProps =
   <P extends {}>(
     Component: ComponentType<AjvProps & P>,
-    container: HTMLElement | undefined,
     actionContainer: HTMLElement | undefined,
   ) =>
   (props: P) => {
     const ctx = useJsonForms();
     const ajv = getAjv({ jsonforms: { ...ctx } });
 
-    return (
-      <Component
-        {...props}
-        ajv={ajv}
-        container={container}
-        actionContainer={actionContainer}
-      />
-    );
+    return <Component {...props} ajv={ajv} actionContainer={actionContainer} />;
   };
 
 export const materialCategorizationStepperLayoutWithPortal = (

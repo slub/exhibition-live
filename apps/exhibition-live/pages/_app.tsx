@@ -13,10 +13,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import type { AppProps } from "next/app";
 
 import { FormRefsProvider } from "../components/provider/formRefsContext";
-import {
-  SettingsConsumer,
-  SettingsProvider,
-} from "../components/provider/settingsContext";
 import ThemeComponent from "../components/theme/ThemeComponent";
 
 export const queryClient = new QueryClient();
@@ -33,17 +29,9 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <>
       <QueryClientProviderWrapper>
-        <SettingsProvider>
-          <SettingsConsumer>
-            {({ settings }) => (
-              <FormRefsProvider>
-                <ThemeComponent settings={settings}>
-                  {<Component {...pageProps} />}
-                </ThemeComponent>
-              </FormRefsProvider>
-            )}
-          </SettingsConsumer>
-        </SettingsProvider>
+        <FormRefsProvider>
+          <ThemeComponent>{<Component {...pageProps} />}</ThemeComponent>
+        </FormRefsProvider>
       </QueryClientProviderWrapper>
     </>
   );

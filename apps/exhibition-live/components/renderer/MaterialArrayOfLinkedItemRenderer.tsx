@@ -49,6 +49,7 @@ export const MaterialArrayOfLinkedItemRenderer = ({
   errors,
   uischemas,
   addItem,
+  translations,
 }: ArrayLayoutProps) => {
   const addItemCb = useCallback(
     (p: string, value: any) => addItem(p, value),
@@ -57,6 +58,7 @@ export const MaterialArrayOfLinkedItemRenderer = ({
   return (
     <Hidden xsUp={!visible}>
       <MaterialArrayLayout
+        translations={translations}
         label={label}
         uischema={uischema}
         schema={schema}

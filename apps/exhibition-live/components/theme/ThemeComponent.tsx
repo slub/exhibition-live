@@ -5,7 +5,6 @@ import { ReactNode, useMemo } from "react";
 
 // ** Type Imports
 // ** Theme Config
-import { Settings } from "../provider/settingsContext";
 import { useThemeSettings } from "../state";
 import theme from "./berry-theme";
 // ** Global Styles

@@ -11,7 +11,7 @@ import {
   UISchemaElement,
 } from "@jsonforms/core";
 import { JsonFormsDispatch, withJsonFormsDetailProps } from "@jsonforms/react";
-import { Hidden, Typography } from "@mui/material";
+import { Hidden } from "@mui/material";
 import React, { useMemo } from "react";
 
 export const MaterialLinkedObjectRenderer = ({

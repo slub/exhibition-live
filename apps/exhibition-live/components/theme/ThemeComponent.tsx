@@ -14,7 +14,6 @@ import GlobalStyling from "./globalStyles";
 // ** Theme
 
 interface Props {
-  settings: Settings;
   children: ReactNode;
 }
 

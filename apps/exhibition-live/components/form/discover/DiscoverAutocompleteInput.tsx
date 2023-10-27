@@ -9,7 +9,7 @@ import React, {
 } from "react";
 
 import { useGlobalCRUDOptions } from "../../state/useGlobalCRUDOptions";
-import findEntityByClass from "../../utils/discover/findEntityByClass";
+import { findEntityByClass } from "../../utils/discover";
 import {
   AutocompleteSuggestion,
   DebouncedAutocomplete,

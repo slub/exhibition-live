@@ -142,7 +142,7 @@ export const exhibitionDeclarativeMapping: DeclarativeMappings = [
                   path: "id",
                 },
                 target: {
-                  path: "idAuthority",
+                  path: "idAuthority.@id",
                 },
               },
             ],
@@ -177,7 +177,7 @@ export const exhibitionDeclarativeMapping: DeclarativeMappings = [
                   path: "id",
                 },
                 target: {
-                  path: "idAuthority",
+                  path: "idAuthority.@id",
                 },
               },
             ],

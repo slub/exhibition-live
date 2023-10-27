@@ -30,6 +30,8 @@ import K10PlusSearchTable, {
   findFirstInProps,
 } from "./k10plus/K10PlusSearchTable";
 import LobidSearchTable from "./lobid/LobidSearchTable";
+import { findEntityByAuthorityIRI } from "../utils/discover";
+import { useGlobalCRUDOptions } from "../state/useGlobalCRUDOptions";
 
 export const isPrimitive = (type?: string) =>
   type === "string" ||
@@ -71,21 +73,26 @@ type SelectedEntity = {
   source: KnowledgeSources;
 };
 
-const strategyContext: StrategyContext = {
+const strategyContext: (doQuery: (query) => Promise<any>) => StrategyContext = (
+  doQuery,
+) => ({
   getPrimaryIRIBySecondaryIRI: async (
     secondaryIRI: string,
     authorityIRI: string,
     typeIRI: string,
   ) => {
     console.warn("using stub method");
-
-    return null; //'http://example.com/1231231'
+    const ids = await findEntityByAuthorityIRI(secondaryIRI, doQuery);
+    if (ids.length > 0) {
+      console.warn("found entity more then one entity");
+    }
+    return ids[0] || null; //'http://example.com/1231231'
   },
   authorityIRI: "http://d-nb.info/gnd",
   newIRI: (typeIRI: string) => {
     return slent(uuidv4()).value;
   },
-};
+});
 const SimilarityFinder: FunctionComponent<Props> = ({
   data,
   classIRI,
@@ -277,6 +284,7 @@ const SimilarityFinder: FunctionComponent<Props> = ({
     [typeName, onMappedDataAccepted, jsonSchema],
   );
 
+  const { crudOptions } = useGlobalCRUDOptions();
   const handleManuallyMapData = useCallback(
     async (id: string | undefined, entryData: any) => {
       console.log("map manually");
@@ -291,7 +299,7 @@ const SimilarityFinder: FunctionComponent<Props> = ({
           entryData.allProps,
           {},
           mappingConfig,
-          strategyContext,
+          strategyContext(crudOptions?.selectFetch),
         );
         const inject = {
           "@type": classIRI,
@@ -307,7 +315,7 @@ const SimilarityFinder: FunctionComponent<Props> = ({
         console.error("could not map from authority", e);
       }
     },
-    [typeName, onMappedDataAccepted],
+    [typeName, onMappedDataAccepted, crudOptions?.selectFetch],
   );
 
   const handleAccept = useCallback(

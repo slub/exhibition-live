@@ -11,7 +11,7 @@ function fixSparqlOrder(sparqlQuery) {
   const regex = /(ORDER BY [^ ]+)(.*)(GROUP BY[^\)]+\))/gm;
   return sparqlQuery.replace(regex, "$3$2\n$1");
 }
-const findEntityByClass = async (
+export const findEntityByClass = async (
   searchString: string | null,
   typeIRI: string,
   doQuery: (query: string) => Promise<any>,
@@ -39,7 +39,7 @@ const findEntityByClass = async (
             BIND (COALESCE(${nameV}, "") AS ${safeNameV})
             BIND (COALESCE(${titleV}, "") AS ${safeTitleV})
             BIND (COALESCE(${descriptionV}, "") AS ${safeDescriptionV})
-    
+
             BIND (CONCAT(${safeNameV}, " ", ${safeTitleV}, " ", ${safeDescriptionV}) AS ${concatenatedV})
             BIND (COALESCE(${nameV}, ${titleV}, ${descriptionV}, "") AS ${oneOfTitleV})
             FILTER(contains(lcase(${concatenatedV}), lcase("${searchString}") )) .
@@ -59,7 +59,7 @@ const findEntityByClass = async (
             OPTIONAL {${subjectV} :title ${titleV} .}
             OPTIONAL {${subjectV} :description ${descriptionV} .}
             BIND (COALESCE(${nameV}, ${titleV}, ${descriptionV}, "") AS ${oneOfTitleV})
-            FILTER isIRI(${subjectV})  			
+            FILTER isIRI(${subjectV})
             FILTER (strlen(${oneOfTitleV}) > 0)
         `
           .LIMIT(limit)
@@ -68,7 +68,7 @@ const findEntityByClass = async (
           .ORDER()
           .BY(firstOneOfTitleV)
           .build(defaultQueryBuilderOptions);
-  query = `PREFIX : <${defaultPrefix}> 
+  query = `PREFIX : <${defaultPrefix}>
           ${fixSparqlOrder(query)}
           `;
   try {
@@ -82,5 +82,3 @@ const findEntityByClass = async (
     return [];
   }
 };
-
-export default findEntityByClass;

@@ -12,7 +12,6 @@ import { useQuery } from "@tanstack/react-query";
 import { JSONSchema7 } from "json-schema";
 import React, { ForwardedRef, useMemo } from "react";
 import { BrowserView, MobileView } from "react-device-detect";
-import PerfectScrollbar from "react-perfect-scrollbar";
 
 import loadedSchema from "../../../public/schema/Exhibition.schema.json";
 import SettingsModal from "../../content/settings/SettingsModal";

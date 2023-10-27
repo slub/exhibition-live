@@ -69,6 +69,7 @@ export const ctxToMasterListItemProps = (
 export const withContextToMasterListItemProps =
   // @ts-ignore
 
+
     (
       Component: ComponentType<StatePropsOfMasterItem>,
     ): ComponentType<OwnPropsOfMasterListItem> =>

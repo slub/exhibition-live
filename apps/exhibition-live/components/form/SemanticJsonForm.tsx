@@ -274,7 +274,7 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> = ({
 
   const handleNewData = useCallback(
     (newData: any) => {
-      console.log('handle new data accepted', newData)
+      console.log("handle new data accepted", newData);
       if (!newData) return;
       setData((data: any) => ({
         "@id": data["@id"],

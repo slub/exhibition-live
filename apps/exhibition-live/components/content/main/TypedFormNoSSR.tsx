@@ -1,9 +1,8 @@
-import dynamic from 'next/dynamic'
+import dynamic from "next/dynamic";
 
-
-const DynamicComponentWithNoSSR = dynamic(() => import('./TypedForm'), {
-  ssr: false
-})
+const DynamicComponentWithNoSSR = dynamic(() => import("./TypedForm"), {
+  ssr: false,
+});
 type MainFormProps = {
   defaultData?: any;
   typeName: string;
@@ -11,4 +10,6 @@ type MainFormProps = {
 };
 
 // @ts-ignore
-export default ( props: MainFormProps ) => <DynamicComponentWithNoSSR {...props}/>
+export default (props: MainFormProps) => (
+  <DynamicComponentWithNoSSR {...props} />
+);

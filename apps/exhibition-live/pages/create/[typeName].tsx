@@ -29,7 +29,7 @@ export async function getStaticProps({ params }) {
 }
 export default (props: Props) => {
   const router = useRouter();
-  const { typeName } = props
+  const { typeName } = props;
   const searchParam = useSearchParams();
   const id = searchParam.get("id") as string | null | undefined;
 

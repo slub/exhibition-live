@@ -105,7 +105,9 @@ const MaterialArrayLayoutComponent = (props: ArrayLayoutProps) => {
                   enableMoveDown={index < data - 1}
                   config={config}
                   childLabelProp={appliedUiSchemaOptions.elementLabelProp}
-                  childLabelTemplate={appliedUiSchemaOptions.elementLabelTemplate}
+                  childLabelTemplate={
+                    appliedUiSchemaOptions.elementLabelTemplate
+                  }
                   uischemas={uischemas}
                   readonly={readonly}
                 />

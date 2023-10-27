@@ -279,7 +279,7 @@ const SimilarityFinder: FunctionComponent<Props> = ({
 
   const handleManuallyMapData = useCallback(
     async (id: string | undefined, entryData: any) => {
-      console.log('map manually')
+      console.log("map manually");
       if (!id || !entryData?.allProps) return;
       const mappingConfig = declarativeMappings[typeName];
       if (!mappingConfig) {

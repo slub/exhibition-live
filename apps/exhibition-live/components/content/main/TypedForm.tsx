@@ -1,10 +1,10 @@
-import {Button, Grid, TextField} from "@mui/material";
-import {JSONSchema7} from "json-schema";
-import React, {useCallback, useMemo, useRef} from "react";
-import {SplitPane} from "react-collapse-pane";
-import {v4 as uuidv4} from "uuid";
+import { Button, Grid, TextField } from "@mui/material";
+import { JSONSchema7 } from "json-schema";
+import React, { useCallback, useMemo, useRef } from "react";
+import { SplitPane } from "react-collapse-pane";
+import { v4 as uuidv4 } from "uuid";
 
-import {BASE_IRI} from "../../config";
+import { BASE_IRI } from "../../config";
 import ContentMainPreview from "../../content/ContentMainPreview";
 import {
   defaultJsonldContext,
@@ -12,12 +12,10 @@ import {
   defaultQueryBuilderOptions,
 } from "../../form/formConfigs";
 import SemanticJsonForm from "../../form/SemanticJsonForm";
-import {uischemata} from "../../form/uischemaForType";
-import {uischemas} from "../../form/uischemas";
-import {useFormRefsContext} from "../../provider/formRefsContext";
-import {
-  materialCategorizationStepperLayoutWithPortal
-} from "../../renderer/MaterialCategorizationStepperLayoutWithPortal";
+import { uischemata } from "../../form/uischemaForType";
+import { uischemas } from "../../form/uischemas";
+import { useFormRefsContext } from "../../provider/formRefsContext";
+import { materialCategorizationStepperLayoutWithPortal } from "../../renderer/MaterialCategorizationStepperLayoutWithPortal";
 import {
   useFormData,
   useFormEditor,
@@ -25,8 +23,8 @@ import {
   useOxigraph,
 } from "../../state";
 import useExtendedSchema from "../../state/useExtendedSchema";
-import {useGlobalCRUDOptions} from "../../state/useGlobalCRUDOptions";
-import {useSettings} from "../../state/useLocalSettings";
+import { useGlobalCRUDOptions } from "../../state/useGlobalCRUDOptions";
+import { useSettings } from "../../state/useLocalSettings";
 import SPARQLLocalOxigraphToolkit from "../../utils/dev/SPARQLLocalOxigraphToolkit";
 
 type Props = {
@@ -34,10 +32,10 @@ type Props = {
   data: any;
   classIRI: string;
 };
-const WithPreviewForm = ({classIRI, data, children}: Props) => {
+const WithPreviewForm = ({ classIRI, data, children }: Props) => {
   const isLandscape = false;
-  const {previewEnabled, togglePreview, formData} = useFormEditor();
-  const {features} = useSettings();
+  const { previewEnabled, togglePreview, formData } = useFormEditor();
+  const { features } = useSettings();
 
   return features?.enablePreview ? (
     <>
@@ -55,12 +53,12 @@ const WithPreviewForm = ({classIRI, data, children}: Props) => {
         <SplitPane split={isLandscape ? "horizontal" : "vertical"}>
           <div
             className={"page-wrapper"}
-            style={{overflow: "auto", height: "100%"}}
+            style={{ overflow: "auto", height: "100%" }}
           >
             {children}
           </div>
           <div>
-            {<ContentMainPreview classIRI={classIRI} exhibition={data}/>}
+            {<ContentMainPreview classIRI={classIRI} exhibition={data} />}
           </div>
         </SplitPane>
       ) : (
@@ -79,13 +77,13 @@ export type MainFormProps = {
   typeName: string;
   classIRI: string;
 };
-const oxigraph = false
-const TypedForm = ({defaultData, typeName, classIRI}: MainFormProps) => {
-  const {formData: data, setFormData: setData} = useFormData();
+const oxigraph = false;
+const TypedForm = ({ defaultData, typeName, classIRI }: MainFormProps) => {
+  const { formData: data, setFormData: setData } = useFormData();
   //const { oxigraph } = useOxigraph();
-  const {crudOptions, doLocalQuery} = useGlobalCRUDOptions();
-  const {features} = useSettings();
-  const {search: searchText, setSearch} = useGlobalSearch();
+  const { crudOptions, doLocalQuery } = useGlobalCRUDOptions();
+  const { features } = useSettings();
+  const { search: searchText, setSearch } = useGlobalSearch();
 
   const handleNew = useCallback(() => {
     const newURI = `${BASE_IRI}${uuidv4()}`;
@@ -113,7 +111,7 @@ const TypedForm = ({defaultData, typeName, classIRI}: MainFormProps) => {
     },
     [setSearch],
   );
-  const loadedSchema = useExtendedSchema({typeName, classIRI});
+  const loadedSchema = useExtendedSchema({ typeName, classIRI });
   const stepperAreaRef = useRef<HTMLDivElement>();
   const actionButtonAreaRef = useRef<HTMLDivElement>();
 
@@ -143,7 +141,7 @@ const TypedForm = ({defaultData, typeName, classIRI}: MainFormProps) => {
       )}
       <WithPreviewForm data={data} classIRI={classIRI}>
         {oxigraph && features?.enableDebug && (
-          <SPARQLLocalOxigraphToolkit sparqlQuery={doLocalQuery}/>
+          <SPARQLLocalOxigraphToolkit sparqlQuery={doLocalQuery} />
         )}
         {loadedSchema && (
           <SemanticJsonForm
@@ -160,14 +158,10 @@ const TypedForm = ({defaultData, typeName, classIRI}: MainFormProps) => {
             queryBuildOptions={defaultQueryBuilderOptions}
             schema={loadedSchema as JSONSchema7}
             toolbarChildren={
-              <span
-                ref={actionButtonAreaRef}
-                style={{float: "right"}}
-              ></span>
+              <span ref={actionButtonAreaRef} style={{ float: "right" }}></span>
             }
             jsonFormsProps={{
-              uischema:
-                uischemata[typeName] || (uischemas as any)[typeName],
+              uischema: uischemata[typeName] || (uischemas as any)[typeName],
               uischemas: uischemas,
               renderers: mainFormRenderers,
             }}

@@ -40,7 +40,14 @@ export const recursivelyFindRefsAndAppendStub: (
   }
   const definitionsKey = "$defs" in rootSchema ? "$defs" : "definitions";
   if (schema.$ref) {
-    if (options?.excludeType.includes(schema.$ref.substring(`#/${definitionsKey}/`.length, schema.$ref.length) )) {
+    if (
+      options?.excludeType.includes(
+        schema.$ref.substring(
+          `#/${definitionsKey}/`.length,
+          schema.$ref.length,
+        ),
+      )
+    ) {
       return schema;
     }
     return {
@@ -67,7 +74,12 @@ export const recursivelyFindRefsAndAppendStub: (
           ([k, s]) =>
             [
               k,
-              recursivelyFindRefsAndAppendStub(k, s as JSONSchema7, options, rootSchema),
+              recursivelyFindRefsAndAppendStub(
+                k,
+                s as JSONSchema7,
+                options,
+                rootSchema,
+              ),
             ] as [string, JSONSchema7Definition],
           options,
         ),
@@ -82,7 +94,12 @@ export const recursivelyFindRefsAndAppendStub: (
           ([k, s]) =>
             [
               k,
-              recursivelyFindRefsAndAppendStub(k, s as JSONSchema7, options, rootSchema),
+              recursivelyFindRefsAndAppendStub(
+                k,
+                s as JSONSchema7,
+                options,
+                rootSchema,
+              ),
             ] as [string, JSONSchema7Definition],
           options,
         ),
@@ -97,11 +114,11 @@ export const definitionsToStubDefinitions = (
   options?: RefAppendOptions,
 ) =>
   Object.entries(definitions || {}).reduce((acc, [key, value]) => {
-    if(options?.excludeType?.includes(key))
+    if (options?.excludeType?.includes(key))
       return {
-      ...acc,
-      [key]: value
-    }
+        ...acc,
+        [key]: value,
+      };
     const stubKey = `${key}Stub`;
     const stub = {
       ...(isObject(value) ? value : {}),

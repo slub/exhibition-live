@@ -58,7 +58,7 @@ import { useGlobalCRUDOptions } from "../state/useGlobalCRUDOptions";
 
 const iconStyle: any = { float: "right" };
 
-import dot from "dot"
+import dot from "dot";
 
 interface OwnPropsOfExpandPanel {
   index: number;
@@ -362,26 +362,35 @@ export const withContextToExpandPanelProps =
   ): ComponentType<OwnPropsOfExpandPanel> =>
   ({ ctx, props }: JsonFormsStateContext & ExpandPanelProps) => {
     const dispatchProps = ctxDispatchToExpandPanelProps(ctx.dispatch);
-    const { childLabelTemplate ,childLabelProp, schema, path, index, uischemas } = props;
+    const {
+      childLabelTemplate,
+      childLabelProp,
+      schema,
+      path,
+      index,
+      uischemas,
+    } = props;
     const childPath = composePaths(path, `${index}`);
     const [jsonldData, setJsonldData] = useState<any>();
     const childData = Resolve.data(ctx.core.data, childPath);
 
     let childLabel = "";
-    if(childLabelTemplate) {
+    if (childLabelTemplate) {
       try {
-        const template = dot.template(childLabelTemplate)
-        childLabel = template(childData)
+        const template = dot.template(childLabelTemplate);
+        childLabel = template(childData);
       } catch (e) {
-        console.warn("could not render childLabelTemplate", e)
+        console.warn("could not render childLabelTemplate", e);
       }
     } else if (childLabelProp) {
-      childLabel = get(childData, childLabelProp, "") ||
-        get(jsonldData, childLabelProp, "")
+      childLabel =
+        get(childData, childLabelProp, "") ||
+        get(jsonldData, childLabelProp, "");
     } else {
-     // @ts-ignore
-      childLabel = get(childData, getFirstPrimitivePropExceptJsonLD(schema), "") ||
-      get(jsonldData, getFirstPrimitivePropExceptJsonLD(schema), "");
+      // @ts-ignore
+      childLabel =
+        get(childData, getFirstPrimitivePropExceptJsonLD(schema), "") ||
+        get(jsonldData, getFirstPrimitivePropExceptJsonLD(schema), "");
     }
     const avatar =
       get(childData, "image") ||

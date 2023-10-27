@@ -73,16 +73,12 @@ const WithPreviewForm = ({ classIRI, data, children }: Props) => {
 //const classIRI = sladb.Exhibition.value
 
 export type MainFormProps = {
-  defaultData?: any;
   typeName: string;
   classIRI: string;
 };
-const oxigraph = false;
-const TypedForm = ({ defaultData, typeName, classIRI }: MainFormProps) => {
+const TypedForm = ({ typeName, classIRI }: MainFormProps) => {
   const { formData: data, setFormData: setData } = useFormData();
-  //const { oxigraph } = useOxigraph();
-  const { crudOptions, doLocalQuery } = useGlobalCRUDOptions();
-  const { features } = useSettings();
+  const { crudOptions } = useGlobalCRUDOptions();
   const { search: searchText, setSearch } = useGlobalSearch();
 
   const handleNew = useCallback(() => {
@@ -112,7 +108,6 @@ const TypedForm = ({ defaultData, typeName, classIRI }: MainFormProps) => {
     [setSearch],
   );
   const loadedSchema = useExtendedSchema({ typeName, classIRI });
-  const stepperAreaRef = useRef<HTMLDivElement>();
   const actionButtonAreaRef = useRef<HTMLDivElement>();
 
   //const { stepperRef, actionRef } = useFormRefsContext();
@@ -131,18 +126,7 @@ const TypedForm = ({ defaultData, typeName, classIRI }: MainFormProps) => {
 
   return (
     <>
-      {features?.enableDebug && (
-        <TextField
-          label={"ID"}
-          value={data["@id"]}
-          onChange={(e) => handleChange(e.target.value)}
-          fullWidth
-        />
-      )}
       <WithPreviewForm data={data} classIRI={classIRI}>
-        {oxigraph && features?.enableDebug && (
-          <SPARQLLocalOxigraphToolkit sparqlQuery={doLocalQuery} />
-        )}
         {loadedSchema && (
           <SemanticJsonForm
             defaultEditMode={true}

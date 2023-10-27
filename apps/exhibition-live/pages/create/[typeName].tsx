@@ -35,12 +35,6 @@ export default (props: Props) => {
 
   const classIRI: string | undefined =
     typeof typeName === "string" ? sladb(typeName).value : undefined;
-  const defaultData = useMemo(() => {
-    return {
-      "@id": slent[`${typeName}#s-12`].value || decodeURI(id),
-      "@type": classIRI,
-    };
-  }, [classIRI, typeName, id]);
 
   return (
     <>
@@ -52,11 +46,7 @@ export default (props: Props) => {
       </Head>
       <MainLayout>
         {classIRI && typeName && (
-          <TypedForm
-            defaultData={defaultData}
-            typeName={typeName}
-            classIRI={classIRI}
-          />
+          <TypedForm typeName={typeName} classIRI={classIRI} />
         )}
       </MainLayout>
     </>

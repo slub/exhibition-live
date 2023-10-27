@@ -42,10 +42,7 @@ import React, {
   useMemo,
   useState,
 } from "react";
-import { createPortal } from "react-dom";
-import { JsonView } from "react-json-view-lite";
 
-import { BASE_IRI } from "../config";
 import { useFormRefsContext } from "../provider/formRefsContext";
 import AdbSpecialDateRenderer, {
   adbSpecialDateControlTester,
@@ -71,6 +68,7 @@ import {
 } from "../state/useSPARQL_CRUD";
 import SimilarityFinder from "./SimilarityFinder";
 import { FormDebuggingTools } from "./FormDebuggingTools";
+import { optionallyCreatePortal } from "../helper";
 
 export type CRUDOpsType = {
   load: () => Promise<void>;
@@ -193,14 +191,12 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> = ({
   const [initiallyLoaded, setInitiallyLoaded] = useState<string | undefined>(
     undefined,
   );
-  const [jsonViewerEnabled, setJsonViewerEnabled] = useState(false);
   const [managedEditMode, setEditMode] = useState(defaultEditMode || false);
   const editMode = useMemo(
     () => forceEditMode || managedEditMode,
     [managedEditMode, forceEditMode],
   );
   const [hideSimilarityFinder, setHideSimilarityFinder] = useState(true);
-  const { features } = useSettings();
   //const typeName = useMemo(() => typeIRI.substring(BASE_IRI.length, typeIRI.length), [typeIRI])
 
   useJsonldParser(data, jsonldContext, schema, {
@@ -237,7 +233,7 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> = ({
     [jfpRenderers],
   );
 
-  const { toolbarRef } = useFormRefsContext();
+  //const { toolbarRef } = useFormRefsContext();
 
   useEffect(() => {
     if (!ready) return;
@@ -305,31 +301,27 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> = ({
 
   return (
     <>
-      <Hidden xsUp={hideToolbar}>
-        {toolbarRef?.current &&
-          createPortal(
+      {optionallyCreatePortal(
+        <>
+          <IconButton onClick={() => setEditMode((editMode) => !editMode)}>
+            {editMode ? <EditOff /> : <Edit />}
+          </IconButton>
+          {editMode && (
             <>
-              <IconButton onClick={() => setEditMode((editMode) => !editMode)}>
-                {editMode ? <EditOff /> : <Edit />}
+              <IconButton onClick={handleSave} aria-label="save">
+                <Save />
               </IconButton>
-              {editMode && (
-                <>
-                  <IconButton onClick={handleSave} aria-label="save">
-                    <Save />
-                  </IconButton>
-                  <IconButton onClick={remove} aria-lable="remove">
-                    <Delete />
-                  </IconButton>
-                  <IconButton onClick={() => load()} aria-lable="refresh">
-                    <Refresh />
-                  </IconButton>
-                </>
-              )}
-              {toolbarChildren}
-            </>,
-            toolbarRef.current,
+              <IconButton onClick={remove} aria-lable="remove">
+                <Delete />
+              </IconButton>
+              <IconButton onClick={() => load()} aria-lable="refresh">
+                <Refresh />
+              </IconButton>
+            </>
           )}
-      </Hidden>
+          {toolbarChildren}
+        </>,
+      )}
       <Grid
         container
         spacing={2}

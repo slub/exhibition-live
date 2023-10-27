@@ -1,6 +1,6 @@
 import React, { ComponentType, useState } from "react";
 import merge from "lodash/merge";
-import { Button, Hidden, Step, StepButton, Stepper, Grid } from "@mui/material";
+import { Button, Grid, Hidden, Step, StepButton, Stepper } from "@mui/material";
 import {
   and,
   Categorization,
@@ -20,7 +20,7 @@ import {
   MaterialLayoutRenderer,
   MaterialLayoutRendererProps,
 } from "@jsonforms/material-renderers";
-import { createPortal } from "react-dom";
+import { optionallyCreatePortal } from "../helper/optionallyCreatePortal";
 
 export const materialCategorizationStepperTester: RankedTester = rankWith(
   4,
@@ -41,11 +41,6 @@ export interface MaterialCategorizationStepperLayoutRendererProps
   data: any;
   actionContainer?: HTMLElement;
 }
-
-const optionallyCreatePortal = (
-  children: React.ReactNode,
-  container?: HTMLElement,
-) => (container ? createPortal(children, container) : children);
 
 export const MaterialCategorizationStepperLayout = (
   props: MaterialCategorizationStepperLayoutRendererProps,

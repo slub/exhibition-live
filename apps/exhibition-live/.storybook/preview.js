@@ -1,3 +1,6 @@
+import theme from "../components/theme/berry-theme";
+import {CssBaseline, ThemeProvider} from "@mui/material";
+
 export const parameters = {
   actions: { argTypesRegex: "^on[A-Z].*" },
   controls: {
@@ -7,3 +10,22 @@ export const parameters = {
     },
   },
 }
+
+const finalTheme = theme(
+  {
+    isOpen: [], // for active default menu
+    defaultId: "default",
+    fontFamily: "'Roboto', sans-serif",
+    borderRadius: 12,
+    opened: true,
+    navType: "light",
+  }
+)
+export const withMuiTheme = (Story) => (
+  <ThemeProvider theme={finalTheme}>
+    <CssBaseline />
+    <Story />
+  </ThemeProvider>
+);
+
+export const decorators = [withMuiTheme];

@@ -70,6 +70,7 @@ import {
   useSPARQL_CRUD,
 } from "../state/useSPARQL_CRUD";
 import SimilarityFinder from "./SimilarityFinder";
+import { FormDebuggingTools } from "./FormDebuggingTools";
 
 export type CRUDOpsType = {
   load: () => Promise<void>;
@@ -329,38 +330,6 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> = ({
             toolbarRef.current,
           )}
       </Hidden>
-      {features?.enableDebug && (
-        <>
-          <Switch
-            checked={jsonViewerEnabled}
-            onChange={(e) => setJsonViewerEnabled(Boolean(e.target.checked))}
-            title={"debug"}
-          />
-          {jsonViewerEnabled && (
-            <Switch
-              checked={isUpdate}
-              onChange={(e) => setIsUpdate(Boolean(e.target.checked))}
-              title={"upsert"}
-            />
-          )}
-        </>
-      )}
-      {hideToolbar && features?.enableDebug && (
-        <>
-          <Switch
-            checked={jsonViewerEnabled}
-            onChange={(e) => setJsonViewerEnabled(Boolean(e.target.checked))}
-            title={"debug"}
-          />
-          {jsonViewerEnabled && (
-            <Switch
-              checked={isUpdate}
-              onChange={(e) => setIsUpdate(Boolean(e.target.checked))}
-              title={"upsert"}
-            />
-          )}
-        </>
-      )}
       <Grid
         container
         spacing={2}
@@ -386,19 +355,13 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> = ({
               />
             </CardContent>
           </Card>
-          {jsonViewerEnabled &&
-            [data, jsonldData, formData].map((data_, idx) => (
-              <Card key={idx}>
-                <CardContent>
-                  {entityIRI}
-                  <JsonView
-                    data={data_}
-                    shouldInitiallyExpand={(lvl) => lvl < 5}
-                  />
-                  <Divider />
-                </CardContent>
-              </Card>
-            ))}
+          <FormDebuggingTools
+            jsonData={{
+              rawData: data,
+              jsonldData: jsonldData,
+              formData: formData,
+            }}
+          />
         </Grid>
         {!hideSimilarityFinder && (
           <>

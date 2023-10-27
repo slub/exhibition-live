@@ -1,11 +1,15 @@
 import { JsonView } from "react-json-view-lite";
 import { Divider, Grid, Typography } from "@mui/material";
 import React from "react";
+import { useSettings } from "../state/useLocalSettings";
 
 type FormDebuggingToolsProps = {
   jsonData?: Record<string, any>;
 };
-const FormDebuggingTools = ({ jsonData }: FormDebuggingToolsProps) => {
+export const FormDebuggingTools = ({ jsonData }: FormDebuggingToolsProps) => {
+  const { features } = useSettings();
+  if (!features?.enableDebug) return null;
+
   return (
     <Grid container direction={"column"} spacing={2}>
       {Object.entries(jsonData).map(([key, value]) => {

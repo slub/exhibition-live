@@ -1,6 +1,6 @@
-import React, { ComponentType, useState } from "react";
+import React, {ComponentType, useState} from "react";
 import merge from "lodash/merge";
-import { Button, Hidden, Step, StepButton, Stepper } from "@mui/material";
+import {Button, Hidden, Step, StepButton, Stepper, Grid} from "@mui/material";
 import {
   and,
   Categorization,
@@ -14,13 +14,13 @@ import {
   StatePropsOfLayout,
   uiTypeIs,
 } from "@jsonforms/core";
-import { useJsonForms, withJsonFormsLayoutProps } from "@jsonforms/react";
+import {useJsonForms, withJsonFormsLayoutProps} from "@jsonforms/react";
 import {
   AjvProps,
   MaterialLayoutRenderer,
   MaterialLayoutRendererProps,
 } from "@jsonforms/material-renderers";
-import { createPortal } from "react-dom";
+import {createPortal} from "react-dom";
 
 export const materialCategorizationStepperTester: RankedTester = rankWith(
   4,
@@ -39,7 +39,6 @@ export interface MaterialCategorizationStepperLayoutRendererProps
   extends StatePropsOfLayout,
     AjvProps {
   data: any;
-  container?: HTMLElement;
   actionContainer?: HTMLElement;
 }
 
@@ -67,7 +66,6 @@ export const MaterialCategorizationStepperLayout = (
     cells,
     config,
     ajv,
-    container,
     actionContainer,
   } = props;
   const categorization = uischema as Categorization;
@@ -95,28 +93,29 @@ export const MaterialCategorizationStepperLayout = (
   };
   return (
     <Hidden xsUp={!visible}>
-      <>
-        {optionallyCreatePortal(
-          <Stepper
-            activeStep={activeCategory}
-            nonLinear
-            orientation={"vertical"}
-          >
-            {categories.map((e: Category, idx: number) => (
-              <Step key={e.label}>
-                <StepButton onClick={() => handleStep(idx)}>
-                  {e.label}
-                </StepButton>
-              </Step>
-            ))}
-          </Stepper>,
-          container,
-        )}
-        <div>
-          <MaterialLayoutRenderer {...childProps} />
-        </div>
-        {!!appliedUiSchemaOptions.showNavButtons
-          ? optionallyCreatePortal(
+      <Grid container spacing={4} direction={"row"}>
+        <Grid item xs={2} >
+            <Stepper
+              activeStep={activeCategory}
+              nonLinear
+              orientation={"vertical"}
+              sx={{paddingTop: theme => theme.spacing(2)}}
+            >
+              {categories.map((e: Category, idx: number) => (
+                <Step key={e.label}>
+                  <StepButton onClick={() => handleStep(idx)}>
+                    {e.label}
+                  </StepButton>
+                </Step>
+              ))}
+            </Stepper>
+        </Grid>
+        <Grid item xs={10} >
+          <div>
+            <MaterialLayoutRenderer {...childProps} />
+          </div>
+          {!!appliedUiSchemaOptions.showNavButtons
+            ? optionallyCreatePortal(
               <>
                 <Button
                   style={buttonStyle}
@@ -139,8 +138,9 @@ export const MaterialCategorizationStepperLayout = (
               </>,
               actionContainer,
             )
-          : null}
-      </>
+            : null}
+        </Grid>
+      </Grid>
     </Hidden>
   );
 };
@@ -150,29 +150,27 @@ const withAjvProps =
     container: HTMLElement | undefined,
     actionContainer: HTMLElement | undefined,
   ) =>
-  (props: P) => {
-    const ctx = useJsonForms();
-    const ajv = getAjv({ jsonforms: { ...ctx } });
+    (props: P) => {
+      const ctx = useJsonForms();
+      const ajv = getAjv({jsonforms: {...ctx}});
 
-    return (
-      <Component
-        {...props}
-        ajv={ajv}
-        container={container}
-        actionContainer={actionContainer}
-      />
-    );
-  };
+      return (
+        <Component
+          {...props}
+          ajv={ajv}
+          container={container}
+          actionContainer={actionContainer}
+        />
+      );
+    };
 
 export const materialCategorizationStepperLayoutWithPortal = (
-  container?: HTMLElement | undefined,
   actionContainer?: HTMLElement | undefined,
 ) => ({
   tester: materialCategorizationStepperTester,
   renderer: withJsonFormsLayoutProps(
     withAjvProps(
       MaterialCategorizationStepperLayout,
-      container,
       actionContainer,
     ),
   ),

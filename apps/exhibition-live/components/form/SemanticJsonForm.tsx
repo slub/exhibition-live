@@ -90,6 +90,7 @@ interface OwnProps {
   queryBuildOptions?: SparqlBuildOptions;
   jsonFormsProps?: Partial<JsonFormsInitStateProps>;
   onEntityChange?: (entityIRI: string | undefined) => void;
+  onEntityDataChange?: (entityData: any) => void;
   onInit?: (crudOps: CRUDOpsType) => void;
   hideToolbar?: boolean;
   readonly?: boolean;
@@ -175,6 +176,7 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> = ({
   queryBuildOptions,
   jsonFormsProps = {},
   onEntityChange,
+  onEntityDataChange,
   onInit,
   hideToolbar,
   readonly,
@@ -372,8 +374,8 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> = ({
                     classIRI={typeIRI}
                     jsonSchema={schema}
                     onEntityIRIChange={(iri) =>
-                      onEntityChange &&
-                      onEntityChange({ "@id": iri, "@type": typeIRI })
+                      onEntityDataChange &&
+                      onEntityDataChange({ "@id": iri, "@type": typeIRI })
                     }
                     searchOnDataPath={"title"}
                     onMappedDataAccepted={handleNewData}

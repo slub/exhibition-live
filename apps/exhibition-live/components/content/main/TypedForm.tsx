@@ -87,9 +87,9 @@ const TypedForm = ({ typeName, classIRI }: MainFormProps) => {
     setData(newData);
   }, [setData, classIRI, searchText]);
   const handleChange = useCallback(
-    (v?: string) => {
-      if (!v) return;
-      const { "@id": entityIRI, "@type": typeIRI } = v;
+    (entityData: any) => {
+      if (!entityData) return;
+      const { "@id": entityIRI, "@type": typeIRI } = entityData;
       if (!entityIRI || !typeIRI) {
         return;
       }
@@ -133,7 +133,7 @@ const TypedForm = ({ typeName, classIRI }: MainFormProps) => {
             searchText={searchText}
             shouldLoadInitially
             typeIRI={classIRI}
-            onEntityChange={handleChange}
+            onEntityDataChange={handleChange}
             crudOptions={crudOptions}
             defaultPrefix={defaultPrefix}
             jsonldContext={defaultJsonldContext}

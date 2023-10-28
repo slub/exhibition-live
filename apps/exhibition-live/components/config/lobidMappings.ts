@@ -18,6 +18,14 @@ export const exhibitionDeclarativeMapping: DeclarativeMappings = [
   },
   {
     source: {
+      path: "id",
+    },
+    target: {
+      path: "idAuthority.@id",
+    },
+  },
+  {
+    source: {
       path: "variantName",
       expectedSchema: {
         type: "array",

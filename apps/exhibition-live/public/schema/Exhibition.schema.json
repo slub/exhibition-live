@@ -24,13 +24,21 @@
           "$ref": "#/$defs/Authority"
         },
         "idAuthority": {
-          "type": "string",
-          "maxLength": 50
+          "$ref": "#/$defs/AuthorityEntry"
         },
         "lastNormUpdate": {
           "type": "string",
           "format": "date-time",
           "readOnly": true
+        }
+      }
+    },
+    "AuthorityEntry": {
+      "type": "object",
+      "properties": {
+        "@id": {
+          "type": "string",
+          "format": "uri"
         }
       }
     },
@@ -219,8 +227,7 @@
           "$ref": "#/$defs/Authority"
         },
         "idAuthority": {
-          "type": "string",
-          "maxLength": 50
+          "$ref": "#/$defs/AuthorityEntry"
         },
         "lastNormUpdate": {
           "type": "string",
@@ -306,8 +313,7 @@
           "$ref": "#/$defs/Authority"
         },
         "idAuthority": {
-          "type": "string",
-          "maxLength": 50
+          "$ref": "#/$defs/AuthorityEntry"
         },
         "lastNormUpdate": {
           "type": "string",
@@ -394,8 +400,7 @@
           "$ref": "#/$defs/Authority"
         },
         "idAuthority": {
-          "type": "string",
-          "maxLength": 50
+          "$ref": "#/$defs/AuthorityEntry"
         },
         "lastNormUpdate": {
           "type": "string",
@@ -482,8 +487,7 @@
           "$ref": "#/$defs/Authority"
         },
         "idAuthority": {
-          "type": "string",
-          "maxLength": 50
+          "$ref": "#/$defs/AuthorityEntry"
         },
         "lastNormUpdate": {
           "type": "string",
@@ -512,8 +516,7 @@
           "$ref": "#/$defs/Authority"
         },
         "idAuthority": {
-          "type": "string",
-          "maxLength": 50
+          "$ref": "#/$defs/AuthorityEntry"
         },
         "tags": {
           "type": "array",
@@ -571,8 +574,7 @@
           "$ref": "#/$defs/Authority"
         },
         "idAuthority": {
-          "type": "string",
-          "maxLength": 50
+          "$ref": "#/$defs/AuthorityEntry"
         },
         "lastNormUpdate": {
           "type": "string",
@@ -601,8 +603,7 @@
           "$ref": "#/$defs/Authority"
         },
         "idAuthority": {
-          "type": "string",
-          "maxLength": 50
+          "$ref": "#/$defs/AuthorityEntry"
         },
         "lastNormUpdate": {
           "type": "string",
@@ -760,8 +761,7 @@
           "$ref": "#/$defs/Authority"
         },
         "idAuthority": {
-          "type": "string",
-          "maxLength": 50
+          "$ref": "#/$defs/AuthorityEntry"
         },
         "lastNormUpdate": {
           "type": "string",
@@ -814,8 +814,7 @@
           "$ref": "#/$defs/Authority"
         },
         "idAuthority": {
-          "type": "string",
-          "maxLength": 50
+          "$ref": "#/$defs/AuthorityEntry"
         },
         "lastNormUpdate": {
           "type": "string",
@@ -913,8 +912,7 @@
           "$ref": "#/$defs/Authority"
         },
         "idAuthority": {
-          "type": "string",
-          "maxLength": 50
+          "$ref": "#/$defs/AuthorityEntry"
         },
         "lastNormUpdate": {
           "type": "string",
@@ -1043,8 +1041,7 @@
           "$ref": "#/$defs/Authority"
         },
         "idAuthority": {
-          "type": "string",
-          "maxLength": 50
+          "$ref": "#/$defs/AuthorityEntry"
         },
         "lastNormUpdate": {
           "type": "string",

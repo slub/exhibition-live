@@ -7,5 +7,6 @@
   "Location": "Location",
   "Resource": "Resource",
   "ExhibitionType": "exhibition type",
-  "GeographicLocation": "geographic location"
+  "GeographicLocation": "geographic location",
+  "edit entry": "edit entry"
 }

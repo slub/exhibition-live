@@ -2,6 +2,7 @@ import { Button } from "@mui/material";
 import { JSONSchema7 } from "json-schema";
 import React, { useCallback, useMemo, useRef } from "react";
 import { SplitPane } from "react-collapse-pane";
+import { v4 as uuidv4 } from "uuid";
 
 import { BASE_IRI } from "../../config";
 import ContentMainPreview from "../../content/ContentMainPreview";

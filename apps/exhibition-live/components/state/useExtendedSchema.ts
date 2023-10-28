@@ -17,7 +17,12 @@ const useExtendedSchema = ({ typeName, classIRI }: UseExtendedSchemaProps) => {
       schema as JSONSchema7,
       genSlubJSONLDSemanticProperties,
       {
-        excludeType: ["InvolvedPerson", "InvolvedCorporation"],
+        excludeType: [
+          "InvolvedPerson",
+          "InvolvedCorporation",
+          "AuthorityEntry",
+        ],
+        excludeSemanticPropertiesForType: ["AuthorityEntry"],
       },
     );
     const defsFieldName = prepared.definitions ? "definitions" : "$defs";

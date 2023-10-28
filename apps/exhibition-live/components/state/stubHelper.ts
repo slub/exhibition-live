@@ -22,6 +22,7 @@ export const defs: (
 type RefAppendOptions = {
   excludeType?: string[];
   excludeField?: string[];
+  excludeSemanticPropertiesForType?: string[];
 };
 
 export const recursivelyFindRefsAndAppendStub: (
@@ -168,14 +169,17 @@ export const prepareStubbedSchema = (
       ...schemaWithRefStub[definitionsKey],
     },
   };
+  console.log({ stubbedSchema });
 
   const definitionsWithJSONLDProperties = Object.entries(
     defs(stubbedSchema),
   ).reduce<JSONSchema7["definitions"]>((acc, [key, value]) => {
-    return {
-      ...acc,
-      [key]: withJSONLDProperties(key, value as JSONSchema7),
-    };
+    return options?.excludeSemanticPropertiesForType?.includes(key)
+      ? { ...acc, [key]: value }
+      : {
+          ...acc,
+          [key]: withJSONLDProperties(key, value as JSONSchema7),
+        };
   }, {}) as JSONSchema7["definitions"];
 
   const stubbedSemanticSchema: JSONSchema7 = {

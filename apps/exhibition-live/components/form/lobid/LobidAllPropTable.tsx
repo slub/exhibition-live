@@ -120,9 +120,11 @@ const PropertyContextMenu = ({
 const PropertyItem = ({
   property,
   value,
+  onEntityChange,
 }: {
   property: string;
   value: any;
+  onEntityChange?: (uri: string) => void;
 }) => {
   const { menuAnchorEl, menuOpen, handleMenuClick, handleMenuClose } =
     useMenuState();
@@ -170,7 +172,11 @@ const PropertyItem = ({
             if (typeof v.id === "string") {
               return (
                 <span key={v.id}>
-                  <LabledLink uri={v.id} label={v.label} />
+                  <LabledLink
+                    uri={v.id}
+                    label={v.label}
+                    onClick={() => onEntityChange && onEntityChange(v.id)}
+                  />
                   {comma}{" "}
                 </span>
               );
@@ -188,7 +194,7 @@ const LobidAllPropTable: FunctionComponent<Props> = ({
   onEntityChange,
 }) => {
   const handleClickEntry = useCallback(
-    ({ id }: { id: string }) => {
+    (id: string) => {
       onEntityChange && onEntityChange(id);
     },
     [onEntityChange],
@@ -207,7 +213,12 @@ const LobidAllPropTable: FunctionComponent<Props> = ({
                     (Array.isArray(value) && value.length > 0)),
               )
               .map(([key, value]) => (
-                <PropertyItem key={key} property={key} value={value} />
+                <PropertyItem
+                  key={key}
+                  property={key}
+                  value={value}
+                  onEntityChange={handleClickEntry}
+                />
               ))}
         </TableBody>
       </Table>

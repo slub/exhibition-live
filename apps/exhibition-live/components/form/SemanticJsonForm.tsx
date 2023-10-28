@@ -371,7 +371,10 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> = ({
                     data={data}
                     classIRI={typeIRI}
                     jsonSchema={schema}
-                    onEntityIRIChange={onEntityChange}
+                    onEntityIRIChange={(iri) =>
+                      onEntityChange &&
+                      onEntityChange({ "@id": iri, "@type": typeIRI })
+                    }
                     searchOnDataPath={"title"}
                     onMappedDataAccepted={handleNewData}
                   />

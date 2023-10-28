@@ -1,8 +1,7 @@
-import { Button, Grid, TextField } from "@mui/material";
+import { Button } from "@mui/material";
 import { JSONSchema7 } from "json-schema";
 import React, { useCallback, useMemo, useRef } from "react";
 import { SplitPane } from "react-collapse-pane";
-import { v4 as uuidv4 } from "uuid";
 
 import { BASE_IRI } from "../../config";
 import ContentMainPreview from "../../content/ContentMainPreview";
@@ -14,18 +13,13 @@ import {
 import SemanticJsonForm from "../../form/SemanticJsonForm";
 import { uischemata } from "../../form/uischemaForType";
 import { uischemas } from "../../form/uischemas";
-import { useFormRefsContext } from "../../provider/formRefsContext";
 import { materialCategorizationStepperLayoutWithPortal } from "../../renderer/MaterialCategorizationStepperLayoutWithPortal";
-import {
-  useFormData,
-  useFormEditor,
-  useGlobalSearch,
-  useOxigraph,
-} from "../../state";
+import { useFormData, useFormEditor, useGlobalSearch } from "../../state";
 import useExtendedSchema from "../../state/useExtendedSchema";
 import { useGlobalCRUDOptions } from "../../state/useGlobalCRUDOptions";
 import { useSettings } from "../../state/useLocalSettings";
-import SPARQLLocalOxigraphToolkit from "../../utils/dev/SPARQLLocalOxigraphToolkit";
+import { useRouter } from "next/router";
+import { encodeIRI } from "../../utils/core";
 
 type Props = {
   children: React.ReactChild;
@@ -80,6 +74,7 @@ const TypedForm = ({ typeName, classIRI }: MainFormProps) => {
   const { formData: data, setFormData: setData } = useFormData();
   const { crudOptions } = useGlobalCRUDOptions();
   const { search: searchText, setSearch } = useGlobalSearch();
+  const router = useRouter();
 
   const handleNew = useCallback(() => {
     const newURI = `${BASE_IRI}${uuidv4()}`;
@@ -93,13 +88,14 @@ const TypedForm = ({ typeName, classIRI }: MainFormProps) => {
   const handleChange = useCallback(
     (v?: string) => {
       if (!v) return;
-      setData((data: any) => ({
-        ...data,
-        "@id": v,
-        "@type": classIRI,
-      }));
+      const { "@id": entityIRI, "@type": typeIRI } = v;
+      if (!entityIRI || !typeIRI) {
+        return;
+      }
+      const typeName = typeIRI.substring(BASE_IRI.length, typeIRI.length);
+      router.push(`/create/${typeName}/${encodeIRI(entityIRI)}`);
     },
-    [setData, classIRI],
+    [setData, classIRI, router],
   );
   const handleSearchTextChange = useCallback(
     (searchText: string | undefined) => {
@@ -136,6 +132,7 @@ const TypedForm = ({ typeName, classIRI }: MainFormProps) => {
             searchText={searchText}
             shouldLoadInitially
             typeIRI={classIRI}
+            onEntityChange={handleChange}
             crudOptions={crudOptions}
             defaultPrefix={defaultPrefix}
             jsonldContext={defaultJsonldContext}

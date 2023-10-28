@@ -10,8 +10,6 @@ import {
 } from "@mui/material";
 import React, { FunctionComponent, useCallback, useState } from "react";
 
-import LobidAllPropTable from "./LobidAllPropTable";
-
 export type EntityCardData = Partial<{
   id: string;
   label: string;
@@ -85,7 +83,7 @@ const ClassicEntityCard: FunctionComponent<Props> = ({
               variant="contained"
               onClick={() => onAcceptItem(data?.id)}
             >
-              Eintrag übernehmen
+              Eintrag bearbeiten
             </Button>
           )}
           {detailView && (

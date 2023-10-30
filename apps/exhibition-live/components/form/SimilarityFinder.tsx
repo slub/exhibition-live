@@ -32,28 +32,10 @@ import K10PlusSearchTable, {
 import LobidSearchTable from "./lobid/LobidSearchTable";
 import { findEntityByAuthorityIRI } from "../utils/discover";
 import { useGlobalCRUDOptions } from "../state/useGlobalCRUDOptions";
+import { filterForPrimitivePropertiesAndArrays } from "../utils/core";
 
-export const isPrimitive = (type?: string) =>
-  type === "string" ||
-  type === "number" ||
-  type === "integer" ||
-  type === "boolean";
 const model = "gpt-3.5-turbo";
 // @ts-ignore
-export const filterForPrimitiveProperties = (
-  properties: JSONSchema7["properties"],
-) =>
-  Object.fromEntries(
-    Object.entries(properties || {}).filter(
-      ([, value]) =>
-        typeof value === "object" &&
-        (isPrimitive(String(value.type)) ||
-          value.oneOf ||
-          (value.type === "array" &&
-            typeof value.items === "object" &&
-            isPrimitive(String((value.items as any).type)))),
-    ),
-  );
 const GND_IRI =
   "http://ontologies.slub-dresden.de/exhibition/entity/Authority#s-1";
 type Props = {
@@ -147,7 +129,9 @@ const SimilarityFinder: FunctionComponent<Props> = ({
       const openaiInstance = new OpenAIApi(configuration);
       const entrySchema = {
         type: "object",
-        properties: filterForPrimitiveProperties(jsonSchema.properties),
+        properties: filterForPrimitivePropertiesAndArrays(
+          jsonSchema.properties,
+        ),
       };
       try {
         const firstMessages: ChatCompletionRequestMessage[] = [
@@ -208,7 +192,9 @@ const SimilarityFinder: FunctionComponent<Props> = ({
       const openaiInstance = new OpenAIApi(configuration);
       const entrySchema = {
         type: "object",
-        properties: filterForPrimitiveProperties(jsonSchema.properties),
+        properties: filterForPrimitivePropertiesAndArrays(
+          jsonSchema.properties,
+        ),
       };
       try {
         const firstMessages: ChatCompletionRequestMessage[] = [

@@ -24,6 +24,10 @@ export interface SparqlBuildOptions {
   prefixes?: Record<string, string | NamespaceBuilder>;
 }
 
+export interface SelectFetchOptions {
+  withHeaders?: boolean;
+}
+
 export type CRUDFunctions = {
   updateFetch: (
     query: string,
@@ -35,7 +39,7 @@ export type CRUDFunctions = {
     | ResultStream<Quad>
   >;
   constructFetch: (query: string) => Promise<DatasetCore>;
-  selectFetch: (query: string) => Promise<any>;
+  selectFetch: (query: string, options?: SelectFetchOptions) => Promise<any>;
   askFetch: (query: string) => Promise<boolean>;
 };
 

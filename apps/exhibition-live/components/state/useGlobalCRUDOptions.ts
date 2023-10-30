@@ -53,9 +53,11 @@ export const useGlobalCRUDOptions: UseGlobalCRUDOptions = () => {
       },
       // @ts-ignore
       updateFetch: (query) => doQuery(query),
-      selectFetch: async (query) => {
+      selectFetch: async (query, options) => {
         const result = await doQuery(query);
-        return result?.data?.results?.bindings;
+        return options?.withHeaders
+          ? result?.data
+          : result?.data?.results?.bindings;
       },
     };
     setLocalWorkerCRUDOptions(localWorkerCRUD);

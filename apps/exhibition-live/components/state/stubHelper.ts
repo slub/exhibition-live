@@ -169,7 +169,6 @@ export const prepareStubbedSchema = (
       ...schemaWithRefStub[definitionsKey],
     },
   };
-  console.log({ stubbedSchema });
 
   const definitionsWithJSONLDProperties = Object.entries(
     defs(stubbedSchema),

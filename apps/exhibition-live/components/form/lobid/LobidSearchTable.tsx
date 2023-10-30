@@ -129,6 +129,7 @@ const LobidSearchTable: FunctionComponent<Props> = ({
           onBack={() => handleSelect(undefined)}
           onSelectItem={handleSelect}
           onAcceptItem={(id) => onAcceptItem(id, selectedEntry)}
+          acceptTitle={"Eintrag übernehmen"}
           detailView={
             <LobidAllPropTable
               allProps={selectedEntry.allProps}

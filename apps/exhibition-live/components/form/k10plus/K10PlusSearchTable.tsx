@@ -167,6 +167,7 @@ const K10PlusSearchTable: FunctionComponent<Props> = ({
             }}
             onBack={() => handleSelect(popHistory(), false)}
             onAcceptItem={handleAccept}
+            acceptTitle={"Eintrag übernehmen"}
             id={selectedId}
             detailView={<KXPAllPropTable entry={selectedEntry} />}
           />

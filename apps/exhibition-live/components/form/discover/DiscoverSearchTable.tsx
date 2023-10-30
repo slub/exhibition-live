@@ -70,6 +70,7 @@ const DiscoverSearchTable: FunctionComponent<Props> = ({
           onBack={() => handleSelect(undefined)}
           onSelectItem={handleSelect}
           onAcceptItem={onAcceptItem}
+          acceptTitle={"Eintrag bearbeiten"}
           detailView={
             <LobidAllPropTable
               allProps={selectedEntry.allProps}

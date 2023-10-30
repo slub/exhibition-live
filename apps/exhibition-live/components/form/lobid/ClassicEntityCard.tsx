@@ -27,6 +27,7 @@ type Props = {
   onAcceptItem?: (id: string | undefined) => void;
   onSelectItem?: (id: string | undefined) => void;
   detailView?: React.ReactNode;
+  acceptTitle: string;
 };
 
 const ClassicEntityCard: FunctionComponent<Props> = ({
@@ -36,6 +37,7 @@ const ClassicEntityCard: FunctionComponent<Props> = ({
   onSelectItem,
   onAcceptItem,
   detailView,
+  acceptTitle,
 }) => {
   const [expanded, setExpanded] = useState(true);
   const _label = data.label || data.title || data.name || id;
@@ -83,7 +85,7 @@ const ClassicEntityCard: FunctionComponent<Props> = ({
               variant="contained"
               onClick={() => onAcceptItem(data?.id)}
             >
-              Eintrag bearbeiten
+              {acceptTitle}
             </Button>
           )}
           {detailView && (

@@ -92,9 +92,9 @@ export const oxigraphCrudOptions: (endpoint: string) => CRUDFunctions = (
     undefined,
     "application/sparql-update",
   ),
-  selectFetch: async (query: string) => {
+  selectFetch: async (query: string, options) => {
     const res = await askFetch(query, endpoint);
     const resultJson = await res.json();
-    return resultJson?.results?.bindings || [];
+    return options?.withHeaders ? resultJson : resultJson?.results?.bindings;
   },
 });

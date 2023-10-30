@@ -2,12 +2,12 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import React from "react";
 
-import { sladb, slent } from "../../components/form/formConfigs";
 import { MainLayout } from "../../components/layout/main-layout";
+import { TypedList } from "../../components/content/main/TypedList";
 
 export default () => {
   const router = useRouter();
-  const { typeName } = router.query;
+  const { typeName } = router.query as { typeName: string };
 
   return (
     <>
@@ -17,7 +17,9 @@ export default () => {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <MainLayout>List all {typeName} here.</MainLayout>
+      <MainLayout>
+        <TypedList typeName={typeName} />
+      </MainLayout>
     </>
   );
 };

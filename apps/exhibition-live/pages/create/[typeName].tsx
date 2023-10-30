@@ -7,6 +7,7 @@ import TypedForm from "../../components/content/main/TypedFormNoSSR";
 import { sladb, slent } from "../../components/form/formConfigs";
 import { MainLayout } from "../../components/layout/main-layout";
 import schema from "../../public/schema/Exhibition.schema.json";
+import { ContextSection } from "../../components/layout/main-layout/ContextSection";
 
 type Props = {
   typeName: string;
@@ -46,7 +47,10 @@ export default (props: Props) => {
       </Head>
       <MainLayout>
         {classIRI && typeName && (
-          <TypedForm typeName={typeName} classIRI={classIRI} />
+          <>
+            <ContextSection />
+            <TypedForm typeName={typeName} classIRI={classIRI} />
+          </>
         )}
       </MainLayout>
     </>

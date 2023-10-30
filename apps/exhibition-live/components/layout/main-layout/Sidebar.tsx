@@ -44,9 +44,12 @@ const MenuCard = () => {
   return <div ref={stepperRef}></div>;
 };
 
-type SidebarProps = {};
+type SidebarProps = {
+  open?: boolean;
+  onClose?: () => void;
+};
 
-export const Sidebar = () => {
+export const Sidebar = ({ open, onClose }: SidebarProps) => {
   const theme = useTheme();
   const matchUpMd = useMediaQuery(theme.breakpoints.up("md"));
   const { openSettings } = useLocalSettings();
@@ -90,13 +93,14 @@ export const Sidebar = () => {
     <Box
       component="nav"
       sx={{ flexShrink: { md: 0 }, width: matchUpMd ? drawerWidth : "auto" }}
-      aria-label="mailbox folders"
+      aria-label="menu"
     >
       <Drawer
         //container={container}
         variant={matchUpMd ? "persistent" : "temporary"}
+        onClose={onClose}
         anchor="left"
-        open
+        open={open}
         sx={{
           "& .MuiDrawer-paper": {
             width: drawerWidth,
@@ -109,7 +113,7 @@ export const Sidebar = () => {
             },
           },
         }}
-        ModalProps={{ keepMounted: true }}
+        ModalProps={{ keepMounted: false }}
         color="inherit"
       >
         {drawer}

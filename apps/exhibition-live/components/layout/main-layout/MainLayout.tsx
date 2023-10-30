@@ -32,16 +32,13 @@ const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
     borderBottomRightRadius: 0,
     [theme.breakpoints.up("md")]: {
       marginLeft: 0,
-      width: `calc(100% - ${drawerWidth}px)`,
     },
     [theme.breakpoints.down("md")]: {
       marginLeft: "20px",
-      width: `calc(100% - ${drawerWidth}px)`,
       padding: "16px",
     },
     [theme.breakpoints.down("sm")]: {
       marginLeft: "10px",
-      width: `calc(100% - ${drawerWidth}px)`,
       padding: "16px",
       marginRight: "10px",
     },
@@ -50,8 +47,11 @@ const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
 
 export const MainLayout = ({ children }: { children: React.ReactNode }) => {
   const theme = useTheme();
-  const matchDownMd = useMediaQuery(theme.breakpoints.down("md"));
 
+  const [leftDrawerOpened, setLeftDrawerOpened] = useState<boolean>(false);
+  const toggleDrawer = useCallback(() => {
+    setLeftDrawerOpened((opened) => !opened);
+  }, [setLeftDrawerOpened]);
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
@@ -66,17 +66,14 @@ export const MainLayout = ({ children }: { children: React.ReactNode }) => {
         }}
       >
         <Toolbar>
-          <AppHeader />
+          <AppHeader onLeftDrawerToggle={toggleDrawer} />
         </Toolbar>
       </AppBar>
 
-      <Sidebar />
+      <Sidebar open={leftDrawerOpened} onClose={toggleDrawer} />
 
       {/*@ts-ignore */}
-      <Main theme={theme}>
-        <ContextSection />
-        {children}
-      </Main>
+      <Main theme={theme}>{children}</Main>
     </Box>
   );
 };

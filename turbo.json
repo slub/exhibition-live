@@ -11,6 +11,7 @@
       "outputs": ["_site"]
     },
     "lint": {},
+    "lint:fix": {},
     "dev": {
       "cache": false,
       "persistent": true

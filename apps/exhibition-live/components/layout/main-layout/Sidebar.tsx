@@ -61,7 +61,7 @@ export const Sidebar = ({ open, onClose }: SidebarProps) => {
           <Logo />
         </Box>
       </Box>
-      <BrowserView>
+      <Box>
         <MenuCard />
         <MenuList />
         <NavItem
@@ -75,7 +75,7 @@ export const Sidebar = ({ open, onClose }: SidebarProps) => {
           level={0}
           onClick={openSettings}
         />
-        <Stack direction="row" justifyContent="center" sx={{ mb: 2 }}>
+        <Stack direction="row" justifyContent="end" sx={{ mb: 2 }}>
           <Chip
             label={"Version 1.3.122"}
             disabled
@@ -84,7 +84,7 @@ export const Sidebar = ({ open, onClose }: SidebarProps) => {
             sx={{ cursor: "pointer" }}
           />
         </Stack>
-      </BrowserView>
+      </Box>
       <SettingsModal />
     </>
   );
@@ -100,7 +100,7 @@ export const Sidebar = ({ open, onClose }: SidebarProps) => {
         variant={matchUpMd ? "persistent" : "temporary"}
         onClose={onClose}
         anchor="left"
-        open={open}
+        open={matchUpMd || open}
         sx={{
           "& .MuiDrawer-paper": {
             width: drawerWidth,

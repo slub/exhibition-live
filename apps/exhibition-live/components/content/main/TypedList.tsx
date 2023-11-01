@@ -105,11 +105,7 @@ export const TypedList = ({ typeName }: Props) => {
   );
 
   return (
-    <Box
-      sx={{
-        width: "100%",
-      }}
-    >
+    <>
       {!resultList || columns.length <= 0 ? (
         <Skeleton variant="rectangular" height={530} />
       ) : (
@@ -160,7 +156,7 @@ export const TypedList = ({ typeName }: Props) => {
           }}
         />
       )}
-    </Box>
+    </>
   );
 };
 

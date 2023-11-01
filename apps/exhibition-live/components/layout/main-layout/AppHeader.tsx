@@ -30,7 +30,14 @@ export const AppHeader = ({ onLeftDrawerToggle }: AppHeaderProps) => {
           },
         }}
       >
-        <ButtonBase sx={{ borderRadius: "12px", overflow: "hidden" }}>
+        <ButtonBase
+          sx={{
+            borderRadius: "12px",
+            overflow: "hidden",
+            display: (theme) =>
+              theme.breakpoints.down("md") ? "none" : "block",
+          }}
+        >
           <Avatar
             variant="rounded"
             sx={{

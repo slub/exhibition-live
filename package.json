@@ -30,7 +30,8 @@
     "dev": "turbo run dev --parallel",
     "lint": "turbo run lint",
     "lint:fix": "turbo run lint:fix",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "precommit": "pnpm run lint:fix && pnpm run format"
   },
   "devDependencies": {
     "@turbo/gen": "^1.10.16",

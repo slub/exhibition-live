@@ -24,26 +24,29 @@ type MainProps = {
   theme: Theme;
 };
 
-const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
-  ({ theme }: MainProps) => ({
-    // @ts-ignore
-    ...theme.typography.mainContent,
-    borderBottomLeftRadius: 0,
-    borderBottomRightRadius: 0,
-    [theme.breakpoints.up("md")]: {
-      marginLeft: 0,
-    },
-    [theme.breakpoints.down("md")]: {
-      marginLeft: "20px",
-      padding: "16px",
-    },
-    [theme.breakpoints.down("sm")]: {
-      marginLeft: "10px",
-      padding: "16px",
-      marginRight: "10px",
-    },
-  }),
-);
+const Main = styled("main", {
+  shouldForwardProp: (prop) => prop !== "open" && prop !== "theme",
+})(({ theme }: MainProps) => ({
+  // @ts-ignore
+  ...theme.typography.mainContent,
+  borderBottomLeftRadius: 0,
+  borderBottomRightRadius: 0,
+  [theme.breakpoints.up("md")]: {
+    marginLeft: 0,
+    width: `calc(100% - ${drawerWidth}px)`,
+  },
+  [theme.breakpoints.down("md")]: {
+    marginLeft: "20px",
+    padding: "16px",
+    width: `calc(100% - ${drawerWidth}px)`,
+  },
+  [theme.breakpoints.down("sm")]: {
+    marginLeft: "10px",
+    width: `calc(100% - ${drawerWidth}px)`,
+    padding: "16px",
+    marginRight: "10px",
+  },
+}));
 
 export const MainLayout = ({ children }: { children: React.ReactNode }) => {
   const theme = useTheme();

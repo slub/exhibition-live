@@ -3,18 +3,23 @@ import { JSONSchema7, JSONSchema7Definition } from "json-schema";
 
 import { isJSONSchema, isJSONSchemaDefinition } from "../core/jsonSchema";
 
+import { PrimaryFieldDeclaration } from "../types";
+
 const makeWherePart = (queryClause: string, required: boolean) =>
   required ? queryClause : ` OPTIONAL { ${queryClause} } `;
 const makePrefixedProperty = (property: string, prefix: string = "") =>
   `${prefix}:${property}`;
 
 const makeVariable = (path: string[]) => `?${path.join("_")}`;
+const defaultSeparator = "; ";
 const propertiesToSPARQLSelectPatterns = (
   schema: JSONSchema7,
+  rootSchema: JSONSchema7,
   currentVariable: string,
   excludedProperties?: string[],
   path?: string[],
   level: number = 0,
+  primaryFields?: PrimaryFieldDeclaration,
 ) => {
   let where = "";
   let select = "";
@@ -32,9 +37,49 @@ const propertiesToSPARQLSelectPatterns = (
         variable = makeVariable(subPath);
       if (subSchema.type === "array") {
         //count
-        select += ` (COUNT(DISTINCT ${variable}) AS ${variable}_count) `;
+        let innerWherePart = "";
+        const ref = (subSchema.items as any)?.$ref as string | undefined;
+        if (typeof ref === "string") {
+          const typeName = ref.substring(ref.lastIndexOf("/") + 1, ref.length);
+          //if typeName within primaryFields expand further
+          if (primaryFields && typeName in primaryFields) {
+            const fieldDecl = primaryFields[typeName];
+            if (fieldDecl.label) {
+              const subSubSchema = resolveSchema(
+                subSchema.items as JsonSchema,
+                "",
+                rootSchema as JsonSchema,
+              );
+              if (
+                subSubSchema &&
+                isJSONSchemaDefinition(subSubSchema as JSONSchema7Definition) &&
+                isJSONSchema(subSubSchema as JSONSchema7)
+              ) {
+                if (
+                  subSubSchema?.properties?.[fieldDecl.label]?.type === "string"
+                ) {
+                  const lableVariable = makeVariable([...subPath, "label"]);
+                  innerWherePart += makeWherePart(
+                    ` ${variable} ${makePrefixedProperty(
+                      fieldDecl.label,
+                    )} ${lableVariable} .
+                  `,
+                    false,
+                  );
+                  //make a select that concatenates the entity link with the label to form a list of markdown links link (link1)[label1]; (link2)[label2]; ...)
+                  select += ` (GROUP_CONCAT(CONCAT("[", ${lableVariable}, "](", STR(${variable}), ")"); SEPARATOR="${defaultSeparator}") AS ${lableVariable}_group) `;
+                  //select += ` (GROUP_CONCAT(${lableVariable}; SEPARATOR="${defaultSeparator}") AS ${lableVariable}_group) `;
+                }
+              }
+            }
+          }
+        }
+        //check if empty by comparing aggregated string length then 0 otherwise count
+        select += ` (IF(STRLEN(GROUP_CONCAT(STR(${variable}); SEPARATOR=",")) = 0, 0, COUNT(DISTINCT ${variable})) AS ${variable}_count) `;
+        //select += ` (COUNT(DISTINCT ${variable}) AS ${variable}_count) `;
         where += makeWherePart(
           ` ${currentVariable} ${prefixedProperty} ${variable} .
+          ${innerWherePart}
           `,
           isRequired,
         );
@@ -50,10 +95,12 @@ const propertiesToSPARQLSelectPatterns = (
         const { where: subWhere, select: subSelect } =
           propertiesToSPARQLSelectPatterns(
             subSchema,
+            rootSchema,
             variable,
             excludedProperties,
             subPath,
             level + 1,
+            primaryFields,
           );
         where += makeWherePart(
           ` ${currentVariable} ${prefixedProperty} ${variable} . \n ${subWhere} `,
@@ -75,6 +122,7 @@ type SPARQLSelectOptions = {
   descending?: boolean;
   limit?: number;
   offset?: number;
+  primaryFields?: PrimaryFieldDeclaration;
 };
 
 const sparqlPartFromOptions = (options: SPARQLSelectOptions) => {
@@ -117,10 +165,12 @@ export const jsonSchema2Select = (
   const variable = "?entity";
   const { where, select } = propertiesToSPARQLSelectPatterns(
     rootSchema,
+    rootSchema,
     variable,
     excludeProperties,
     [],
     0,
+    sparqlSelectOptions?.primaryFields,
   );
   const matchType = typeIRI ? `?entity a <${typeIRI}> .` : "";
   const sparqlFinish = sparqlSelectOptions

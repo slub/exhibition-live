@@ -1,5 +1,6 @@
 import theme from "../components/theme/berry-theme";
 import {CssBaseline, ThemeProvider} from "@mui/material";
+import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
 
 export const parameters = {
   actions: { argTypesRegex: "^on[A-Z].*" },
@@ -21,10 +22,13 @@ const finalTheme = theme(
     navType: "light",
   }
 )
+const  queryClient = new QueryClient();
 export const withMuiTheme = (Story) => (
   <ThemeProvider theme={finalTheme}>
-    <CssBaseline />
-    <Story />
+    <QueryClientProvider client={queryClient}>
+      <CssBaseline />
+      <Story />
+    </QueryClientProvider>
   </ThemeProvider>
 );
 

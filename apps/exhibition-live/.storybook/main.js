@@ -11,6 +11,7 @@ module.exports = {
     "@storybook/addon-interactions",
     "@storybook/addon-knobs"
   ],
+  staticDirs: ['../public'],
 
   "framework": {
     name: "@storybook/nextjs",

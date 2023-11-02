@@ -69,7 +69,6 @@ export const useJsonldParser = (
         },
       );
 
-
       try {
         const jsonldStream = stringToStream(JSON.stringify(jsonldDoc));
         const parser = new Parser();
@@ -86,10 +85,11 @@ export const useJsonldParser = (
             walkerOptions,
           );
           onFormDataChange && onFormDataChange(resultJSON);
-          onJsonldData && onJsonldData({
-            ...resultJSON,
-            "@context": jsonldContext,
-          });
+          onJsonldData &&
+            onJsonldData({
+              ...resultJSON,
+              "@context": jsonldContext,
+            });
         }
       } catch (e) {
         console.error("Cannot convert JSONLD to dataset", e);

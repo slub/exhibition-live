@@ -156,7 +156,6 @@ const renderers = [
   },
 ];
 
-
 const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> = ({
   entityIRI,
   data,

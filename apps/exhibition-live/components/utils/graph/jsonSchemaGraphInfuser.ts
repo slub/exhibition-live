@@ -29,12 +29,15 @@ const propertyWalker = (
   level: number,
   circularSet: CircularCounter,
   options: Partial<WalkerOptions>,
-  skipProps: boolean
+  skipProps: boolean,
 ) => {
   const base = namespace(baseIRI);
   const MAX_RECURSION = options?.maxRecursionEachRef || 5;
   const skipNextProps = level >= options?.skipAtLevel;
-  if (typeof options?.maxRecursion === 'number' && level > options?.maxRecursion) {
+  if (
+    typeof options?.maxRecursion === "number" &&
+    level > options?.maxRecursion
+  ) {
     console.info(
       `will stop at level ${level} to prevent infinite loop because MAX_RECURSION is set to ${options.maxRecursion}`,
     );
@@ -48,8 +51,8 @@ const propertyWalker = (
         "@id": node.term.value,
       };
     }
-    if(skipProps && !node.out(base['__draft'])?.value) {
-      return additionalProps
+    if (skipProps && !node.out(base["__draft"])?.value) {
+      return additionalProps;
     }
     const typeNode = node.out(rdf.type);
     if (typeNode.value) {
@@ -85,7 +88,7 @@ const propertyWalker = (
                 level + 1,
                 { ...circularSet, [ref]: (circularSet[ref] || 0) + 1 },
                 options,
-                skipNextProps
+                skipNextProps,
               );
             }
           }
@@ -98,7 +101,7 @@ const propertyWalker = (
             +1,
             circularSet,
             options,
-            skipNextProps
+            skipNextProps,
           );
         } else if (schema.items) {
           val = filterUndefOrNull(
@@ -130,7 +133,7 @@ const propertyWalker = (
                         level + 1,
                         { ...circularSet, [ref]: (circularSet[ref] || 0) + 1 },
                         options,
-                        skipNextProps
+                        skipNextProps,
                       );
                     }
                     return;
@@ -144,7 +147,7 @@ const propertyWalker = (
                     level + 1,
                     circularSet,
                     options,
-                    skipNextProps
+                    skipNextProps,
                   );
                 }
                 if (schema.items.type) {
@@ -234,6 +237,6 @@ export const jsonSchemaGraphInfuser = (
     0,
     {},
     options || {},
-    false
+    false,
   );
 };

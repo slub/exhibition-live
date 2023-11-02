@@ -294,7 +294,6 @@ const SimilarityFinder: FunctionComponent<Props> = ({
           },
           lastNormUpdate: new Date().toISOString(),
         };
-        console.log({ dataFromGND });
         onMappedDataAccepted &&
           onMappedDataAccepted({ ...dataFromGND, ...inject });
       } catch (e) {

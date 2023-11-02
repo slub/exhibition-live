@@ -228,7 +228,17 @@ export const personDeclarativeMapping: DeclarativeMappings = [
     source: {
       path: "dateOfBirth",
       expectedSchema: {
-        type: "string",
+        oneOf: [
+          {
+            type: "string",
+          },
+          {
+            type: "array",
+            items: {
+              type: "string",
+            },
+          },
+        ],
       },
     },
     target: {
@@ -236,23 +246,46 @@ export const personDeclarativeMapping: DeclarativeMappings = [
     },
     mapping: {
       strategy: {
-        id: "takeFirst",
+        id: "dateStringToSpecialInt",
       },
     },
   },
   {
     source: {
-      path: "dateOfDeath",
       expectedSchema: {
-        type: "string",
+        oneOf: [
+          {
+            type: "string",
+          },
+          {
+            type: "array",
+            items: {
+              type: "string",
+            },
+          },
+        ],
       },
+      path: "dateOfDeath",
     },
     target: {
       path: "deathDate",
     },
     mapping: {
       strategy: {
-        id: "takeFirst",
+        id: "dateStringToSpecialInt",
+      },
+    },
+  },
+  {
+    source: {
+      path: "dateOfDeath",
+    },
+    target: {
+      path: "personDeceased",
+    },
+    mapping: {
+      strategy: {
+        id: "exists",
       },
     },
   },

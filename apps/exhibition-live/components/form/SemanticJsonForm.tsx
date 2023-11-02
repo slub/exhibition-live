@@ -175,7 +175,6 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> = ({
   crudOptions = {},
   queryBuildOptions,
   jsonFormsProps = {},
-  onEntityChange,
   onEntityDataChange,
   onInit,
   hideToolbar,
@@ -195,7 +194,8 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> = ({
   );
   const [managedEditMode, setEditMode] = useState(defaultEditMode || false);
   const editMode = useMemo(
-    () => forceEditMode || managedEditMode,
+    () =>
+      (typeof forceEditMode !== "boolean" && managedEditMode) || forceEditMode,
     [managedEditMode, forceEditMode],
   );
   const [hideSimilarityFinder, setHideSimilarityFinder] = useState(true);

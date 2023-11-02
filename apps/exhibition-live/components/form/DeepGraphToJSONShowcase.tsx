@@ -87,6 +87,7 @@ const DeepGraphToJSONShowcase: FunctionComponent<Props> = ({
   omitEmptyArrays,
   maxRecursionEachRef,
   maxRecursion,
+  skipAtLevel = 0,
 }) => {
   const [jsonFromGraph, setJsonFromGraph] = useState<any>({});
   const [dataset, setDataset] = useState<Dataset | null>(null);
@@ -108,6 +109,7 @@ const DeepGraphToJSONShowcase: FunctionComponent<Props> = ({
           omitEmptyObjects,
           maxRecursionEachRef,
           maxRecursion,
+          skipAtLevel
         },
       );
       setJsonFromGraph(resultJSON);

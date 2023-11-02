@@ -16,12 +16,17 @@ export const DeepGraphToJSONShowcaseDefault = () => {
     min: 0,
     max: 20,
   });
+  const skipAtLevel = number("max rec each $ref", 2, {
+    min: 0,
+    max: 20,
+  });
   return (
     <DeepGraphToJSONShowcase
       omitEmptyArrays={omitEmptyArrays}
       omitEmptyObjects={omitEmptyObjects}
       maxRecursion={maxRecursion}
       maxRecursionEachRef={maxRecursionEachRef}
+      skipAtLevel={skipAtLevel}
     />
   );
 };

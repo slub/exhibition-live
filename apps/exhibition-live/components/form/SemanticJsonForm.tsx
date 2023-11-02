@@ -156,12 +156,6 @@ const renderers = [
   },
 ];
 
-const infuserOptions = {
-  omitEmptyArrays: true,
-  omitEmptyObjects: true,
-  maxRecursionEachRef: 2,
-  maxRecursion: 2,
-};
 
 const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> = ({
   entityIRI,
@@ -204,7 +198,6 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> = ({
   useJsonldParser(data, jsonldContext, schema, {
     onJsonldData: setJsonldData,
     onFormDataChange: setFormData,
-    walkerOptions: infuserOptions,
     defaultPrefix,
     enabled: true,
   });

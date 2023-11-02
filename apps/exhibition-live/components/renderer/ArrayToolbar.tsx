@@ -63,6 +63,7 @@ export const ArrayLayoutToolbar = React.memo(
         addItem(path, {
           "@id": slent(uuidv4()).value,
           "@type": typeIRI,
+          "__draft": true,
           [getDefaultKey(typeIRI)]: value,
         })();
       },

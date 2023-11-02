@@ -103,6 +103,7 @@ export const createEntity = async (
       const targetData = {
         "@id": newIRI(typeIRI || ""),
         "@type": typeIRI,
+        __draft: true,
       };
       const entityIRI = primaryIRI || newIRI(typeIRI);
       newDataElements.push(

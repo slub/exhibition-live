@@ -19,6 +19,14 @@ type UseJsonLdParserOptions = {
   defaultPrefix: string;
   enabled?: boolean;
 };
+
+const defaultOptions = {
+  omitEmptyArrays: true,
+  omitEmptyObjects: true,
+  maxRecursionEachRef: 2,
+  maxRecursion: 1,
+  skipAtLevel: 0,
+};
 export const useJsonldParser = (
   data: any,
   jsonldContext: JsonLdContext,
@@ -26,7 +34,7 @@ export const useJsonldParser = (
   {
     onFormDataChange,
     onJsonldData,
-    walkerOptions = {},
+    walkerOptions = defaultOptions,
     defaultPrefix,
     enabled,
   }: UseJsonLdParserOptions,
@@ -61,7 +69,6 @@ export const useJsonldParser = (
         },
       );
 
-      onJsonldData && onJsonldData(jsonldDoc);
 
       try {
         const jsonldStream = stringToStream(JSON.stringify(jsonldDoc));
@@ -79,6 +86,10 @@ export const useJsonldParser = (
             walkerOptions,
           );
           onFormDataChange && onFormDataChange(resultJSON);
+          onJsonldData && onJsonldData({
+            ...resultJSON,
+            "@context": jsonldContext,
+          });
         }
       } catch (e) {
         console.error("Cannot convert JSONLD to dataset", e);

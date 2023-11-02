@@ -14,6 +14,7 @@ export type WalkerOptions = {
   omitEmptyObjects: boolean;
   maxRecursionEachRef: number;
   maxRecursion: number;
+  skipAtLevel: number;
 };
 
 type CircularCounter = {
@@ -28,14 +29,35 @@ const propertyWalker = (
   level: number,
   circularSet: CircularCounter,
   options: Partial<WalkerOptions>,
+  skipProps: boolean
 ) => {
   const base = namespace(baseIRI);
   const MAX_RECURSION = options?.maxRecursionEachRef || 5;
-  if (options?.maxRecursion && level > options?.maxRecursion) {
-    console.warn(
+  const skipNextProps = level >= options?.skipAtLevel;
+  if (typeof options?.maxRecursion === 'number' && level > options?.maxRecursion) {
+    console.info(
       `will stop at level ${level} to prevent infinite loop because MAX_RECURSION is set to ${options.maxRecursion}`,
     );
     return;
+  }
+
+  let additionalProps = {};
+  if (rootSchema.type === "object") {
+    if (node.term?.termType === "NamedNode") {
+      additionalProps = {
+        "@id": node.term.value,
+      };
+    }
+    if(skipProps && !node.out(base['__draft'])?.value) {
+      return additionalProps
+    }
+    const typeNode = node.out(rdf.type);
+    if (typeNode.value) {
+      additionalProps = {
+        ...additionalProps,
+        "@type": typeNode.value,
+      };
+    }
   }
   const entries = Object.entries(subSchema.properties || {})
     .map(([property, schema]) => {
@@ -63,6 +85,7 @@ const propertyWalker = (
                 level + 1,
                 { ...circularSet, [ref]: (circularSet[ref] || 0) + 1 },
                 options,
+                skipNextProps
               );
             }
           }
@@ -75,6 +98,7 @@ const propertyWalker = (
             +1,
             circularSet,
             options,
+            skipNextProps
           );
         } else if (schema.items) {
           val = filterUndefOrNull(
@@ -106,6 +130,7 @@ const propertyWalker = (
                         level + 1,
                         { ...circularSet, [ref]: (circularSet[ref] || 0) + 1 },
                         options,
+                        skipNextProps
                       );
                     }
                     return;
@@ -119,6 +144,7 @@ const propertyWalker = (
                     level + 1,
                     circularSet,
                     options,
+                    skipNextProps
                   );
                 }
                 if (schema.items.type) {
@@ -186,22 +212,6 @@ const propertyWalker = (
         ),
     );
 
-  let additionalProps = {};
-  if (rootSchema.type === "object") {
-    if (node.term?.termType === "NamedNode") {
-      additionalProps = {
-        ...additionalProps,
-        "@id": node.term.value,
-      };
-    }
-    const typeNode = node.out(rdf.type);
-    if (typeNode.value) {
-      additionalProps = {
-        ...additionalProps,
-        "@type": typeNode.value,
-      };
-    }
-  }
   return {
     ...additionalProps,
     ...Object.fromEntries(entries),
@@ -224,5 +234,6 @@ export const jsonSchemaGraphInfuser = (
     0,
     {},
     options || {},
+    false
   );
 };

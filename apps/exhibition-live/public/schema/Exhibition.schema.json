@@ -4,12 +4,6 @@
     "Tag": {
       "type": "object",
       "properties": {
-        "tag": {
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/Tag"
-          }
-        },
         "title": {
           "type": "string",
           "maxLength": 200
@@ -19,122 +13,12 @@
         },
         "parent": {
           "$ref": "#/$defs/Tag"
-        },
-        "authority": {
-          "$ref": "#/$defs/Authority"
-        },
-        "idAuthority": {
-          "$ref": "#/$defs/AuthorityEntry"
-        },
-        "lastNormUpdate": {
-          "type": "string",
-          "format": "date-time",
-          "readOnly": true
-        }
-      }
-    },
-    "AuthorityEntry": {
-      "type": "object",
-      "properties": {
-        "@id": {
-          "type": "string",
-          "format": "uri"
-        }
-      }
-    },
-    "Authority": {
-      "type": "object",
-      "properties": {
-        "tag": {
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/Tag"
-          }
-        },
-        "exhibitionseries": {
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/ExhibitionSeries"
-          }
-        },
-        "person": {
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/Person"
-          }
-        },
-        "location": {
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/Location"
-          }
-        },
-        "place": {
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/Place"
-          }
-        },
-        "eventtype": {
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/EventType"
-          }
-        },
-        "corporation": {
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/Corporation"
-          }
-        },
-        "resourcetype": {
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/ResourceType"
-          }
-        },
-        "exhibitionexponat": {
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/ExhibitionExponat"
-          }
-        },
-        "exhibitioncategory": {
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/ExhibitionCategory"
-          }
-        },
-        "genre": {
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/Genre"
-          }
-        },
-        "exhibition": {
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/Exhibition"
-          }
-        },
-        "title": {
-          "type": "string",
-          "maxLength": 200
-        },
-        "description": {
-          "type": "string"
         }
       }
     },
     "SeriesType": {
       "type": "object",
       "properties": {
-        "exhibitionseries": {
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/ExhibitionSeries"
-          }
-        },
         "title": {
           "type": "string",
           "maxLength": 200
@@ -147,18 +31,6 @@
     "ExhibitionSeries": {
       "type": "object",
       "properties": {
-        "exhibitionseries": {
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/ExhibitionSeries"
-          }
-        },
-        "exhibition": {
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/Exhibition"
-          }
-        },
         "title": {
           "type": "string",
           "maxLength": 200
@@ -223,17 +95,6 @@
         "location": {
           "$ref": "#/$defs/Location"
         },
-        "authority": {
-          "$ref": "#/$defs/Authority"
-        },
-        "idAuthority": {
-          "$ref": "#/$defs/AuthorityEntry"
-        },
-        "lastNormUpdate": {
-          "type": "string",
-          "format": "date-time",
-          "readOnly": true
-        },
         "tags": {
           "type": "array",
           "items": {
@@ -251,18 +112,6 @@
             "$ref": "#/$defs/Workplace"
           }
         },
-        "exponatsandpersons": {
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/ExponatsAndPersons"
-          }
-        },
-        "involvedperson": {
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/InvolvedPerson"
-          }
-        },
         "name": {
           "type": "string",
           "maxLength": 200
@@ -277,7 +126,7 @@
           "oneOf": [
             {
               "const": "m",
-              "title": "m\u00e4nnlich"
+              "title": "männlich"
             },
             {
               "const": "f",
@@ -309,17 +158,6 @@
           "type": "string",
           "maxLength": 200
         },
-        "authority": {
-          "$ref": "#/$defs/Authority"
-        },
-        "idAuthority": {
-          "$ref": "#/$defs/AuthorityEntry"
-        },
-        "lastNormUpdate": {
-          "type": "string",
-          "format": "date-time",
-          "readOnly": true
-        },
         "externalId": {
           "type": "string",
           "maxLength": 50
@@ -335,9 +173,6 @@
     "Workplace": {
       "type": "object",
       "properties": {
-        "person": {
-          "$ref": "#/$defs/Person"
-        },
         "location": {
           "$ref": "#/$defs/Location"
         },
@@ -352,36 +187,6 @@
     "Location": {
       "type": "object",
       "properties": {
-        "exhibitionseries": {
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/ExhibitionSeries"
-          }
-        },
-        "workplace": {
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/Workplace"
-          }
-        },
-        "location": {
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/Location"
-          }
-        },
-        "place": {
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/Place"
-          }
-        },
-        "corporation": {
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/Corporation"
-          }
-        },
         "title": {
           "type": "string",
           "maxLength": 200
@@ -395,35 +200,12 @@
         },
         "parent": {
           "$ref": "#/$defs/Location"
-        },
-        "authority": {
-          "$ref": "#/$defs/Authority"
-        },
-        "idAuthority": {
-          "$ref": "#/$defs/AuthorityEntry"
-        },
-        "lastNormUpdate": {
-          "type": "string",
-          "format": "date-time",
-          "readOnly": true
         }
       }
     },
     "PersonRole": {
       "type": "object",
       "properties": {
-        "exponatsandpersons": {
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/ExponatsAndPersons"
-          }
-        },
-        "involvedperson": {
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/InvolvedPerson"
-          }
-        },
         "title": {
           "type": "string",
           "maxLength": 200
@@ -436,18 +218,6 @@
     "CorporationRole": {
       "type": "object",
       "properties": {
-        "exponatsandcorporations": {
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/ExponatsAndCorporations"
-          }
-        },
-        "involvedcorporation": {
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/InvolvedCorporation"
-          }
-        },
         "title": {
           "type": "string",
           "maxLength": 200
@@ -460,12 +230,6 @@
     "Place": {
       "type": "object",
       "properties": {
-        "place": {
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/Place"
-          }
-        },
         "title": {
           "type": "string",
           "maxLength": 200
@@ -482,77 +246,28 @@
         },
         "parent": {
           "$ref": "#/$defs/Place"
-        },
-        "authority": {
-          "$ref": "#/$defs/Authority"
-        },
-        "idAuthority": {
-          "$ref": "#/$defs/AuthorityEntry"
-        },
-        "lastNormUpdate": {
-          "type": "string",
-          "format": "date-time",
-          "readOnly": true
         }
       }
     },
     "EventType": {
       "type": "object",
-      "properties": {
-        "exhibition": {
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/Exhibition"
-          }
-        },
-        "title": {
-          "type": "string",
-          "maxLength": 200
-        },
-        "description": {
-          "type": "string"
-        },
-        "authority": {
-          "$ref": "#/$defs/Authority"
-        },
-        "idAuthority": {
-          "$ref": "#/$defs/AuthorityEntry"
-        },
-        "tags": {
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/Tag"
-          }
+      "title": {
+        "type": "string",
+        "maxLength": 200
+      },
+      "description": {
+        "type": "string"
+      },
+      "tags": {
+        "type": "array",
+        "items": {
+          "$ref": "#/$defs/Tag"
         }
       }
     },
     "Corporation": {
       "type": "object",
       "properties": {
-        "corporation": {
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/Corporation"
-          }
-        },
-        "exponatsandcorporations": {
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/ExponatsAndCorporations"
-          }
-        },
-        "involvedcorporation": {
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/InvolvedCorporation"
-          }
-        },
-        "sourceCorporation": {
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/Exhibition"
-          }
-        },
         "name": {
           "type": "string",
           "maxLength": 200
@@ -569,46 +284,18 @@
         },
         "location": {
           "$ref": "#/$defs/Location"
-        },
-        "authority": {
-          "$ref": "#/$defs/Authority"
-        },
-        "idAuthority": {
-          "$ref": "#/$defs/AuthorityEntry"
-        },
-        "lastNormUpdate": {
-          "type": "string",
-          "format": "date-time",
-          "readOnly": true
         }
       }
     },
     "ResourceType": {
       "type": "object",
       "properties": {
-        "resource": {
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/Resource"
-          }
-        },
         "title": {
           "type": "string",
           "maxLength": 200
         },
         "description": {
           "type": "string"
-        },
-        "authority": {
-          "$ref": "#/$defs/Authority"
-        },
-        "idAuthority": {
-          "$ref": "#/$defs/AuthorityEntry"
-        },
-        "lastNormUpdate": {
-          "type": "string",
-          "format": "date-time",
-          "readOnly": true
         }
       }
     },
@@ -674,18 +361,6 @@
     "ExhibitionExponat": {
       "type": "object",
       "properties": {
-        "exponatsandpersons": {
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/ExponatsAndPersons"
-          }
-        },
-        "exponatsandcorporations": {
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/ExponatsAndCorporations"
-          }
-        },
         "title": {
           "type": "string",
           "maxLength": 500
@@ -721,10 +396,6 @@
             }
           ]
         },
-        "fromDateDisplay": {
-          "type": "string",
-          "maxLength": 200
-        },
         "toDate": {
           "type": "integer"
         },
@@ -745,10 +416,6 @@
             }
           ]
         },
-        "toDateDisplay": {
-          "type": "string",
-          "maxLength": 200
-        },
         "url": {
           "type": "string",
           "format": "uri"
@@ -756,17 +423,6 @@
         "signature": {
           "type": "string",
           "maxLength": 200
-        },
-        "authority": {
-          "$ref": "#/$defs/Authority"
-        },
-        "idAuthority": {
-          "$ref": "#/$defs/AuthorityEntry"
-        },
-        "lastNormUpdate": {
-          "type": "string",
-          "format": "date-time",
-          "readOnly": true
         },
         "exponatGenres": {
           "type": "array",
@@ -797,38 +453,18 @@
     "ExhibitionCategory": {
       "type": "object",
       "properties": {
-        "exhibition": {
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/Exhibition"
-          }
-        },
         "name": {
           "type": "string",
           "maxLength": 200
         },
         "description": {
           "type": "string"
-        },
-        "authority": {
-          "$ref": "#/$defs/Authority"
-        },
-        "idAuthority": {
-          "$ref": "#/$defs/AuthorityEntry"
-        },
-        "lastNormUpdate": {
-          "type": "string",
-          "format": "date-time",
-          "readOnly": true
         }
       }
     },
     "OtherDate": {
       "type": "object",
       "properties": {
-        "exhibition": {
-          "$ref": "#/$defs/Exhibition"
-        },
         "dateValue": {
           "type": "string",
           "maxLength": 8
@@ -855,9 +491,6 @@
     "InvolvedPerson": {
       "type": "object",
       "properties": {
-        "exhibition": {
-          "$ref": "#/$defs/Exhibition"
-        },
         "person": {
           "$ref": "#/$defs/Person"
         },
@@ -869,9 +502,6 @@
     "InvolvedCorporation": {
       "type": "object",
       "properties": {
-        "exhibition": {
-          "$ref": "#/$defs/Exhibition"
-        },
         "corporation": {
           "$ref": "#/$defs/Corporation"
         },
@@ -880,74 +510,21 @@
         }
       }
     },
-    "ExhibitionWebLink": {
-      "type": "object",
-      "properties": {
-        "exhibition": {
-          "$ref": "#/$defs/Exhibition"
-        },
-        "weblink": {
-          "type": "string",
-          "format": "uri"
-        }
-      }
-    },
     "Genre": {
       "type": "object",
       "properties": {
-        "exhibition": {
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/Exhibition"
-          }
-        },
         "title": {
           "type": "string",
           "maxLength": 200
         },
         "description": {
           "type": "string"
-        },
-        "authority": {
-          "$ref": "#/$defs/Authority"
-        },
-        "idAuthority": {
-          "$ref": "#/$defs/AuthorityEntry"
-        },
-        "lastNormUpdate": {
-          "type": "string",
-          "format": "date-time",
-          "readOnly": true
         }
       }
     },
     "Exhibition": {
       "type": "object",
       "properties": {
-        "otherdate": {
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/OtherDate"
-          }
-        },
-        "involvedperson": {
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/InvolvedPerson"
-          }
-        },
-        "involvedcorporation": {
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/InvolvedCorporation"
-          }
-        },
-        "exhibitionweblink": {
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/ExhibitionWebLink"
-          }
-        },
         "externalId": {
           "type": "string",
           "maxLength": 50
@@ -982,53 +559,57 @@
         "sourceCorporation": {
           "$ref": "#/$defs/Corporation"
         },
-        "fromDate": {
-          "type": "integer"
-        },
-        "fromType": {
-          "type": "integer",
-          "oneOf": [
-            {
-              "const": 1,
-              "title": "nach"
+        "startDate": {
+          "type": "object",
+          "properties": {
+            "dateValue": {
+              "type": "string",
+              "maxLength": 8
             },
-            {
-              "const": 2,
-              "title": "vor"
-            },
-            {
-              "const": 3,
-              "title": "ca."
+            "dateModifier": {
+              "type": "integer",
+              "oneOf": [
+                {
+                  "const": 1,
+                  "title": "ca."
+                },
+                {
+                  "const": 2,
+                  "title": "vor"
+                },
+                {
+                  "const": 3,
+                  "title": "nach"
+                }
+              ]
             }
-          ]
+          }
         },
-        "fromDateDisplay": {
-          "type": "string",
-          "maxLength": 200
-        },
-        "toDate": {
-          "type": "integer"
-        },
-        "toType": {
-          "type": "integer",
-          "oneOf": [
-            {
-              "const": 1,
-              "title": "nach"
+        "endDate": {
+          "type": "object",
+          "properties": {
+            "dateValue": {
+              "type": "string",
+              "maxLength": 8
             },
-            {
-              "const": 2,
-              "title": "vor"
-            },
-            {
-              "const": 3,
-              "title": "ca."
+            "dateModifier": {
+              "type": "integer",
+              "oneOf": [
+                {
+                  "const": 1,
+                  "title": "ca."
+                },
+                {
+                  "const": 2,
+                  "title": "vor"
+                },
+                {
+                  "const": 3,
+                  "title": "nach"
+                }
+              ]
             }
-          ]
-        },
-        "toDateDisplay": {
-          "type": "string",
-          "maxLength": 200
+          }
         },
         "published": {
           "type": "boolean"
@@ -1036,23 +617,6 @@
         "editorNote": {
           "type": "string",
           "maxLength": 300
-        },
-        "authority": {
-          "$ref": "#/$defs/Authority"
-        },
-        "idAuthority": {
-          "$ref": "#/$defs/AuthorityEntry"
-        },
-        "lastNormUpdate": {
-          "type": "string",
-          "format": "date-time",
-          "readOnly": true
-        },
-        "involvedCorporations": {
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/InvolvedCorporation"
-          }
         },
         "places": {
           "type": "array",
@@ -1076,6 +640,18 @@
           "type": "array",
           "items": {
             "$ref": "#/$defs/InvolvedPerson"
+          }
+        },
+        "involvedCorporations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/InvolvedCorporation"
+          }
+        },
+        "exhibitionweblink": {
+          "type": "array",
+          "items": {
+            "type": "string"
           }
         },
         "exponats": {

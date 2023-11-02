@@ -118,13 +118,8 @@
               "elements": [
                 {
                   "type": "Control",
-                  "label": "Genauigkeit",
-                  "scope": "#/properties/fromType"
-                },
-                {
-                  "type": "Control",
-                  "label": "",
-                  "scope": "#/properties/fromDate"
+                  "label": "Datum",
+                  "scope": "#/properties/startDate"
                 }
               ]
             },
@@ -134,13 +129,8 @@
               "elements": [
                 {
                   "type": "Control",
-                  "label": "Genauigkeit",
-                  "scope": "#/properties/toType"
-                },
-                {
-                  "type": "Control",
-                  "label": "",
-                  "scope": "#/properties/toDate"
+                  "label": "Datum",
+                  "scope": "#/properties/endDate"
                 }
               ]
             }
@@ -204,7 +194,6 @@
     {
       "type": "Category",
       "label": "Normdaten",
-
       "elements": [
         {
           "type": "HorizontalLayout",
@@ -254,7 +243,7 @@
     }
   ],
   "options": {
-  "variant": "stepper",
-  "showNavButtons": true
-}
+    "variant": "stepper",
+    "showNavButtons": true
+  }
 }

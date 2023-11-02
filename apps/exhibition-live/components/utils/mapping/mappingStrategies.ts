@@ -1,24 +1,11 @@
 import { JsonSchema } from "@jsonforms/core";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
-import get from "lodash/get";
 
 import { getPaddedDate } from "../core/specialDate";
 import { mapByConfig } from "./mapByConfig";
 
 dayjs.extend(customParseFormat);
-
-export type GNDToOwnModelMap = {
-  [gndType: string]: {
-    [slubField: string]: {
-      path: string;
-      type?: "string" | "number" | "boolean" | "array" | "object";
-      mapping?: {
-        strategy: "concatenate" | "first" | "last";
-      };
-    };
-  };
-};
 
 interface Strategy {
   id: string;
@@ -191,11 +178,13 @@ type AnyStrategy =
   | DateRangeStringToSpecialInt
   | DateStringToSpecialInt;
 
+type SourceElement = {
+  path: string;
+  expectedSchema?: JsonSchema;
+};
+
 export type DeclarativeSimpleMapping = {
-  source: {
-    path: string;
-    expectedSchema?: JsonSchema;
-  };
+  source: SourceElement;
   target: {
     path: string;
   };

@@ -1,8 +1,5 @@
 import { sladb } from "../form/formConfigs";
-import {
-  DeclarativeMappings,
-  GNDToOwnModelMap,
-} from "../utils/mapping/mappingStrategies";
+import { DeclarativeMappings } from "../utils/mapping/mappingStrategies";
 
 export const exhibitionDeclarativeMapping: DeclarativeMappings = [
   {
@@ -310,38 +307,4 @@ export const declarativeMappings: { [key: string]: DeclarativeMappings } = {
   Person: personDeclarativeMapping,
   Corporation: corporateBodyDeclarativeMapping,
   ExhibitionExponat: workDeclarativeMapping,
-};
-export const gndFieldsToOwnModelMap: GNDToOwnModelMap = {
-  Person: {
-    name: {
-      path: "preferredName",
-      type: "string",
-    },
-    birthDate: {
-      path: "dateOfBirth.0",
-      type: "string",
-    },
-    deathDate: {
-      path: "dateOfDeath.0",
-      type: "string",
-    },
-    image: {
-      //depiction?.[0]?.thumbnail
-      path: "depiction.0.thumbnail",
-    },
-  },
-  CorporateBody: {
-    preferredName: {
-      path: "preferredName",
-    },
-  },
-  Work: {
-    name: {
-      path: "preferredName",
-      type: "string",
-    },
-    year: {
-      path: "dateOfProduction.0",
-    },
-  },
 };

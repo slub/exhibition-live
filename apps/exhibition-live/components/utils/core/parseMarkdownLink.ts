@@ -19,13 +19,12 @@ export function parseMarkdownLinks(input: string): MarkdownLink[] {
   const links: MarkdownLink[] = [];
 
   while ((match = regex.exec(input)) !== null) {
-    if(match[2] && isValidUrl(match[2])) {
+    if (match[2] && isValidUrl(match[2])) {
       links.push({
         label: match[1],
-        url: match[2]
+        url: match[2],
       });
     }
   }
   return links;
 }
-

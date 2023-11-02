@@ -4,6 +4,7 @@ import customParseFormat from "dayjs/plugin/customParseFormat";
 
 import { getPaddedDate } from "../core/specialDate";
 import { mapByConfig } from "./mapByConfig";
+import isNil from "lodash/isNil";
 
 dayjs.extend(customParseFormat);
 
@@ -143,10 +144,19 @@ export const dateStringToSpecialInt = (
   const data = Array.isArray(sourceData) ? sourceData[0] : sourceData;
   if (!data) return null;
   const yearOnly = data.length === 4;
-  return dayJsDateToSpecialInt(
-    dayjs(data, yearOnly ? "YYYY" : "DD.MM.YYYY"),
-    yearOnly,
-  );
+  const separator = data.includes("-") ? "-" : ".";
+  const en = data.includes("-");
+  const formatString = yearOnly
+    ? "YYYY"
+    : (en ? ["YYYY", "MM", "DD"] : ["DD", "MM", "YYYY"]).join(separator);
+  return dayJsDateToSpecialInt(dayjs(data, formatString), yearOnly);
+};
+
+type ExistsStrategy = Strategy & {
+  id: "exists";
+};
+const existsStrategy = (sourceData: any, _targetData: any): boolean => {
+  return !isNil(sourceData);
 };
 
 type DateRangeStringToSpecialInt = Strategy & {
@@ -176,7 +186,8 @@ type AnyStrategy =
   | AppendStrategy
   | CreateEntityStrategy
   | DateRangeStringToSpecialInt
-  | DateStringToSpecialInt;
+  | DateStringToSpecialInt
+  | ExistsStrategy;
 
 type SourceElement = {
   path: string;
@@ -202,4 +213,5 @@ export const strategyFunctionMap: { [strategyId: string]: StrategyFunction } = {
   createEntity,
   dateStringToSpecialInt,
   dateRangeStringToSpecialInt,
+  exists: existsStrategy,
 };

@@ -4,28 +4,29 @@ import { Literal } from "@rdfjs/types";
 
 import { prefixes2sparqlPrefixDeclaration } from "../sparql";
 import { wikidataPrefixes } from "./prefixes";
+import isNil from "lodash/isNil";
 
-const buildPropsQuery = (thingIRI: string) => `
-SELECT ?property ?propLabel ?object ?objectLabel 
+const buildPropsQuery = (entity: string, withSubclassRelations?: boolean) => `
+SELECT ?property ?propLabel ?object ?objectLabel
 WHERE {
 
-  <${thingIRI}> wdt:P31 ?class .
-           
-  OPTIONAL { 
+  ${entity} ${withSubclassRelations ? "wdt:P31/wdt:P279*" : "wdt:P31"} ?class .
+
+  OPTIONAL {
     ?class wdt:P1963 ?property .
     ?property wikibase:directClaim ?directProperty .
     SERVICE wikibase:label {
         bd:serviceParam wikibase:language "de" .
         ?property rdfs:label ?propLabel .
     }
-    <${thingIRI}> ?directProperty ?object  .
+    ${entity} ?directProperty ?object  .
     OPTIONAL {
       SERVICE wikibase:label {
         bd:serviceParam wikibase:language "de" .
         ?object rdfs:label ?objectLabel .
-     }           
+     }
    }
- } 
+ }
 }`;
 
 export type CommonPropertyValues = {
@@ -38,15 +39,34 @@ export type CommonPropertyValues = {
   };
 };
 
+const dedup = function (arr: any[]) {
+  return arr.reduce(
+    (prev, cur) =>
+      (!isNil(cur.uri) && prev.find((x) => x.uri === cur.uri)) ||
+      (!isNil(cur.value) && prev.find((x) => x.value === cur.value))
+        ? prev
+        : [...prev, cur],
+    [],
+  );
+};
+
 export const getCommonPropsFromWikidata: (
   thingIRI: string,
   sources: [IDataSource, ...IDataSource[]],
-) => Promise<undefined | CommonPropertyValues> = async (thingIRI, sources) => {
+  withSubClassRelations?: boolean,
+) => Promise<undefined | CommonPropertyValues> = async (
+  thingIRI,
+  sources,
+  withSubClassRelations,
+) => {
   const myEngine = new QueryEngine();
 
   const sparqlQuery = `
     ${prefixes2sparqlPrefixDeclaration(wikidataPrefixes)}
-    ${buildPropsQuery(thingIRI)}
+    ${buildPropsQuery(
+      thingIRI.startsWith("Q") ? `wd:${thingIRI}` : `<${thingIRI}>`,
+      withSubClassRelations,
+    )}
     `;
   const bindingsStream: BindingsStream = await myEngine.queryBindings(
     sparqlQuery,
@@ -60,7 +80,7 @@ export const getCommonPropsFromWikidata: (
     const object = binding.get("object");
     if (!object) continue;
     const objectLabel = binding.get("objectLabel")?.value;
-    const objects = properties.get(property)?.objects as any;
+    const objects = properties.get(property)?.objects || ([] as any);
     if (object.termType === "NamedNode") {
       properties.set(property, {
         label: propLabel || "",
@@ -81,7 +101,7 @@ export const getCommonPropsFromWikidata: (
   const props: CommonPropertyValues = {};
   // @ts-ignore
   for (const [key, value] of properties.entries()) {
-    props[key] = value;
+    props[key] = { label: value.label, objects: dedup(value.objects) };
   }
 
   return props;

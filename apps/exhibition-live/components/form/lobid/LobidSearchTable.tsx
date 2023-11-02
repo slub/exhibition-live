@@ -24,6 +24,17 @@ import {
 import ClassicResultListItem from "../result/ClassicResultListItem";
 import ClassicEntityCard from "./ClassicEntityCard";
 import LobidAllPropTable from "./LobidAllPropTable";
+import WikidataAllPropTable from "../wikidata/WikidataAllPropTable";
+import {
+  PrimaryFieldDeclaration,
+  PrimaryFieldExtract,
+  PrimaryFieldExtractDeclaration,
+} from "../../utils/types";
+import { filterUndefOrNull } from "../../utils/core";
+import {
+  applyToEachField,
+  extractFieldIfString,
+} from "../../utils/mapping/simpleFieldExtractor";
 
 type Props = {
   searchString: string;
@@ -37,7 +48,67 @@ type LobIDEntry = {
   [key: string]: any;
 };
 
+const nullOnEmpty = (arr: any[]) => (arr.length > 0 ? arr : null);
+
+const gndPrimaryFields: PrimaryFieldExtractDeclaration = {
+  DifferentiatedPerson: {
+    label: "preferredName",
+    description: (entry: any) => {
+      const dateOfBirth = entry?.dateOfBirth?.[0],
+        dateOfDeath = entry?.dateOfDeath?.[0],
+        dateOfBirthAndDeath =
+          entry?.dateOfBirthAndDeath?.[0] ||
+          nullOnEmpty(filterUndefOrNull([dateOfBirth, dateOfDeath]))?.join(
+            " - ",
+          ),
+        profession = Array.isArray(entry.professionOrOccupation)
+          ? filterUndefOrNull(
+              entry.professionOrOccupation.map(
+                ({ label }: { label: any }) => label,
+              ),
+            ).join(",")
+          : null;
+      return nullOnEmpty(
+        filterUndefOrNull([dateOfBirthAndDeath, profession]),
+      )?.join(" | ");
+    },
+    image: (entry: any) => entry.depiction?.[0]?.thumbnail,
+  },
+};
+
+const getFirstMatchingFieldDeclaration = <T,>(
+  type: string[],
+  fieldDeclaration: PrimaryFieldExtractDeclaration<T>,
+): PrimaryFieldExtract<T> | null => {
+  const key = Object.keys(fieldDeclaration).find((key) => type.includes(key));
+  return key ? fieldDeclaration[key] : null;
+};
+
+const defaultPrimaryFields: PrimaryFieldExtract<any> = {
+  label: "preferredName",
+};
+
 const gndEntryWithMainInfo = (allProps: any) => {
+  const { id, type } = allProps;
+  const primaryFieldDeclaration =
+    getFirstMatchingFieldDeclaration(type, gndPrimaryFields) ||
+    defaultPrimaryFields;
+  const { label, description, image } = applyToEachField(
+    allProps,
+    primaryFieldDeclaration,
+    extractFieldIfString,
+  );
+  console.log({ label, description, image });
+  return {
+    id,
+    label,
+    secondary: description,
+    avatar: image,
+    allProps,
+  };
+};
+
+const gndEntryWithMainInfo2 = (allProps: any) => {
   {
     const {
       id,
@@ -131,10 +202,19 @@ const LobidSearchTable: FunctionComponent<Props> = ({
           onAcceptItem={(id) => onAcceptItem(id, selectedEntry)}
           acceptTitle={"Eintrag übernehmen"}
           detailView={
-            <LobidAllPropTable
-              allProps={selectedEntry.allProps}
-              onEntityChange={handleSelect}
-            />
+            <>
+              <LobidAllPropTable
+                allProps={selectedEntry.allProps}
+                onEntityChange={handleSelect}
+              />
+              {(selectedEntry.allProps?.sameAs || [])
+                .filter(({ id }) =>
+                  id.startsWith("http://www.wikidata.org/entity/"),
+                )
+                .map(({ id }) => (
+                  <WikidataAllPropTable key={id} thingIRI={id} />
+                ))}
+            </>
           }
         />
       ) : (

@@ -42,6 +42,7 @@ import { findEntityByAuthorityIRI } from "../utils/discover";
 import { useGlobalCRUDOptions } from "../state/useGlobalCRUDOptions";
 import { mapAbstractDataUsingAI, mapDataUsingAI } from "../utils/ai";
 import { typeIRItoTypeName } from "../content/main/Dashboard";
+import {useGlobalSearch} from "../state";
 
 // @ts-ignore
 type Props = {
@@ -99,12 +100,14 @@ const SimilarityFinder: FunctionComponent<Props> = ({
   const [entitySelected, setEntitySelected] = useState<
     SelectedEntity | undefined
   >();
+  const { search: globalSearch, typeName: globalTypeName } = useGlobalSearch();
   const searchString = useMemo<string | null>(
     () =>
+      globalSearch ||
       search ||
       (searchOnDataPath && Resolve.data(data, searchOnDataPath)) ||
       null,
-    [data, searchOnDataPath, search],
+    [data, searchOnDataPath, search, globalSearch],
   );
   const handleKnowledgeSourceChange = useCallback(
     (
@@ -122,6 +125,9 @@ const SimilarityFinder: FunctionComponent<Props> = ({
   const [typeName, setTypeName] = useState(
     typeIRItoTypeName(preselectedClassIRI),
   );
+  useEffect(() => {
+    if(globalTypeName) setTypeName(globalTypeName);
+  }, [globalTypeName, setTypeName]);
   const classIRI = useMemo(() => sladb(typeName).value, [typeName]);
   useEffect(() => {
     setTypeName(typeIRItoTypeName(preselectedClassIRI));

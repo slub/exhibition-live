@@ -27,6 +27,8 @@ import {
   extractFieldIfString,
 } from "../utils/mapping/simpleFieldExtractor";
 import { PrimaryField } from "../utils/types";
+import {typeIRItoTypeName} from "../content/main/Dashboard";
+import {useGlobalSearch} from "../state";
 
 const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
   const {
@@ -47,6 +49,10 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
   } = props;
   const [formData, setFormData] = useState<any>({ "@id": data });
   const [searchString, setSearchString] = useState<string | undefined>("");
+  const {
+    setTypeName,
+    setSearch
+  } = useGlobalSearch();
   const isValid = errors.length === 0;
   const appliedUiSchemaOptions = merge({}, config, uischema.options);
   const [editMode, setEditMode] = useState(false);
@@ -124,7 +130,7 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
   }, []);
 
   const typeName = useMemo(
-    () => typeIRI.substring(BASE_IRI.length, typeIRI.length),
+    () => typeIRI && typeIRItoTypeName(typeIRI),
     [typeIRI],
   );
   //const uischemaExternal = useUISchemaForType(typeIRI || '')
@@ -198,6 +204,17 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
     [setFormData],
   );
 
+
+  const handleFocus = useCallback((event: FocusEvent<HTMLInputElement>) => {
+    setTypeName(typeName);
+    console.log("focus", event)
+  }, [setTypeName, typeName]);
+
+  const handleSearchValueChange = useCallback((v: string) => {
+    setSearch(v);
+    setSearchString(v);
+  }, [setSearch, setSearchString]);
+
   return (
     <Hidden xsUp={!visible}>
       <Grid container alignItems="baseline">
@@ -210,8 +227,11 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
             typeName={typeName || ""}
             selected={selected}
             onSelectionChange={handleSelectedChange}
-            onSearchValueChange={setSearchString}
+            onSearchValueChange={handleSearchValueChange}
             searchString={searchString}
+            inputProps={{
+              onFocus: handleFocus,
+            }}
           />
         </Grid>
         {!ctx.readonly && (

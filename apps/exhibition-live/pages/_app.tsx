@@ -8,12 +8,14 @@ import "../styles/layout.css";
 import "../styles/temp.css";
 import "leaflet/dist/leaflet.css";
 import "../components/i18n/i18n";
+import { appWithI18Next } from "ni18n";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import type { AppProps } from "next/app";
 
 import { FormRefsProvider } from "../components/provider/formRefsContext";
 import ThemeComponent from "../components/theme/ThemeComponent";
+import { ni18n } from "../components/i18n";
 import NiceModal from "@ebay/nice-modal-react";
 import { SnackbarProvider } from "notistack";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
@@ -28,7 +30,7 @@ const QueryClientProviderWrapper = ({
     <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
   );
 };
-export default function App({ Component, pageProps }: AppProps) {
+function App({ Component, pageProps }: AppProps) {
   return (
     <>
       <QueryClientProviderWrapper>
@@ -48,3 +50,5 @@ export default function App({ Component, pageProps }: AppProps) {
     </>
   );
 }
+
+export default appWithI18Next(App, ni18n);

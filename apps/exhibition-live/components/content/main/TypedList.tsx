@@ -23,6 +23,8 @@ import { useSettings } from "../../state/useLocalSettings";
 import { JSONSchema7 } from "json-schema";
 import { Details, Edit } from "@mui/icons-material";
 import { useRouter } from "next/router";
+import { primaryFields } from "../../config";
+import { parseMarkdownLinks } from "../../utils/core/parseMarkdownLink";
 
 type Props = {
   typeName: string;
@@ -36,9 +38,13 @@ export const TypedList = ({ typeName }: Props) => {
     return sladb(typeName).value;
   }, [typeName]);
   const loadedSchema = useMemo(
-    () => schema[defsFieldName][typeName] as JSONSchema7 | undefined,
+    () =>
+      ({ ...schema, ...schema[defsFieldName][typeName] }) as
+        | JSONSchema7
+        | undefined,
     [typeName],
   );
+  const [headerVars, setHeaderVars] = useState<string[] | undefined>();
   const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: 10,
@@ -49,7 +55,10 @@ export const TypedList = ({ typeName }: Props) => {
     if (!loadedSchema || !classIRI) return;
     return (
       `PREFIX : <${defaultPrefix}> \n` +
-      jsonSchema2Select(loadedSchema, classIRI, [], { limit: 10000 })
+      jsonSchema2Select(loadedSchema, classIRI, [], {
+        limit: 10000,
+        primaryFields: primaryFields,
+      })
     );
   }, [loadedSchema, classIRI]);
 
@@ -59,10 +68,11 @@ export const TypedList = ({ typeName }: Props) => {
     if (!sparqlQuery || !crudOptions?.selectFetch) {
       return;
     }
-    crudOptions.selectFetch(sparqlQuery, { withHeaders: false }).then((res) => {
-      setResultList(res);
+    crudOptions.selectFetch(sparqlQuery, { withHeaders: true }).then((res) => {
+      setResultList(res?.results?.bindings ?? []);
+      setHeaderVars(res?.head?.vars);
     });
-  }, [sparqlQuery, crudOptions?.selectFetch, setResultList]);
+  }, [sparqlQuery, crudOptions?.selectFetch, setResultList, setHeaderVars]);
 
   const columns = useMemo<MRT_ColumnDef<any>[]>(
     () =>
@@ -70,7 +80,7 @@ export const TypedList = ({ typeName }: Props) => {
         ? []
         : [
             {
-              id: "ID",
+              id: "entity",
               header: "ID",
               accessorKey: "entity.value",
             },
@@ -78,22 +88,51 @@ export const TypedList = ({ typeName }: Props) => {
               filterForPrimitiveProperties(loadedSchema.properties),
             ).map((key) => ({
               header: key,
-              id: key,
+              id: key + "_single",
               accessorKey: `${key}_single.value`,
               Cell: ({ cell }) => <>{cell.getValue() ?? ""}</>,
             })),
             ...Object.keys(
               filterForArrayProperties(loadedSchema.properties),
-            ).map((key) => ({
-              header: key,
-              id: key,
-              accessorKey: `${key}_count.value`,
-              Cell: ({ cell }) => (
-                <Link href={"#"}>{cell.getValue() ?? 0}</Link>
-              ),
-            })),
+            ).flatMap((key) => [
+              {
+                header: key + " count",
+                id: key + "_count",
+                accessorKey: `${key}_count.value`,
+                Cell: ({ cell }) => (
+                  <Link href={"#"}>{cell.getValue() ?? 0}</Link>
+                ),
+              },
+              {
+                header: key,
+                id: key + "_label_group",
+                accessorKey: `${key}_label_group.value`,
+                Cell: ({ cell }) => (
+                  <>
+                    {cell.getValue() &&
+                      parseMarkdownLinks(cell.getValue()).map(
+                        ({ label, url }) => {
+                          return (
+                            <span key={url}>
+                              {" "}
+                              <Link href={`/show/${encodeIRI(url)}`}>
+                                {label}
+                              </Link>{" "}
+                            </span>
+                          );
+                        },
+                      )}
+                  </>
+                ),
+              },
+            ]),
           ],
     [loadedSchema],
+  );
+
+  const displayColumns = useMemo<MRT_ColumnDef<any>[]>(
+    () => columns.filter((col) => !headerVars || headerVars.includes(col.id)),
+    [columns, headerVars],
   );
 
   const router = useRouter();
@@ -110,7 +149,7 @@ export const TypedList = ({ typeName }: Props) => {
         <Skeleton variant="rectangular" height={530} />
       ) : (
         <MaterialReactTable
-          columns={columns}
+          columns={displayColumns}
           data={resultList}
           enableColumnOrdering //enable some features
           enableRowSelection
@@ -127,7 +166,6 @@ export const TypedList = ({ typeName }: Props) => {
                 onClick={() => {
                   // View profile logic...
                   row.closeMenu();
-                  console.log({ row });
                   editEntry(row.row.id);
                 }}
                 sx={{ m: 0 }}

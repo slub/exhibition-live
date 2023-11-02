@@ -1,5 +1,6 @@
 import {
   Container,
+  Skeleton,
   Table,
   TableBody,
   TableCell,
@@ -23,19 +24,21 @@ const WikidataAllPropTable: FunctionComponent<Props> = ({ thingIRI }) => {
   const [allProps, setAllProps] = useState<CommonPropertyValues>({});
   useEffect(() => {
     if (!thingIRI) return;
-    getCommonPropsFromWikidata(`http://www.wikidata.org/entity/${thingIRI}`, [
-      "https://query.wikidata.org/sparql",
-    ]).then((_allProps) => {
+    getCommonPropsFromWikidata(
+      thingIRI,
+      ["https://query.wikidata.org/sparql"],
+      true,
+    ).then((_allProps) => {
       setAllProps(_allProps as CommonPropertyValues);
     });
   }, [thingIRI, setAllProps]);
 
   return (
     <TableContainer component={Container}>
-      <Table sx={{ minWidth: "100%" }} aria-label="custom table">
-        <TableBody>
-          {allProps &&
-            Object.entries(allProps).map(([key, value]) => (
+      {typeof allProps === "object" ? (
+        <Table sx={{ minWidth: "100%" }} aria-label="custom table">
+          <TableBody>
+            {Object.entries(allProps).map(([key, value]) => (
               <TableRow key={key}>
                 <TableCell style={{ width: 100 }} component="th" scope="row">
                   {value.label}
@@ -64,8 +67,11 @@ const WikidataAllPropTable: FunctionComponent<Props> = ({ thingIRI }) => {
                 </TableCell>
               </TableRow>
             ))}
-        </TableBody>
-      </Table>
+          </TableBody>
+        </Table>
+      ) : (
+        <Skeleton width={"100%"} height={"200px"} />
+      )}
     </TableContainer>
   );
 };

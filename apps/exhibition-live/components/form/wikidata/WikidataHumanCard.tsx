@@ -47,7 +47,7 @@ type PersonInfo = {
 
 const WikidataHumanCard: FunctionComponent<Props> = ({ personIRI }) => {
   const [personData, setPersonData] = useState<PersonInfo | null>(null);
-  const [expanded, setExpanded] = React.useState(false);
+  const [expanded, setExpanded] = useState(false);
 
   const handleExpandClick = useCallback(() => {
     setExpanded((expanded) => !expanded);
@@ -56,48 +56,53 @@ const WikidataHumanCard: FunctionComponent<Props> = ({ personIRI }) => {
   useEffect(() => {
     setPersonData(null);
     if (!personIRI) return;
-    sparqlSelectViaFieldMappings(`wd:${personIRI}`, {
-      fieldMapping: {
-        occupation: {
-          kind: "object",
-          optional: true,
-          type: "NamedNode",
-          predicateURI: "wdt:P106",
+    sparqlSelectViaFieldMappings(
+      personIRI.startsWith("Q") ? `wd:${personIRI}` : `<${personIRI}>`,
+      {
+        fieldMapping: {
+          occupation: {
+            kind: "object",
+            optional: true,
+            type: "NamedNode",
+            predicateURI: "wdt:P106",
+          },
+          birthDate: {
+            kind: "literal",
+            optional: true,
+            type: "xsd:date",
+            predicateURI: "wdt:P569",
+            single: true,
+          },
+          deathDate: {
+            kind: "literal",
+            optional: true,
+            type: "xsd:date",
+            predicateURI: "wdt:P570",
+            single: true,
+          },
+          image: {
+            kind: "object",
+            optional: true,
+            type: "NamedNode",
+            predicateURI: "wdt:P18",
+            single: true,
+          },
         },
-        birthDate: {
-          kind: "literal",
-          optional: true,
-          type: "xsd:date",
-          predicateURI: "wdt:P569",
-          single: true,
-        },
-        deathDate: {
-          kind: "literal",
-          optional: true,
-          type: "xsd:date",
-          predicateURI: "wdt:P570",
-          single: true,
-        },
-        image: {
-          kind: "object",
-          optional: true,
-          type: "NamedNode",
-          predicateURI: "wdt:P18",
-          single: true,
-        },
-      },
-      includeLabel: true,
-      includeDescription: true,
-      wrapAround: [
-        `SERVICE wikibase:label {
+        includeLabel: true,
+        includeDescription: true,
+        wrapAround: [
+          `SERVICE wikibase:label {
               bd:serviceParam wikibase:language "en" .`,
-        "}",
-      ],
-      prefixes: wikidataPrefixes,
-      permissive: true,
-      query: (sparqlSelect: string) =>
-        remoteSparqlQuery(sparqlSelect, ["https://query.wikidata.org/sparql"]),
-    }).then((_personInfo) => {
+          "}",
+        ],
+        prefixes: wikidataPrefixes,
+        permissive: true,
+        query: (sparqlSelect: string) =>
+          remoteSparqlQuery(sparqlSelect, [
+            "https://query.wikidata.org/sparql",
+          ]),
+      },
+    ).then((_personInfo) => {
       setPersonData(_personInfo as PersonInfo);
     });
   }, [personIRI, setPersonData]);

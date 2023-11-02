@@ -44,28 +44,33 @@ const WikidataThingCard: FunctionComponent<Props> = ({ thingIRI }) => {
 
   useEffect(() => {
     if (!thingIRI) return;
-    sparqlSelectViaFieldMappings(`wd:${thingIRI}`, {
-      fieldMapping: {
-        image: {
-          kind: "object",
-          optional: true,
-          type: "NamedNode",
-          predicateURI: "wdt:P18",
-          single: true,
+    sparqlSelectViaFieldMappings(
+      thingIRI.startsWith("Q") ? `wd:${thingIRI}` : `<${thingIRI}>`,
+      {
+        fieldMapping: {
+          image: {
+            kind: "object",
+            optional: true,
+            type: "NamedNode",
+            predicateURI: "wdt:P18",
+            single: true,
+          },
         },
-      },
-      includeLabel: true,
-      includeDescription: true,
-      wrapAround: [
-        `SERVICE wikibase:label {
+        includeLabel: true,
+        includeDescription: true,
+        wrapAround: [
+          `SERVICE wikibase:label {
               bd:serviceParam wikibase:language "en" .`,
-        "}",
-      ],
-      prefixes: wikidataPrefixes,
-      permissive: true,
-      query: (sparqlSelect: string) =>
-        remoteSparqlQuery(sparqlSelect, ["https://query.wikidata.org/sparql"]),
-    }).then((_info) => {
+          "}",
+        ],
+        prefixes: wikidataPrefixes,
+        permissive: true,
+        query: (sparqlSelect: string) =>
+          remoteSparqlQuery(sparqlSelect, [
+            "https://query.wikidata.org/sparql",
+          ]),
+      },
+    ).then((_info) => {
       setThingData(_info as ThingInfo);
     });
   }, [thingIRI, setThingData]);

@@ -314,11 +314,10 @@
         },
         "ppn": {
           "type": "string",
-          "format": "uri"
+          "maxLength": 15
         },
         "doi": {
-          "type": "string",
-          "format": "uri"
+          "type": "string"
         },
         "url": {
           "type": "string",

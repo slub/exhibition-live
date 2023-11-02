@@ -150,7 +150,7 @@
         {
           "type": "Control",
           "label": "Künstler",
-          "scope": "#/properties/involvedperson",
+          "scope": "#/properties/involvedPersons",
           "options": {
             "elementLabelTemplate": "{{=it.person?.name || ''}} ({{=it.role?.title || ''}})",
             "detail": "GENERATED"
@@ -159,7 +159,7 @@
         {
           "type": "Control",
           "label": "Institutionen",
-          "scope": "#/properties/involvedcorporation",
+          "scope": "#/properties/involvedCorporations",
           "options": {
             "elementLabelTemplate": "{{=it.corporation?.name || ''}} ({{=it.role?.title || ''}})",
             "detail": "GENERATED"
@@ -185,35 +185,9 @@
           "label": "Ressourcen",
           "scope": "#/properties/resources",
           "options": {
-            "elementLabelProp": "name",
+            "elementLabelProp": "title",
             "detail": "GENERATED"
           }
-        }
-      ]
-    },
-    {
-      "type": "Category",
-      "label": "Normdaten",
-      "elements": [
-        {
-          "type": "HorizontalLayout",
-          "elements": [
-            {
-              "type": "Control",
-              "label": "Authorität",
-              "scope": "#/properties/authority"
-            },
-            {
-              "type": "Control",
-              "label": "URI",
-              "scope": "#/properties/idAuthority"
-            },
-            {
-              "type": "Control",
-              "label": "Letztes Normenupdate",
-              "scope": "#/properties/lastNormUpdate"
-            }
-          ]
         }
       ]
     },

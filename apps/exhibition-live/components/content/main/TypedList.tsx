@@ -12,6 +12,9 @@ import {
   Skeleton,
   MenuItem,
   ListItemIcon,
+  Tab,
+  Tabs,
+  CssBaseline
 } from "@mui/material";
 import { MaterialReactTable, MRT_ColumnDef } from "material-react-table";
 import {
@@ -34,6 +37,7 @@ const defsFieldName = (schema as JSONSchema7).definitions
   ? "definitions"
   : "$defs";
 export const TypedList = ({ typeName }: Props) => {
+  const [tabValue, setTabValue] = useState(typeName);
   const classIRI = useMemo(() => {
     return sladb(typeName).value;
   }, [typeName]);
@@ -143,57 +147,99 @@ export const TypedList = ({ typeName }: Props) => {
     [router, typeName],
   );
 
+    const VerticalTabs = () => {
+      const handleTabChange = useCallback((event:React.SyntheticEvent, newValue: any) => {
+        setTabValue(newValue);
+        router.push(`/list/${newValue}`);
+      },[router, setTabValue]
+      );
+      return (
+        <Tabs
+            value={tabValue}
+            textColor="secondary"
+            indicatorColor="secondary"
+            orientation="vertical"
+            variant="scrollable"
+            onChange={handleTabChange}
+          >
+            {Object.entries(
+              loadedSchema.definitions || loadedSchema["$defs"] || {},
+            ).map(([key, value]) => (
+              <Tab value={key} label={key} />
+            ))}
+          </Tabs>
+      )
+
+    }
+
+
+  const TableWithTabNavigation = ({children}) => {
+    return (
+      <Grid container>
+        <CssBaseline />
+        <Grid container item xs={2}>
+          <VerticalTabs />
+        </Grid>
+        <Grid container item xs={10}>
+          {children}
+        </Grid>
+      </Grid>
+    )
+  }
+
   return (
     <>
       {!resultList || columns.length <= 0 ? (
         <Skeleton variant="rectangular" height={530} />
       ) : (
-        <MaterialReactTable
-          columns={displayColumns}
-          data={resultList}
-          enableColumnOrdering //enable some features
-          enableRowSelection
-          manualPagination={false}
-          initialState={{ columnVisibility: { ID: false, externalId: false } }}
-          onPaginationChange={setPagination}
-          rowCount={resultList.length}
-          enableRowActions={true}
-          getRowId={(row) => (row as any).entity.value}
-          renderRowActionMenuItems={(row) => {
-            return [
-              <MenuItem
-                key={0}
-                onClick={() => {
-                  // View profile logic...
-                  row.closeMenu();
-                  editEntry(row.row.id);
-                }}
-                sx={{ m: 0 }}
-              >
-                <ListItemIcon>
-                  <Edit />
-                </ListItemIcon>
-                bearbeiten
-              </MenuItem>,
-              <MenuItem
-                key={1}
-                onClick={() => {
-                  row.closeMenu();
-                }}
-                sx={{ m: 0 }}
-              >
-                <ListItemIcon>
-                  <Details />
-                </ListItemIcon>
-                Details
-              </MenuItem>,
-            ];
-          }}
-          state={{
-            pagination,
-          }}
-        />
-      )}
+        <TableWithTabNavigation>
+          <MaterialReactTable
+            columns={displayColumns}
+            data={resultList}
+            enableColumnOrdering //enable some features
+            enableRowSelection
+            manualPagination={false}
+            initialState={{ columnVisibility: { ID: false, externalId: false } }}
+            onPaginationChange={setPagination}
+            rowCount={resultList.length}
+            enableRowActions={true}
+            getRowId={(row) => (row as any).entity.value}
+            renderRowActionMenuItems={(row) => {
+              return [
+                <MenuItem
+                  key={0}
+                  onClick={() => {
+                    // View profile logic...
+                    row.closeMenu();
+                    editEntry(row.row.id);
+                  }}
+                  sx={{ m: 0 }}
+                >
+                  <ListItemIcon>
+                    <Edit />
+                  </ListItemIcon>
+                  bearbeiten
+                </MenuItem>,
+                <MenuItem
+                  key={1}
+                  onClick={() => {
+                    row.closeMenu();
+                  }}
+                  sx={{ m: 0 }}
+                >
+                  <ListItemIcon>
+                    <Details />
+                  </ListItemIcon>
+                  Details
+                </MenuItem>,
+              ];
+            }}
+            state={{
+              pagination,
+            }}
+          />
+          </TableWithTabNavigation>
+        )}
     </>
   );
 };

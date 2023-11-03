@@ -20,8 +20,9 @@ type NavItemProps = {
   item: MenuItem;
   level: number;
   onClick?: () => void;
+  open?: boolean;
 };
-export const NavItem = ({ item, level, onClick }: NavItemProps) => {
+export const NavItem = ({ item, level, onClick, open = true }: NavItemProps) => {
   const theme = useTheme();
   const { pathname } = useRouter();
   const customization = useThemeSettings();
@@ -87,8 +88,9 @@ export const NavItem = ({ item, level, onClick }: NavItemProps) => {
         mb: 0.5,
         alignItems: "flex-start",
         backgroundColor: level > 1 ? "transparent !important" : "inherit",
+        px: 2.5,
         py: level > 1 ? 1 : 1.25,
-        pl: `${level * 24}px`,
+        justifyContent: open ? 'initial' : 'center',
       }}
       selected={customization.isOpen.findIndex((id) => id === item.id) > -1}
       onClick={() => (onClick ? onClick() : itemHandler(item.id))}
@@ -121,6 +123,13 @@ export const NavItem = ({ item, level, onClick }: NavItemProps) => {
             </Typography>
           )
         }
+        sx={{
+          opacity: open ? 1 : 0,
+          transition: theme.transitions.create('opacity', {
+            easing: theme.transitions.easing.sharp,
+            duration: theme.transitions.duration.leavingScreen,
+          }),
+        }}
       />
       {item.chip && (
         // @ts-ignore

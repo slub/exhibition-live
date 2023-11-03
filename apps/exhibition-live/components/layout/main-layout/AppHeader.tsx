@@ -1,7 +1,10 @@
-import { Menu as IconMenu } from "@mui/icons-material";
+import MenuIcon from '@mui/icons-material/Menu';
+import ListIcon from '@mui/icons-material/List';
 // material-ui
-import { Avatar, Box, ButtonBase, useTheme } from "@mui/material";
+import { Avatar, Box, ButtonBase, useTheme, AppBar, Toolbar, IconButton } from "@mui/material";
 import React, { useState } from "react";
+import ViewListIcon from '@mui/icons-material/ViewList';
+import VerticalSplitIcon from '@mui/icons-material/VerticalSplit';
 
 import { Logo } from "./Logo";
 
@@ -10,63 +13,37 @@ const LogoSection = () => (
     <Logo />
   </>
 );
-const ProfileSection = () => <>ProfileSection</>;
 
 type AppHeaderProps = {
-  onLeftDrawerToggle: () => void;
+  toggleDrawer: () => void;
+  drawerOpen: boolean;
 };
-export const AppHeader = ({ onLeftDrawerToggle }: AppHeaderProps) => {
+
+export const AppHeader = ({ drawerOpen, toggleDrawer }: AppHeaderProps) => {
   const theme = useTheme();
 
   return (
-    <>
-      {/* logo */}
-      <Box
+    <AppBar
+        enableColorOnDark
+        position="fixed"
+        color="inherit"
+        elevation={1}
         sx={{
-          width: 228,
-          display: "flex",
-          [theme.breakpoints.down("md")]: {
-            width: "auto",
-          },
+          bgcolor: theme.palette.background.default,
+          zIndex: (theme) => theme.zIndex.drawer + 1,
         }}
       >
+        <Toolbar>
         <ButtonBase
           sx={{
             borderRadius: "12px",
             overflow: "hidden",
-            display: (theme) =>
-              theme.breakpoints.down("md") ? "none" : "block",
           }}
+          onClick={toggleDrawer}
         >
-          <Avatar
-            variant="rounded"
-            sx={{
-              // @ts-ignore
-              ...theme.typography.commonAvatar,
-              // @ts-ignore
-              ...theme.typography.mediumAvatar,
-              transition: "all .2s ease-in-out",
-              background: theme.palette.secondary.light,
-              color: theme.palette.secondary.dark,
-              stroke: 1.5,
-              "&:hover": {
-                background: theme.palette.secondary.dark,
-                color: theme.palette.secondary.light,
-              },
-            }}
-            onClick={onLeftDrawerToggle}
-            color="inherit"
-          >
-            <IconMenu />
-          </Avatar>
-        </ButtonBase>
-        <Box
-          component="span"
-          sx={{ display: { xs: "none", md: "block" }, flexGrow: 1 }}
-        >
-          <LogoSection />
-        </Box>
-      </Box>
-    </>
+        {drawerOpen ? <MenuIcon /> : <ListIcon />}
+      </ButtonBase>
+        </Toolbar>
+    </AppBar>
   );
 };

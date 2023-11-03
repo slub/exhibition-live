@@ -53,27 +53,16 @@ export const MainLayout = ({ children }: { children: React.ReactNode }) => {
 
   const [leftDrawerOpened, setLeftDrawerOpened] = useState<boolean>(false);
   const toggleDrawer = useCallback(() => {
-    setLeftDrawerOpened((opened) => !opened);
+    setLeftDrawerOpened((leftDrawerOpened) => !leftDrawerOpened);
   }, [setLeftDrawerOpened]);
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
       {/* header */}
-      <AppBar
-        enableColorOnDark
-        position="fixed"
-        color="inherit"
-        elevation={0}
-        sx={{
-          bgcolor: theme.palette.background.default,
-        }}
-      >
-        <Toolbar>
-          <AppHeader onLeftDrawerToggle={toggleDrawer} />
-        </Toolbar>
-      </AppBar>
+          <AppHeader drawerOpen={leftDrawerOpened} toggleDrawer={toggleDrawer} />
 
-      <Sidebar open={leftDrawerOpened} onClose={toggleDrawer} />
+
+      <Sidebar open={leftDrawerOpened} />
 
       {/*@ts-ignore */}
       <Main theme={theme}>{children}</Main>

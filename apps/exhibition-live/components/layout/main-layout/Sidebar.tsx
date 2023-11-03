@@ -1,12 +1,14 @@
-import { Settings } from "@mui/icons-material";
+import { Settings, Search, Add } from "@mui/icons-material";
 import {
   Box,
   Button,
   Chip,
-  Drawer,
   Stack,
   useMediaQuery,
   useTheme,
+  List,
+  Divider,
+  Toolbar
 } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import { JSONSchema7 } from "json-schema";
@@ -20,7 +22,7 @@ import { useFormRefsContext } from "../../provider/formRefsContext";
 import { useLocalSettings } from "../../state/useLocalSettings";
 import { Logo } from "./Logo";
 import { drawerWidth } from "./MainLayout";
-import { MenuGroup, NavGroup, NavItem } from "./menu";
+import { MenuGroup, NavGroup, NavItem, Drawer } from "./menu";
 import menuLists from "./menu/menuLists";
 
 const MenuList = () => {
@@ -49,75 +51,97 @@ type SidebarProps = {
   onClose?: () => void;
 };
 
+
+const Options = ({ open }) => {
+  const { openSettings } = useLocalSettings();
+
+  const items = [
+    {
+      id: 'settings',
+      url: '#',
+      icon: () => <Settings />,
+      title: 'settings',
+      onClick: openSettings
+    }
+  ];
+
+  return (
+    <List>
+      {items.map(({id, url, icon, title, onClick}) => (
+        <NavItem
+          item={{
+            id: id,
+            type: 'item',
+            url: url,
+            icon: icon,
+            title: title
+          }}
+          level={0}
+          onClick={onClick}
+          open={open}
+          />
+      ))}
+    <SettingsModal />
+    </List>
+  );
+}
+
+const Navigation = ({ open }) => {
+
+  const items = [
+    {
+      id: 'list',
+      icon: () => <Search />,
+      url: `/list/Exhibition`,
+      title: 'list',
+    },
+    {
+      id: 'create',
+      icon: () => <Add />,
+      url: `/create/Exhibition`,
+      title: 'create',
+    }
+  ];
+
+  return (
+    <List>
+      {items.map(({id, url, icon, title}) => (
+        <NavItem
+          item={{
+            id: id,
+            type: 'item',
+            url: url,
+            icon: icon,
+            title: title
+          }}
+          level={0}
+          open={open}
+          />
+      ))}
+    </List>
+  );
+
+}
+
 export const Sidebar = ({ open, onClose }: SidebarProps) => {
   const theme = useTheme();
   const matchUpMd = useMediaQuery(theme.breakpoints.up("md"));
-  const { openSettings } = useLocalSettings();
 
-  const drawer = (
-    <>
-      <Box sx={{ display: { xs: "block", md: "none" } }}>
-        <Box sx={{ display: "flex", p: 2, mx: "auto" }}>
-          <Logo />
-        </Box>
-      </Box>
-      <Box>
-        <MenuCard />
-        <MenuList />
-        <NavItem
-          item={{
-            id: "setttings",
-            type: "item",
-            url: "#",
-            icon: () => <Settings />,
-            title: "Einstellungen",
-          }}
-          level={0}
-          onClick={openSettings}
-        />
-        <Stack direction="row" justifyContent="end" sx={{ mb: 2 }}>
-          <Chip
-            label={"Version 1.3.122"}
-            disabled
-            color="secondary"
-            size="small"
-            sx={{ cursor: "pointer" }}
-          />
-        </Stack>
-      </Box>
-      <SettingsModal />
-    </>
-  );
 
   return (
-    <Box
-      component="nav"
-      sx={{ flexShrink: { md: 0 }, width: matchUpMd ? drawerWidth : "auto" }}
-      aria-label="menu"
+    <Drawer
+      //container={container}
+      variant="permanent"
+      anchor="left"
+      open={open}
+      ModalProps={{ keepMounted: true }}
+      color="inherit"
     >
-      <Drawer
-        //container={container}
-        variant={matchUpMd ? "persistent" : "temporary"}
-        onClose={onClose}
-        anchor="left"
-        open={matchUpMd || open}
-        sx={{
-          "& .MuiDrawer-paper": {
-            width: drawerWidth,
-            padding: "0 16px",
-            background: theme.palette.background.default,
-            color: theme.palette.text.primary,
-            borderRight: "none",
-            [theme.breakpoints.up("md")]: {
-              top: "88px",
-            },
-          },
-        }}
-        ModalProps={{ keepMounted: false }}
-        color="inherit"
-      >
-        {drawer}
-      </Drawer>
-    </Box>
+      <Toolbar />
+      <Navigation open={open} />
+      <Divider />
+      <Options open={open} />
+      <Divider />
+    </Drawer>
   );
 };

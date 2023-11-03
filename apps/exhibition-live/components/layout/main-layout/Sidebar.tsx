@@ -17,9 +17,11 @@ import { BrowserView, MobileView } from "react-device-detect";
 
 import loadedSchema from "../../../public/schema/Exhibition.schema.json";
 import SettingsModal from "../../content/settings/SettingsModal";
+import { RoutingModal } from "./menu/RoutingModal";
 import { sladb } from "../../form/formConfigs";
 import { useFormRefsContext } from "../../provider/formRefsContext";
 import { useLocalSettings } from "../../state/useLocalSettings";
+import { useModalRouting } from "../../state/useModalRouting";
 import { Logo } from "./Logo";
 import { drawerWidth } from "./MainLayout";
 import { MenuGroup, NavGroup, NavItem, Drawer } from "./menu";
@@ -87,6 +89,7 @@ const Options = ({ open }) => {
 }
 
 const Navigation = ({ open }) => {
+  const { openModal } = useModalRouting();
 
   const items = [
     {
@@ -98,14 +101,15 @@ const Navigation = ({ open }) => {
     {
       id: 'create',
       icon: () => <Add />,
-      url: `/create/Exhibition`,
+      url: '#',
       title: 'create',
+      onClick: openModal,
     }
   ];
 
   return (
     <List>
-      {items.map(({id, url, icon, title}) => (
+      {items.map(({id, url, icon, title, onClick }) => (
         <NavItem
           item={{
             id: id,
@@ -116,8 +120,10 @@ const Navigation = ({ open }) => {
           }}
           level={0}
           open={open}
+          onClick={onClick}
           />
       ))}
+      <RoutingModal />
     </List>
   );
 

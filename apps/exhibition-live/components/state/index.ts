@@ -5,3 +5,4 @@ export * from "./useLocalHistory";
 export * from "./useOxigraph";
 export * from "./useRDFDataSources";
 export * from "./useThemeSettings";
+export * from "./useModalRouting";

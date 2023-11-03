@@ -14,11 +14,13 @@
             "elements": [
               {
                 "type": "Control",
-                "scope": "#/properties/title"
+                "scope": "#/properties/title",
+                "label": "Bezeichnung"
               },
               {
                 "type": "Control",
-                "scope": "#/properties/titleVariants"
+                "scope": "#/properties/titleVariants",
+                "label": "Alternative Bezeichnungen"
               }
             ]
         },
@@ -27,11 +29,6 @@
           "scope": "#/properties/description"
         }
       ]
-    },
-    {
-      "type": "Control",
-      "label": "Ortsbeziehung",
-      "scope": "#/properties/location"
     },
     {
       "type": "Group",
@@ -44,43 +41,10 @@
         },
         {
           "type": "Control",
-          "label": "Untergeordnete Stätten",
-          "scope": "#/properties/place"
+          "label": "Beziehung zu einem geographischen Ort (Stadt/Land/Region)",
+          "scope": "#/properties/location"
         }
       ]
-    },{
-      "type": "Group",
-      "label": "autoritative Normdaten",
-      "elements": [
-        {
-          "type": "HorizontalLayout",
-          "elements": [
-            {
-              "type": "Control",
-              "label": "Authorität",
-              "scope": "#/properties/authority"
-            },
-            {
-              "type": "Control",
-              "label": "URI",
-              "scope": "#/properties/idAuthority"
-            },
-            {
-              "type": "Control",
-              "label": "Letztes Normenupdate",
-              "scope": "#/properties/lastNormUpdate"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "type": "Control",
-      "scope": "#/properties/@type"
-    },
-    {
-      "type": "Control",
-      "scope": "#/properties/@id"
     }
   ]
 }

@@ -251,17 +251,19 @@
     },
     "EventType": {
       "type": "object",
-      "title": {
-        "type": "string",
-        "maxLength": 200
-      },
-      "description": {
-        "type": "string"
-      },
-      "tags": {
-        "type": "array",
-        "items": {
-          "$ref": "#/$defs/Tag"
+      "properties": {
+        "title": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "description": {
+          "type": "string"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Tag"
+          }
         }
       }
     },

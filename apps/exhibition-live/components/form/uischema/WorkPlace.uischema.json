@@ -1,0 +1,31 @@
+{
+  "type": "VerticalLayout",
+  "elements": [
+    {
+      "type": "Control",
+      "label": "Geografischer Ort",
+      "scope": {
+        "$ref": "#/properties/location"
+      }
+    },
+    {
+      "type": "HorizontalLayout",
+      "elements": [
+        {
+          "type": "Control",
+          "label": "Von",
+          "scope": {
+            "$ref": "#/properties/fromDate"
+          }
+        },
+        {
+          "type": "Control",
+          "label": "Bis",
+          "scope": {
+            "$ref": "#/properties/toDate"
+          }
+        }
+      ]
+    }
+  ]
+}

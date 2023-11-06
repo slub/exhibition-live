@@ -3,7 +3,7 @@
   "elements": [
     {
       "type": "Group",
-      "label": "Allgemeines Daten zum Ort",
+      "label": "Allgemeine Daten zum Ort",
       "elements": [
         {
           "type": "HorizontalLayout",

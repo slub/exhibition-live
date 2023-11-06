@@ -1,0 +1,37 @@
+{
+  "type": "VerticalLayout",
+  "elements": [
+    {
+      "type": "Group",
+      "label": "Allgemeine Daten zur Ausstellungsserie",
+      "elements": [
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "label": "Bezeichnung",
+              "scope": {
+                "$ref": "#/properties/title"
+              }
+            },
+            {
+              "type": "Control",
+              "label": "Übergeordnete Ausstellungsserie",
+              "scope": {
+                "$ref": "#/properties/parent"
+              }
+            }
+          ]
+        },
+        {
+          "type": "Control",
+          "label": "Beschreibung",
+          "scope": {
+            "$ref": "#/properties/description"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -9,6 +9,9 @@ import InvolvedPersonUISchema from "./uischema/InvolvedPerson.uischema.json";
 import LocationUISchema from "./uischema/Location.uischema.json";
 import PersonUISchema from "./uischema/Person.uischema.json";
 import PlaceUISchema from "./uischema/Place.uischema.json";
+import TagUISchema from "./uischema/Tag.uischema.json";
+import SeriesTypeUISchema from "./uischema/SeriesType.uischema.json";
+import WorkPlaceUISchema from "./uischema/WorkPlace.uischema.json";
 
 export const uischemata = {
   Exhibition: ExhibitionUISchema,
@@ -17,6 +20,9 @@ export const uischemata = {
   Location: LocationUISchema,
   Person: PersonUISchema,
   Place: PlaceUISchema,
+  Tag: TagUISchema,
+  SeriesType: SeriesTypeUISchema,
+  WorkPlace: WorkPlaceUISchema,
 };
 export const useUISchemaForType = (
   typeIRI: string,

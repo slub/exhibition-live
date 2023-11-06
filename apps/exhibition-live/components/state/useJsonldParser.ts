@@ -20,12 +20,13 @@ type UseJsonLdParserOptions = {
   enabled?: boolean;
 };
 
-const defaultOptions = {
+const defaultOptions: Partial<WalkerOptions> = {
   omitEmptyArrays: true,
   omitEmptyObjects: true,
   maxRecursionEachRef: 2,
   maxRecursion: 1,
-  skipAtLevel: 0,
+  skipAtLevel: 3,
+  doNotRecurseNamedNodes: true,
 };
 export const useJsonldParser = (
   data: any,
@@ -54,7 +55,6 @@ export const useJsonldParser = (
           if (
             typeof prop === "object" &&
             (Object.keys(prop).length === 0 ||
-              (Object.hasOwn(prop, "@id") && !prop["@id"]) ||
               (Object.keys(prop).length === 1 && prop["@type"]))
           ) {
             return acc;

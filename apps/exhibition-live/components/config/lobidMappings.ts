@@ -48,7 +48,7 @@ export const exhibitionDeclarativeMapping: DeclarativeMappings = [
       path: "dateOfConferenceOrEvent",
     },
     target: {
-      path: "toDate",
+      path: "endDate.dateValue",
     },
     mapping: {
       strategy: {
@@ -64,7 +64,7 @@ export const exhibitionDeclarativeMapping: DeclarativeMappings = [
       path: "dateOfConferenceOrEvent",
     },
     target: {
-      path: "fromDate",
+      path: "startDate.dateValue",
     },
     mapping: {
       strategy: {
@@ -80,7 +80,7 @@ export const exhibitionDeclarativeMapping: DeclarativeMappings = [
       path: "dateOfEstablishment",
     },
     target: {
-      path: "fromDate",
+      path: "startDate.dateValue",
     },
     mapping: {
       strategy: {
@@ -96,7 +96,7 @@ export const exhibitionDeclarativeMapping: DeclarativeMappings = [
       },
     },
     target: {
-      path: "toDate",
+      path: "endDate.dateValue",
     },
     mapping: {
       strategy: {

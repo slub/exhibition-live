@@ -6,3 +6,4 @@ export * from "./useOxigraph";
 export * from "./useRDFDataSources";
 export * from "./useThemeSettings";
 export * from "./useModalRouting";
+export * from "./useQueryKeyResolver";

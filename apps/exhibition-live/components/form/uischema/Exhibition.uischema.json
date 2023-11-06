@@ -114,22 +114,20 @@
           "elements": [
             {
               "type": "Group",
-              "label": "Beginn",
               "elements": [
                 {
                   "type": "Control",
-                  "label": "Datum",
+                  "label": "Beginn",
                   "scope": "#/properties/startDate"
                 }
               ]
             },
             {
               "type": "Group",
-              "label": "Ende",
               "elements": [
                 {
                   "type": "Control",
-                  "label": "Datum",
+                  "label": "Ende",
                   "scope": "#/properties/endDate"
                 }
               ]

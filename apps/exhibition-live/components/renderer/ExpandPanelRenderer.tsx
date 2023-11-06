@@ -59,9 +59,11 @@ import { useGlobalCRUDOptions } from "../state/useGlobalCRUDOptions";
 const iconStyle: any = { float: "right" };
 
 import dot from "dot";
+import { memo } from "./config";
+import { Save } from "@mui/icons-material";
 
 interface OwnPropsOfExpandPanel {
-  index: number;
+  index?: number;
   path: string;
   uischema: ControlElement;
   schema: JsonSchema;
@@ -77,11 +79,14 @@ interface OwnPropsOfExpandPanel {
   childLabelTemplate?: string;
   handleExpansion(panel: string): (event: any, expanded: boolean) => void;
   readonly?: boolean;
+  draft?: boolean;
+  saveItem?: () => void;
+  data?: any;
 }
 
 interface StatePropsOfExpandPanel extends OwnPropsOfExpandPanel {
   childLabel: string;
-  childPath: string;
+  childPath?: string;
   avatar: string;
   entityIRI: string;
   typeIRI: string;
@@ -122,6 +127,7 @@ const ExpandPanelRendererComponent = (props: ExpandPanelProps) => {
     enableMoveUp,
     handleExpansion,
     removeItems,
+    saveItem,
     path,
     rootSchema,
     schema,
@@ -134,6 +140,8 @@ const ExpandPanelRendererComponent = (props: ExpandPanelProps) => {
     avatar,
     entityIRI,
     typeIRI,
+    draft,
+    data,
   } = props;
 
   const foundUISchema = useMemo(
@@ -151,12 +159,21 @@ const ExpandPanelRendererComponent = (props: ExpandPanelProps) => {
   );
 
   const appliedUiSchemaOptions = merge({}, config, uischema.options);
+  const handleRemove = useCallback(
+    (e) => {
+      console.log({ path, index });
+      removeItems(path, [index])(e);
+    },
+    [path, index],
+  );
 
   return (
     <Accordion
       aria-labelledby={labelHtmlId}
       expanded={expanded}
-      onChange={handleExpansion(childPath)}
+      onChange={(event: React.SyntheticEvent, expanded: boolean) =>
+        !draft && handleExpansion(childPath)(event, expanded)
+      }
       className={"inline_object_card"}
     >
       <AccordionSummary expandIcon={<ExpandMoreIcon />}>
@@ -212,33 +229,44 @@ const ExpandPanelRendererComponent = (props: ExpandPanelProps) => {
                     ""
                   )}
                   <Grid item style={{ paddingTop: "1rem" }}>
-                    <JsonFormsDispatch
-                      schema={schema}
-                      uischema={foundUISchema}
-                      path={childPath}
-                      key={childPath}
-                      renderers={[
-                        ...(renderers || []),
-                        {
-                          tester: rankWith(
-                            15,
-                            (uischema: UISchemaElement): boolean => {
-                              if (isEmpty(uischema)) {
-                                return false;
-                              }
-                              const options = uischema.options;
-                              return !isEmpty(options) && options["inline"];
-                            },
-                          ),
-                          renderer: InlineSemanticFormsRendererModal,
-                        },
-                      ]}
-                      cells={cells}
-                    />
+                    {draft ? (
+                      <IconButton
+                        onClick={saveItem}
+                        style={iconStyle}
+                        aria-label={"Save"}
+                        size="large"
+                      >
+                        <Save />
+                      </IconButton>
+                    ) : (
+                      <JsonFormsDispatch
+                        schema={schema}
+                        uischema={foundUISchema}
+                        path={childPath}
+                        key={entityIRI}
+                        renderers={[
+                          ...(renderers || []),
+                          {
+                            tester: rankWith(
+                              15,
+                              (uischema: UISchemaElement): boolean => {
+                                if (isEmpty(uischema)) {
+                                  return false;
+                                }
+                                const options = uischema.options;
+                                return !isEmpty(options) && options["inline"];
+                              },
+                            ),
+                            renderer: InlineSemanticFormsRendererModal,
+                          },
+                        ]}
+                        cells={cells}
+                      />
+                    )}
                   </Grid>
                   <Grid item>
                     <IconButton
-                      onClick={removeItems(path, [index])}
+                      onClick={handleRemove}
                       style={iconStyle}
                       aria-label={"Delete"}
                       size="large"
@@ -252,35 +280,37 @@ const ExpandPanelRendererComponent = (props: ExpandPanelProps) => {
           </Grid>
         </Grid>
       </AccordionSummary>
-      <AccordionDetails>
-        {expanded && (
-          <JsonFormsDispatch
-            schema={schema}
-            uischema={foundUISchema}
-            path={childPath}
-            key={childPath}
-            renderers={[
-              ...(renderers || []),
-              {
-                tester: rankWith(15, (uischema: UISchemaElement): boolean => {
-                  if (isEmpty(uischema)) {
-                    return false;
-                  }
-                  const options = uischema.options;
-                  return !isEmpty(options) && options["inline"];
-                }),
-                renderer: InlineSemanticFormsRenderer,
-              },
-            ]}
-            cells={cells}
-          />
-        )}
-      </AccordionDetails>
+      {!draft && (
+        <AccordionDetails>
+          {expanded && (
+            <JsonFormsDispatch
+              schema={schema}
+              uischema={foundUISchema}
+              path={childPath}
+              key={childPath}
+              renderers={[
+                ...(renderers || []),
+                {
+                  tester: rankWith(15, (uischema: UISchemaElement): boolean => {
+                    if (isEmpty(uischema)) {
+                      return false;
+                    }
+                    const options = uischema.options;
+                    return !isEmpty(options) && options["inline"];
+                  }),
+                  renderer: InlineSemanticFormsRenderer,
+                },
+              ]}
+              cells={cells}
+            />
+          )}
+        </AccordionDetails>
+      )}
     </Accordion>
   );
 };
 
-const ExpandPanelRenderer = React.memo(ExpandPanelRendererComponent);
+const ExpandPanelRenderer = memo(ExpandPanelRendererComponent);
 
 /**
  * Maps state to dispatch properties of an expand pandel control.
@@ -355,6 +385,7 @@ export const getFirstPrimitivePropExceptJsonLD = (schema: any) => {
  * @param ownProps any own props
  * @returns {StatePropsOfControl} state props for a control
  */
+
 export const withContextToExpandPanelProps =
   (
     Component: ComponentType<ExpandPanelProps>,
@@ -369,39 +400,56 @@ export const withContextToExpandPanelProps =
       path,
       index,
       uischemas,
+      data: childData,
     } = props;
     const childPath = composePaths(path, `${index}`);
-    const [jsonldData, setJsonldData] = useState<any>();
-    const childData = Resolve.data(ctx.core.data, childPath);
+    //const childData = Resolve.data(ctx.core.data, childPath);
+    const [jsonldData, setJsonldData] = useState<any>(childData);
+    useEffect(() => {
+      console.log("childData", childData);
+      setJsonldData((data) => {
+        if (childData?.["@id"] !== data?.["@id"]) setJsonldData(childData);
+        return {
+          ...(data || {}),
+          ...childData,
+        };
+      });
+    }, [childData, setJsonldData]);
 
-    let childLabel = "";
-    if (childLabelTemplate) {
+    useEffect(() => {
+      console.log("jsonldData", jsonldData);
+    }, []);
+
+    let childLabel = null;
+    if (childData && childData["__label"]) {
+      childLabel = childData["__label"];
+    } else if (childLabelTemplate) {
       try {
         const template = dot.template(childLabelTemplate);
-        childLabel = template(childData);
+        childLabel = template(jsonldData || childData);
       } catch (e) {
         console.warn("could not render childLabelTemplate", e);
       }
     } else if (childLabelProp) {
-      childLabel =
-        get(childData, childLabelProp, "") ||
-        get(jsonldData, childLabelProp, "");
+      childLabel = get(jsonldData || childData, childLabelProp, "");
     } else {
       // @ts-ignore
-      childLabel =
-        get(childData, getFirstPrimitivePropExceptJsonLD(schema), "") ||
-        get(jsonldData, getFirstPrimitivePropExceptJsonLD(schema), "");
+      childLabel = get(
+        jsonldData || childData,
+        getFirstPrimitivePropExceptJsonLD(schema),
+        "",
+      );
     }
     const avatar =
-      get(childData, "image") ||
-      get(childData, "logo") ||
-      get(jsonldData, "image") ||
-      get(jsonldData, "logo");
-    const entityIRI = get(childData, "@id") || get(jsonldData, "@id");
-    const typeIRI = get(childData, "@type") || get(jsonldData, "@type");
+      get(jsonldData || childData, "image") ||
+      get(jsonldData || childData, "logo");
+
+    const entityIRI = get(childData, "@id");
+    const typeIRI = get(childData, "@type");
 
     const { crudOptions, doLocalQuery } = useGlobalCRUDOptions();
-    const { load, ready } = useSPARQL_CRUD(
+    /*
+    const { load, save, ready, isLoading } = useSPARQL_CRUD(
       entityIRI,
       typeIRI,
       schema,
@@ -411,23 +459,28 @@ export const withContextToExpandPanelProps =
         defaultPrefix,
         setData: setJsonldData,
         queryBuildOptions: defaultQueryBuilderOptions,
+        queryOptions: {
+          enabled: !childData.__draft,
+        }
       },
     );
-    useEffect(() => {
-      setTimeout(() => {
-        load();
-      }, 100);
-    }, [load, entityIRI]);
+*/
+    const handleSaveItem = useCallback(async () => {
+      //await save()
+    }, []);
+
     return (
       <Component
         {...props}
         {...dispatchProps}
-        childLabel={childLabel}
         childPath={childPath}
+        childLabel={childLabel || ""}
         uischemas={uischemas}
         avatar={avatar}
         entityIRI={entityIRI}
         typeIRI={typeIRI}
+        draft={childData.__draft}
+        saveItem={handleSaveItem}
       />
     );
   };

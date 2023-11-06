@@ -33,17 +33,17 @@ const SettingsModal: FunctionComponent<Props> = (props) => {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
 
-  const handleClose = useCallback(() => {
+  const handleClose = useCallback((reloadWindow = false) => {
     closeSettings();
     //reload
-    window && window.location.reload();
+    reloadWindow && window && window.location.reload();
   }, [closeSettings]);
 
   return (
     <Dialog
       fullScreen={fullScreen || forceFullscreen}
       open={settingsOpen}
-      onClose={handleClose}
+      onClose={() => handleClose(false)}
       aria-labelledby="responsive-dialog-title"
       closeAfterTransition
       slots={{ backdrop: Backdrop }}
@@ -63,7 +63,7 @@ const SettingsModal: FunctionComponent<Props> = (props) => {
           <IconButton
             size="large"
             aria-label="close without saving"
-            onClick={handleClose}
+            onClick={() => handleClose(false)}
             color="inherit"
           >
             <CloseIcon />
@@ -88,7 +88,7 @@ const SettingsModal: FunctionComponent<Props> = (props) => {
       </DialogContent>
       <DialogActions>
         {
-          <Button autoFocus onClick={handleClose}>
+          <Button autoFocus onClick={() => handleClose(true)}>
             schließen und neu laden
           </Button>
         }

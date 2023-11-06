@@ -53,7 +53,12 @@ const SettingsModal: FunctionComponent<Props> = (props) => {
         },
       }}
     >
-      <AppBar position="static">
+      <AppBar enableColorOnDark
+        color="inherit"
+        sx={{
+          bgcolor: theme.palette.background.default,
+        }}
+        position="static">
         <Toolbar variant="dense">
           <Box sx={{ flexGrow: 3 }}>
             <Typography variant="h4" color="inherit" component="div">

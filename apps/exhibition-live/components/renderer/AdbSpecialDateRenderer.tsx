@@ -3,6 +3,7 @@ import {
   ControlProps,
   isDescriptionHidden,
   isIntegerControl,
+  or,
   RankedTester,
   rankWith,
   scopeEndsWith,
@@ -147,7 +148,7 @@ export const AdbSpecialDateControl = (props: ControlProps) => {
 
 export const adbSpecialDateControlTester: RankedTester = rankWith(
   6,
-  and(isIntegerControl, scopeEndsWith("Date")),
+  and(isIntegerControl, or(scopeEndsWith("dateValue"), scopeEndsWith("Date"))),
 );
 
 export default withJsonFormsControlProps(AdbSpecialDateControl);

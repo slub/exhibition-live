@@ -21,16 +21,14 @@ import {
   EditOff,
   Refresh,
   Save,
+  UpdateRounded,
 } from "@mui/icons-material";
 import {
-  Button,
   Card,
   CardContent,
-  Divider,
   Grid,
-  Hidden,
   IconButton,
-  Switch,
+
 } from "@mui/material";
 import { JSONSchema7 } from "json-schema";
 import { JsonLdContext } from "jsonld-context-parser";
@@ -43,7 +41,6 @@ import React, {
   useState,
 } from "react";
 
-import { useFormRefsContext } from "../provider/formRefsContext";
 import AdbSpecialDateRenderer, {
   adbSpecialDateControlTester,
 } from "../renderer/AdbSpecialDateRenderer";
@@ -76,7 +73,7 @@ export type CRUDOpsType = {
   remove: () => Promise<void>;
 };
 
-interface OwnProps {
+export interface SemanticJsonFormsProps {
   entityIRI?: string | undefined;
   data: any;
   setData: (data: any) => void;
@@ -101,8 +98,6 @@ interface OwnProps {
   toolbarChildren?: React.ReactNode;
   onLoad?: (data: any) => void;
 }
-
-export type SemanticJsonFormsProps = OwnProps;
 
 const renderers = [
   ...materialRenderers,
@@ -206,7 +201,18 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> = ({
     [entityIRI, jsonldData],
   );
 
-  const { exists, load, save, remove, isUpdate, setIsUpdate, ready } =
+  const handleDataFromRemote = useCallback(
+    (data: any, isRefetch: boolean) => {
+      //we will merge the data from the remote with the data from the jsonld parser in order to not overwrite the data from the user input
+      //if(editMode && isRefetch) return;
+      //console.log({data, jsonldData, isRefetch})
+      // const newData = isRefetch ? merge(data, jsonldData) : data;
+      setData(data);
+    },
+    [jsonldData, setData, editMode],
+  );
+
+  const { exists, load, save, remove, isUpdate, setIsUpdate, ready, reset } =
     useSPARQL_CRUD(
       ownIRI,
       typeIRI,
@@ -215,10 +221,13 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> = ({
       {
         ...crudOptions,
         defaultPrefix,
-        setData: setData,
+        setData: handleDataFromRemote,
         data: jsonldData,
         queryBuildOptions,
         onLoad,
+        queryOptions: {
+          refetchOnWindowFocus: true,
+        },
       },
     );
   const { renderers: jfpRenderers, ...jfpProps } = jsonFormsProps;
@@ -249,6 +258,10 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> = ({
     initiallyLoaded,
     setInitiallyLoaded,
   ]);
+
+  const handleReset = useCallback(() => {
+    reset();
+  }, [reset]);
 
   const handleFormChange = useCallback(
     (state: Pick<JsonFormsCore, "data" | "errors">) => {
@@ -295,27 +308,31 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> = ({
 
   return (
     <>
-      {optionallyCreatePortal(
-        <>
-          <IconButton onClick={() => setEditMode((editMode) => !editMode)}>
-            {editMode ? <EditOff /> : <Edit />}
-          </IconButton>
-          {editMode && (
-            <>
-              <IconButton onClick={handleSave} aria-label="save">
-                <Save />
-              </IconButton>
-              <IconButton onClick={remove} aria-lable="remove">
-                <Delete />
-              </IconButton>
-              <IconButton onClick={() => load()} aria-lable="refresh">
-                <Refresh />
-              </IconButton>
-            </>
-          )}
-          {toolbarChildren}
-        </>,
-      )}
+      {!hideToolbar &&
+        optionallyCreatePortal(
+          <>
+            <IconButton onClick={() => setEditMode((editMode) => !editMode)}>
+              {editMode ? <EditOff /> : <Edit />}
+            </IconButton>
+            {editMode && (
+              <>
+                <IconButton onClick={handleSave} aria-label="save">
+                  <Save />
+                </IconButton>
+                <IconButton onClick={remove} aria-lable="remove">
+                  <Delete />
+                </IconButton>
+                <IconButton onClick={() => load()} aria-lable="refresh">
+                  <Refresh />
+                </IconButton>
+                <IconButton onClick={handleReset} aria-lable="full reload">
+                  <UpdateRounded />
+                </IconButton>
+              </>
+            )}
+            {toolbarChildren}
+          </>,
+        )}
       <Grid
         container
         spacing={2}

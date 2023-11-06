@@ -106,13 +106,20 @@
     "Person": {
       "type": "object",
       "properties": {
-        "workplace": {
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/Workplace"
-          }
-        },
         "name": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "description": {
+          "type": "string"
+        },
+        "birthDate": {
+          "type": "integer"
+        },
+        "deathDate": {
+          "type": "integer"
+        },
+        "profession": {
           "type": "string",
           "maxLength": 200
         },
@@ -142,25 +149,18 @@
             }
           ]
         },
-        "description": {
-          "type": "string"
-        },
         "personDeceased": {
           "type": "boolean"
-        },
-        "birthDate": {
-          "type": "integer"
-        },
-        "deathDate": {
-          "type": "integer"
-        },
-        "profession": {
-          "type": "string",
-          "maxLength": 200
         },
         "externalId": {
           "type": "string",
           "maxLength": 50
+        },
+        "workplace": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Workplace"
+          }
         },
         "memberOfCorp": {
           "type": "array",
@@ -234,12 +234,12 @@
           "type": "string",
           "maxLength": 200
         },
+        "description": {
+          "type": "string"
+        },
         "titleVariants": {
           "type": "string",
           "maxLength": 600
-        },
-        "description": {
-          "type": "string"
         },
         "location": {
           "$ref": "#/$defs/Location"
@@ -274,12 +274,12 @@
           "type": "string",
           "maxLength": 200
         },
+        "description": {
+          "type": "string"
+        },
         "nameVariants": {
           "type": "string",
           "maxLength": 600
-        },
-        "description": {
-          "type": "string"
         },
         "parent": {
           "$ref": "#/$defs/Corporation"
@@ -304,9 +304,6 @@
     "Resource": {
       "type": "object",
       "properties": {
-        "ressourceType": {
-          "$ref": "#/$defs/ResourceType"
-        },
         "title": {
           "type": "string",
           "maxLength": 200
@@ -324,6 +321,9 @@
         "url": {
           "type": "string",
           "format": "uri"
+        },
+        "ressourceType": {
+          "$ref": "#/$defs/ResourceType"
         },
         "signature": {
           "type": "string",
@@ -467,7 +467,8 @@
       "type": "object",
       "properties": {
         "dateValue": {
-          "type": "string",
+          "type": "integer",
+          "title": "Datumswert",
           "maxLength": 8
         },
         "dateType": {
@@ -526,16 +527,12 @@
     "Exhibition": {
       "type": "object",
       "properties": {
-        "externalId": {
-          "type": "string",
-          "maxLength": 50
-        },
-        "exhibitionType": {
-          "$ref": "#/$defs/EventType"
-        },
         "title": {
           "type": "string",
           "maxLength": 200
+        },
+        "description": {
+          "type": "string"
         },
         "subtitle": {
           "type": "string",
@@ -544,9 +541,6 @@
         "originalTitle": {
           "type": "string",
           "maxLength": 200
-        },
-        "description": {
-          "type": "string"
         },
         "exhibitionSeries": {
           "$ref": "#/$defs/ExhibitionSeries"
@@ -564,7 +558,8 @@
           "type": "object",
           "properties": {
             "dateValue": {
-              "type": "string",
+              "type": "integer",
+              "title": "Datumswert",
               "maxLength": 8
             },
             "dateModifier": {
@@ -590,7 +585,8 @@
           "type": "object",
           "properties": {
             "dateValue": {
-              "type": "string",
+              "title": "Datumswert",
+              "type": "integer",
               "maxLength": 8
             },
             "dateModifier": {
@@ -611,6 +607,13 @@
               ]
             }
           }
+        },
+        "externalId": {
+          "type": "string",
+          "maxLength": 50
+        },
+        "exhibitionType": {
+          "$ref": "#/$defs/EventType"
         },
         "published": {
           "type": "boolean"

@@ -6,7 +6,11 @@ import {
   Quad,
   ResultStream,
 } from "@rdfjs/types";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  QueryObserverOptions,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { ASK, CONSTRUCT, DELETE, INSERT } from "@tpluscode/sparql-builder";
 import { JSONSchema7 } from "json-schema";
 import jsonld from "jsonld";
@@ -18,6 +22,7 @@ import {
   WalkerOptions,
 } from "../utils/graph/jsonSchemaGraphInfuser";
 import { jsonSchema2construct } from "../utils/sparql";
+import { useQueryKeyResolver } from "./useQueryKeyResolver";
 
 export interface SparqlBuildOptions {
   base?: string;
@@ -46,13 +51,13 @@ export type CRUDFunctions = {
 export type CRUDOptions = CRUDFunctions & {
   defaultPrefix: string;
   data: any;
-  setData: (data: any) => void;
+  setData: (data: any, isRefetch: boolean) => void;
   walkerOptions?: Partial<WalkerOptions>;
   queryBuildOptions?: SparqlBuildOptions;
   upsertByDefault?: boolean;
   ready?: boolean;
-  refetchInterval?: number | false;
   onLoad?: (data: any) => void;
+  queryOptions?: QueryObserverOptions<any, Error>;
 };
 
 export const useSPARQL_CRUD = (
@@ -69,18 +74,26 @@ export const useSPARQL_CRUD = (
     walkerOptions = {},
     queryBuildOptions,
     upsertByDefault,
-    refetchInterval,
     onLoad,
+    queryOptions,
   }: CRUDOptions,
 ) => {
   const [isUpdate, setIsUpdate] = useState(false);
   const [whereEntity, setWhereEntity] = useState<string | undefined>();
+  const { updateSourceToTargets, removeSource, resolveSourceIRIs } =
+    useQueryKeyResolver();
+  const [lastEntityLoaded, setLastEntityLoaded] = useState<
+    string | undefined
+  >();
   const queryClient = useQueryClient();
 
   useEffect(() => {
     if (!entityIRI) return;
     const _whereEntity = ` <${entityIRI}> a <${typeIRI}> . `;
     setWhereEntity(_whereEntity);
+    return () => {
+      resolveSourceIRIs(entityIRI);
+    };
   }, [entityIRI, typeIRI, setWhereEntity]);
 
   const exists = useCallback(async () => {
@@ -110,6 +123,14 @@ export const useSPARQL_CRUD = (
     query = `PREFIX : <${defaultPrefix}> ` + query;
     try {
       const ds = await constructFetch(query);
+      const subjects: Set<string> = new Set();
+      // @ts-ignore
+      for (const quad of ds) {
+        if (quad.subject.termType === "NamedNode") {
+          subjects.add(quad.subject.value);
+        }
+      }
+      updateSourceToTargets(entityIRI, Array.from(subjects));
       const resultJSON = jsonSchemaGraphInfuser(
         defaultPrefix,
         entityIRI,
@@ -124,7 +145,14 @@ export const useSPARQL_CRUD = (
     } catch (e) {
       console.error(e);
     }
-  }, [entityIRI, whereEntity, setIsUpdate, defaultPrefix, constructFetch]);
+  }, [
+    entityIRI,
+    whereEntity,
+    setIsUpdate,
+    defaultPrefix,
+    constructFetch,
+    updateSourceToTargets,
+  ]);
 
   const remove = useCallback(async () => {
     if (!entityIRI || !whereEntity) return;
@@ -146,6 +174,7 @@ export const useSPARQL_CRUD = (
     if (!data || !entityIRI || !whereEntity) return;
     const _data = {
       ...data,
+      "@type": typeIRI,
       "@id": entityIRI,
     };
     const ntWriter = new N3.Writer({ format: "Turtle" });
@@ -177,10 +206,14 @@ export const useSPARQL_CRUD = (
         query = `PREFIX : <${defaultPrefix}> ` + query;
         await updateFetch(query);
       }
-      await queryClient.invalidateQueries(["load", entityIRI]);
+      for (const sourceIRI of resolveSourceIRIs(entityIRI)) {
+        console.log("invalidateQueries", sourceIRI);
+        await queryClient.invalidateQueries(["load", sourceIRI]);
+      }
     }
   }, [
     entityIRI,
+    typeIRI,
     whereEntity,
     data,
     isUpdate,
@@ -191,31 +224,45 @@ export const useSPARQL_CRUD = (
     queryClient,
   ]);
 
-  const { refetch } = useQuery(
+  const reset = useCallback(() => {
+    setData({}, false);
+    setLastEntityLoaded(undefined);
+    load();
+  }, [setData, setLastEntityLoaded, load]);
+  const handleLoadSuccess = useCallback(
+    (data: any) => {
+      if (data) {
+        setData(data, entityIRI === lastEntityLoaded);
+        setLastEntityLoaded(entityIRI);
+      }
+    },
+    [entityIRI, setLastEntityLoaded, lastEntityLoaded, setData],
+  );
+
+  const queryResults = useQuery(
     ["load", entityIRI],
     async () => {
       const res = await load();
       return res || null;
     },
     {
-      onSuccess: (data) => {
-        if (data) {
-          setData(data);
-        }
-      },
+      onSuccess: handleLoadSuccess,
       enabled: Boolean(entityIRI && whereEntity),
       refetchOnWindowFocus: false,
-      refetchInterval,
+      ...queryOptions,
     },
   );
+  const { refetch, isLoading } = queryResults;
 
   return {
+    ...queryResults,
     exists,
     load: refetch,
     save,
     remove,
     isUpdate,
     setIsUpdate,
+    reset,
     // @ts-ignore
     ready: Boolean(askFetch && constructFetch && updateFetch),
   };

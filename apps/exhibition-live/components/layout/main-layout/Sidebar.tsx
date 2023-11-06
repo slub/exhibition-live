@@ -70,6 +70,7 @@ const Options = ({ open }) => {
     <List>
       {items.map(({ id, url, icon, title, onClick }) => (
         <NavItem
+          key={id}
           item={{
             id: id,
             type: "item",
@@ -110,6 +111,7 @@ const Navigation = ({ open }) => {
     <List>
       {items.map(({ id, url, icon, title, onClick }) => (
         <NavItem
+          key={id}
           item={{
             id: id,
             type: "item",

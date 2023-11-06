@@ -1,8 +1,8 @@
-import {defaultPrefix, sladb} from "../../form/formConfigs";
-import {useCallback, useEffect, useMemo, useState} from "react";
+import { defaultPrefix, sladb } from "../../form/formConfigs";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import schema from "../../../public/schema/Exhibition.schema.json";
-import {useGlobalCRUDOptions} from "../../state/useGlobalCRUDOptions";
-import {jsonSchema2Select} from "../../utils/sparql/jsonSchema2Select";
+import { useGlobalCRUDOptions } from "../../state/useGlobalCRUDOptions";
+import { jsonSchema2Select } from "../../utils/sparql/jsonSchema2Select";
 import {
   Box,
   Grid,
@@ -14,18 +14,18 @@ import {
   Tabs,
   CssBaseline,
 } from "@mui/material";
-import {MaterialReactTable, MRT_ColumnDef} from "material-react-table";
+import { MaterialReactTable, MRT_ColumnDef } from "material-react-table";
 import {
   filterForPrimitiveProperties,
   filterForArrayProperties,
   encodeIRI,
   isJSONSchema,
 } from "../../utils/core";
-import {JSONSchema7} from "json-schema";
-import {Details, Edit} from "@mui/icons-material";
-import {useRouter} from "next/router";
-import {primaryFields} from "../../config";
-import {parseMarkdownLinks} from "../../utils/core/parseMarkdownLink";
+import { JSONSchema7 } from "json-schema";
+import { Details, Edit } from "@mui/icons-material";
+import { useRouter } from "next/router";
+import { primaryFields } from "../../config";
+import { parseMarkdownLinks } from "../../utils/core/parseMarkdownLink";
 
 type Props = {
   typeName: string;
@@ -39,77 +39,77 @@ const computeColumns: (
   (!schema?.properties
     ? []
     : [
-      /*{
+        /*{
       id: p([...path, "id"])
       header: p([...path, "id"]),
       accessorKey: `${p([...path, "entry"])}.value`,
     },*/
-      ...Object.keys(filterForPrimitiveProperties(schema.properties)).map(
-        (key) => ({
-          header: p([...path, key]),
-          id: p([...path, key, "single"]),
-          accessorKey: `${p([...path, key, "single"])}.value`,
-          Cell: ({cell}) => <>{cell.getValue() ?? ""}</>,
-        }),
-      ),
-      ...Object.entries(schema.properties || {})
-        .filter(
-          ([, value]) =>
-            typeof value === "object" &&
-            value.type === "object" &&
-            !value.$ref,
-        )
-        .map(([key, value]) =>
-          isJSONSchema(value) ? computeColumns(value, [...path, key]) : [],
-        )
-        .flat(),
-      ...Object.keys(filterForArrayProperties(schema.properties)).flatMap(
-        (key) => [
-          {
-            header: p([...path, key]) + " count",
-            id: p([...path, key, "count"]),
-            accessorKey: `${p([...path, key, "count"])}.value`,
-            Cell: ({cell}) => (
-              <Link href={"#"}>{cell.getValue() ?? 0}</Link>
-            ),
-          },
-          {
+        ...Object.keys(filterForPrimitiveProperties(schema.properties)).map(
+          (key) => ({
             header: p([...path, key]),
-            id: p([...path, key, "label_group"]),
-            accessorKey: `${p([...path, key, "label_group"])}.value`,
-            Cell: ({cell}) => (
-              <>
-                {cell.getValue() &&
-                  parseMarkdownLinks(cell.getValue()).map(
-                    ({label, url}) => {
-                      return (
-                        <span key={url}>
+            id: p([...path, key, "single"]),
+            accessorKey: `${p([...path, key, "single"])}.value`,
+            Cell: ({ cell }) => <>{cell.getValue() ?? ""}</>,
+          }),
+        ),
+        ...Object.entries(schema.properties || {})
+          .filter(
+            ([, value]) =>
+              typeof value === "object" &&
+              value.type === "object" &&
+              !value.$ref,
+          )
+          .map(([key, value]) =>
+            isJSONSchema(value) ? computeColumns(value, [...path, key]) : [],
+          )
+          .flat(),
+        ...Object.keys(filterForArrayProperties(schema.properties)).flatMap(
+          (key) => [
+            {
+              header: p([...path, key]) + " count",
+              id: p([...path, key, "count"]),
+              accessorKey: `${p([...path, key, "count"])}.value`,
+              Cell: ({ cell }) => (
+                <Link href={"#"}>{cell.getValue() ?? 0}</Link>
+              ),
+            },
+            {
+              header: p([...path, key]),
+              id: p([...path, key, "label_group"]),
+              accessorKey: `${p([...path, key, "label_group"])}.value`,
+              Cell: ({ cell }) => (
+                <>
+                  {cell.getValue() &&
+                    parseMarkdownLinks(cell.getValue()).map(
+                      ({ label, url }) => {
+                        return (
+                          <span key={url}>
                             {" "}
-                          <Link href={`/show/${encodeIRI(url)}`}>
+                            <Link href={`/show/${encodeIRI(url)}`}>
                               {label}
                             </Link>{" "}
                           </span>
-                      );
-                    },
-                  )}
-              </>
-            ),
-          },
-        ],
-      ),
-    ]) as any as MRT_ColumnDef<any>[];
+                        );
+                      },
+                    )}
+                </>
+              ),
+            },
+          ],
+        ),
+      ]) as any as MRT_ColumnDef<any>[];
 
 const defsFieldName = (schema as JSONSchema7).definitions
   ? "definitions"
   : "$defs";
-export const TypedList = ({typeName}: Props) => {
+export const TypedList = ({ typeName }: Props) => {
   const [tabValue, setTabValue] = useState(typeName);
   const classIRI = useMemo(() => {
     return sladb(typeName).value;
   }, [typeName]);
   const loadedSchema = useMemo(
     () =>
-      ({...schema, ...schema[defsFieldName][typeName]}) as
+      ({ ...schema, ...schema[defsFieldName][typeName] }) as
         | JSONSchema7
         | undefined,
     [typeName],
@@ -120,7 +120,7 @@ export const TypedList = ({typeName}: Props) => {
     pageSize: 10,
   });
 
-  const {crudOptions} = useGlobalCRUDOptions();
+  const { crudOptions } = useGlobalCRUDOptions();
   const sparqlQuery = useMemo(() => {
     if (!loadedSchema || !classIRI) return;
     return (
@@ -138,7 +138,7 @@ export const TypedList = ({typeName}: Props) => {
     if (!sparqlQuery || !crudOptions?.selectFetch) {
       return;
     }
-    crudOptions.selectFetch(sparqlQuery, {withHeaders: true}).then((res) => {
+    crudOptions.selectFetch(sparqlQuery, { withHeaders: true }).then((res) => {
       setResultList(res?.results?.bindings ?? []);
       setHeaderVars(res?.head?.vars);
     });
@@ -182,18 +182,18 @@ export const TypedList = ({typeName}: Props) => {
         {Object.entries(
           loadedSchema.definitions || loadedSchema["$defs"] || {},
         ).map(([key, value]) => (
-          <Tab value={key} label={key}/>
+          <Tab key={key} value={key} label={key} />
         ))}
       </Tabs>
     );
   };
 
-  const TableWithTabNavigation = ({children}) => {
+  const TableWithTabNavigation = ({ children }) => {
     return (
       <Grid container>
-        <CssBaseline/>
+        <CssBaseline />
         <Grid container item xs={2}>
-          <VerticalTabs/>
+          <VerticalTabs />
         </Grid>
         <Grid container item xs={10}>
           {children}
@@ -205,7 +205,7 @@ export const TypedList = ({typeName}: Props) => {
   return (
     <>
       {!resultList || columns.length <= 0 ? (
-        <Skeleton variant="rectangular" height={530}/>
+        <Skeleton variant="rectangular" height={530} />
       ) : (
         <TableWithTabNavigation>
           <MaterialReactTable
@@ -215,7 +215,7 @@ export const TypedList = ({typeName}: Props) => {
             enableRowSelection
             manualPagination={false}
             initialState={{
-              columnVisibility: {id: false, externalId_single: false},
+              columnVisibility: { id: false, externalId_single: false },
             }}
             onPaginationChange={setPagination}
             rowCount={resultList.length}
@@ -230,10 +230,10 @@ export const TypedList = ({typeName}: Props) => {
                     row.closeMenu();
                     editEntry(row.row.id);
                   }}
-                  sx={{m: 0}}
+                  sx={{ m: 0 }}
                 >
                   <ListItemIcon>
-                    <Edit/>
+                    <Edit />
                   </ListItemIcon>
                   bearbeiten
                 </MenuItem>,
@@ -242,10 +242,10 @@ export const TypedList = ({typeName}: Props) => {
                   onClick={() => {
                     row.closeMenu();
                   }}
-                  sx={{m: 0}}
+                  sx={{ m: 0 }}
                 >
                   <ListItemIcon>
-                    <Details/>
+                    <Details />
                   </ListItemIcon>
                   Details
                 </MenuItem>,

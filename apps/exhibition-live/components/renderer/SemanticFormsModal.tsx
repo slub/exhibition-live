@@ -1,10 +1,5 @@
-import {
-  JsonSchema,
-
-
-} from "@jsonforms/core";
+import { JsonSchema } from "@jsonforms/core";
 import { JSONSchema7 } from "json-schema";
-import merge from "lodash/merge";
 import React, { useCallback, useMemo, useState } from "react";
 
 import DiscoverAutocompleteInput from "../form/discover/DiscoverAutocompleteInput";

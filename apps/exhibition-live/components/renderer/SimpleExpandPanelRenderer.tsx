@@ -1,6 +1,4 @@
-import {
-  JsonSchema,
-} from "@jsonforms/core";
+import { JsonSchema } from "@jsonforms/core";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import {
@@ -10,11 +8,7 @@ import {
   Grid,
   IconButton,
 } from "@mui/material";
-import React, {
-  useCallback,
-  useMemo,
-  useState,
-} from "react";
+import React, { useCallback, useMemo, useState } from "react";
 
 import find from "lodash/find";
 import { useSPARQL_CRUD } from "../state/useSPARQL_CRUD";

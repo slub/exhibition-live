@@ -23,13 +23,7 @@ import {
   Save,
   UpdateRounded,
 } from "@mui/icons-material";
-import {
-  Card,
-  CardContent,
-  Grid,
-  IconButton,
-
-} from "@mui/material";
+import { Card, CardContent, Grid, IconButton } from "@mui/material";
 import { JSONSchema7 } from "json-schema";
 import { JsonLdContext } from "jsonld-context-parser";
 import { isEmpty } from "lodash";

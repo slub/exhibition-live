@@ -87,9 +87,11 @@ export const RoutingModal = (props) => {
             onChange={handleChange}
           >
             {Object.entries(
-              loadedSchema.definitions || loadedSchema["$defs"] || {},
+              (loadedSchema as any).definitions || loadedSchema["$defs"] || {},
             ).map(([key, value]) => (
-              <MenuItem value={key}>{key}</MenuItem>
+              <MenuItem key={key} value={key}>
+                {key}
+              </MenuItem>
             ))}
           </Select>
         </FormControl>

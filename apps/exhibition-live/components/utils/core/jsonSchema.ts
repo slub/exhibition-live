@@ -58,3 +58,13 @@ export const filterForArrayProperties = (
       ([, value]) => typeof value === "object" && value.type === "array",
     ),
   );
+
+export const bringDefinitionToTop = (schema: JSONSchema7, name) => {
+  const defsFieldName = schema.definitions ? "definitions" : "$defs";
+  const specificModel =
+    (schema[defsFieldName]?.[name] as object | undefined) || {};
+  return {
+    ...schema,
+    ...specificModel
+  }
+}

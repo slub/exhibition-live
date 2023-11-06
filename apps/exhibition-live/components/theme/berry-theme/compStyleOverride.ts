@@ -75,6 +75,33 @@ export default function componentStyleOverrides(theme: ThemeExtended) {
         },
       },
     },
+    MuiIconButton: {
+      styleOverrides: {
+        root: {
+          color: theme.darkTextPrimary,
+          "&.Mui-selected": {
+            color: theme.menuSelected,
+            backgroundColor: theme.menuSelectedBack,
+            "&:hover": {
+              backgroundColor: theme.menuSelectedBack,
+            },
+          },
+          "&:hover": {
+            backgroundColor: theme.menuSelectedBack,
+            color: theme.menuSelected,
+          },
+        }
+      }
+    },
+    MuiListItem: {
+      styleOverrides: {
+        root: {
+          "&:has(.MuiListItemSecondaryAction-root)": {
+            paddingRight: "70px",
+          },
+        },
+      },
+    },
     MuiListItemIcon: {
       styleOverrides: {
         root: {
@@ -87,6 +114,13 @@ export default function componentStyleOverrides(theme: ThemeExtended) {
       styleOverrides: {
         primary: {
           color: theme.textDark,
+        },
+        root: {
+          ".MuiTypography-root": {
+            textOverflow: "ellipsis",
+            overflow: "hidden",
+            whiteSpace: "nowrap",
+          },
         },
       },
     },

@@ -24,7 +24,7 @@ export const AppHeader = ({ drawerOpen, toggleDrawer }: AppHeaderProps) => {
       }}
     >
       <Toolbar>
-        <ButtonBase
+        {/*<ButtonBase
           sx={{
             borderRadius: "12px",
             overflow: "hidden",
@@ -32,7 +32,7 @@ export const AppHeader = ({ drawerOpen, toggleDrawer }: AppHeaderProps) => {
           onClick={toggleDrawer}
         >
           {drawerOpen ? <MenuIcon /> : <ListIcon />}
-        </ButtonBase>
+        </ButtonBase>*/}
       </Toolbar>
     </AppBar>
   );

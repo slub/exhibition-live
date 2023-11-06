@@ -15,6 +15,7 @@ export type WalkerOptions = {
   maxRecursionEachRef: number;
   maxRecursion: number;
   skipAtLevel: number;
+  doNotRecurseNamedNodes: boolean;
 };
 
 type CircularCounter = {
@@ -33,7 +34,7 @@ const propertyWalker = (
 ) => {
   const base = namespace(baseIRI);
   const MAX_RECURSION = options?.maxRecursionEachRef || 5;
-  const skipNextProps = level >= options?.skipAtLevel;
+  const skipNextProps = typeof options?.skipAtLevel === 'number' ?  level >= options?.skipAtLevel : false;
   if (
     typeof options?.maxRecursion === "number" &&
     level > options?.maxRecursion
@@ -44,14 +45,18 @@ const propertyWalker = (
     return;
   }
 
+  const isDraft = node.out(base["__draft"])?.value
   let additionalProps = {};
-  if (rootSchema.type === "object") {
+  if (subSchema.type === "object") {
     if (node.term?.termType === "NamedNode") {
       additionalProps = {
         "@id": node.term.value,
       };
+      if(!isDraft && options.doNotRecurseNamedNodes && level > 0) {
+        return additionalProps;
+      }
     }
-    if (skipProps && !node.out(base["__draft"])?.value) {
+    if (!isDraft && skipProps) {
       return additionalProps;
     }
     const typeNode = node.out(rdf.type);
@@ -98,7 +103,7 @@ const propertyWalker = (
             newNode as clownface.GraphPointer,
             schema,
             rootSchema,
-            +1,
+            level+1,
             circularSet,
             options,
             skipNextProps,

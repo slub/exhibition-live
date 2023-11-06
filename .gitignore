@@ -19,6 +19,7 @@ node_modules
 # misc
 .DS_Store
 *.pem
+*.log
 
 # debug
 npm-debug.log*
@@ -39,3 +40,4 @@ next-env.d.ts
 /docker/data/
 /jsonldtest.mjs
 dist
+_site

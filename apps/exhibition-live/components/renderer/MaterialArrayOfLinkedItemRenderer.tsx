@@ -28,7 +28,10 @@ import {
   RankedTester,
   rankWith,
 } from "@jsonforms/core";
-import { withJsonFormsArrayLayoutProps } from "@jsonforms/react";
+import {
+  JsonFormsStateContext,
+  withJsonFormsArrayLayoutProps,
+} from "@jsonforms/react";
 import { Hidden } from "@mui/material";
 import React, { useCallback } from "react";
 
@@ -49,6 +52,7 @@ export const MaterialArrayOfLinkedItemRenderer = ({
   errors,
   uischemas,
   addItem,
+  removeItems,
   translations,
 }: ArrayLayoutProps) => {
   const addItemCb = useCallback(
@@ -70,6 +74,7 @@ export const MaterialArrayOfLinkedItemRenderer = ({
         data={data}
         path={path}
         addItem={addItemCb}
+        removeItems={removeItems}
         renderers={renderers}
         cells={cells}
         uischemas={uischemas}

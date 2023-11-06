@@ -8,6 +8,7 @@ import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import React from "react";
 import { useTranslation } from "react-i18next";
+import { memo } from "./config";
 
 type EnumRendererProps = {
   data: any;
@@ -18,7 +19,7 @@ type EnumRendererProps = {
   visible?: boolean;
 };
 
-const EnumRenderer = React.memo(
+const EnumRenderer = memo(
   ({ data, handleChange, path, label, schema, visible }: EnumRendererProps) => {
     const { t } = useTranslation();
 

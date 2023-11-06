@@ -7,6 +7,7 @@ import {
   DialogTitle,
 } from "@mui/material";
 import React from "react";
+import { memo } from "./config";
 
 export interface DeleteDialogProps {
   open: boolean;
@@ -19,7 +20,7 @@ export interface WithDeleteDialogSupport {
   openDeleteDialog(path: string, data: number): void;
 }
 
-export const DeleteDialog = React.memo(
+export const DeleteDialog = memo(
   ({ open, onClose, onConfirm, onCancel }: DeleteDialogProps) => {
     return (
       <Dialog

@@ -17,6 +17,7 @@ import { useMemo } from "react";
 import { JsonSchema7 } from "@jsonforms/core";
 import { sladb, slent } from "../form/formConfigs";
 import { BASE_IRI } from "../config";
+import { memo } from "./config";
 
 export interface ArrayLayoutToolbarProps {
   label: string;
@@ -26,6 +27,7 @@ export interface ArrayLayoutToolbarProps {
   createDefault(): any;
   readonly?: boolean;
   typeIRI?: string;
+  onCreate?: () => void;
 }
 
 export const getDefaultKey = (typeIRI?: string) => {
@@ -34,7 +36,7 @@ export const getDefaultKey = (typeIRI?: string) => {
   if (typeIRI === sladb.ExhibitionWebLink.value) return "weblink";
   return "title";
 };
-export const ArrayLayoutToolbar = React.memo(
+export const ArrayLayoutToolbar = memo(
   ({
     label,
     errors,
@@ -43,6 +45,7 @@ export const ArrayLayoutToolbar = React.memo(
     schema,
     createDefault,
     readonly,
+    onCreate,
   }: ArrayLayoutToolbarProps & { schema?: JsonSchema7 }) => {
     const { t } = useTranslation();
     const typeIRI = useMemo(
@@ -50,9 +53,10 @@ export const ArrayLayoutToolbar = React.memo(
       [schema],
     );
     const handleChange_ = React.useCallback(
-      (value: any) => {
+      (value: any, label: string) => {
         addItem(path, {
           "@id": value,
+          __label: label,
         })();
       },
       [addItem, path],
@@ -96,7 +100,7 @@ export const ArrayLayoutToolbar = React.memo(
                   title={label || ""}
                   onEnterSearch={handleCreateNewFromSearch}
                   onSelectionChange={(selection) =>
-                    handleChange_(selection?.value)
+                    handleChange_(selection?.value, selection?.label)
                   }
                 />
               </Grid>
@@ -108,7 +112,7 @@ export const ArrayLayoutToolbar = React.memo(
                 >
                   <IconButton
                     aria-label={t("add_another", { item: label })}
-                    onClick={addItem(path, createDefault())}
+                    onClick={onCreate}
                     size="large"
                   >
                     <AddIcon />

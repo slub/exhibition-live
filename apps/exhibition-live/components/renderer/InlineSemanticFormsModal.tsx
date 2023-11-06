@@ -1,4 +1,4 @@
-import { ControlProps, JsonSchema, resolveSchema } from "@jsonforms/core";
+import { JsonSchema, resolveSchema, UISchemaElement } from "@jsonforms/core";
 import { JSONSchema7 } from "json-schema";
 import merge from "lodash/merge";
 import React, { useCallback, useMemo, useState } from "react";
@@ -19,21 +19,25 @@ import MuiEditDialog from "./MuiEditDialog";
 import { useGlobalCRUDOptions } from "../state/useGlobalCRUDOptions";
 import { BASE_IRI } from "../config";
 
-type OwnProps = {
+type InlineSemanticFormsModalProps = {
+  label?: string;
+  path: string;
   open: boolean;
   askClose: () => void;
   semanticJsonFormsProps?: Partial<SemanticJsonFormsProps>;
+  schema: JsonSchema;
+  rootSchema: JsonSchema;
+  uischema: UISchemaElement;
+  data: any;
+  handleChange: (path: string, value: any) => void;
 };
-export const InlineSemanticFormsModal = (props: ControlProps & OwnProps) => {
+export const InlineSemanticFormsModal = (
+  props: InlineSemanticFormsModalProps,
+) => {
   const {
-    id,
     open,
-    errors,
     schema,
     uischema,
-    visible,
-    required,
-    config,
     data,
     handleChange,
     path,
@@ -42,8 +46,6 @@ export const InlineSemanticFormsModal = (props: ControlProps & OwnProps) => {
     askClose,
     semanticJsonFormsProps,
   } = props;
-  const isValid = errors.length === 0;
-  const appliedUiSchemaOptions = merge({}, config, uischema.options);
   const [formData, setFormData] = useState({ "@id": data });
   const [CRUDOps, setCRUDOps] = useState<CRUDOpsType | undefined>();
   const { load, save, remove } = CRUDOps || {};
@@ -60,7 +62,7 @@ export const InlineSemanticFormsModal = (props: ControlProps & OwnProps) => {
     [path, handleChange, data],
   );
 
-  const { $ref, typeIRI, useModal } = uischema.options?.context || {};
+  const { $ref, typeIRI } = uischema.options?.context || {};
   const uischemaExternal = useUISchemaForType(typeIRI);
   const typeName = useMemo(
     () => typeIRI && typeIRI.substring(BASE_IRI.length, typeIRI.length),

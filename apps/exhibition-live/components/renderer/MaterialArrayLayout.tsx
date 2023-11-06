@@ -27,18 +27,32 @@ import {
   composePaths,
   computeLabel,
   createDefaultValue,
+  JsonSchema,
   JsonSchema7,
+  Resolve,
 } from "@jsonforms/core";
 import map from "lodash/map";
 import merge from "lodash/merge";
 import range from "lodash/range";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 
-import { ArrayLayoutToolbar } from "./ArrayToolbar";
+import { ArrayLayoutToolbar, getDefaultKey } from "./ArrayToolbar";
 import ExpandPanelRenderer from "./ExpandPanelRenderer";
 import { useJsonForms } from "@jsonforms/react";
+import { memo } from "./config";
+import { uniqBy, orderBy, isArray } from "lodash";
+import { SimpleExpandPanelRenderer } from "./SimpleExpandPanelRenderer";
+import { SemanticFormsModal } from "./SemanticFormsModal";
+import { BASE_IRI } from "../config";
+import { bringDefinitionToTop } from "../utils/core";
+import { JSONSchema7 } from "json-schema";
+import { slent } from "../form/formConfigs";
+import { v4 as uuidv4 } from "uuid";
 
-const MaterialArrayLayoutComponent = (props: ArrayLayoutProps) => {
+type OwnProps = {
+  removeItems(path: string, toDelete: number[]): () => void;
+};
+const MaterialArrayLayoutComponent = (props: ArrayLayoutProps & {}) => {
   const [expanded, setExpanded] = useState<string | boolean>(false);
   const innerCreateDefaultValue = useCallback(
     () => createDefaultValue(props.schema),
@@ -50,8 +64,7 @@ const MaterialArrayLayoutComponent = (props: ArrayLayoutProps) => {
     },
     [],
   );
-  const isExpanded = (index: number) =>
-    expanded === composePaths(props.path, `${index}`);
+  const isExpanded = (pathOrID: string) => expanded === pathOrID;
 
   const {
     data,
@@ -67,9 +80,35 @@ const MaterialArrayLayoutComponent = (props: ArrayLayoutProps) => {
     rootSchema,
     config,
     uischemas,
+    removeItems,
   } = props;
   const appliedUiSchemaOptions = merge({}, config, props.uischema.options);
-  const { readonly } = useJsonForms();
+  const { readonly, core } = useJsonForms();
+  const realData = Resolve.data(core.data, path);
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [newIRI, setNewIRI] = useState(slent(uuidv4()).value);
+
+  const handleCreateNew = useCallback(() => {
+    setNewIRI(slent(uuidv4()).value);
+    setModalIsOpen(true);
+  }, [setModalIsOpen, setNewIRI]);
+  const handleAddNew = useCallback(() => {
+    setModalIsOpen(false);
+    addItem(path, {
+      "@id": newIRI,
+    })();
+  }, [setModalIsOpen, addItem, newIRI]);
+
+  const typeIRI = schema.properties?.["@type"]?.const;
+  const typeName = useMemo(
+    () => typeIRI && typeIRI.substring(BASE_IRI.length, typeIRI.length),
+    [typeIRI],
+  );
+  const subSchema = useMemo(
+    () =>
+      bringDefinitionToTop(rootSchema as JSONSchema7, typeName) as JsonSchema,
+    [rootSchema, typeName],
+  );
 
   return (
     <div>
@@ -83,23 +122,74 @@ const MaterialArrayLayoutComponent = (props: ArrayLayoutProps) => {
         path={path}
         schema={schema as JsonSchema7 | undefined}
         addItem={addItem}
+        onCreate={handleCreateNew}
         createDefault={innerCreateDefaultValue}
         readonly={readonly}
       />
+      {modalIsOpen && (
+        <SemanticFormsModal
+          schema={subSchema}
+          data={newIRI}
+          typeIRI={typeIRI}
+          label={label}
+          open={modalIsOpen}
+          askClose={handleAddNew}
+          askCancel={() => setModalIsOpen(false)}
+          onChange={(iri) => {
+            setNewIRI(iri);
+          }}
+        />
+      )}
       <div>
         {data > 0
-          ? map(range(data), (index) => {
+          ? orderBy(
+              uniqBy(
+                realData?.map((childData, index) => ({
+                  id: childData["@id"],
+                  childData,
+                  index,
+                })),
+                "id",
+              ),
+              "id",
+            ).map(({ id: expandID, childData, index }: any) => {
+              const childPath = composePaths(path, `${index}`);
+              return (
+                <SimpleExpandPanelRenderer
+                  onRemove={removeItems(path, [index])}
+                  schema={schema}
+                  onChange={() => {}}
+                  rootSchema={rootSchema}
+                  entityIRI={expandID}
+                  data={childData}
+                  key={expandID}
+                  index={index}
+                />
+              );
+            })
+          : /*map(range(data), (index) => {
+            const childPath = composePaths(path, `${index}`);
+              const childData = Resolve.data(core.data, childPath);
+              const key = childData['@id'] || index;
+              const expandID = childData['@id'] || childPath
+            return {
+              childPath,
+              key,
+              expandID,
+            }
+          })
+            .map(({ childPath, key, expandID }, index) => {
               return (
                 <ExpandPanelRenderer
                   index={index}
-                  expanded={isExpanded(index)}
+                  expanded={isExpanded(expandID)}
                   schema={schema}
                   path={path}
-                  handleExpansion={handleChange}
+                  handleExpansion={() => handleChange(expandID)}
                   uischema={uischema}
                   renderers={renderers}
                   cells={cells}
-                  key={index}
+                  key={key}
                   rootSchema={rootSchema}
                   enableMoveUp={index != 0}
                   enableMoveDown={index < data - 1}
@@ -112,11 +202,11 @@ const MaterialArrayLayoutComponent = (props: ArrayLayoutProps) => {
                   readonly={readonly}
                 />
               );
-            })
-          : null}
+            })*/
+            null}
       </div>
     </div>
   );
 };
 
-export const MaterialArrayLayout = React.memo(MaterialArrayLayoutComponent);
+export const MaterialArrayLayout = memo(MaterialArrayLayoutComponent);

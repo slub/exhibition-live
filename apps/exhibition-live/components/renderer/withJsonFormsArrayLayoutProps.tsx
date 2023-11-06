@@ -14,7 +14,8 @@ import {
   JsonFormsStateContext,
   withJsonFormsContext,
 } from "@jsonforms/react";
-import React, { ComponentType } from "react";
+import React, { ComponentType, FunctionComponent } from "react";
+import { memo } from "./config";
 
 export type ArrayDataProp = {
   translator: Translator;
@@ -46,9 +47,9 @@ const withContextToArrayLayoutProps =
   };
 
 export const withJsonFormsArrayLayoutProps = (
-  Component: ComponentType<CustomArrayLayoutProps>,
+  Component: FunctionComponent<CustomArrayLayoutProps>,
   memoize = true,
 ): ComponentType<OwnPropsOfControl> =>
   withJsonFormsContext(
-    withContextToArrayLayoutProps(memoize ? React.memo(Component) : Component),
+    withContextToArrayLayoutProps(memoize ? memo(Component) : Component),
   );

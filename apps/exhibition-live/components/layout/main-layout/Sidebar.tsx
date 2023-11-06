@@ -17,11 +17,9 @@ import { BrowserView, MobileView } from "react-device-detect";
 
 import loadedSchema from "../../../public/schema/Exhibition.schema.json";
 import SettingsModal from "../../content/settings/SettingsModal";
-import { RoutingModal } from "./menu/RoutingModal";
 import { sladb } from "../../form/formConfigs";
 import { useFormRefsContext } from "../../provider/formRefsContext";
 import { useLocalSettings } from "../../state/useLocalSettings";
-import { useModalRouting } from "../../state/useModalRouting";
 import { Logo } from "./Logo";
 import { drawerWidth } from "./MainLayout";
 import { MenuGroup, NavGroup, NavItem, Drawer } from "./menu";
@@ -89,43 +87,18 @@ const Options = ({ open }) => {
 };
 
 const Navigation = ({ open }) => {
-  const { openModal } = useModalRouting();
 
-  const items = [
-    {
-      id: "list",
-      icon: () => <Search />,
-      url: `/list/Exhibition`,
-      title: "list",
-    },
-    {
-      id: "create",
-      icon: () => <Add />,
-      url: "#",
-      title: "create",
-      onClick: openModal,
-    },
-  ];
-
+  const menuGroup = useMemo<MenuGroup | null>(() => {
+    return loadedSchema
+      ? menuLists(loadedSchema as JSONSchema7)
+      : (null as MenuGroup);
+  }, [loadedSchema]);
   return (
-    <List>
-      {items.map(({ id, url, icon, title, onClick }) => (
-        <NavItem
-          key={id}
-          item={{
-            id: id,
-            type: "item",
-            url: url,
-            icon: icon,
-            title: title,
-          }}
-          level={0}
-          open={open}
-          onClick={onClick}
-        />
-      ))}
-      <RoutingModal />
-    </List>
+    menuGroup && (
+      <>
+        <NavGroup key={menuGroup.id} item={menuGroup} />
+      </>
+    )
   );
 };
 
@@ -144,7 +117,6 @@ export const Sidebar = ({ open, onClose }: SidebarProps) => {
     >
       <Toolbar />
       <Navigation open={open} />
-      <Divider />
       <Options open={open} />
       <Divider />
     </Drawer>

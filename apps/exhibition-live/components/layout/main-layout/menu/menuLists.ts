@@ -13,9 +13,19 @@ const topLevel = ["Exhibition", "Person"];
 
 const lists: (schema: JSONSchema7) => MenuGroup = (exhibitionSchema) => ({
   id: "lists",
-  title: "Explorieren",
+  // title: "Explorieren",
   type: "group",
-  children: [
+  children: Object.entries(
+    exhibitionSchema.definitions || exhibitionSchema["$defs"] || {},
+  )
+    .map(([key, value]) => ({
+      id: `list_${key}`,
+      title: (value as any).title || key,
+      type: "item",
+      url: `/list/${key}`,
+      typeName: key,
+  })),
+  /*children: [
     {
       id: "list_default",
       title: "Austellungen",
@@ -45,7 +55,7 @@ const lists: (schema: JSONSchema7) => MenuGroup = (exhibitionSchema) => ({
           url: `/list/${key}`,
         })),
     },
-  ],
+  ],*/
 });
 
 export default lists;

@@ -1,6 +1,6 @@
 type Item = {
   id: string;
-  title: string;
+  title?: string;
   caption?: string;
   url?: string;
   disabled?: boolean;
@@ -21,7 +21,8 @@ export type MenuInterface = Item & {
 
 export type MenuItem = MenuInterface & {
   type: "item";
-  url: string;
+  url?: string;
+  typeName?: string;
 };
 export type MenuCollapse = MenuInterface & {
   type: "collapse";

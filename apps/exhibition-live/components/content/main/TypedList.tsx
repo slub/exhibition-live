@@ -14,7 +14,7 @@ import {
   ListItemIcon,
   Tab,
   Tabs,
-  CssBaseline
+  CssBaseline,
 } from "@mui/material";
 import { MaterialReactTable, MRT_ColumnDef } from "material-react-table";
 import {
@@ -147,33 +147,33 @@ export const TypedList = ({ typeName }: Props) => {
     [router, typeName],
   );
 
-    const VerticalTabs = () => {
-      const handleTabChange = useCallback((event:React.SyntheticEvent, newValue: any) => {
+  const VerticalTabs = () => {
+    const handleTabChange = useCallback(
+      (event: React.SyntheticEvent, newValue: any) => {
         setTabValue(newValue);
         router.push(`/list/${newValue}`);
-      },[router, setTabValue]
-      );
-      return (
-        <Tabs
-            value={tabValue}
-            textColor="secondary"
-            indicatorColor="secondary"
-            orientation="vertical"
-            variant="scrollable"
-            onChange={handleTabChange}
-          >
-            {Object.entries(
-              loadedSchema.definitions || loadedSchema["$defs"] || {},
-            ).map(([key, value]) => (
-              <Tab value={key} label={key} />
-            ))}
-          </Tabs>
-      )
+      },
+      [router, setTabValue],
+    );
+    return (
+      <Tabs
+        value={tabValue}
+        textColor="secondary"
+        indicatorColor="secondary"
+        orientation="vertical"
+        variant="scrollable"
+        onChange={handleTabChange}
+      >
+        {Object.entries(
+          loadedSchema.definitions || loadedSchema["$defs"] || {},
+        ).map(([key, value]) => (
+          <Tab value={key} label={key} />
+        ))}
+      </Tabs>
+    );
+  };
 
-    }
-
-
-  const TableWithTabNavigation = ({children}) => {
+  const TableWithTabNavigation = ({ children }) => {
     return (
       <Grid container>
         <CssBaseline />
@@ -184,8 +184,8 @@ export const TypedList = ({ typeName }: Props) => {
           {children}
         </Grid>
       </Grid>
-    )
-  }
+    );
+  };
 
   return (
     <>
@@ -199,7 +199,9 @@ export const TypedList = ({ typeName }: Props) => {
             enableColumnOrdering //enable some features
             enableRowSelection
             manualPagination={false}
-            initialState={{ columnVisibility: { ID: false, externalId: false } }}
+            initialState={{
+              columnVisibility: { ID: false, externalId: false },
+            }}
             onPaginationChange={setPagination}
             rowCount={resultList.length}
             enableRowActions={true}
@@ -238,8 +240,8 @@ export const TypedList = ({ typeName }: Props) => {
               pagination,
             }}
           />
-          </TableWithTabNavigation>
-        )}
+        </TableWithTabNavigation>
+      )}
     </>
   );
 };

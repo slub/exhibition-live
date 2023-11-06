@@ -59,8 +59,7 @@ export const MainLayout = ({ children }: { children: React.ReactNode }) => {
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
       {/* header */}
-          <AppHeader drawerOpen={leftDrawerOpened} toggleDrawer={toggleDrawer} />
-
+      <AppHeader drawerOpen={leftDrawerOpened} toggleDrawer={toggleDrawer} />
 
       <Sidebar open={leftDrawerOpened} />
 

@@ -1,18 +1,8 @@
-import MenuIcon from '@mui/icons-material/Menu';
-import ListIcon from '@mui/icons-material/List';
 // material-ui
-import { Avatar, Box, ButtonBase, useTheme, AppBar, Toolbar, IconButton } from "@mui/material";
-import React, { useState } from "react";
-import ViewListIcon from '@mui/icons-material/ViewList';
-import VerticalSplitIcon from '@mui/icons-material/VerticalSplit';
-
-import { Logo } from "./Logo";
-
-const LogoSection = () => (
-  <>
-    <Logo />
-  </>
-);
+import MenuIcon from "@mui/icons-material/Menu";
+import ListIcon from "@mui/icons-material/List";
+import { ButtonBase, useTheme, AppBar, Toolbar } from "@mui/material";
+import React from "react";
 
 type AppHeaderProps = {
   toggleDrawer: () => void;
@@ -24,16 +14,16 @@ export const AppHeader = ({ drawerOpen, toggleDrawer }: AppHeaderProps) => {
 
   return (
     <AppBar
-        enableColorOnDark
-        position="fixed"
-        color="inherit"
-        elevation={1}
-        sx={{
-          bgcolor: theme.palette.background.default,
-          zIndex: (theme) => theme.zIndex.drawer + 1,
-        }}
-      >
-        <Toolbar>
+      enableColorOnDark
+      position="fixed"
+      color="inherit"
+      elevation={1}
+      sx={{
+        bgcolor: theme.palette.background.default,
+        zIndex: (theme) => theme.zIndex.drawer + 1,
+      }}
+    >
+      <Toolbar>
         <ButtonBase
           sx={{
             borderRadius: "12px",
@@ -41,9 +31,9 @@ export const AppHeader = ({ drawerOpen, toggleDrawer }: AppHeaderProps) => {
           }}
           onClick={toggleDrawer}
         >
-        {drawerOpen ? <MenuIcon /> : <ListIcon />}
-      </ButtonBase>
-        </Toolbar>
+          {drawerOpen ? <MenuIcon /> : <ListIcon />}
+        </ButtonBase>
+      </Toolbar>
     </AppBar>
   );
 };

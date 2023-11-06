@@ -22,7 +22,12 @@ type NavItemProps = {
   onClick?: () => void;
   open?: boolean;
 };
-export const NavItem = ({ item, level, onClick, open = true }: NavItemProps) => {
+export const NavItem = ({
+  item,
+  level,
+  onClick,
+  open = true,
+}: NavItemProps) => {
   const theme = useTheme();
   const { pathname } = useRouter();
   const customization = useThemeSettings();
@@ -90,14 +95,16 @@ export const NavItem = ({ item, level, onClick, open = true }: NavItemProps) => 
         backgroundColor: level > 1 ? "transparent !important" : "inherit",
         px: 2.5,
         py: level > 1 ? 1 : 1.25,
-        justifyContent: open ? 'initial' : 'center',
+        justifyContent: open ? "initial" : "center",
       }}
       selected={customization.isOpen.findIndex((id) => id === item.id) > -1}
       onClick={() => (onClick ? onClick() : itemHandler(item.id))}
     >
-      <ListItemIcon sx={{ my: "auto", minWidth: !item?.icon ? 18 : 36 }}>
-        {itemIcon}
-      </ListItemIcon>
+      {itemIcon && (
+        <ListItemIcon sx={{ my: "auto", minWidth: !item?.icon ? 18 : 36 }}>
+          {itemIcon}
+        </ListItemIcon>
+      )}
       <ListItemText
         primary={
           <Typography
@@ -112,7 +119,7 @@ export const NavItem = ({ item, level, onClick, open = true }: NavItemProps) => 
           </Typography>
         }
         secondary={
-          item.caption && (
+          typeof item.caption === "string" && (
             <Typography
               variant="caption"
               sx={{ ...theme.typography.caption }}
@@ -125,7 +132,7 @@ export const NavItem = ({ item, level, onClick, open = true }: NavItemProps) => 
         }
         sx={{
           opacity: open ? 1 : 0,
-          transition: theme.transitions.create('opacity', {
+          transition: theme.transitions.create("opacity", {
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.leavingScreen,
           }),

@@ -8,7 +8,7 @@ import {
   useTheme,
   List,
   Divider,
-  Toolbar
+  Toolbar,
 } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import { JSONSchema7 } from "json-schema";
@@ -53,86 +53,83 @@ type SidebarProps = {
   onClose?: () => void;
 };
 
-
 const Options = ({ open }) => {
   const { openSettings } = useLocalSettings();
 
   const items = [
     {
-      id: 'settings',
-      url: '#',
+      id: "settings",
+      url: "#",
       icon: () => <Settings />,
-      title: 'settings',
-      onClick: openSettings
-    }
+      title: "settings",
+      onClick: openSettings,
+    },
   ];
 
   return (
     <List>
-      {items.map(({id, url, icon, title, onClick}) => (
+      {items.map(({ id, url, icon, title, onClick }) => (
         <NavItem
           item={{
             id: id,
-            type: 'item',
+            type: "item",
             url: url,
             icon: icon,
-            title: title
+            title: title,
           }}
           level={0}
           onClick={onClick}
           open={open}
-          />
+        />
       ))}
-    <SettingsModal />
+      <SettingsModal />
     </List>
   );
-}
+};
 
 const Navigation = ({ open }) => {
   const { openModal } = useModalRouting();
 
   const items = [
     {
-      id: 'list',
+      id: "list",
       icon: () => <Search />,
       url: `/list/Exhibition`,
-      title: 'list',
+      title: "list",
     },
     {
-      id: 'create',
+      id: "create",
       icon: () => <Add />,
-      url: '#',
-      title: 'create',
+      url: "#",
+      title: "create",
       onClick: openModal,
-    }
+    },
   ];
 
   return (
     <List>
-      {items.map(({id, url, icon, title, onClick }) => (
+      {items.map(({ id, url, icon, title, onClick }) => (
         <NavItem
           item={{
             id: id,
-            type: 'item',
+            type: "item",
             url: url,
             icon: icon,
-            title: title
+            title: title,
           }}
           level={0}
           open={open}
           onClick={onClick}
-          />
+        />
       ))}
       <RoutingModal />
     </List>
   );
-
-}
+};
 
 export const Sidebar = ({ open, onClose }: SidebarProps) => {
   const theme = useTheme();
   const matchUpMd = useMediaQuery(theme.breakpoints.up("md"));
-
 
   return (
     <Drawer

@@ -15,7 +15,7 @@ import {
   InputLabel,
   MenuItem,
   Select,
-  SelectChangeEvent
+  SelectChangeEvent,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -25,10 +25,9 @@ import { useRouter } from "next/router";
 import { useModalRouting } from "../../../state/useModalRouting";
 import loadedSchema from "../../../../public/schema/Exhibition.schema.json";
 
-
 export const RoutingModal = (props) => {
   const [forceFullscreen, setForceFullscreen] = useState(false);
-  const [value, setValue] = React.useState('');
+  const [value, setValue] = React.useState("");
   const { modalOpen, closeModal } = useModalRouting();
   const theme = useTheme();
   const router = useRouter();
@@ -36,7 +35,7 @@ export const RoutingModal = (props) => {
 
   const handleChange = (event: SelectChangeEvent) => {
     setValue(event.target.value as string);
-  }
+  };
   const handleClose = useCallback(() => {
     closeModal();
   }, [closeModal]);
@@ -94,7 +93,6 @@ export const RoutingModal = (props) => {
             ))}
           </Select>
         </FormControl>
-
       </DialogContent>
       <DialogActions>
         {
@@ -106,4 +104,3 @@ export const RoutingModal = (props) => {
     </Dialog>
   );
 };
-

@@ -65,6 +65,6 @@ export const bringDefinitionToTop = (schema: JSONSchema7, name) => {
     (schema[defsFieldName]?.[name] as object | undefined) || {};
   return {
     ...schema,
-    ...specificModel
-  }
-}
+    ...specificModel,
+  };
+};

@@ -4,9 +4,7 @@
     {
       "type": "Control",
       "label": "Geografischer Ort",
-      "scope": {
-        "$ref": "#/properties/location"
-      }
+      "scope": "#/properties/location"
     },
     {
       "type": "HorizontalLayout",
@@ -14,16 +12,12 @@
         {
           "type": "Control",
           "label": "Von",
-          "scope": {
-            "$ref": "#/properties/fromDate"
-          }
+          "scope": "#/properties/fromDate"
         },
         {
           "type": "Control",
           "label": "Bis",
-          "scope": {
-            "$ref": "#/properties/toDate"
-          }
+          "scope": "#/properties/toDate"
         }
       ]
     }

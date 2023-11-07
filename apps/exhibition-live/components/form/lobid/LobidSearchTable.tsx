@@ -1,22 +1,11 @@
-import {
-  Avatar,
-  Divider,
-  List,
-  ListItem,
-  ListItemAvatar,
-  ListItemButton,
-  ListItemText,
-} from "@mui/material";
+import { List } from "@mui/material";
 import React, {
-  Fragment,
   FunctionComponent,
   useCallback,
   useEffect,
-  useMemo,
   useState,
 } from "react";
 
-import { useLocalHistory } from "../../state";
 import {
   findEntityWithinLobid,
   findEntityWithinLobidByIRI,
@@ -26,7 +15,6 @@ import ClassicEntityCard from "./ClassicEntityCard";
 import LobidAllPropTable from "./LobidAllPropTable";
 import WikidataAllPropTable from "../wikidata/WikidataAllPropTable";
 import {
-  PrimaryFieldDeclaration,
   PrimaryFieldExtract,
   PrimaryFieldExtractDeclaration,
 } from "../../utils/types";
@@ -35,6 +23,7 @@ import {
   applyToEachField,
   extractFieldIfString,
 } from "../../utils/mapping/simpleFieldExtractor";
+import { useQuery } from "@tanstack/react-query";
 
 type Props = {
   searchString: string;
@@ -98,7 +87,6 @@ const gndEntryWithMainInfo = (allProps: any) => {
     primaryFieldDeclaration,
     extractFieldIfString,
   );
-  console.log({ label, description, image });
   return {
     id,
     label,
@@ -108,36 +96,6 @@ const gndEntryWithMainInfo = (allProps: any) => {
   };
 };
 
-const gndEntryWithMainInfo2 = (allProps: any) => {
-  {
-    const {
-      id,
-      preferredName = "",
-      depiction,
-      professionOrOccupation = [],
-    } = allProps;
-    const dateOfBirth = allProps?.dateOfBirth?.[0],
-      dateOfDeath = allProps?.dateOfDeath?.[0],
-      dateOfBirthAndDeath = allProps?.dateOfBirthAndDeath?.[0],
-      profession = professionOrOccupation
-        .map(({ label }: { label: any }) => label)
-        .join(",");
-    return {
-      id,
-      label: preferredName,
-      secondary: dateOfBirthAndDeath
-        ? dateOfBirthAndDeath
-        : dateOfBirth || dateOfDeath
-        ? `${dateOfBirth || ""} | ${dateOfDeath || ""} | ${profession}`
-        : null,
-      dateOfBirth,
-      dateOfDeath,
-      dateOfBirthAndDeath,
-      avatar: depiction?.[0]?.thumbnail,
-      allProps,
-    };
-  }
-};
 const LobidSearchTable: FunctionComponent<Props> = ({
   searchString,
   typeName = "Person",
@@ -145,7 +103,6 @@ const LobidSearchTable: FunctionComponent<Props> = ({
   onAcceptItem,
 }) => {
   const [resultTable, setResultTable] = useState<LobIDEntry[] | undefined>();
-  const { history, pushHistory, popHistory } = useLocalHistory();
   const [selectedId, setSelectedId] = useState<string | undefined>();
   const [selectedEntry, setSelectedEntry] = useState<LobIDEntry | undefined>();
 
@@ -158,48 +115,40 @@ const LobidSearchTable: FunctionComponent<Props> = ({
     );
   }, [searchString, typeName]);
 
+  const { data: rawEntry } = useQuery(
+    ["lobid", selectedId],
+    () => findEntityWithinLobidByIRI(selectedId),
+    { enabled: !!selectedId },
+  );
+
+  useEffect(() => {
+    if (rawEntry) {
+      const entry = gndEntryWithMainInfo(rawEntry);
+      setSelectedEntry(entry);
+      onSelect && onSelect(entry.id);
+    }
+  }, [rawEntry, onSelect, setSelectedEntry]);
+
   const handleSelect = useCallback(
-    async (id: string | undefined, push: boolean = true) => {
+    async (id: string | undefined) => {
       setSelectedId(id);
-      push && pushHistory(id);
-      const cachedEntry = id && resultTable?.find((entry) => entry.id === id);
-      try {
-        const entry =
-          cachedEntry ||
-          (id && gndEntryWithMainInfo(await findEntityWithinLobidByIRI(id)));
-        console.log({ entry });
-        if (!entry) throw new Error("No entry found");
-        setSelectedEntry(entry);
-        onSelect && onSelect(id);
-      } catch (e) {
-        console.error("Error while fetching data from lobid", e);
-        setSelectedEntry(undefined);
-        onSelect && onSelect(undefined);
-      }
     },
-    [setSelectedId, resultTable, setSelectedEntry, onSelect],
+    [setSelectedId],
   );
 
   useEffect(() => {
     fetchData();
   }, [searchString, typeName, fetchData]);
 
-  const handleAccept = useCallback(
-    (id: string | undefined) => {
-      onAcceptItem && onAcceptItem(id, selectedEntry);
-    },
-    [onAcceptItem, selectedEntry, pushHistory],
-  );
-
   return (
     <>
-      {selectedId ? (
+      {selectedId && selectedEntry ? (
         <ClassicEntityCard
           id={selectedId}
           data={selectedEntry}
           onBack={() => handleSelect(undefined)}
           onSelectItem={handleSelect}
-          onAcceptItem={(id) => onAcceptItem(id, selectedEntry)}
+          onAcceptItem={(id) => onAcceptItem && onAcceptItem(id, selectedEntry)}
           acceptTitle={"Eintrag übernehmen"}
           detailView={
             <>

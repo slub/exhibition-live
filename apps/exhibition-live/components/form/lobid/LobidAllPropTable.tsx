@@ -17,7 +17,6 @@ import {
 import React, {
   FunctionComponent,
   useCallback,
-  useEffect,
   useMemo,
   useState,
 } from "react";

@@ -3,6 +3,16 @@ import { ThemeExtended } from "./themeType";
 export default function componentStyleOverrides(theme: ThemeExtended) {
   const bgColor = theme.colors?.grey50;
   return {
+    MuiAppBar: {
+      styleOverrides: {
+        root: {
+          backgroundColor: theme.backgroundDefault,
+          ".MuiTypography-root": {
+            color: theme.textDark,
+          },
+        },
+      },
+    },
     MuiButton: {
       styleOverrides: {
         root: {

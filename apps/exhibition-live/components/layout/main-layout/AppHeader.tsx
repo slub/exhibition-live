@@ -16,10 +16,8 @@ export const AppHeader = ({ drawerOpen, toggleDrawer }: AppHeaderProps) => {
     <AppBar
       enableColorOnDark
       position="fixed"
-      color="inherit"
       elevation={1}
       sx={{
-        bgcolor: theme.palette.background.default,
         zIndex: (theme) => theme.zIndex.drawer + 1,
       }}
     >

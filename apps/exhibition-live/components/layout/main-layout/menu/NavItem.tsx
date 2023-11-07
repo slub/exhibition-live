@@ -100,6 +100,16 @@ export const NavItem = ({
     <>
     { item.typeName
       ? (<ListItem
+          sx={{
+            borderRadius: `${customization.borderRadius}px`,
+            mb: 0.5,
+            alignItems: "flex-start",
+            backgroundColor: level > 1 ? "transparent !important" : "inherit",
+            px: 2.5,
+            pl: level > 1 ? "48px" : "24px",
+            py: level > 1 ? 1 : 1.25,
+            justifyContent: open ? "initial" : "center",
+          }}
           secondaryAction={
             <>
               <IconButton

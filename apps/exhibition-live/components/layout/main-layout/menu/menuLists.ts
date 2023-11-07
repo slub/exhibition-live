@@ -15,7 +15,7 @@ const lists: (schema: JSONSchema7) => MenuGroup = (exhibitionSchema) => ({
   id: "lists",
   // title: "Explorieren",
   type: "group",
-  children: Object.entries(
+  /*children: Object.entries(
     exhibitionSchema.definitions || exhibitionSchema["$defs"] || {},
   )
     .map(([key, value]) => ({
@@ -24,19 +24,19 @@ const lists: (schema: JSONSchema7) => MenuGroup = (exhibitionSchema) => ({
       type: "item",
       url: `/list/${key}`,
       typeName: key,
-  })),
-  /*children: [
+  })),*/
+  children: [
     {
       id: "list_default",
       title: "Austellungen",
       type: "item",
-      url: "/list/Exhibition",
+      typeName: "Exhibition",
     },
     {
       id: "list_person",
       title: "Personen",
       type: "item",
-      url: "/list/Person",
+      typeName: "Person"
     },
     {
       id: "list_other",
@@ -52,10 +52,10 @@ const lists: (schema: JSONSchema7) => MenuGroup = (exhibitionSchema) => ({
           id: `list_${key}`,
           title: (value as any).title || key,
           type: "item",
-          url: `/list/${key}`,
+          typeName: key,
         })),
     },
-  ],*/
+  ],
 });
 
 export default lists;

@@ -1,5 +1,6 @@
 import "react-json-view-lite/dist/index.css";
 
+import NiceModal from "@ebay/nice-modal-react";
 import {
   isObjectArray,
   isObjectArrayControl,
@@ -59,6 +60,7 @@ import {
 } from "../state/useSPARQL_CRUD";
 import SimilarityFinder from "./SimilarityFinder";
 import { FormDebuggingTools } from "./FormDebuggingTools";
+import GenericModal from "./GenericModal";
 import { optionallyCreatePortal } from "../helper";
 
 export type CRUDOpsType = {
@@ -180,7 +182,7 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> = ({
       (typeof forceEditMode !== "boolean" && managedEditMode) || forceEditMode,
     [managedEditMode, forceEditMode],
   );
-  const [hideSimilarityFinder, setHideSimilarityFinder] = useState(true);
+  const [hideSimilarityFinder, setHideSimilarityFinder] = useState(false);
   //const typeName = useMemo(() => typeIRI.substring(BASE_IRI.length, typeIRI.length), [typeIRI])
 
   useJsonldParser(data, jsonldContext, schema, {
@@ -300,6 +302,22 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> = ({
     await load();
   }, [entityIRI, save, setEditMode]);
 
+  const deleteData = useCallback(async(event: any) => {
+    NiceModal.show(GenericModal, {
+      type: "delete",
+    }).then(() => {
+      remove();
+    })
+  }, [remove]);
+
+  const reloadData = useCallback(async(event: any) => {
+    NiceModal.show(GenericModal, {
+      type: "reload",
+    }).then(() => {
+      load();
+    })
+  }, [load]);
+
   return (
     <>
       {!hideToolbar &&
@@ -313,10 +331,11 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> = ({
                 <IconButton onClick={handleSave} aria-label="save">
                   <Save />
                 </IconButton>
-                <IconButton onClick={remove} aria-lable="remove">
+                <IconButton
+                  onClick={deleteData} aria-lable="remove">
                   <Delete />
                 </IconButton>
-                <IconButton onClick={() => load()} aria-lable="refresh">
+                <IconButton onClick={reloadData} aria-lable="refresh">
                   <Refresh />
                 </IconButton>
                 <IconButton onClick={handleReset} aria-lable="full reload">

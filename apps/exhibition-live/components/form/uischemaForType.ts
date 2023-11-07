@@ -5,6 +5,7 @@ import { useMemo } from "react";
 import { BASE_IRI } from "../config";
 import ExhibitionUISchema from "./uischema/Exhibition.uischema.json";
 import ExhibitionExponatUISchema from "./uischema/ExhibitionExponat.uischema.json";
+import ExhibtionSeriesUISchema from "./uischema/ExhibitionSeries.uischema.json";
 import InvolvedPersonUISchema from "./uischema/InvolvedPerson.uischema.json";
 import LocationUISchema from "./uischema/Location.uischema.json";
 import PersonUISchema from "./uischema/Person.uischema.json";
@@ -23,6 +24,7 @@ export const uischemata = {
   Tag: TagUISchema,
   SeriesType: SeriesTypeUISchema,
   WorkPlace: WorkPlaceUISchema,
+  ExhibitionSeries: ExhibtionSeriesUISchema,
 };
 export const useUISchemaForType = (
   typeIRI: string,

@@ -11,25 +11,19 @@
             {
               "type": "Control",
               "label": "Bezeichnung",
-              "scope": {
-                "$ref": "#/properties/title"
-              }
+              "scope": "#/properties/title"
             },
             {
               "type": "Control",
               "label": "Übergeordnete Ausstellungsserie",
-              "scope": {
-                "$ref": "#/properties/parent"
-              }
+              "scope": "#/properties/parent"
             }
           ]
         },
         {
           "type": "Control",
           "label": "Beschreibung",
-          "scope": {
-            "$ref": "#/properties/description"
-          }
+          "scope": "#/properties/description"
         }
       ]
     }

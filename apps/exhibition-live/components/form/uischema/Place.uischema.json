@@ -26,7 +26,11 @@
         },
         {
           "type": "Control",
-          "scope": "#/properties/description"
+          "scope": "#/properties/description",
+          "label": "Beschreibung",
+          "options": {
+            "multi": true
+          }
         }
       ]
     },

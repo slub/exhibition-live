@@ -13,6 +13,10 @@ import PlaceUISchema from "./uischema/Place.uischema.json";
 import TagUISchema from "./uischema/Tag.uischema.json";
 import SeriesTypeUISchema from "./uischema/SeriesType.uischema.json";
 import WorkPlaceUISchema from "./uischema/WorkPlace.uischema.json";
+import PersonRoleUISchema from "./uischema/PersonRole.uischema.json";
+import CorporationRoleUISchema from "./uischema/CorporationRole.uischema.json";
+import EventTypeUISchema from "./uischema/EventType.uischema.json";
+import CorporationUISchema from "./uischema/Corporation.uischema.json";
 
 export const uischemata = {
   Exhibition: ExhibitionUISchema,
@@ -25,6 +29,10 @@ export const uischemata = {
   SeriesType: SeriesTypeUISchema,
   WorkPlace: WorkPlaceUISchema,
   ExhibitionSeries: ExhibtionSeriesUISchema,
+  PersonRole: PersonRoleUISchema,
+  CorporationRole: CorporationRoleUISchema,
+  EventType: EventTypeUISchema,
+  Corporation: CorporationUISchema,
 };
 export const useUISchemaForType = (
   typeIRI: string,

@@ -9,10 +9,12 @@
     {
       "type": "Control",
       "scope": "#/properties/description",
-      "label": "Beschreibung",
-      "options": {
-        "multi": true
-      }
+      "label": "Beschreibung"
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/tags",
+      "label": "Schlagworte"
     }
   ]
 }

@@ -6,12 +6,13 @@ import {
 import { JSONSchema7 } from "json-schema";
 
 import { MenuGroup } from "./types";
+import {Permission} from "../../../config";
 
 const icons = { IconFaceId, IconPaint, IconDots };
 
 const topLevel = ["Exhibition", "Person"];
 
-const lists: (schema: JSONSchema7) => MenuGroup = (exhibitionSchema) => ({
+const lists: (schema: JSONSchema7, getPermission: (typeName: string) => Permission) => MenuGroup = (exhibitionSchema, getPermission) => ({
   id: "lists",
   // title: "Explorieren",
   type: "group",
@@ -31,12 +32,14 @@ const lists: (schema: JSONSchema7) => MenuGroup = (exhibitionSchema) => ({
       title: "Austellungen",
       type: "item",
       typeName: "Exhibition",
+      readOnly: !getPermission("Exhibition").edit,
     },
     {
       id: "list_person",
       title: "Personen",
       type: "item",
-      typeName: "Person"
+      typeName: "Person",
+      readOnly: !getPermission("Person").edit,
     },
     {
       id: "list_other",
@@ -53,6 +56,7 @@ const lists: (schema: JSONSchema7) => MenuGroup = (exhibitionSchema) => ({
           title: (value as any).title || key,
           type: "item",
           typeName: key,
+          readOnly: !getPermission(key).edit,
         })),
     },
   ],

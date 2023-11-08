@@ -129,6 +129,7 @@ export const NavItem = ({
                 onClick={
                   () => create(item.typeName)
                 }
+                disabled={item?.readOnly}
               >
                 <AddIcon fontSize="small"/>
               </IconButton>

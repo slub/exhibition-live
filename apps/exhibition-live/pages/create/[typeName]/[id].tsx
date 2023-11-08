@@ -7,7 +7,6 @@ import { sladb } from "../../../components/form/formConfigs";
 import { MainLayout } from "../../../components/layout/main-layout";
 import { useFormData } from "../../../components/state";
 import { decodeIRI } from "../../../components/utils/core";
-import { ContextSection } from "../../../components/layout/main-layout/ContextSection";
 
 type Props = {
   children: React.ReactChild;
@@ -50,7 +49,6 @@ export default () => {
       <MainLayout>
         {classIRI && typeName && (
           <>
-            <ContextSection />
             <TypedForm
               key={id || "empty"}
               typeName={typeName as string}

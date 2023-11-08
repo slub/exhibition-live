@@ -1,5 +1,5 @@
 {
-  "type": "VertcalLayout",
+  "type": "VerticalLayout",
   "elements": [
     {
       "type": "Control",

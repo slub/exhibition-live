@@ -1,0 +1,38 @@
+{
+  "type": "VerticalLayout",
+  "elements": [
+    {
+      "type": "HorizontalLayout",
+      "elements": [
+        {
+          "type": "Control",
+          "scope": "#/properties/name",
+          "label": "Bezeichnung"
+        },
+        {
+          "type": "Control",
+          "scope": "#/properties/nameVariants",
+          "label": "Alternative Bezeichnungen"
+        }
+      ]
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/description",
+      "label": "Beschreibung",
+      "options": {
+        "multi": true
+      }
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/parent",
+      "label": "Übergeordnete Körperschaft"
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/location",
+      "label": "Geografischer Ort der Körperschaft"
+    }
+  ]
+}

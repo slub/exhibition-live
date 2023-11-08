@@ -1,0 +1,20 @@
+{
+  "type": "VerticalLayout",
+  "elements": [
+    {
+      "type": "Control",
+      "scope": "#/properties/title",
+      "label": "Bezeichnung"
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/description",
+      "label": "Beschreibung"
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/tags",
+      "label": "Schlagworte"
+    }
+  ]
+}

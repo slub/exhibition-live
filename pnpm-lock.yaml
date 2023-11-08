@@ -197,6 +197,9 @@ importers:
       ni18n:
         specifier: ^1.1.0
         version: 1.1.0(i18next@23.6.0)(next@13.1.1)(react-i18next@13.3.1)(react@18.2.0)
+      notistack:
+        specifier: ^3.0.1
+        version: 3.0.1(csstype@3.1.2)(react-dom@18.2.0)(react@18.2.0)
       openai:
         specifier: ^3.3.0
         version: 3.3.0
@@ -284,7 +287,7 @@ importers:
         version: 7.5.1(@types/react-dom@18.2.14)(@types/react@18.2.33)(react-dom@18.2.0)(react@18.2.0)
       '@storybook/addon-knobs':
         specifier: ^7.0.2
-        version: 7.0.2(@storybook/addons@7.5.3)(@storybook/api@7.5.3)(@storybook/components@7.5.1)(@storybook/core-events@7.5.1)(@storybook/theming@7.5.1)(@types/react@18.2.33)(react-dom@18.2.0)(react@18.2.0)
+        version: 7.0.2(@storybook/addons@7.5.3)(@storybook/api@7.5.3)(@storybook/components@7.5.1)(@storybook/core-events@7.5.3)(@storybook/theming@7.5.3)(@types/react@18.2.33)(react-dom@18.2.0)(react@18.2.0)
       '@storybook/addon-links':
         specifier: ^7.4.5
         version: 7.5.1(react-dom@18.2.0)(react@18.2.0)
@@ -7178,7 +7181,7 @@ packages:
       - supports-color
     dev: true
 
-  /@storybook/addon-knobs@7.0.2(@storybook/addons@7.5.3)(@storybook/api@7.5.3)(@storybook/components@7.5.1)(@storybook/core-events@7.5.1)(@storybook/theming@7.5.1)(@types/react@18.2.33)(react-dom@18.2.0)(react@18.2.0):
+  /@storybook/addon-knobs@7.0.2(@storybook/addons@7.5.3)(@storybook/api@7.5.3)(@storybook/components@7.5.1)(@storybook/core-events@7.5.3)(@storybook/theming@7.5.3)(@types/react@18.2.33)(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-PzKuscxcBPhA2jpDxJ/F+BvBRqHJ8qBki1kS1IOjmJbAfE96WFnweXZ73ImyAJnRtmtReCL6p0ZmFkrNDMDpUw==}
     peerDependencies:
       '@storybook/addons': ^7.0.0
@@ -7197,8 +7200,8 @@ packages:
       '@storybook/addons': 7.5.3(react-dom@18.2.0)(react@18.2.0)
       '@storybook/api': 7.5.3(react-dom@18.2.0)(react@18.2.0)
       '@storybook/components': 7.5.1(@types/react-dom@18.2.14)(@types/react@18.2.33)(react-dom@18.2.0)(react@18.2.0)
-      '@storybook/core-events': 7.5.1
-      '@storybook/theming': 7.5.1(react-dom@18.2.0)(react@18.2.0)
+      '@storybook/core-events': 7.5.3
+      '@storybook/theming': 7.5.3(react-dom@18.2.0)(react@18.2.0)
       copy-to-clipboard: 3.3.3
       core-js: 3.33.1
       escape-html: 1.0.3
@@ -10825,6 +10828,11 @@ packages:
       '@rdfjs/data-model': 1.3.4
       '@rdfjs/namespace': 1.1.0
 
+  /clsx@1.2.1:
+    resolution: {integrity: sha512-EcR6r5a8bj6pu3ycsa/E/cKVGuTgZJZdsyUYHOksG/UHIiKfjxzRxYJpyVBwYaQeOvghal9fcc4PidlgzugAQg==}
+    engines: {node: '>=6'}
+    dev: false
+
   /clsx@2.0.0:
     resolution: {integrity: sha512-rQ1+kcj+ttHG0MKVGBUXwayCCF1oh39BF5COIpRzuCEv8Mwjv0XucrI2ExNTOn9IlLifGClWQcU9BrZORvtw6Q==}
     engines: {node: '>=6'}
@@ -13140,6 +13148,14 @@ packages:
       ignore: 5.2.4
       merge2: 1.4.1
       slash: 3.0.0
+
+  /goober@2.1.13(csstype@3.1.2):
+    resolution: {integrity: sha512-jFj3BQeleOoy7t93E9rZ2de+ScC4lQICLwiAQmKMg9F6roKGaLSHoCDYKkWlSafg138jejvq/mTdvmnwDQgqoQ==}
+    peerDependencies:
+      csstype: ^3.0.10
+    dependencies:
+      csstype: 3.1.2
+    dev: false
 
   /gopd@1.0.1:
     resolution: {integrity: sha512-d65bNlIadxvpb/A2abVdlqKqV563juRnZ1Wtk6s1sIR8uNsXR70xqIzVqxVf1eTqDunwT2MkczEeaezCKTZhwA==}
@@ -16387,6 +16403,21 @@ packages:
 
   /not@0.1.0:
     resolution: {integrity: sha512-5PDmaAsVfnWUgTUbJ3ERwn7u79Z0dYxN9ErxCpVJJqe2RK0PJ3z+iFUxuqjwtlDDegXvtWoxD/3Fzxox7tFGWA==}
+    dev: false
+
+  /notistack@3.0.1(csstype@3.1.2)(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-ntVZXXgSQH5WYfyU+3HfcXuKaapzAJ8fBLQ/G618rn3yvSzEbnOB8ZSOwhX+dAORy/lw+GC2N061JA0+gYWTVA==}
+    engines: {node: '>=12.0.0', npm: '>=6.0.0'}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0
+      react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
+    dependencies:
+      clsx: 1.2.1
+      goober: 2.1.13(csstype@3.1.2)
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+    transitivePeerDependencies:
+      - csstype
     dev: false
 
   /npm-run-path@4.0.1:

@@ -15,6 +15,7 @@ import type { AppProps } from "next/app";
 import { FormRefsProvider } from "../components/provider/formRefsContext";
 import ThemeComponent from "../components/theme/ThemeComponent";
 import NiceModal from "@ebay/nice-modal-react";
+import { SnackbarProvider } from "notistack";
 
 export const queryClient = new QueryClient();
 const QueryClientProviderWrapper = ({
@@ -32,9 +33,11 @@ export default function App({ Component, pageProps }: AppProps) {
       <QueryClientProviderWrapper>
         <FormRefsProvider>
           <ThemeComponent>
-            <NiceModal.Provider>
+            <SnackbarProvider>
+              <NiceModal.Provider>
               {<Component {...pageProps} />}
             </NiceModal.Provider>
+            </SnackbarProvider>
           </ThemeComponent>
         </FormRefsProvider>
       </QueryClientProviderWrapper>

@@ -103,43 +103,25 @@ export const SearchSection = () => {
   );
 
   return !typeName ? null : (
-    <Box
-      sx={{
-        paddingLeft: 4,
-        paddingRight: 2,
-      }}
-    >
-      <Grid container spacing={2}>
-        {classIRI && typeName && (
-          <>
-            <Grid item xs={11}>
-              <DiscoverAutocompleteInput
-                key={typeName}
-                typeIRI={classIRI}
-                limit={1000}
-                condensed
-                inputProps={{
-                  placeholder: `Suche nach ${typeName}`,
-                  variant: "outlined",
-                }}
-                title={typeName}
-                typeName={typeName}
-                onDebouncedSearchChange={handleSearchTextChange}
-                onSelectionChange={(selection) =>
-                  handleChange(selection?.value)
-                }
-              />
-            </Grid>
-            <Grid item xs={1}>
-              <Button
-                onClick={handleNew}
-                aria-label={"neuen Eintrag erstellen"}
-                startIcon={<NewIcon />}
-              />
-            </Grid>
-          </>
-        )}
-      </Grid>
-    </Box>
+    <>
+      {classIRI && typeName && (
+        <DiscoverAutocompleteInput
+          key={typeName}
+          typeIRI={classIRI}
+          limit={1000}
+          condensed
+          inputProps={{
+            placeholder: `Suche nach ${typeName}`,
+            variant: "outlined",
+          }}
+          title={typeName}
+          typeName={typeName}
+          onDebouncedSearchChange={handleSearchTextChange}
+          onSelectionChange={(selection) =>
+            handleChange(selection?.value)
+          }
+        />
+      )}
+  </>
   );
 };

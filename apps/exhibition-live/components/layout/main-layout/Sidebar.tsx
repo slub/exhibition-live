@@ -21,7 +21,6 @@ import { sladb } from "../../form/formConfigs";
 import { useFormRefsContext } from "../../provider/formRefsContext";
 import { useLocalSettings } from "../../state/useLocalSettings";
 import { Logo } from "./Logo";
-import { drawerWidth } from "./MainLayout";
 import { MenuGroup, NavGroup, NavItem, Drawer } from "./menu";
 import menuLists from "./menu/menuLists";
 

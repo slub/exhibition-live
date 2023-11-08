@@ -19,7 +19,10 @@
     {
       "type": "Control",
       "scope": "#/properties/description",
-      "label": "Beschreibung"
+      "label": "Beschreibung",
+      "options": {
+        "multi": true
+      }
     }
   ]
 }

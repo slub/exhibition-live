@@ -1,15 +1,15 @@
 {
-  "type": "VerticalLayout",
+  "type": "VertcalLayout",
   "elements": [
     {
       "type": "Control",
-      "scope": "#/properties/title",
-      "label": "Bezeichnung"
+      "label": "Bezeichnung",
+      "scope": "#/properties/title"
     },
     {
       "type": "Control",
-      "scope": "#/properties/description",
       "label": "Beschreibung",
+      "scope": "#/properties/description",
       "options": {
         "multi": true
       }

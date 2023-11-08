@@ -8,14 +8,6 @@
     {
       "type": "Control",
       "scope": "#/properties/person"
-    },
-    {
-      "type": "Control",
-      "scope": "#/properties/@type"
-    },
-    {
-      "type": "Control",
-      "scope": "#/properties/@id"
     }
   ]
 }

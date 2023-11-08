@@ -10,17 +10,23 @@
           "elements": [
             {
               "type": "Control",
-              "scope": "#/properties/title"
+              "scope": "#/properties/title",
+              "label": "Bezeichnung"
             },
             {
               "type": "Control",
-              "scope": "#/properties/titleVariants"
+              "scope": "#/properties/titleVariants",
+              "label": "Weitere Bezeichnungen"
             }
           ]
         },
         {
           "type": "Control",
-          "scope": "#/properties/description"
+          "scope": "#/properties/description",
+          "options": {
+            "multi": true
+          },
+          "label": "Beschreibung"
         }
       ]
     },

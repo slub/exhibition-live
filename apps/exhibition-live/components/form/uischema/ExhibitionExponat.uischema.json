@@ -122,60 +122,6 @@
           }
         }
       ]
-    },
-    {
-      "type": "Group",
-      "label": "autoritative Normdaten",
-      "elements": [
-        {
-          "type": "HorizontalLayout",
-          "elements": [
-            {
-              "type": "Control",
-              "label": "Authorität",
-              "scope": "#/properties/authority"
-            },
-            {
-              "type": "Control",
-              "label": "URI",
-              "scope": "#/properties/idAuthority"
-            },
-            {
-              "type": "Control",
-              "label": "Letztes Normenupdate",
-              "scope": "#/properties/lastNormUpdate"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "type": "Control",
-      "scope": "#/properties/signature"
-    },
-    {
-      "type": "Control",
-      "scope": "#/properties/resources"
-    },
-    {
-      "type": "Control",
-      "scope": "#/properties/@type"
-    },
-    {
-      "type": "Control",
-      "scope": "#/properties/@id"
-    },
-    {
-      "type": "Control",
-      "scope": "#/properties/exponatsandpersons"
-    },
-    {
-      "type": "Control",
-      "scope": "#/properties/exponatsandcorporations"
-    },
-    {
-      "type": "Control",
-      "scope": "#/properties/@id"
     }
   ]
 }

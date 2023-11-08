@@ -23,6 +23,7 @@ export type MenuItem = MenuInterface & {
   type: "item";
   url?: string;
   typeName?: string;
+  readOnly?: boolean;
 };
 export type MenuCollapse = MenuInterface & {
   type: "collapse";

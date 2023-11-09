@@ -193,6 +193,41 @@ export const exhibitionDeclarativeMapping: DeclarativeMappings = [
   },
 ];
 
+export const locationDeclarativeMapping: DeclarativeMappings = [
+  {
+    source: {
+      path: "preferredName",
+    },
+    target: {
+      path: "title",
+    },
+  },
+  {
+    source: {
+      path: "biographicalOrHistoricalInformation",
+    },
+    target: {
+      path: "description",
+    },
+    mapping: {
+      strategy: {
+        id: "concatenate",
+        options: {
+          separator: "\n",
+        },
+      },
+    },
+  },
+  {
+    source: {
+      path: "depiction",
+    },
+    target: {
+      path: "image",
+    },
+  },
+];
+
 export const personDeclarativeMapping: DeclarativeMappings = [
   {
     source: {
@@ -340,4 +375,5 @@ export const declarativeMappings: { [key: string]: DeclarativeMappings } = {
   Person: personDeclarativeMapping,
   Corporation: corporateBodyDeclarativeMapping,
   ExhibitionExponat: workDeclarativeMapping,
+  Location: locationDeclarativeMapping,
 };

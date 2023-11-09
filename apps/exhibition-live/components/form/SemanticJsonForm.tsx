@@ -52,7 +52,6 @@ import MaterialLinkedObjectRenderer, {
 } from "../renderer/MaterialLinkedObjectRenderer";
 import TypeOfRenderer from "../renderer/TypeOfRenderer";
 import { useJsonldParser } from "../state/useJsonldParser";
-import { useSettings } from "../state/useLocalSettings";
 import {
   CRUDOptions,
   SparqlBuildOptions,
@@ -90,7 +89,6 @@ export interface SemanticJsonFormsProps {
   forceEditMode?: boolean;
   defaultEditMode?: boolean;
   searchText?: string;
-  parentIRI?: string;
   toolbarChildren?: React.ReactNode;
   onLoad?: (data: any) => void;
 }
@@ -166,7 +164,6 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> = ({
   forceEditMode,
   defaultEditMode,
   searchText,
-  parentIRI,
   toolbarChildren,
   onLoad,
 }) => {
@@ -199,16 +196,13 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> = ({
 
   const handleDataFromRemote = useCallback(
     (data: any, isRefetch: boolean) => {
-      //we will merge the data from the remote with the data from the jsonld parser in order to not overwrite the data from the user input
-      //if(editMode && isRefetch) return;
-      //console.log({data, jsonldData, isRefetch})
-      // const newData = isRefetch ? merge(data, jsonldData) : data;
+      console.log("Form change from external");
       setData(data);
     },
     [jsonldData, setData, editMode],
   );
 
-  const { exists, load, save, remove, isUpdate, setIsUpdate, ready, reset } =
+  const { exists, load, save, remove, isUpdate, setIsUpdate, reset } =
     useSPARQL_CRUD(
       ownIRI,
       typeIRI,
@@ -222,8 +216,9 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> = ({
         queryBuildOptions,
         onLoad,
         queryOptions: {
-          refetchOnWindowFocus: true,
+          refetchOnWindowFocus: false,
         },
+        queryKey: "root",
       },
     );
   const { renderers: jfpRenderers, ...jfpProps } = jsonFormsProps;
@@ -235,7 +230,6 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> = ({
   //const { toolbarRef } = useFormRefsContext();
 
   useEffect(() => {
-    if (!ready) return;
     const testExistenceAndLoad = async () => {
       if (!entityIRI || !shouldLoadInitially || initiallyLoaded === entityIRI)
         return;
@@ -263,7 +257,7 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> = ({
     (state: Pick<JsonFormsCore, "data" | "errors">) => {
       setData(state.data);
     },
-    [setData, setHideSimilarityFinder],
+    [setData],
   );
 
   useEffect(() => {
@@ -272,9 +266,8 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> = ({
     }
   }, [searchText, setHideSimilarityFinder]);
 
-  const handleNewData = useCallback(
+  const handleMappedData = useCallback(
     (newData: any) => {
-      console.log("handle new data accepted", newData);
       if (!newData) return;
       setData((data: any) => ({
         "@id": data["@id"],
@@ -318,6 +311,13 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> = ({
     })
   }, [load]);
 
+  const handleEntityIRIChange = useCallback(
+    (iri) =>
+      onEntityDataChange &&
+      onEntityDataChange({ "@id": iri, "@type": typeIRI }),
+    [onEntityDataChange, typeIRI],
+  );
+
   return (
     <>
       {!hideToolbar &&
@@ -346,11 +346,7 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> = ({
             {toolbarChildren}
           </>,
         )}
-      <Grid
-        container
-        spacing={2}
-        sx={{ marginTop: "1em", marginBottom: "2em", width: "100%" }}
-      >
+      <Grid container spacing={0} sx={{ width: "100%" }}>
         <Grid
           item
           xs={12}
@@ -358,19 +354,15 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> = ({
           lg={hideSimilarityFinder ? undefined : 6}
           flexGrow={1}
         >
-          <Card>
-            <CardContent>
-              <JsonForms
-                readonly={!editMode}
-                data={data}
-                renderers={allRenderer}
-                cells={materialCells}
-                onChange={handleFormChange}
-                schema={schema as JsonSchema}
-                {...jfpProps}
-              />
-            </CardContent>
-          </Card>
+          <JsonForms
+            readonly={readonly || !editMode}
+            data={data}
+            renderers={allRenderer}
+            cells={materialCells}
+            onChange={handleFormChange}
+            schema={schema as JsonSchema}
+            {...jfpProps}
+          />
           <FormDebuggingTools
             jsonData={{
               rawData: data,
@@ -395,12 +387,9 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> = ({
                     data={data}
                     classIRI={typeIRI}
                     jsonSchema={schema}
-                    onEntityIRIChange={(iri) =>
-                      onEntityDataChange &&
-                      onEntityDataChange({ "@id": iri, "@type": typeIRI })
-                    }
+                    onEntityIRIChange={handleEntityIRIChange}
                     searchOnDataPath={"title"}
-                    onMappedDataAccepted={handleNewData}
+                    onMappedDataAccepted={handleMappedData}
                   />
                 </CardContent>
               </Card>

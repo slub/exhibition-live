@@ -117,11 +117,9 @@ export const SearchSection = () => {
           title={typeName}
           typeName={typeName}
           onDebouncedSearchChange={handleSearchTextChange}
-          onSelectionChange={(selection) =>
-            handleChange(selection?.value)
-          }
+          onSelectionChange={(selection) => handleChange(selection?.value)}
         />
       )}
-  </>
+    </>
   );
 };

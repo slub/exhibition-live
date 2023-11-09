@@ -62,23 +62,36 @@ export const MainLayout = ({ children }: { children: React.ReactNode }) => {
   }, [setLeftDrawerOpened]);
   const toggleRightDrawer = useCallback(() => {
     setRightDrawerOpened((rightDrawerOpened) => !rightDrawerOpened);
-  },  [setRightDrawerOpened]);
-  const updateRightDrawerWidth = useCallback((newDrawerWidth: number) => {
-    setRightDrawerWidth(newDrawerWidth);
-  }, [setRightDrawerWidth]);
+  }, [setRightDrawerOpened]);
+  const updateRightDrawerWidth = useCallback(
+    (newDrawerWidth: number) => {
+      setRightDrawerWidth(newDrawerWidth);
+    },
+    [setRightDrawerWidth],
+  );
 
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
       {/* header */}
-      <AppHeader drawerOpen={leftDrawerOpened} toggleDrawer={toggleLeftDrawer} />
+      <AppHeader
+        drawerOpen={leftDrawerOpened}
+        toggleDrawer={toggleLeftDrawer}
+      />
       <Sidebar open={leftDrawerOpened} />
-      <FloatingButton drawerOpen={rightDrawerOpened} drawerWidth={rightDrawerWidth} toggleDrawer={toggleRightDrawer} />
-
+      <FloatingButton
+        drawerOpen={rightDrawerOpened}
+        drawerWidth={rightDrawerWidth}
+        toggleDrawer={toggleRightDrawer}
+      />
 
       {/*@ts-ignore */}
       <Main theme={theme}>{children}</Main>
-      <Searchbar open={rightDrawerOpened} drawerWidth={rightDrawerWidth} handleClose={toggleRightDrawer} />
+      <Searchbar
+        open={rightDrawerOpened}
+        drawerWidth={rightDrawerWidth}
+        handleClose={toggleRightDrawer}
+      />
     </Box>
   );
 };

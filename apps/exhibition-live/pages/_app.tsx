@@ -35,8 +35,8 @@ export default function App({ Component, pageProps }: AppProps) {
           <ThemeComponent>
             <SnackbarProvider>
               <NiceModal.Provider>
-              {<Component {...pageProps} />}
-            </NiceModal.Provider>
+                {<Component {...pageProps} />}
+              </NiceModal.Provider>
             </SnackbarProvider>
           </ThemeComponent>
         </FormRefsProvider>

@@ -28,10 +28,10 @@ export interface ArrayLayoutToolbarProps {
   readonly?: boolean;
   typeIRI?: string;
   onCreate?: () => void;
+  isReifiedStatement?: boolean;
 }
 
 export const getDefaultKey = (typeIRI?: string) => {
-  console.log("getDefaultKey", typeIRI);
   if (!typeIRI) return "title";
   if (typeIRI === sladb.ExhibitionWebLink.value) return "weblink";
   return "title";
@@ -46,6 +46,7 @@ export const ArrayLayoutToolbar = memo(
     createDefault,
     readonly,
     onCreate,
+    isReifiedStatement,
   }: ArrayLayoutToolbarProps & { schema?: JsonSchema7 }) => {
     const { t } = useTranslation();
     const typeIRI = useMemo(
@@ -78,49 +79,51 @@ export const ArrayLayoutToolbar = memo(
       [typeIRI],
     );
     return (
-      <Toolbar disableGutters={true}>
+      <Toolbar disableGutters={true} sx={{ padding: 0 }}>
         <Grid container alignItems="center" justifyContent="space-between">
           <Grid item>
-            <Typography variant={"h6"}>{label}</Typography>
+            <Typography variant={"h4"}>{label}</Typography>
           </Grid>
           <Hidden xsUp={errors.length === 0}>
             <Grid item>
               <ValidationIcon id="tooltip-validation" errorMessages={errors} />
             </Grid>
           </Hidden>
-          <Grid item>
-            <Grid
-              container
-              sx={{ visibility: readonly ? "hidden" : "visible" }}
-            >
-              <Grid item flex={1} sx={{ minWidth: "25em" }}>
-                <DiscoverAutocompleteInput
-                  typeIRI={typeIRI}
-                  typeName={typeName}
-                  title={label || ""}
-                  onEnterSearch={handleCreateNewFromSearch}
-                  onSelectionChange={(selection) =>
-                    handleChange_(selection?.value, selection?.label)
-                  }
-                />
-              </Grid>
-              <Grid item>
-                <Tooltip
-                  id="tooltip-add"
-                  title={t("add_another", { item: label }) || ""}
-                  placement="bottom"
-                >
-                  <IconButton
-                    aria-label={t("add_another", { item: label })}
-                    onClick={onCreate}
-                    size="large"
+          {!isReifiedStatement && (
+            <Grid item>
+              <Grid
+                container
+                sx={{ visibility: readonly ? "hidden" : "visible" }}
+              >
+                <Grid item flex={1} sx={{ minWidth: "25em" }}>
+                  <DiscoverAutocompleteInput
+                    typeIRI={typeIRI}
+                    typeName={typeName}
+                    title={label || ""}
+                    onEnterSearch={handleCreateNewFromSearch}
+                    onSelectionChange={(selection) =>
+                      handleChange_(selection?.value, selection?.label)
+                    }
+                  />
+                </Grid>
+                <Grid item>
+                  <Tooltip
+                    id="tooltip-add"
+                    title={t("add_another", { item: label }) || ""}
+                    placement="bottom"
                   >
-                    <AddIcon />
-                  </IconButton>
-                </Tooltip>
+                    <IconButton
+                      aria-label={t("add_another", { item: label })}
+                      onClick={onCreate}
+                      size="large"
+                    >
+                      <AddIcon />
+                    </IconButton>
+                  </Tooltip>
+                </Grid>
               </Grid>
             </Grid>
-          </Grid>
+          )}
         </Grid>
       </Toolbar>
     );

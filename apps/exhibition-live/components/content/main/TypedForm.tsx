@@ -1,4 +1,4 @@
-import { Button } from "@mui/material";
+import { Button, Card, CardContent } from "@mui/material";
 import { JSONSchema7 } from "json-schema";
 import React, { useCallback, useMemo, useRef } from "react";
 import { SplitPane } from "react-collapse-pane";
@@ -124,29 +124,36 @@ const TypedForm = ({ typeName, classIRI }: MainFormProps) => {
   return (
     <WithPreviewForm data={data} classIRI={classIRI}>
       {loadedSchema && (
-        <SemanticJsonForm
-          defaultEditMode={true}
-          data={data}
-          entityIRI={data["@id"]}
-          setData={handleChangeData}
-          searchText={searchText}
-          shouldLoadInitially
-          typeIRI={classIRI}
-          onEntityDataChange={handleChange}
-          crudOptions={crudOptions}
-          defaultPrefix={defaultPrefix}
-          jsonldContext={defaultJsonldContext}
-          queryBuildOptions={defaultQueryBuilderOptions}
-          schema={loadedSchema as JSONSchema7}
-          toolbarChildren={
-            <span ref={actionButtonAreaRef} style={{ float: "right" }}></span>
-          }
-          jsonFormsProps={{
-            uischema: uischemata[typeName] || (uischemas as any)[typeName],
-            uischemas: uischemas,
-            renderers: mainFormRenderers,
-          }}
-        />
+        <Card>
+          <CardContent>
+            <SemanticJsonForm
+              defaultEditMode={true}
+              data={data}
+              entityIRI={data["@id"]}
+              setData={handleChangeData}
+              searchText={searchText}
+              shouldLoadInitially
+              typeIRI={classIRI}
+              onEntityDataChange={handleChange}
+              crudOptions={crudOptions}
+              defaultPrefix={defaultPrefix}
+              jsonldContext={defaultJsonldContext}
+              queryBuildOptions={defaultQueryBuilderOptions}
+              schema={loadedSchema as JSONSchema7}
+              toolbarChildren={
+                <span
+                  ref={actionButtonAreaRef}
+                  style={{ float: "right" }}
+                ></span>
+              }
+              jsonFormsProps={{
+                uischema: uischemata[typeName] || (uischemas as any)[typeName],
+                uischemas: uischemas,
+                renderers: mainFormRenderers,
+              }}
+            />
+          </CardContent>
+        </Card>
       )}
     </WithPreviewForm>
   );

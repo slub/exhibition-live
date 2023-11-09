@@ -46,8 +46,12 @@ import { SemanticFormsModal } from "./SemanticFormsModal";
 import { BASE_IRI } from "../config";
 import { bringDefinitionToTop } from "../utils/core";
 import { JSONSchema7 } from "json-schema";
-import { slent } from "../form/formConfigs";
+import { defaultJsonldContext, slent } from "../form/formConfigs";
 import { v4 as uuidv4 } from "uuid";
+import { Grid, IconButton, List } from "@mui/material";
+import { SemanticFormsInline } from "./SemanticFormsInline";
+import AddIcon from "@mui/icons-material/Add";
+import { useCRUD } from "../state/useCRUD";
 
 type OwnProps = {
   removeItems(path: string, toDelete: number[]): () => void;
@@ -70,7 +74,6 @@ const MaterialArrayLayoutComponent = (props: ArrayLayoutProps & {}) => {
     data,
     path,
     schema,
-    uischema,
     errors,
     addItem,
     renderers,
@@ -79,25 +82,20 @@ const MaterialArrayLayoutComponent = (props: ArrayLayoutProps & {}) => {
     required,
     rootSchema,
     config,
-    uischemas,
     removeItems,
   } = props;
   const appliedUiSchemaOptions = merge({}, config, props.uischema.options);
   const { readonly, core } = useJsonForms();
   const realData = Resolve.data(core.data, path);
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [newIRI, setNewIRI] = useState(slent(uuidv4()).value);
+  const [formData, setFormData] = useState<any>({
+    "@id": slent(uuidv4()).value,
+  });
 
   const handleCreateNew = useCallback(() => {
-    setNewIRI(slent(uuidv4()).value);
+    setFormData({ "@id": slent(uuidv4()).value });
     setModalIsOpen(true);
-  }, [setModalIsOpen, setNewIRI]);
-  const handleAddNew = useCallback(() => {
-    setModalIsOpen(false);
-    addItem(path, {
-      "@id": newIRI,
-    })();
-  }, [setModalIsOpen, addItem, newIRI]);
+  }, [setModalIsOpen, setFormData]);
 
   const typeIRI = schema.properties?.["@type"]?.const;
   const typeName = useMemo(
@@ -109,6 +107,31 @@ const MaterialArrayLayoutComponent = (props: ArrayLayoutProps & {}) => {
       bringDefinitionToTop(rootSchema as JSONSchema7, typeName) as JsonSchema,
     [rootSchema, typeName],
   );
+  const { save } = useCRUD(formData, subSchema as JSONSchema7);
+
+  const handleSaveAndAdd = useCallback(() => {
+    const id = slent(uuidv4()).value;
+    const finalData = {
+      ...formData,
+      "@type": typeIRI,
+      "@id": id,
+      "@context": defaultJsonldContext,
+    };
+    //if(typeof saveMethod === 'function')  saveMethod();
+    save(finalData).then(() => {
+      addItem(path, finalData)();
+      setFormData({});
+    });
+  }, [save, addItem, setFormData]);
+
+  const handleAddNew = useCallback(() => {
+    setModalIsOpen(false);
+    //if(typeof saveMethod === 'function')  saveMethod();
+    addItem(path, formData)();
+    setFormData({});
+  }, [setModalIsOpen, addItem, formData, setFormData, typeIRI]);
+
+  const isReifiedStatement = Boolean(appliedUiSchemaOptions.isReifiedStatement);
 
   return (
     <div>
@@ -125,22 +148,41 @@ const MaterialArrayLayoutComponent = (props: ArrayLayoutProps & {}) => {
         onCreate={handleCreateNew}
         createDefault={innerCreateDefaultValue}
         readonly={readonly}
+        isReifiedStatement={isReifiedStatement}
       />
       {modalIsOpen && (
         <SemanticFormsModal
           schema={subSchema}
-          data={newIRI}
+          formData={formData}
           typeIRI={typeIRI}
           label={label}
           open={modalIsOpen}
           askClose={handleAddNew}
           askCancel={() => setModalIsOpen(false)}
-          onChange={(iri) => {
-            setNewIRI(iri);
-          }}
+          onChange={(entityIRI) =>
+            entityIRI && setFormData({ "@id": entityIRI })
+          }
+          onFormDataChange={(data) => setFormData(data)}
         />
       )}
-      <div>
+      {isReifiedStatement && (
+        <Grid display={"flex"} direction={"row"} alignItems={"center"}>
+          <Grid item flex={"1"}>
+            <SemanticFormsInline
+              schema={subSchema}
+              typeIRI={typeIRI}
+              formData={formData}
+              onFormDataChange={(data) => setFormData(data)}
+            />
+          </Grid>
+          <Grid item>
+            <IconButton onClick={handleSaveAndAdd}>
+              <AddIcon style={{ fontSize: 40 }} />
+            </IconButton>
+          </Grid>
+        </Grid>
+      )}
+      <List dense>
         {data > 0
           ? orderBy(
               uniqBy(
@@ -152,7 +194,7 @@ const MaterialArrayLayoutComponent = (props: ArrayLayoutProps & {}) => {
                 "id",
               ),
               "id",
-            ).map(({ id: expandID, childData, index }: any) => {
+            ).map(({ id: expandID, childData, index }: any, count) => {
               const childPath = composePaths(path, `${index}`);
               return (
                 <SimpleExpandPanelRenderer
@@ -164,47 +206,16 @@ const MaterialArrayLayoutComponent = (props: ArrayLayoutProps & {}) => {
                   data={childData}
                   key={expandID}
                   index={index}
-                />
-              );
-            })
-          : /*map(range(data), (index) => {
-            const childPath = composePaths(path, `${index}`);
-              const childData = Resolve.data(core.data, childPath);
-              const key = childData['@id'] || index;
-              const expandID = childData['@id'] || childPath
-            return {
-              childPath,
-              key,
-              expandID,
-            }
-          })
-            .map(({ childPath, key, expandID }, index) => {
-              return (
-                <ExpandPanelRenderer
-                  index={index}
-                  expanded={isExpanded(expandID)}
-                  schema={schema}
-                  path={path}
-                  handleExpansion={() => handleChange(expandID)}
-                  uischema={uischema}
-                  renderers={renderers}
-                  cells={cells}
-                  key={key}
-                  rootSchema={rootSchema}
-                  enableMoveUp={index != 0}
-                  enableMoveDown={index < data - 1}
-                  config={config}
-                  childLabelProp={appliedUiSchemaOptions.elementLabelProp}
+                  count={count}
+                  path={childPath}
                   childLabelTemplate={
                     appliedUiSchemaOptions.elementLabelTemplate
                   }
-                  uischemas={uischemas}
-                  readonly={readonly}
                 />
               );
-            })*/
-            null}
-      </div>
+            })
+          : null}
+      </List>
     </div>
   );
 };

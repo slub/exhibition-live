@@ -17,6 +17,8 @@ import { uischemas } from "../form/uischemas";
 import MuiEditDialog from "./MuiEditDialog";
 import { useGlobalCRUDOptions } from "../state/useGlobalCRUDOptions";
 import { BASE_IRI } from "../config";
+import { useControlled } from "@mui/material";
+import { useCRUD } from "../state/useCRUD";
 
 type SemanticFormsModalProps = {
   label?: string;
@@ -25,25 +27,33 @@ type SemanticFormsModalProps = {
   askCancel?: () => void;
   semanticJsonFormsProps?: Partial<SemanticJsonFormsProps>;
   schema: JsonSchema;
-  data: any;
+  entityIRI?: string;
   typeIRI: string;
-  onChange: (data: any) => void;
+  onChange?: (data: string | undefined) => void;
+  formData?: any;
+  onFormDataChange?: (data: any) => void;
 };
 export const SemanticFormsModal = (props: SemanticFormsModalProps) => {
   const {
     open,
     schema,
-    data,
+    entityIRI,
     onChange,
     typeIRI,
     label,
     askClose,
     askCancel,
     semanticJsonFormsProps,
+    formData: formDataProp,
+    onFormDataChange,
   } = props;
-  const [formData, setFormData] = useState({ "@id": data });
-  const [CRUDOps, setCRUDOps] = useState<CRUDOpsType | undefined>();
-  const { load, save, remove } = CRUDOps || {};
+  const [formData, setFormData] = useControlled({
+    name: "FormData",
+    controlled: formDataProp,
+    default: entityIRI ? { "@id": entityIRI } : {},
+  });
+  const { save, remove, load } = useCRUD(formData, schema as JSONSchema7);
+
   const { crudOptions } = useGlobalCRUDOptions();
   const [editMode, setEditMode] = useState(true);
   const [searchText, setSearchText] = useState<string | undefined>();
@@ -71,6 +81,13 @@ export const SemanticFormsModal = (props: SemanticFormsModalProps) => {
     },
     [setSearchText],
   );
+  const handleDataChange = useCallback(
+    (data_: any) => {
+      setFormData(data_);
+      onFormDataChange && onFormDataChange(data_);
+    },
+    [setFormData, onFormDataChange],
+  );
 
   const handleEditToggle = useCallback(() => {
     setEditMode(!editMode);
@@ -91,7 +108,9 @@ export const SemanticFormsModal = (props: SemanticFormsModalProps) => {
           title={label || ""}
           typeName={typeName || ""}
           onDebouncedSearchChange={handleSearchTextChange}
-          onSelectionChange={(selection) => onChange(selection?.value)}
+          onSelectionChange={(selection) =>
+            onChange && onChange(selection?.value)
+          }
         />
       }
       onRemove={handleRemove}
@@ -103,8 +122,8 @@ export const SemanticFormsModal = (props: SemanticFormsModalProps) => {
             data={formData}
             forceEditMode={Boolean(editMode)}
             hideToolbar={true}
-            entityIRI={data}
-            setData={(_data) => setFormData(_data)}
+            entityIRI={entityIRI}
+            setData={handleDataChange}
             shouldLoadInitially
             typeIRI={typeIRI}
             crudOptions={crudOptions}
@@ -117,7 +136,6 @@ export const SemanticFormsModal = (props: SemanticFormsModalProps) => {
               uischemas: uischemas,
             }}
             onEntityChange={onChange}
-            onInit={(crudOps) => setCRUDOps(crudOps)}
             searchText={searchText}
           />
         )}

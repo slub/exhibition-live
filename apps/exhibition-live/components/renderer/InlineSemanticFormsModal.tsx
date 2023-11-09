@@ -87,6 +87,7 @@ export const InlineSemanticFormsModal = (
   }, [$ref, schema, rootSchema]);
 
   const handleSave = useCallback(async () => {
+    console.log("handleSave");
     if (!save) return;
     await save();
     //emitToSubscribers(subscriptionKeys.GLOBAL_DATA_CHANGE, subscriptions)
@@ -102,6 +103,11 @@ export const InlineSemanticFormsModal = (
       setSearchText(searchText);
     },
     [setSearchText],
+  );
+
+  const handleCRUDOpsChange = useCallback(
+    (crudOps) => setCRUDOps(crudOps),
+    [setCRUDOps],
   );
 
   const handleEditToggle = useCallback(() => {
@@ -149,7 +155,7 @@ export const InlineSemanticFormsModal = (
               uischemas: uischemas,
             }}
             onEntityChange={handleChange_}
-            onInit={(crudOps) => setCRUDOps(crudOps)}
+            onInit={handleCRUDOpsChange}
             searchText={searchText}
           />
         )}

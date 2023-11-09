@@ -18,8 +18,15 @@ import { Add, OpenInNew, OpenInNewOff } from "@mui/icons-material";
 import DiscoverAutocompleteInput from "../form/discover/DiscoverAutocompleteInput";
 import { useGlobalCRUDOptions } from "../state/useGlobalCRUDOptions";
 import { InlineSemanticFormsModal } from "./InlineSemanticFormsModal";
-import { BASE_IRI } from "../config";
+import { BASE_IRI, primaryFields } from "../config";
 import { AutocompleteSuggestion } from "../form/DebouncedAutoComplete";
+import { SemanticFormsModal } from "./SemanticFormsModal";
+import { JSONSchema7 } from "json-schema";
+import {
+  applyToEachField,
+  extractFieldIfString,
+} from "../utils/mapping/simpleFieldExtractor";
+import { PrimaryField } from "../utils/types";
 
 const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
   const {
@@ -38,6 +45,8 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
     label,
     description,
   } = props;
+  const [formData, setFormData] = useState<any>({ "@id": data });
+  const [searchString, setSearchString] = useState<string | undefined>("");
   const isValid = errors.length === 0;
   const appliedUiSchemaOptions = merge({}, config, uischema.options);
   const [editMode, setEditMode] = useState(false);
@@ -48,6 +57,23 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
     () => ({ value: data || null, label: realLabel }),
     [data, realLabel],
   );
+  const { $ref, typeIRI } = uischema.options?.context || {};
+  const subSchema = useMemo(() => {
+    if (!$ref) return;
+    const schema2 = {
+      ...schema,
+      $ref,
+    };
+    const resolvedSchema = resolveSchema(
+      schema2 as JsonSchema,
+      "",
+      rootSchema as JsonSchema,
+    );
+    return {
+      ...rootSchema,
+      ...resolvedSchema,
+    };
+  }, [$ref, schema, rootSchema]);
 
   useEffect(() => {
     if (!data) setRealLabel("");
@@ -60,9 +86,10 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
         return;
       }
       if (v.value !== data) handleChange(path, v.value);
+      setFormData({ "@id": v.value });
       setRealLabel(v.label);
     },
-    [path, handleChange, data, setRealLabel],
+    [path, handleChange, data, setRealLabel, setFormData],
   );
 
   useEffect(() => {
@@ -85,14 +112,15 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
   const newURI = useCallback(() => {
     const prefix = schema.title || slent[""].value;
     const newURI = `${prefix}${uuidv4()}`;
-    handleSelectedChange({ value: newURI, label: "" });
-  }, [schema, data, handleSelectedChange]);
+    const fieldDecl = primaryFields[typeName] as PrimaryField | undefined;
+    const labelKey = fieldDecl?.label || "title";
+    setFormData({ "@id": newURI, [labelKey]: searchString });
+  }, [schema, data, searchString, setFormData]);
 
-  useEffect(() => {
-    if (editMode && !data) newURI();
-  }, [newURI, editMode]);
+  const handleEntityIRIChange = useCallback((v: string) => {
+    handleSelectedChange({ value: v, label: v });
+  }, []);
 
-  const { $ref, typeIRI } = uischema.options?.context || {};
   const typeName = useMemo(
     () => typeIRI.substring(BASE_IRI.length, typeIRI.length),
     [typeIRI],
@@ -134,6 +162,21 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
     newURI();
     setModalIsOpen(true);
   }, [setModalIsOpen, newURI]);
+
+  const handleSaveAndClose = useCallback(() => {
+    setModalIsOpen(false);
+    const id = formData["@id"];
+    if (!id) return;
+    const fieldDecl = primaryFields[typeName] as PrimaryField | undefined;
+    let label = id;
+    if (fieldDecl?.label)
+      label = extractFieldIfString(formData, fieldDecl.label);
+    handleSelectedChange({
+      value: id,
+      label: typeof label === "string" ? label : id,
+    });
+  }, [setModalIsOpen, formData, handleSelectedChange]);
+
   return (
     <Hidden xsUp={!visible}>
       <Grid container alignItems="baseline">
@@ -146,6 +189,8 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
             typeName={typeName || ""}
             selected={selected}
             onSelectionChange={(selection) => handleSelectedChange(selection)}
+            onSearchValueChange={setSearchString}
+            searchString={searchString}
           />
         </Grid>
         {!ctx.readonly && (
@@ -176,21 +221,19 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
                 </IconButton>
               </Grid>
             </Grid>
-            <InlineSemanticFormsModal
-              {...props}
-              open={modalIsOpen}
-              askClose={() => setModalIsOpen(false)}
-              handleChange={(path, v) => {
-                handleSelectedChange({ value: v, label: "" });
-              }}
-              semanticJsonFormsProps={{
-                onLoad: (data: any) => {
-                  //TODO: generalize label handling, this is bad practise and not very fexible!
-                  const label = data?.label || data?.name || data?.title || "";
-                  handleSelectedChange({ value: data["@id"], label });
-                },
-              }}
-            />
+            {modalIsOpen && (
+              <SemanticFormsModal
+                schema={subSchema as JsonSchema}
+                formData={formData}
+                typeIRI={typeIRI}
+                label={label}
+                open={modalIsOpen}
+                askClose={handleSaveAndClose}
+                askCancel={() => setModalIsOpen(false)}
+                onFormDataChange={(data) => setFormData(data)}
+                onChange={handleEntityIRIChange}
+              />
+            )}
           </Grid>
         )}
       </Grid>

@@ -90,11 +90,6 @@ export const SearchSection = () => {
     [typeName],
   );
 
-  const handleNew = useCallback(() => {
-    const newId = slent(uuidv4()).value;
-    router.push(`/create/${typeName}/${encodeIRI(newId)}`);
-  }, [typeName]);
-
   const handleSearchTextChange = useCallback(
     (search) => {
       setSearch(search);

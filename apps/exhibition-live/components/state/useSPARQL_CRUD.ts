@@ -18,6 +18,7 @@ import { JSONSchema7 } from "json-schema";
 import jsonld from "jsonld";
 import N3 from "n3";
 import { useCallback, useEffect, useState } from "react";
+import { useSnackbar } from "notistack";
 
 import {
   jsonSchemaGraphInfuser,
@@ -101,6 +102,7 @@ export const useSPARQL_CRUD = (
     string | undefined
   >();
   const queryClient = useQueryClient();
+  const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
     if (!entityIRI) return;
@@ -183,6 +185,7 @@ export const useSPARQL_CRUD = (
     );
     query = `PREFIX : <${defaultPrefix}> ` + query;
     await updateFetch(query);
+    enqueueSnackbar('Daten wurden entfernt', { variant: "info" });
   }, [entityIRI, whereEntity, defaultPrefix, updateFetch]);
 
   //TODO: this code is a mess, refactor it (it has matured historically)
@@ -205,7 +208,8 @@ export const useSPARQL_CRUD = (
 
       // @ts-ignore
       const ntriples = ntWriter.quadsToString([...ds]).replaceAll("_:_:", "_:");
-
+        // temporary add message here
+        enqueueSnackbar('Daten sollten aktualisiert werden', { variant: "success" });
       if (!isUpdate && !upsertByDefault) {
         const updateQuery = INSERT.DATA` ${ntriples} `;
         const query = updateQuery.build();
@@ -255,6 +259,7 @@ export const useSPARQL_CRUD = (
     setData && setData({}, false);
     setLastEntityLoaded(undefined);
     load();
+    enqueueSnackbar('Daten wurden zurückgesetzt', { variant: "info" });
   }, [setData, setLastEntityLoaded, load]);
   const handleLoadSuccess = useCallback(
     (data: any) => {

@@ -24,10 +24,10 @@ import { Logo } from "./Logo";
 import { drawerWidth } from "./MainLayout";
 import { MenuGroup, NavGroup, NavItem, Drawer } from "./menu";
 import menuLists from "./menu/menuLists";
-import {useGlobalAuth} from "../../state";
+import { useGlobalAuth } from "../../state";
 
 const MenuList = () => {
-  const {getPermission} = useGlobalAuth();
+  const { getPermission } = useGlobalAuth();
   const menuGroup = useMemo<MenuGroup | null>(() => {
     return loadedSchema
       ? menuLists(loadedSchema as JSONSchema7, getPermission)
@@ -89,7 +89,7 @@ const Options = ({ open }) => {
 };
 
 const Navigation = ({ open }) => {
-  const {getPermission} = useGlobalAuth();
+  const { getPermission } = useGlobalAuth();
   const menuGroup = useMemo<MenuGroup | null>(() => {
     return loadedSchema
       ? menuLists(loadedSchema as JSONSchema7, getPermission)

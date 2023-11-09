@@ -295,21 +295,27 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> = ({
     await load();
   }, [entityIRI, save, setEditMode]);
 
-  const deleteData = useCallback(async(event: any) => {
-    NiceModal.show(GenericModal, {
-      type: "delete",
-    }).then(() => {
-      remove();
-    })
-  }, [remove]);
+  const deleteData = useCallback(
+    async (event: any) => {
+      NiceModal.show(GenericModal, {
+        type: "delete",
+      }).then(() => {
+        remove();
+      });
+    },
+    [remove],
+  );
 
-  const reloadData = useCallback(async(event: any) => {
-    NiceModal.show(GenericModal, {
-      type: "reload",
-    }).then(() => {
-      load();
-    })
-  }, [load]);
+  const reloadData = useCallback(
+    async (event: any) => {
+      NiceModal.show(GenericModal, {
+        type: "reload",
+      }).then(() => {
+        load();
+      });
+    },
+    [load],
+  );
 
   const handleEntityIRIChange = useCallback(
     (iri) =>
@@ -331,8 +337,7 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> = ({
                 <IconButton onClick={handleSave} aria-label="save">
                   <Save />
                 </IconButton>
-                <IconButton
-                  onClick={deleteData} aria-lable="remove">
+                <IconButton onClick={deleteData} aria-lable="remove">
                   <Delete />
                 </IconButton>
                 <IconButton onClick={reloadData} aria-lable="refresh">

@@ -6,13 +6,16 @@ import {
 import { JSONSchema7 } from "json-schema";
 
 import { MenuGroup } from "./types";
-import {Permission} from "../../../config";
+import { Permission } from "../../../config";
 
 const icons = { IconFaceId, IconPaint, IconDots };
 
 const topLevel = ["Exhibition", "Person"];
 
-const lists: (schema: JSONSchema7, getPermission: (typeName: string) => Permission) => MenuGroup = (exhibitionSchema, getPermission) => ({
+const lists: (
+  schema: JSONSchema7,
+  getPermission: (typeName: string) => Permission,
+) => MenuGroup = (exhibitionSchema, getPermission) => ({
   id: "lists",
   // title: "Explorieren",
   type: "group",

@@ -32,7 +32,9 @@ export default function App({ Component, pageProps }: AppProps) {
       <QueryClientProviderWrapper>
         <FormRefsProvider>
           <ThemeComponent>
-            <NiceModal.Provider>{<Component {...pageProps} />}</NiceModal.Provider>
+            <NiceModal.Provider>
+              {<Component {...pageProps} />}
+            </NiceModal.Provider>
           </ThemeComponent>
         </FormRefsProvider>
       </QueryClientProviderWrapper>

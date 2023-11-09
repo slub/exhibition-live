@@ -10,37 +10,36 @@ import {
   IconButton,
   Toolbar,
   Typography,
-} from '@mui/material';
-import {
-  Close as CloseIcon,
-} from "@mui/icons-material";
-import NiceModal, { useModal } from '@ebay/nice-modal-react';
+} from "@mui/material";
+import { Close as CloseIcon } from "@mui/icons-material";
+import NiceModal, { useModal } from "@ebay/nice-modal-react";
 
 type GenericModalProps = {
-  type: string,
-  id?: string
-}
+  type: string;
+  id?: string;
+};
 
 const modalContent = [
   {
-    modalType: 'delete',
-    title: 'Eintrag Löschen',
-    text: 'Eintrag dauerthaft löschen?',
-    action: 'Löschen',
+    modalType: "delete",
+    title: "Eintrag Löschen",
+    text: "Eintrag dauerthaft löschen?",
+    action: "Löschen",
   },
   {
-    modalType: 'reload',
-    title: 'Daten zurücksetzen',
-    text: 'Date zurücksetzen? Nicht gespeicherte Einstellungen gehen verlorgen.',
-    action: 'Zurücksetzen',
-  }
-]
+    modalType: "reload",
+    title: "Daten zurücksetzen",
+    text: "Date zurücksetzen? Nicht gespeicherte Einstellungen gehen verlorgen.",
+    action: "Zurücksetzen",
+  },
+];
 
-const GenericModal = NiceModal.create(({ type, id } : GenericModalProps) => {
+const GenericModal = NiceModal.create(({ type, id }: GenericModalProps) => {
   const modal = useModal();
 
-  const content = modalContent.filter(({modalType}) => modalType == type).shift();
-
+  const content = modalContent
+    .filter(({ modalType }) => modalType == type)
+    .shift();
 
   return (
     <Dialog
@@ -73,26 +72,17 @@ const GenericModal = NiceModal.create(({ type, id } : GenericModalProps) => {
       </DialogContent>
       <DialogActions>
         <Button
-          onClick={
-            () => {
-              modal.resolve();
-              modal.remove();
-            }
-          }
+          onClick={() => {
+            modal.resolve();
+            modal.remove();
+          }}
         >
           {content.action}
         </Button>
-        <Button
-          onClick={
-            () => modal.remove()
-          }
-        >
-          Abbrechen
-        </Button>
+        <Button onClick={() => modal.remove()}>Abbrechen</Button>
       </DialogActions>
     </Dialog>
-  )
-})
+  );
+});
 
 export default GenericModal;
-

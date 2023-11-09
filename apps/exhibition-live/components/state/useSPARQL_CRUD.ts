@@ -8,8 +8,10 @@ import {
 } from "@rdfjs/types";
 import {
   QueryObserverOptions,
+  QueryObserverResult,
   useQuery,
   useQueryClient,
+  UseQueryResult,
 } from "@tanstack/react-query";
 import { ASK, CONSTRUCT, DELETE, INSERT } from "@tpluscode/sparql-builder";
 import { JSONSchema7 } from "json-schema";
@@ -24,6 +26,17 @@ import {
 import { jsonSchema2construct } from "../utils/sparql";
 import { useQueryKeyResolver } from "./useQueryKeyResolver";
 
+type OwnUseCRUDResults = {
+  save: (data?: any) => Promise<void>;
+  remove: () => Promise<void>;
+  exists: () => Promise<boolean>;
+  load: () => Promise<QueryObserverResult>;
+  reset: () => void;
+  isUpdate: boolean;
+  setIsUpdate: (isUpdate: boolean) => void;
+};
+
+export type UseCRUDResults = UseQueryResult<any, Error> & OwnUseCRUDResults;
 export interface SparqlBuildOptions {
   base?: string;
   prefixes?: Record<string, string | NamespaceBuilder>;
@@ -51,13 +64,14 @@ export type CRUDFunctions = {
 export type CRUDOptions = CRUDFunctions & {
   defaultPrefix: string;
   data: any;
-  setData: (data: any, isRefetch: boolean) => void;
+  setData?: (data: any, isRefetch: boolean) => void;
   walkerOptions?: Partial<WalkerOptions>;
   queryBuildOptions?: SparqlBuildOptions;
   upsertByDefault?: boolean;
   ready?: boolean;
   onLoad?: (data: any) => void;
   queryOptions?: QueryObserverOptions<any, Error>;
+  queryKey?: string;
 };
 
 export const useSPARQL_CRUD = (
@@ -76,8 +90,9 @@ export const useSPARQL_CRUD = (
     upsertByDefault,
     onLoad,
     queryOptions,
+    queryKey = "load",
   }: CRUDOptions,
-) => {
+): UseCRUDResults => {
   const [isUpdate, setIsUpdate] = useState(false);
   const [whereEntity, setWhereEntity] = useState<string | undefined>();
   const { updateSourceToTargets, removeSource, resolveSourceIRIs } =
@@ -170,86 +185,99 @@ export const useSPARQL_CRUD = (
     await updateFetch(query);
   }, [entityIRI, whereEntity, defaultPrefix, updateFetch]);
 
-  const save = useCallback(async () => {
-    if (!data || !entityIRI || !whereEntity) return;
-    const _data = {
-      ...data,
-      "@type": typeIRI,
-      "@id": entityIRI,
-    };
-    const ntWriter = new N3.Writer({ format: "Turtle" });
-    const ds = await jsonld.toRDF(_data);
+  //TODO: this code is a mess, refactor it (it has matured historically)
+  const save = useCallback(
+    async (data_?: any) => {
+      let dataToBeSaved = data_;
+      const finalEntityIRI = dataToBeSaved?.["@id"] || entityIRI;
+      const finalTypeIRI = dataToBeSaved?.["@type"] || typeIRI;
+      if (!dataToBeSaved) {
+        if (!data || !entityIRI) return;
+        dataToBeSaved = {
+          ...data,
+          "@type": typeIRI,
+          "@id": entityIRI,
+        };
+      }
+      const finalWhereEntity = ` <${finalEntityIRI}> a <${finalTypeIRI}> . `;
+      const ntWriter = new N3.Writer({ format: "Turtle" });
+      const ds = await jsonld.toRDF(dataToBeSaved);
 
-    // @ts-ignore
-    const ntriples = ntWriter.quadsToString([...ds]).replaceAll("_:_:", "_:");
+      // @ts-ignore
+      const ntriples = ntWriter.quadsToString([...ds]).replaceAll("_:_:", "_:");
 
-    if (!isUpdate && !upsertByDefault) {
-      const updateQuery = INSERT.DATA` ${ntriples} `;
-      const query = updateQuery.build();
-      await updateFetch(query);
-      setIsUpdate(true);
-    } else {
-      const { construct, whereRequired, whereOptionals } = jsonSchema2construct(
-        entityIRI,
-        schema,
-        ["@id"],
-        ["@id", "@type"],
-      );
-      const queries = [
-        DELETE` ${construct} `
-          .WHERE`${whereEntity} ${whereRequired}\n${whereOptionals}`.build(
-          queryBuildOptions,
-        ),
-        INSERT.DATA` ${ntriples} `.build(queryBuildOptions),
-      ];
-      for (let query of queries) {
-        query = `PREFIX : <${defaultPrefix}> ` + query;
+      if (!isUpdate && !upsertByDefault) {
+        const updateQuery = INSERT.DATA` ${ntriples} `;
+        const query = updateQuery.build();
         await updateFetch(query);
+        setIsUpdate(true);
+      } else {
+        const { construct, whereRequired, whereOptionals } =
+          jsonSchema2construct(
+            finalEntityIRI,
+            schema,
+            ["@id"],
+            ["@id", "@type"],
+          );
+        console.log("construct", construct);
+        const queries = [
+          DELETE` ${construct} `
+            .WHERE`${finalWhereEntity} ${whereRequired}\n${whereOptionals}`.build(
+            queryBuildOptions,
+          ),
+          INSERT.DATA` ${ntriples} `.build(queryBuildOptions),
+        ];
+        for (let query of queries) {
+          query = `PREFIX : <${defaultPrefix}> ` + query;
+          await updateFetch(query);
+        }
+        for (const sourceIRI of resolveSourceIRIs(finalEntityIRI)) {
+          console.log("invalidateQueries", sourceIRI);
+          await queryClient.invalidateQueries(["load", sourceIRI]);
+        }
       }
-      for (const sourceIRI of resolveSourceIRIs(entityIRI)) {
-        console.log("invalidateQueries", sourceIRI);
-        await queryClient.invalidateQueries(["load", sourceIRI]);
-      }
-    }
-  }, [
-    entityIRI,
-    typeIRI,
-    whereEntity,
-    data,
-    isUpdate,
-    setIsUpdate,
-    defaultPrefix,
-    updateFetch,
-    upsertByDefault,
-    queryClient,
-  ]);
+    },
+    [
+      entityIRI,
+      typeIRI,
+      whereEntity,
+      data,
+      isUpdate,
+      setIsUpdate,
+      defaultPrefix,
+      updateFetch,
+      upsertByDefault,
+      queryClient,
+    ],
+  );
 
   const reset = useCallback(() => {
-    setData({}, false);
+    setData && setData({}, false);
     setLastEntityLoaded(undefined);
     load();
   }, [setData, setLastEntityLoaded, load]);
   const handleLoadSuccess = useCallback(
     (data: any) => {
       if (data) {
-        setData(data, entityIRI === lastEntityLoaded);
+        setData && setData(data, entityIRI === lastEntityLoaded);
         setLastEntityLoaded(entityIRI);
       }
     },
     [entityIRI, setLastEntityLoaded, lastEntityLoaded, setData],
   );
 
+  const { enabled, ...queryOptionsRest } = queryOptions || {};
   const queryResults = useQuery(
-    ["load", entityIRI],
+    [queryKey, entityIRI],
     async () => {
       const res = await load();
       return res || null;
     },
     {
       onSuccess: handleLoadSuccess,
-      enabled: Boolean(entityIRI && whereEntity),
+      enabled: Boolean(entityIRI && whereEntity) && enabled,
       refetchOnWindowFocus: false,
-      ...queryOptions,
+      ...queryOptionsRest,
     },
   );
   const { refetch, isLoading } = queryResults;

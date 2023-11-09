@@ -35,6 +35,7 @@ import React, {
   useMemo,
   useState,
 } from "react";
+import { createPortal } from "react-dom";
 
 import AdbSpecialDateRenderer, {
   adbSpecialDateControlTester,
@@ -61,6 +62,7 @@ import SimilarityFinder from "./SimilarityFinder";
 import { FormDebuggingTools } from "./FormDebuggingTools";
 import GenericModal from "./GenericModal";
 import { optionallyCreatePortal } from "../helper";
+import { useFormRefsContext } from "../provider/formRefsContext";
 
 export type CRUDOpsType = {
   load: () => Promise<void>;
@@ -179,7 +181,7 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> = ({
       (typeof forceEditMode !== "boolean" && managedEditMode) || forceEditMode,
     [managedEditMode, forceEditMode],
   );
-  const [hideSimilarityFinder, setHideSimilarityFinder] = useState(false);
+  const { searchRef } = useFormRefsContext();
   //const typeName = useMemo(() => typeIRI.substring(BASE_IRI.length, typeIRI.length), [typeIRI])
 
   useJsonldParser(data, jsonldContext, schema, {
@@ -259,12 +261,6 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> = ({
     },
     [setData],
   );
-
-  useEffect(() => {
-    if (searchText && searchText.length > 0) {
-      setHideSimilarityFinder(false);
-    }
-  }, [searchText, setHideSimilarityFinder]);
 
   const handleMappedData = useCallback(
     (newData: any) => {
@@ -355,8 +351,6 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> = ({
         <Grid
           item
           xs={12}
-          md={hideSimilarityFinder ? undefined : 8}
-          lg={hideSimilarityFinder ? undefined : 6}
           flexGrow={1}
         >
           <JsonForms
@@ -376,31 +370,17 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> = ({
             }}
           />
         </Grid>
-        {!hideSimilarityFinder && (
-          <>
-            <Grid item xs={12} lg={6} md={4}>
-              <Card>
-                <CardContent>
-                  <IconButton
-                    onClick={() => setHideSimilarityFinder(true)}
-                    sx={{ position: "absolute" }}
-                  >
-                    <Close />
-                  </IconButton>
-                  <SimilarityFinder
-                    search={searchText}
-                    data={data}
-                    classIRI={typeIRI}
-                    jsonSchema={schema}
-                    onEntityIRIChange={handleEntityIRIChange}
-                    searchOnDataPath={"title"}
-                    onMappedDataAccepted={handleMappedData}
-                  />
-                </CardContent>
-              </Card>
-            </Grid>
-          </>
-        )}
+        {searchRef?.current && createPortal(
+          <SimilarityFinder
+            search={searchText}
+            data={data}
+            classIRI={typeIRI}
+            jsonSchema={schema}
+            onEntityIRIChange={handleEntityIRIChange}
+            searchOnDataPath={"title"}
+            onMappedDataAccepted={handleMappedData}
+          />, searchRef.current,)
+        }
       </Grid>
     </>
   );

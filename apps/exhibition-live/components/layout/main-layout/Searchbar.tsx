@@ -1,6 +1,6 @@
 import { Box, Drawer, Toolbar } from "@mui/material";
 import React from "react";
-import { SearchSection } from "./SearchSection";
+import { SimilarityFinderForm } from "../../form/SimilarityFinderForm";
 
 type SearchbarProps = {
   handleClose: () => void;
@@ -32,7 +32,7 @@ export const Searchbar = ({
     >
       <Toolbar />
       <Box>
-        <SearchSection />
+        <SimilarityFinderForm />
       </Box>
     </Drawer>
   );

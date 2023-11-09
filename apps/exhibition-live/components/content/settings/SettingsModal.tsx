@@ -33,11 +33,14 @@ const SettingsModal: FunctionComponent<Props> = (props) => {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
 
-  const handleClose = useCallback((reloadWindow = false) => {
-    closeSettings();
-    //reload
-    reloadWindow && window && window.location.reload();
-  }, [closeSettings]);
+  const handleClose = useCallback(
+    (reloadWindow = false) => {
+      closeSettings();
+      //reload
+      reloadWindow && window && window.location.reload();
+    },
+    [closeSettings],
+  );
 
   return (
     <Dialog

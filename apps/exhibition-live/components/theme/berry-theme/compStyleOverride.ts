@@ -100,8 +100,8 @@ export default function componentStyleOverrides(theme: ThemeExtended) {
             backgroundColor: theme.menuSelectedBack,
             color: theme.menuSelected,
           },
-        }
-      }
+        },
+      },
     },
     MuiListItem: {
       styleOverrides: {

@@ -1,6 +1,6 @@
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
-import AddIcon from '@mui/icons-material/Add';
-import SearchIcon from '@mui/icons-material/Search';
+import AddIcon from "@mui/icons-material/Add";
+import SearchIcon from "@mui/icons-material/Search";
 import {
   Avatar,
   Chip,
@@ -98,8 +98,8 @@ export const NavItem = ({
 
   return (
     <>
-    { item.typeName
-      ? (<ListItem
+      {item.typeName ? (
+        <ListItem
           sx={{
             borderRadius: `${customization.borderRadius}px`,
             mb: 0.5,
@@ -116,136 +116,133 @@ export const NavItem = ({
                 size="small"
                 edge="end"
                 aria-label="list"
-                onClick={
-                  () => list(item.typeName)
-                }
+                onClick={() => list(item.typeName)}
               >
-                <SearchIcon fontSize="small"/>
+                <SearchIcon fontSize="small" />
               </IconButton>
               <IconButton
                 size="small"
                 edge="end"
                 aria-label="create"
-                onClick={
-                  () => create(item.typeName)
-                }
+                onClick={() => create(item.typeName)}
                 disabled={item?.readOnly}
               >
-                <AddIcon fontSize="small"/>
+                <AddIcon fontSize="small" />
               </IconButton>
             </>
           }
         >
-        {itemIcon && (
-          <ListItemIcon sx={{ my: "auto", minWidth: !item?.icon ? 18 : 36 }}>
-            {itemIcon}
-          </ListItemIcon>
-        )}
-        <ListItemText
-          primary={
-            <Typography
-              variant={
-                customization.isOpen.findIndex((id) => id === item.id) > -1
-                  ? "h5"
-                  : "body1"
-              }
-              color="inherit"
-            >
-              {item.title}
-            </Typography>
-          }
-          secondary={
-            typeof item.caption === "string" && (
+          {itemIcon && (
+            <ListItemIcon sx={{ my: "auto", minWidth: !item?.icon ? 18 : 36 }}>
+              {itemIcon}
+            </ListItemIcon>
+          )}
+          <ListItemText
+            primary={
               <Typography
-                variant="caption"
-                sx={{ ...theme.typography.caption }}
-                display="block"
-                gutterBottom
+                variant={
+                  customization.isOpen.findIndex((id) => id === item.id) > -1
+                    ? "h5"
+                    : "body1"
+                }
+                color="inherit"
               >
-                {item.caption}
+                {item.title}
               </Typography>
-            )
-          }
-          sx={{
-            opacity: open ? 1 : 0,
-            transition: theme.transitions.create("opacity", {
-              easing: theme.transitions.easing.sharp,
-              duration: theme.transitions.duration.leavingScreen,
-            }),
-          }}
-        />
-      </ListItem>)
-      : (<ListItemButton
-        component={(props) =>
-          item.url ? (
-            <Link {...props} href={item.url} target={itemTarget} />
-          ) : (
-            <div />
-          )
-        }
-        disabled={item.disabled}
-        sx={{
-          borderRadius: `${customization.borderRadius}px`,
-          mb: 0.5,
-          alignItems: "flex-start",
-          backgroundColor: level > 1 ? "transparent !important" : "inherit",
-          px: 2.5,
-          py: level > 1 ? 1 : 1.25,
-          justifyContent: open ? "initial" : "center",
-        }}
-        selected={customization.isOpen.findIndex((id) => id === item.id) > -1}
-        onClick={() => (onClick ? onClick() : itemHandler(item.id))}
-      >
-        {itemIcon && (
-          <ListItemIcon sx={{ my: "auto", minWidth: !item?.icon ? 18 : 36 }}>
-            {itemIcon}
-          </ListItemIcon>
-        )}
-        <ListItemText
-          primary={
-            <Typography
-              variant={
-                customization.isOpen.findIndex((id) => id === item.id) > -1
-                  ? "h5"
-                  : "body1"
-              }
-              color="inherit"
-            >
-              {item.title}
-            </Typography>
-          }
-          secondary={
-            typeof item.caption === "string" && (
-              <Typography
-                variant="caption"
-                sx={{ ...theme.typography.caption }}
-                display="block"
-                gutterBottom
-              >
-                {item.caption}
-              </Typography>
-            )
-          }
-          sx={{
-            opacity: open ? 1 : 0,
-            transition: theme.transitions.create("opacity", {
-              easing: theme.transitions.easing.sharp,
-              duration: theme.transitions.duration.leavingScreen,
-            }),
-          }}
-        />
-        {item.chip && (
-          // @ts-ignore
-          <Chip
-            color={item.chip.color}
-            variant={item.chip.variant}
-            size={item.chip.size}
-            label={item.chip.label}
-            avatar={item.chip.avatar && <Avatar>{item.chip.avatar}</Avatar>}
+            }
+            secondary={
+              typeof item.caption === "string" && (
+                <Typography
+                  variant="caption"
+                  sx={{ ...theme.typography.caption }}
+                  display="block"
+                  gutterBottom
+                >
+                  {item.caption}
+                </Typography>
+              )
+            }
+            sx={{
+              opacity: open ? 1 : 0,
+              transition: theme.transitions.create("opacity", {
+                easing: theme.transitions.easing.sharp,
+                duration: theme.transitions.duration.leavingScreen,
+              }),
+            }}
           />
-        )}
-      </ListItemButton>)
-    }
+        </ListItem>
+      ) : (
+        <ListItemButton
+          component={(props) =>
+            item.url ? (
+              <Link {...props} href={item.url} target={itemTarget} />
+            ) : (
+              <div />
+            )
+          }
+          disabled={item.disabled}
+          sx={{
+            borderRadius: `${customization.borderRadius}px`,
+            mb: 0.5,
+            alignItems: "flex-start",
+            backgroundColor: level > 1 ? "transparent !important" : "inherit",
+            px: 2.5,
+            py: level > 1 ? 1 : 1.25,
+            justifyContent: open ? "initial" : "center",
+          }}
+          selected={customization.isOpen.findIndex((id) => id === item.id) > -1}
+          onClick={() => (onClick ? onClick() : itemHandler(item.id))}
+        >
+          {itemIcon && (
+            <ListItemIcon sx={{ my: "auto", minWidth: !item?.icon ? 18 : 36 }}>
+              {itemIcon}
+            </ListItemIcon>
+          )}
+          <ListItemText
+            primary={
+              <Typography
+                variant={
+                  customization.isOpen.findIndex((id) => id === item.id) > -1
+                    ? "h5"
+                    : "body1"
+                }
+                color="inherit"
+              >
+                {item.title}
+              </Typography>
+            }
+            secondary={
+              typeof item.caption === "string" && (
+                <Typography
+                  variant="caption"
+                  sx={{ ...theme.typography.caption }}
+                  display="block"
+                  gutterBottom
+                >
+                  {item.caption}
+                </Typography>
+              )
+            }
+            sx={{
+              opacity: open ? 1 : 0,
+              transition: theme.transitions.create("opacity", {
+                easing: theme.transitions.easing.sharp,
+                duration: theme.transitions.duration.leavingScreen,
+              }),
+            }}
+          />
+          {item.chip && (
+            // @ts-ignore
+            <Chip
+              color={item.chip.color}
+              variant={item.chip.variant}
+              size={item.chip.size}
+              label={item.chip.label}
+              avatar={item.chip.avatar && <Avatar>{item.chip.avatar}</Avatar>}
+            />
+          )}
+        </ListItemButton>
+      )}
     </>
   );
 };

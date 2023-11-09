@@ -10,6 +10,7 @@ const labels: Record<string, string> = {
   Resource: "Ressource",
   ExhibitionType: "Ausstellungsart",
   GeographicLocation: "Geografischer Ort",
+  ExhibitionSeries: "Ausstellungsreihe",
 };
 const createStubLayout = (defs: string, baseIRI: string, label?: string) => ({
   type: "VerticalLayout",

@@ -38,4 +38,8 @@ export const primaryFields: Partial<ExhibitionPrimaryFieldDeclaration> = {
   ExhibitionSeries: defaultMapping,
   EventType: defaultMapping,
   Resource: defaultMapping,
+  ExhibitionCategory: {
+    ...defaultMapping,
+    label: "name",
+  },
 };

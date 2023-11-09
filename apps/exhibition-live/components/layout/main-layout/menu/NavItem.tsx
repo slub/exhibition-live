@@ -114,67 +114,65 @@ export const NavItem = ({
               pl: level > 1 ? "48px" : "24px",
               py: level > 1 ? 1 : 1.25,
               justifyContent: open ? "initial" : "center",
-
             }}
-            onClick={
-                  () => list(item.typeName)
-                }>
-          {itemIcon && (
-            <ListItemIcon sx={{ my: "auto", minWidth: !item?.icon ? 18 : 36 }}>
-              {itemIcon}
-            </ListItemIcon>
-          )}
-          <ListItemText
-            primary={
-              <Typography
-                variant={
-                  customization.isOpen.findIndex((id) => id === item.id) > -1
-                    ? "h5"
-                    : "body1"
-                }
-                color="inherit"
+            onClick={() => list(item.typeName)}
+          >
+            {itemIcon && (
+              <ListItemIcon
+                sx={{ my: "auto", minWidth: !item?.icon ? 18 : 36 }}
               >
-                {item.title}
-              </Typography>
-            }
-            secondary={
-              typeof item.caption === "string" && (
+                {itemIcon}
+              </ListItemIcon>
+            )}
+            <ListItemText
+              primary={
                 <Typography
-                  variant="caption"
-                  sx={{ ...theme.typography.caption }}
-                  display="block"
-                  gutterBottom
+                  variant={
+                    customization.isOpen.findIndex((id) => id === item.id) > -1
+                      ? "h5"
+                      : "body1"
+                  }
+                  color="inherit"
                 >
-                  {item.caption}
+                  {item.title}
                 </Typography>
-              )
-            }
-            sx={{
-              opacity: open ? 1 : 0,
-              transition: theme.transitions.create("opacity", {
-                easing: theme.transitions.easing.sharp,
-                duration: theme.transitions.duration.leavingScreen,
-              }),
-            }}
-          />
+              }
+              secondary={
+                typeof item.caption === "string" && (
+                  <Typography
+                    variant="caption"
+                    sx={{ ...theme.typography.caption }}
+                    display="block"
+                    gutterBottom
+                  >
+                    {item.caption}
+                  </Typography>
+                )
+              }
+              sx={{
+                opacity: open ? 1 : 0,
+                transition: theme.transitions.create("opacity", {
+                  easing: theme.transitions.easing.sharp,
+                  duration: theme.transitions.duration.leavingScreen,
+                }),
+              }}
+            />
           </ListItemButton>
           <Divider orientation="vertical" variant="middle" flexItem />
-        <ListItemButton
-          aria-label="create"
-          sx={{
-            mb: 0.5,
-            marginRight: 0,
-            py: level > 1 ? 1 : 1.25,
-            width: "fit-content",
-            flexGrow: 0,
-          }}
-          onClick={
-            () => create(item.typeName)
-          }
-          disabled={item?.readOnly}
-        >
-        <AddIcon />
-      </ListItemButton>
+          <ListItemButton
+            aria-label="create"
+            sx={{
+              mb: 0.5,
+              marginRight: 0,
+              py: level > 1 ? 1 : 1.25,
+              width: "fit-content",
+              flexGrow: 0,
+            }}
+            onClick={() => create(item.typeName)}
+            disabled={item?.readOnly}
+          >
+            <AddIcon />
+          </ListItemButton>
         </ListItem>
       ) : (
         <ListItemButton

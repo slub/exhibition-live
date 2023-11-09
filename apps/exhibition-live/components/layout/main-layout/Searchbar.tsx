@@ -1,10 +1,4 @@
-import {
-  Box,
-  Drawer,
-  Toolbar,
-
-
-} from "@mui/material";
+import { Box, Drawer, Toolbar } from "@mui/material";
 import React from "react";
 import { SearchSection } from "./SearchSection";
 

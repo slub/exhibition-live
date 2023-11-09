@@ -28,7 +28,7 @@ import K10PlusSearchTable, {
 import LobidSearchTable from "./lobid/LobidSearchTable";
 import { findEntityByAuthorityIRI } from "../utils/discover";
 import { useGlobalCRUDOptions } from "../state/useGlobalCRUDOptions";
-import {mapAbstractDataUsingAI, mapDataUsingAI} from "../utils/ai";
+import { mapAbstractDataUsingAI, mapDataUsingAI } from "../utils/ai";
 
 // @ts-ignore
 type Props = {

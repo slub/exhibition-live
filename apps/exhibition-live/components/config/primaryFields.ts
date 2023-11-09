@@ -34,7 +34,6 @@ export const primaryFields: Partial<ExhibitionPrimaryFieldDeclaration> = {
   Location: defaultMappingWithImg,
   CorporationRole: defaultMapping,
   PersonRole: defaultMapping,
-  ExhibitionCategory: defaultMapping,
   ExhibitionSeries: defaultMapping,
   EventType: defaultMapping,
   Resource: defaultMapping,

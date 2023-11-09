@@ -216,7 +216,7 @@ const SimilarityFinder: FunctionComponent<Props> = ({
 
   return (
     <>
-      <Grid container alignItems="center" direction={"column"} spacing={2}>
+      <Grid container alignItems="center" direction={"column"} spacing={2} sx={{ marginTop: '20px' }}>
         <Grid item>
           <ToggleButtonGroup
             value={selectedKnowledgeSources}

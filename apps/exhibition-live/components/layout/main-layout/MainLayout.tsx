@@ -68,7 +68,7 @@ export const MainLayout = ({ children }: { children: React.ReactNode }) => {
 
   const [leftDrawerOpened, setLeftDrawerOpened] = useState<boolean>(true);
   const [rightDrawerOpened, setRightDrawerOpened] = useState<boolean>(false);
-  const [rightDrawerWidth, setRightDrawerWidth] = useState<number>(240);
+  const [rightDrawerWidth, setRightDrawerWidth] = useState<number>(500);
 
   const toggleLeftDrawer = useCallback(() => {
     setLeftDrawerOpened((leftDrawerOpened) => !leftDrawerOpened);

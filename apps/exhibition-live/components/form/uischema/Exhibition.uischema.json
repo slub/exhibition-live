@@ -151,7 +151,8 @@
           "scope": "#/properties/involvedPersons",
           "options": {
             "elementLabelTemplate": "{{=it.person?.name || ''}} ({{=it.role?.title || ''}})",
-            "detail": "GENERATED"
+            "detail": "GENERATED",
+            "isReifiedStatement": true
           }
         },
         {
@@ -160,7 +161,8 @@
           "scope": "#/properties/involvedCorporations",
           "options": {
             "elementLabelTemplate": "{{=it.corporation?.name || ''}} ({{=it.role?.title || ''}})",
-            "detail": "GENERATED"
+            "detail": "GENERATED",
+            "isReifiedStatement": true
           }
         }
       ]

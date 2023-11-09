@@ -96,7 +96,11 @@
         {
           "type": "Control",
           "label": "Arbeitsorte",
-          "scope": "#/properties/workplace"
+          "scope": "#/properties/workplace",
+          "options": {
+            "elementLabelTemplate": "{{=it.location?.title || ''}} ({{=it.fromDate || ''}} - {{=it.toDate || ''}})",
+            "isReifiedStatement": true
+          }
         }
       ]
     },

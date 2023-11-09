@@ -4,6 +4,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import {
   Avatar,
   Chip,
+  Divider,
   IconButton,
   ListItem,
   ListItemButton,
@@ -101,37 +102,23 @@ export const NavItem = ({
       {item.typeName ? (
         <ListItem
           sx={{
-            borderRadius: `${customization.borderRadius}px`,
-            mb: 0.5,
-            alignItems: "flex-start",
-            backgroundColor: level > 1 ? "transparent !important" : "inherit",
-            px: 2.5,
-            pl: level > 1 ? "48px" : "24px",
-            py: level > 1 ? 1 : 1.25,
-            justifyContent: open ? "initial" : "center",
+            padding: 0,
           }}
-          secondaryAction={
-            <>
-              <IconButton
-                size="small"
-                edge="end"
-                aria-label="list"
-                onClick={() => list(item.typeName)}
-              >
-                <SearchIcon fontSize="small" />
-              </IconButton>
-              <IconButton
-                size="small"
-                edge="end"
-                aria-label="create"
-                onClick={() => create(item.typeName)}
-                disabled={item?.readOnly}
-              >
-                <AddIcon fontSize="small" />
-              </IconButton>
-            </>
-          }
         >
+          <ListItemButton
+            sx={{
+              mb: 0.5,
+              alignItems: "flex-start",
+              backgroundColor: level > 1 ? "transparent !important" : "inherit",
+              px: 2.5,
+              pl: level > 1 ? "48px" : "24px",
+              py: level > 1 ? 1 : 1.25,
+              justifyContent: open ? "initial" : "center",
+
+            }}
+            onClick={
+                  () => list(item.typeName)
+                }>
           {itemIcon && (
             <ListItemIcon sx={{ my: "auto", minWidth: !item?.icon ? 18 : 36 }}>
               {itemIcon}
@@ -170,6 +157,24 @@ export const NavItem = ({
               }),
             }}
           />
+          </ListItemButton>
+          <Divider orientation="vertical" variant="middle" flexItem />
+        <ListItemButton
+          aria-label="create"
+          sx={{
+            mb: 0.5,
+            marginRight: 0,
+            py: level > 1 ? 1 : 1.25,
+            width: "fit-content",
+            flexGrow: 0,
+          }}
+          onClick={
+            () => create(item.typeName)
+          }
+          disabled={item?.readOnly}
+        >
+        <AddIcon />
+      </ListItemButton>
         </ListItem>
       ) : (
         <ListItemButton
@@ -182,7 +187,7 @@ export const NavItem = ({
           }
           disabled={item.disabled}
           sx={{
-            borderRadius: `${customization.borderRadius}px`,
+            // borderRadius: `${customization.borderRadius}px`,
             mb: 0.5,
             alignItems: "flex-start",
             backgroundColor: level > 1 ? "transparent !important" : "inherit",

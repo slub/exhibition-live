@@ -1,8 +1,5 @@
 import { Resolve } from "@jsonforms/core";
-import {
-  AndroidOutlined,
-  Storage as KnowledgebaseIcon,
-} from "@mui/icons-material";
+import { Storage as KnowledgebaseIcon } from "@mui/icons-material";
 import {
   Chip,
   Divider,
@@ -12,7 +9,6 @@ import {
 } from "@mui/material";
 import { dcterms } from "@tpluscode/rdf-ns-builders";
 import { JSONSchema7 } from "json-schema";
-import { ChatCompletionRequestMessage, Configuration, OpenAIApi } from "openai";
 import * as React from "react";
 import { FunctionComponent, useCallback, useMemo, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
@@ -32,12 +28,8 @@ import K10PlusSearchTable, {
 import LobidSearchTable from "./lobid/LobidSearchTable";
 import { findEntityByAuthorityIRI } from "../utils/discover";
 import { useGlobalCRUDOptions } from "../state/useGlobalCRUDOptions";
-import { filterForPrimitivePropertiesAndArrays } from "../utils/core";
 
-const model = "gpt-3.5-turbo";
 // @ts-ignore
-const GND_IRI =
-  "http://ontologies.slub-dresden.de/exhibition/entity/Authority#s-1";
 type Props = {
   data: any;
   classIRI: string;
@@ -122,150 +114,21 @@ const SimilarityFinder: FunctionComponent<Props> = ({
   );
   const handleMapAbstractAndDescUsingAI = useCallback(
     async (id: string | undefined, entryData: any) => {
-      if (!openai?.organization || !openai?.apiKey) {
-        console.log("No OpenAI API Key or Organization set");
-      }
-      const configuration = new Configuration(openai);
-      const openaiInstance = new OpenAIApi(configuration);
-      const entrySchema = {
-        type: "object",
-        properties: filterForPrimitivePropertiesAndArrays(
-          jsonSchema.properties,
-        ),
-      };
-      try {
-        const firstMessages: ChatCompletionRequestMessage[] = [
-          {
-            role: "system",
-            content:
-              "The task is to map an abstract and description of an entity from a librarian catalogue to a more simple model of a user given JSON Schema. First listen to the next two user prompts, only respond to system commands.",
-          },
-          {
-            role: "user",
-            content: `The JSONSchema of the object of type \`${typeName}\` is:
-           \`\`\`json
-            ${JSON.stringify(entrySchema)}
-            \`\`\``,
-          },
-          {
-            role: "user",
-            content: `The data returned from the library catalog is:
-            \`\`\`json
-            ${JSON.stringify(entryData)}
-            \`\`\``,
-          },
-          {
-            role: "system",
-            content: `Extract dates, like beginning and end of the ${typeName} from the text according to the schema. Hint: dates tha map to an integer should be converted to YYYYMMDD, if any of the part is unknown fill it with 0. Omit null values in the resultset.`,
-          },
-        ];
-        const response = await openaiInstance.createChatCompletion({
-          model: model,
-          messages: firstMessages,
-          max_tokens: 1500,
-        });
-        const dataFromGNDRaw =
-          response.data?.choices?.[0]?.message?.content || "{}";
-        console.log({ data: response.data, dataFromGNDRaw });
-        const { ["@id"]: _1, ...dataFromGND } = JSON.parse(dataFromGNDRaw);
-        const inject = {
-          authority: {
-            "@id": GND_IRI,
-          },
-          idAuthority: id,
-          lastNormUpdate: new Date().toISOString(),
-        };
-        const newData = { ...dataFromGND, ...inject };
-        onMappedDataAccepted && onMappedDataAccepted(newData);
-      } catch (e) {
-        console.error("could not guess mapping", e);
-      }
+      const newData = mapAbstractDataUsingAI(id, typeName, entryData, {
+        jsonSchema,
+        openai,
+      });
+      onMappedDataAccepted && onMappedDataAccepted(newData);
     },
     [typeName, onMappedDataAccepted, jsonSchema],
   );
   const handleMapUsingAI = useCallback(
     async (id: string | undefined, entryData: any) => {
-      if (!openai?.organization || !openai?.apiKey) {
-        console.log("No OpenAI API Key or Organization set");
-      }
-      const configuration = new Configuration(openai);
-      const openaiInstance = new OpenAIApi(configuration);
-      const entrySchema = {
-        type: "object",
-        properties: filterForPrimitivePropertiesAndArrays(
-          jsonSchema.properties,
-        ),
-      };
-      try {
-        const firstMessages: ChatCompletionRequestMessage[] = [
-          {
-            role: "system",
-            content:
-              "The task is to map complex norm data from the GND to a more simple model of a  user given JSON Schema. First listen to the next two user prompts, only respond to system commands.",
-          },
-          {
-            role: "user",
-            content: `The JSONSchema of the object of type \`${typeName}\` is:
-           \`\`\`json
-            ${JSON.stringify(entrySchema)}
-            \`\`\``,
-          },
-          {
-            role: "user",
-            content: `The data returned from the GND is:
-            \`\`\`json
-            ${JSON.stringify(entryData)}
-            \`\`\``,
-          },
-          {
-            role: "system",
-            content:
-              "Output the result of mapping the GND data to the schema (minified JSON without newlines). Hint: dates tha map to an integer should be converted to YYYYMMDD, if any of the part is unknown fill it with 0. Omit null values in the resultset.",
-          },
-        ];
-        const generateMappingMessage: ChatCompletionRequestMessage[] = [
-          {
-            role: "system",
-            content:
-              "for each mapped target field, give a small declarative representation of gnd fields used as input and a strategy used for mapping. The diffrent strategies will be implemented by a developer. Output the declarations as JSON.",
-          },
-        ];
-        const response = await openaiInstance.createChatCompletion({
-          model: model,
-          messages: firstMessages,
-          max_tokens: 1200,
-        });
-        const dataFromGNDRaw =
-          response.data?.choices?.[0]?.message?.content || "{}";
-        console.log({ data: response.data, dataFromGNDRaw });
-        const { ["@id"]: _1, ...dataFromGND } = JSON.parse(dataFromGNDRaw);
-        const inject = {
-          authority: {
-            "@id": GND_IRI,
-          },
-          idAuthority: id,
-          lastNormUpdate: new Date().toISOString(),
-        };
-        const newData = { ...dataFromGND, ...inject };
-        onMappedDataAccepted && onMappedDataAccepted(newData);
-        const mappingResponse = await openaiInstance.createChatCompletion({
-          model: model,
-          messages: [
-            ...firstMessages,
-            {
-              role: "assistant",
-              content: dataFromGNDRaw,
-            },
-            ...generateMappingMessage,
-          ],
-          max_tokens: 1200,
-        });
-        const mappingDataRaw =
-          mappingResponse.data?.choices?.[0]?.message?.content || "{}";
-        console.log({ mappingDataRaw });
-      } catch (e) {
-        console.error("could not guess mapping", e);
-      }
+      const newData = await mapDataUsingAI(id, typeName, entryData, {
+        jsonSchema,
+        openai,
+      });
+      onMappedDataAccepted && onMappedDataAccepted(newData);
     },
     [typeName, onMappedDataAccepted, jsonSchema],
   );
@@ -273,7 +136,6 @@ const SimilarityFinder: FunctionComponent<Props> = ({
   const { crudOptions } = useGlobalCRUDOptions();
   const handleManuallyMapData = useCallback(
     async (id: string | undefined, entryData: any) => {
-      console.log("map manually");
       if (!id || !entryData?.allProps) return;
       const mappingConfig = declarativeMappings[typeName];
       if (!mappingConfig) {
@@ -289,8 +151,8 @@ const SimilarityFinder: FunctionComponent<Props> = ({
         );
         const inject = {
           "@type": classIRI,
-          authority: {
-            "@id": GND_IRI,
+          authorityID: {
+            "@id": id,
           },
           lastNormUpdate: new Date().toISOString(),
         };
@@ -316,17 +178,13 @@ const SimilarityFinder: FunctionComponent<Props> = ({
 
   const handleAcceptKXP = useCallback(
     (id: string | undefined, entryData: NodePropertyItem) => {
-      if (selectedKnowledgeSources?.includes("ai")) {
-        console.log("handleAcceptKXP", id, entryData);
-        const props = entryData.properties;
-        if (!props) return;
-        const title = findFirstInProps(props, dcterms.title);
-        const description = findFirstInProps(props, dcterms.description);
-        const abstract = findFirstInProps(props, dcterms.abstract);
-        handleMapAbstractAndDescUsingAI(id, { title, description, abstract });
-      } else {
-        handleManuallyMapData(id, entryData);
-      }
+      console.log("handleAcceptKXP", id, entryData);
+      const props = entryData.properties;
+      if (!props) return;
+      const title = findFirstInProps(props, dcterms.title);
+      const description = findFirstInProps(props, dcterms.description);
+      const abstract = findFirstInProps(props, dcterms.abstract);
+      handleMapAbstractAndDescUsingAI(id, { title, description, abstract });
     },
     [handleManuallyMapData, handleMapUsingAI, selectedKnowledgeSources],
   );
@@ -336,6 +194,23 @@ const SimilarityFinder: FunctionComponent<Props> = ({
       onEntityIRIChange && onEntityIRIChange(id);
     },
     [onEntityIRIChange],
+  );
+
+  const handleSelectGND = useCallback(
+    (id: string | undefined) => handleSelect(id, "gnd"),
+    [handleSelect],
+  );
+  const handleSelectKB = useCallback(
+    (id: string | undefined) => handleSelect(id, "kb"),
+    [handleSelect],
+  );
+  const handleSelectWikidata = useCallback(
+    (id: string | undefined) => handleSelect(id, "wikidata"),
+    [handleSelect],
+  );
+  const handleSelectK10plus = useCallback(
+    (id: string | undefined) => handleSelect(id, "k10plus"),
+    [handleSelect],
   );
 
   return (
@@ -364,9 +239,6 @@ const SimilarityFinder: FunctionComponent<Props> = ({
               </ToggleButton>
               <ToggleButton value="k10plus" aria-label="Wikidata">
                 <Img alt={'k10plus logo'} width={40} height={30} src={'/Icons/k10plus-logo.png'}/>
-              </ToggleButton>
-              <ToggleButton value="ai" aria-label="use AI">
-                <AndroidOutlined/>
               </ToggleButton>*/}
           </ToggleButtonGroup>
         </Grid>
@@ -389,7 +261,7 @@ const SimilarityFinder: FunctionComponent<Props> = ({
               typeName={typeName}
               classIRI={classIRI}
               onAcceptItem={handleEntityChange}
-              onSelect={(id) => handleSelect(id, "kb")}
+              onSelect={handleSelectKB}
             />
             <Divider />
           </>
@@ -402,7 +274,7 @@ const SimilarityFinder: FunctionComponent<Props> = ({
               onAcceptItem={handleAccept}
               searchString={searchString}
               typeName={typeName}
-              onSelect={(id) => handleSelect(id, "gnd")}
+              onSelect={handleSelectGND}
             />
             <Divider />
           </>
@@ -414,7 +286,7 @@ const SimilarityFinder: FunctionComponent<Props> = ({
             onAcceptItem={handleAcceptKXP}
             searchString={searchString}
             typeName={typeName}
-            onSelect={(id) => handleSelect(id, "k10plus")}
+            onSelect={handleSelectK10plus}
           />
         )}
     </>

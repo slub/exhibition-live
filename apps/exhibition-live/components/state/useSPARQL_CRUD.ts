@@ -13,7 +13,13 @@ import {
   useQueryClient,
   UseQueryResult,
 } from "@tanstack/react-query";
-import { ASK, CONSTRUCT, DELETE, INSERT } from "@tpluscode/sparql-builder";
+import {
+  ASK,
+  CONSTRUCT,
+  DELETE,
+  INSERT,
+  SELECT,
+} from "@tpluscode/sparql-builder";
 import { JSONSchema7 } from "json-schema";
 import jsonld from "jsonld";
 import N3 from "n3";
@@ -26,6 +32,7 @@ import {
 } from "../utils/graph/jsonSchemaGraphInfuser";
 import { jsonSchema2construct } from "../utils/sparql";
 import { useQueryKeyResolver } from "./useQueryKeyResolver";
+import { variable } from "@rdfjs/data-model";
 
 type OwnUseCRUDResults = {
   save: (data?: any) => Promise<void>;
@@ -33,6 +40,7 @@ type OwnUseCRUDResults = {
   exists: () => Promise<boolean>;
   load: () => Promise<QueryObserverResult>;
   reset: () => void;
+  getClassIRIs: (entityIRI?: string) => Promise<string[] | null>;
   isUpdate: boolean;
   setIsUpdate: (isUpdate: boolean) => void;
 };
@@ -82,6 +90,7 @@ export const useSPARQL_CRUD = (
   {
     askFetch,
     constructFetch,
+    selectFetch,
     defaultPrefix,
     updateFetch,
     setData,
@@ -112,6 +121,25 @@ export const useSPARQL_CRUD = (
       resolveSourceIRIs(entityIRI);
     };
   }, [entityIRI, typeIRI, setWhereEntity]);
+
+  const getClassIRIs = useCallback(
+    async (entityIRI_: string) => {
+      const ownIRI = entityIRI_ || entityIRI;
+      if (!ownIRI || !selectFetch) return null;
+      const classes = variable("classes");
+      const query = SELECT`${classes}`.WHERE`
+      <${ownIRI}> a ${classes} .
+    `.build(queryBuildOptions);
+      try {
+        const result = await selectFetch(query);
+        return result.map(({ classes }) => classes.value);
+      } catch (e) {
+        console.error(e);
+      }
+      return null;
+    },
+    [entityIRI, selectFetch, queryBuildOptions],
+  );
 
   const exists = useCallback(async () => {
     if (!whereEntity) return false;
@@ -185,7 +213,7 @@ export const useSPARQL_CRUD = (
     );
     query = `PREFIX : <${defaultPrefix}> ` + query;
     await updateFetch(query);
-    enqueueSnackbar('Daten wurden entfernt', { variant: "info" });
+    enqueueSnackbar("Daten wurden entfernt", { variant: "info" });
   }, [entityIRI, whereEntity, defaultPrefix, updateFetch]);
 
   //TODO: this code is a mess, refactor it (it has matured historically)
@@ -208,8 +236,6 @@ export const useSPARQL_CRUD = (
 
       // @ts-ignore
       const ntriples = ntWriter.quadsToString([...ds]).replaceAll("_:_:", "_:");
-        // temporary add message here
-        enqueueSnackbar('Daten sollten aktualisiert werden', { variant: "success" });
       if (!isUpdate && !upsertByDefault) {
         const updateQuery = INSERT.DATA` ${ntriples} `;
         const query = updateQuery.build();
@@ -223,7 +249,6 @@ export const useSPARQL_CRUD = (
             ["@id"],
             ["@id", "@type"],
           );
-        console.log("construct", construct);
         const queries = [
           DELETE` ${construct} `
             .WHERE`${finalWhereEntity} ${whereRequired}\n${whereOptionals}`.build(
@@ -235,8 +260,9 @@ export const useSPARQL_CRUD = (
           query = `PREFIX : <${defaultPrefix}> ` + query;
           await updateFetch(query);
         }
+        // temporary add message here
+        enqueueSnackbar("Daten wurden gespeichert", { variant: "success" });
         for (const sourceIRI of resolveSourceIRIs(finalEntityIRI)) {
-          console.log("invalidateQueries", sourceIRI);
           await queryClient.invalidateQueries(["load", sourceIRI]);
         }
       }
@@ -259,7 +285,7 @@ export const useSPARQL_CRUD = (
     setData && setData({}, false);
     setLastEntityLoaded(undefined);
     load();
-    enqueueSnackbar('Daten wurden zurückgesetzt', { variant: "info" });
+    enqueueSnackbar("Daten wurden zurückgesetzt", { variant: "info" });
   }, [setData, setLastEntityLoaded, load]);
   const handleLoadSuccess = useCallback(
     (data: any) => {
@@ -294,6 +320,7 @@ export const useSPARQL_CRUD = (
     save,
     remove,
     isUpdate,
+    getClassIRIs,
     setIsUpdate,
     reset,
     // @ts-ignore

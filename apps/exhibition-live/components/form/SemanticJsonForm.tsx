@@ -288,9 +288,12 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> = ({
 
   const handleFormChange = useCallback(
     (state: Pick<JsonFormsCore, "data" | "errors">) => {
-      setData(state.data);
+      setData({
+        ...state.data,
+        "@type": typeIRI,
+      });
     },
-    [setData],
+    [setData, typeIRI],
   );
 
   const handleMappedData = useCallback(

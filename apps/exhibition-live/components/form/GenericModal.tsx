@@ -27,10 +27,16 @@ const modalContent = [
     action: "Löschen",
   },
   {
-    modalType: "reload",
+    modalType: "reset",
     title: "Daten zurücksetzen",
-    text: "Date zurücksetzen? Nicht gespeicherte Einstellungen gehen verlorgen.",
+    text: "Daten zurücksetzen? Nicht gespeicherte Einstellungen gehen verlorgen.",
     action: "Zurücksetzen",
+  },
+  {
+    modalType: "reload",
+    title: "Daten neuladen",
+    text: "Eintrag aus Datenbank neuladen? Nicht gespeicherte Einstellungen gehen verlorgen.",
+    action: "Neuladen",
   },
 ];
 

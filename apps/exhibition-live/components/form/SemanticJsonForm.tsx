@@ -16,7 +16,7 @@ import {
 } from "@jsonforms/material-renderers";
 import { JsonForms, JsonFormsInitStateProps } from "@jsonforms/react";
 import {
-  Close,
+  DangerousOutlined,
   Delete,
   Edit,
   EditOff,
@@ -24,7 +24,7 @@ import {
   Save,
   UpdateRounded,
 } from "@mui/icons-material";
-import { Card, CardContent, Grid, IconButton } from "@mui/material";
+import { Card, CardContent, Grid, IconButton, Toolbar } from "@mui/material";
 import { JSONSchema7 } from "json-schema";
 import { JsonLdContext } from "jsonld-context-parser";
 import { isEmpty } from "lodash";
@@ -35,7 +35,6 @@ import React, {
   useMemo,
   useState,
 } from "react";
-import { createPortal } from "react-dom";
 
 import AdbSpecialDateRenderer, {
   adbSpecialDateControlTester,
@@ -61,8 +60,11 @@ import {
 import SimilarityFinder from "./SimilarityFinder";
 import { FormDebuggingTools } from "./FormDebuggingTools";
 import GenericModal from "./GenericModal";
-import { optionallyCreatePortal } from "../helper";
-import { useFormRefsContext } from "../provider/formRefsContext";
+import {
+  Searchbar,
+  SearchbarWithFloatingButton,
+} from "../layout/main-layout/Searchbar";
+import { SearchForm } from "./SimilarityFinderForm";
 
 export type CRUDOpsType = {
   load: () => Promise<void>;
@@ -93,6 +95,9 @@ export interface SemanticJsonFormsProps {
   searchText?: string;
   toolbarChildren?: React.ReactNode;
   onLoad?: (data: any) => void;
+  disableSimilarityFinder?: boolean;
+  enableSidebar?: boolean;
+  wrapWithinCard?: boolean;
 }
 
 const renderers = [
@@ -168,6 +173,9 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> = ({
   searchText,
   toolbarChildren,
   onLoad,
+  disableSimilarityFinder,
+  enableSidebar,
+  wrapWithinCard,
 }) => {
   const [jsonldData, setJsonldData] = useState<any>({});
   //const {formData, setFormData} = useFormEditor()
@@ -181,7 +189,6 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> = ({
       (typeof forceEditMode !== "boolean" && managedEditMode) || forceEditMode,
     [managedEditMode, forceEditMode],
   );
-  const { searchRef } = useFormRefsContext();
   //const typeName = useMemo(() => typeIRI.substring(BASE_IRI.length, typeIRI.length), [typeIRI])
 
   useJsonldParser(data, jsonldContext, schema, {
@@ -204,31 +211,51 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> = ({
     [jsonldData, setData, editMode],
   );
 
-  const { exists, load, save, remove, isUpdate, setIsUpdate, reset } =
-    useSPARQL_CRUD(
-      ownIRI,
-      typeIRI,
-      schema,
-      //@ts-ignore
-      {
-        ...crudOptions,
-        defaultPrefix,
-        setData: handleDataFromRemote,
-        data: jsonldData,
-        queryBuildOptions,
-        onLoad,
-        queryOptions: {
-          refetchOnWindowFocus: false,
-        },
-        queryKey: "root",
+  const {
+    exists,
+    load,
+    save,
+    remove,
+    getClassIRIs,
+    isUpdate,
+    setIsUpdate,
+    reset,
+  } = useSPARQL_CRUD(
+    ownIRI,
+    typeIRI,
+    schema,
+    //@ts-ignore
+    {
+      ...crudOptions,
+      defaultPrefix,
+      setData: handleDataFromRemote,
+      data: jsonldData,
+      queryBuildOptions,
+      onLoad,
+      queryOptions: {
+        refetchOnWindowFocus: false,
       },
-    );
+      queryKey: "root",
+    },
+  );
   const { renderers: jfpRenderers, ...jfpProps } = jsonFormsProps;
   const allRenderer = useMemo(
     () => [...renderers, ...(jfpRenderers || [])],
     [jfpRenderers],
   );
 
+  useEffect(() => {
+    if (ownIRI && typeIRI) {
+      getClassIRIs(ownIRI).then((classIRIs) => {
+        console.log("classIRIs", classIRIs);
+        if (classIRIs && classIRIs.length > 0 && !classIRIs.includes(typeIRI)) {
+          throw new Error(
+            `Type IRI (${typeIRI}) not in classIRIs, attempting to override an existing entry in the knowledge base!`,
+          );
+        }
+      });
+    }
+  }, [ownIRI, typeIRI]);
   //const { toolbarRef } = useFormRefsContext();
 
   useEffect(() => {
@@ -252,7 +279,11 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> = ({
   ]);
 
   const handleReset = useCallback(() => {
-    reset();
+    NiceModal.show(GenericModal, {
+      type: "reset",
+    }).then(() => {
+      reset();
+    });
   }, [reset]);
 
   const handleFormChange = useCallback(
@@ -320,69 +351,114 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> = ({
     [onEntityDataChange, typeIRI],
   );
 
+  const WithCard = useMemo(
+    () =>
+      ({ children }: { children: React.ReactNode }) =>
+        wrapWithinCard ? (
+          <Card>
+            <CardContent>{children}</CardContent>
+          </Card>
+        ) : (
+          children
+        ),
+    [wrapWithinCard],
+  );
+
   return (
-    <>
-      {!hideToolbar &&
-        optionallyCreatePortal(
-          <>
-            <IconButton onClick={() => setEditMode((editMode) => !editMode)}>
-              {editMode ? <EditOff /> : <Edit />}
-            </IconButton>
-            {editMode && (
+    <Grid container spacing={0}>
+      <Grid item flex={1}>
+        <Grid container spacing={0}>
+          <Grid
+            item
+            xs={
+              disableSimilarityFinder || enableSidebar || !searchText ? 12 : 6
+            }
+          >
+            <WithCard>
               <>
-                <IconButton onClick={handleSave} aria-label="save">
-                  <Save />
-                </IconButton>
-                <IconButton onClick={deleteData} aria-lable="remove">
-                  <Delete />
-                </IconButton>
-                <IconButton onClick={reloadData} aria-lable="refresh">
-                  <Refresh />
-                </IconButton>
-                <IconButton onClick={handleReset} aria-lable="full reload">
-                  <UpdateRounded />
-                </IconButton>
+                {!hideToolbar && (
+                  <Toolbar>
+                    <IconButton
+                      onClick={() => setEditMode((editMode) => !editMode)}
+                    >
+                      {editMode ? <EditOff /> : <Edit />}
+                    </IconButton>
+                    {editMode && (
+                      <>
+                        <IconButton onClick={handleSave} aria-label="save">
+                          <Save />
+                        </IconButton>
+                        <IconButton onClick={deleteData} aria-lable="remove">
+                          <Delete />
+                        </IconButton>
+                        <IconButton onClick={reloadData} aria-lable="refresh">
+                          <Refresh />
+                        </IconButton>
+                        <IconButton
+                          onClick={handleReset}
+                          aria-lable="full reload"
+                        >
+                          <DangerousOutlined />
+                        </IconButton>
+                      </>
+                    )}
+                    {toolbarChildren}
+                  </Toolbar>
+                )}
+                <JsonForms
+                  readonly={readonly || !editMode}
+                  data={data}
+                  renderers={allRenderer}
+                  cells={materialCells}
+                  onChange={handleFormChange}
+                  schema={schema as JsonSchema}
+                  {...jfpProps}
+                />
+                <FormDebuggingTools
+                  jsonData={{
+                    rawData: data,
+                    jsonldData: jsonldData,
+                    formData: formData,
+                  }}
+                />
               </>
-            )}
-            {toolbarChildren}
-          </>,
-        )}
-      <Grid container spacing={0} sx={{ width: "100%" }}>
-        <Grid
-          item
-          xs={12}
-          flexGrow={1}
-        >
-          <JsonForms
-            readonly={readonly || !editMode}
-            data={data}
-            renderers={allRenderer}
-            cells={materialCells}
-            onChange={handleFormChange}
-            schema={schema as JsonSchema}
-            {...jfpProps}
-          />
-          <FormDebuggingTools
-            jsonData={{
-              rawData: data,
-              jsonldData: jsonldData,
-              formData: formData,
-            }}
-          />
+            </WithCard>
+          </Grid>
+          {!disableSimilarityFinder && !enableSidebar && searchText && (
+            <Grid xs={6} item>
+              <SimilarityFinder
+                search={searchText}
+                data={data}
+                classIRI={typeIRI}
+                jsonSchema={schema}
+                onEntityIRIChange={handleEntityIRIChange}
+                //searchOnDataPath={"title"}
+                onMappedDataAccepted={handleMappedData}
+              />
+            </Grid>
+          )}
         </Grid>
-        {searchRef?.current && createPortal(
-          <SimilarityFinder
-            search={searchText}
-            data={data}
-            classIRI={typeIRI}
-            jsonSchema={schema}
-            onEntityIRIChange={handleEntityIRIChange}
-            searchOnDataPath={"title"}
-            onMappedDataAccepted={handleMappedData}
-          />, searchRef.current,)
-        }
       </Grid>
-    </>
+      {enableSidebar && (
+        <Grid item>
+          {" "}
+          <SearchbarWithFloatingButton>
+            <>
+              <SearchForm />
+              <SimilarityFinder
+                search={searchText}
+                data={data}
+                classIRI={typeIRI}
+                jsonSchema={schema}
+                onEntityIRIChange={handleEntityIRIChange}
+                //searchOnDataPath={"title"}
+                onMappedDataAccepted={handleMappedData}
+              />
+            </>
+          </SearchbarWithFloatingButton>{" "}
+        </Grid>
+      )}
+    </Grid>
   );
 };
 

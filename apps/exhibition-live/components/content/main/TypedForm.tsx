@@ -2,7 +2,6 @@ import { Button, Card, CardContent } from "@mui/material";
 import { JSONSchema7 } from "json-schema";
 import React, { useCallback, useMemo, useRef } from "react";
 import { SplitPane } from "react-collapse-pane";
-import { v4 as uuidv4 } from "uuid";
 
 import { BASE_IRI } from "../../config";
 import ContentMainPreview from "../../content/ContentMainPreview";
@@ -77,15 +76,6 @@ const TypedForm = ({ typeName, classIRI }: MainFormProps) => {
   const { search: searchText, setSearch } = useGlobalSearch();
   const router = useRouter();
 
-  const handleNew = useCallback(() => {
-    const newURI = `${BASE_IRI}${uuidv4()}`;
-    const newData = {
-      "@id": newURI,
-      "@type": classIRI,
-      title: searchText,
-    };
-    setData(newData);
-  }, [setData, classIRI, searchText]);
   const handleChange = useCallback(
     (entityData: any) => {
       if (!entityData) return;
@@ -124,36 +114,31 @@ const TypedForm = ({ typeName, classIRI }: MainFormProps) => {
   return (
     <WithPreviewForm data={data} classIRI={classIRI}>
       {loadedSchema && (
-        <Card>
-          <CardContent>
-            <SemanticJsonForm
-              defaultEditMode={true}
-              data={data}
-              entityIRI={data["@id"]}
-              setData={handleChangeData}
-              searchText={searchText}
-              shouldLoadInitially
-              typeIRI={classIRI}
-              onEntityDataChange={handleChange}
-              crudOptions={crudOptions}
-              defaultPrefix={defaultPrefix}
-              jsonldContext={defaultJsonldContext}
-              queryBuildOptions={defaultQueryBuilderOptions}
-              schema={loadedSchema as JSONSchema7}
-              toolbarChildren={
-                <span
-                  ref={actionButtonAreaRef}
-                  style={{ float: "right" }}
-                ></span>
-              }
-              jsonFormsProps={{
-                uischema: uischemata[typeName] || (uischemas as any)[typeName],
-                uischemas: uischemas,
-                renderers: mainFormRenderers,
-              }}
-            />
-          </CardContent>
-        </Card>
+        <SemanticJsonForm
+          defaultEditMode={true}
+          data={data}
+          entityIRI={data["@id"]}
+          setData={handleChangeData}
+          searchText={searchText}
+          shouldLoadInitially
+          typeIRI={classIRI}
+          onEntityDataChange={handleChange}
+          crudOptions={crudOptions}
+          defaultPrefix={defaultPrefix}
+          jsonldContext={defaultJsonldContext}
+          queryBuildOptions={defaultQueryBuilderOptions}
+          schema={loadedSchema as JSONSchema7}
+          toolbarChildren={
+            <span ref={actionButtonAreaRef} style={{ float: "right" }}></span>
+          }
+          jsonFormsProps={{
+            uischema: uischemata[typeName] || (uischemas as any)[typeName],
+            uischemas: uischemas,
+            renderers: mainFormRenderers,
+          }}
+          enableSidebar={true}
+          wrapWithinCard={true}
+        />
       )}
     </WithPreviewForm>
   );

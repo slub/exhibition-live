@@ -21,11 +21,13 @@ export const FloatingButton = ({
 
   const handleClick = useCallback(() => {
     if (!pathname.includes("/create/") && !drawerOpen) {
-      enqueueSnackbar("🦄 Noch keine Funktion in dieser Ansicht!", { variant: "warning" });
+      enqueueSnackbar("🦄 Noch keine Funktion in dieser Ansicht!", {
+        variant: "warning",
+      });
       return;
     }
     toggleDrawer();
-  },[toggleDrawer, pathname, drawerOpen]);
+  }, [toggleDrawer, pathname, drawerOpen]);
 
   return (
     <Button

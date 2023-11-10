@@ -30,7 +30,9 @@ export const FormRefsProvider = ({
   children: React.ReactNode;
 }) => {
   return (
-    <FormRefsContext.Provider value={{ stepperRef, actionRef, toolbarRef, searchRef }}>
+    <FormRefsContext.Provider
+      value={{ stepperRef, actionRef, toolbarRef, searchRef }}
+    >
       {children}
     </FormRefsContext.Provider>
   );

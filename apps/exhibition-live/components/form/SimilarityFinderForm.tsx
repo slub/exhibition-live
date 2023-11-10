@@ -31,14 +31,17 @@ type SelectedEntity = {
   source: KnowledgeSources;
 };
 
-
-const SearchForm = () => {
-  const [selectedKnowledgeSources, setSelectedKnowledgeSources] = useState<KnowledgeSources[]>(["kb"]);
-  const [entitySelected, setEntitySelected] = useState<SelectedEntity | undefined>();
+export const SearchForm = () => {
+  const [selectedKnowledgeSources, setSelectedKnowledgeSources] = useState<
+    KnowledgeSources[]
+  >(["kb"]);
+  const [entitySelected, setEntitySelected] = useState<
+    SelectedEntity | undefined
+  >();
 
   const { t } = useTranslation();
 
-  const [value, setValue] = useState<string>('');
+  const [value, setValue] = useState<string>("");
   const { search, setSearch } = useGlobalSearch();
 
   const handleKnowledgeSourceChange = useCallback(
@@ -64,37 +67,39 @@ const SearchForm = () => {
   const handleChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       setValue(event.target.value);
-    }, [setValue],
+    },
+    [setValue],
   );
 
   useEffect(() => {
     handleSearchTextChange(value);
-  }, [value],);
+  }, [value]);
 
   return (
     <Paper
       component="form"
       sx={{
-        p:'2px 4px',
-        display: 'flex',
-        alignItems: 'center',
-        width: '100%',
-        boxShadow: '0px 2px 1px -1px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 1px 3px 0px rgba(0,0,0,0.12)',
-        borderRadius: '4px',
+        p: "2px 4px",
+        display: "flex",
+        alignItems: "center",
+        width: "100%",
+        boxShadow:
+          "0px 2px 1px -1px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 1px 3px 0px rgba(0,0,0,0.12)",
+        borderRadius: "4px",
       }}
     >
-    <InputBase
-      sx={{
-        ml: 1,
-        flex: 1
-      }}
-      placeholder="Suchbegriff eingeben"
-      inputProps={{
-        'aria-label': 'add label here',
-      }}
-      value={value}
-      onChange={handleChange}
-    />
+      <InputBase
+        sx={{
+          ml: 1,
+          flex: 1,
+        }}
+        placeholder="Suchbegriff eingeben"
+        inputProps={{
+          "aria-label": "add label here",
+        }}
+        value={value}
+        onChange={handleChange}
+      />
       <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
       <ToggleButtonGroup
         size="small"
@@ -102,7 +107,7 @@ const SearchForm = () => {
         onChange={handleKnowledgeSourceChange}
         aria-label="Suche über verschiedene Wissensquellen"
         sx={{
-          cursor: 'not-allowed',
+          cursor: "not-allowed",
         }}
       >
         <ToggleButton
@@ -110,7 +115,7 @@ const SearchForm = () => {
           aria-label="lokale Datenbank"
           sx={{
             border: 0,
-            cursor: 'not-allowed',
+            cursor: "not-allowed",
           }}
         >
           <KnowledgebaseIcon />
@@ -120,9 +125,9 @@ const SearchForm = () => {
           aria-label="GND"
           sx={{
             border: 0,
-            cursor: 'not-allowed',
+            cursor: "not-allowed",
           }}
-          >
+        >
           <Img
             alt={"gnd logo"}
             width={24}
@@ -130,30 +135,7 @@ const SearchForm = () => {
             src={"/Icons/gnd-logo.png"}
           />
         </ToggleButton>
-        </ToggleButtonGroup>
+      </ToggleButtonGroup>
     </Paper>
-  )
-}
-
-export const SimilarityFinderForm = () => {
-  const router = useRouter();
-  const { typeName } = router.query as { typeName: string | null | undefined };
-  const classIRI: string | undefined = typeof typeName === "string" ? sladb(typeName).value : undefined;
-
-  const { searchRef } = useFormRefsContext();
-
-  return (
-    <Box
-      sx={{
-        m: 1
-      }}
-    >
-      {classIRI && typeName && (
-      <>
-        <SearchForm />
-        <div ref={ searchRef } />
-      </>
-      )}
-    </Box>
-  )
-}
+  );
+};

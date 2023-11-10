@@ -1,12 +1,15 @@
 import Head from "next/head";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/router";
-import React, { useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
 
 import TypedForm from "../../components/content/main/TypedFormNoSSR";
 import { sladb, slent } from "../../components/form/formConfigs";
 import { MainLayout } from "../../components/layout/main-layout";
 import schema from "../../public/schema/Exhibition.schema.json";
+import { BASE_IRI } from "../../components/config";
+import { v4 as uuidv4 } from "uuid";
+import { useFormData } from "../../components/state";
 
 type Props = {
   typeName: string;
@@ -30,11 +33,20 @@ export async function getStaticProps({ params }) {
 export default (props: Props) => {
   const router = useRouter();
   const { typeName } = props;
+  const classIRI: string | undefined = useMemo(
+    () => (typeof typeName === "string" ? sladb(typeName).value : undefined),
+    [typeName],
+  );
+  const { setFormData } = useFormData();
   const searchParam = useSearchParams();
-  const id = searchParam.get("id") as string | null | undefined;
-
-  const classIRI: string | undefined =
-    typeof typeName === "string" ? sladb(typeName).value : undefined;
+  const handleNew = useCallback(() => {
+    const newURI = `${BASE_IRI}${uuidv4()}`;
+    const newData = {
+      "@id": newURI,
+      "@type": classIRI,
+    };
+    setFormData(newData);
+  }, [setFormData, classIRI]);
 
   return (
     <>

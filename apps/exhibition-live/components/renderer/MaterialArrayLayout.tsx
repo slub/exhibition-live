@@ -173,6 +173,9 @@ const MaterialArrayLayoutComponent = (props: ArrayLayoutProps & {}) => {
               typeIRI={typeIRI}
               formData={formData}
               onFormDataChange={(data) => setFormData(data)}
+              semanticJsonFormsProps={{
+                disableSimilarityFinder: true,
+              }}
             />
           </Grid>
           <Grid item>

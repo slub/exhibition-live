@@ -67,21 +67,10 @@ export const MainLayout = ({ children }: { children: React.ReactNode }) => {
   const theme = useTheme();
 
   const [leftDrawerOpened, setLeftDrawerOpened] = useState<boolean>(true);
-  const [rightDrawerOpened, setRightDrawerOpened] = useState<boolean>(false);
-  const [rightDrawerWidth, setRightDrawerWidth] = useState<number>(500);
 
   const toggleLeftDrawer = useCallback(() => {
     setLeftDrawerOpened((leftDrawerOpened) => !leftDrawerOpened);
   }, [setLeftDrawerOpened]);
-  const toggleRightDrawer = useCallback(() => {
-    setRightDrawerOpened((rightDrawerOpened) => !rightDrawerOpened);
-  }, [setRightDrawerOpened]);
-  const updateRightDrawerWidth = useCallback(
-    (newDrawerWidth: number) => {
-      setRightDrawerWidth(newDrawerWidth);
-    },
-    [setRightDrawerWidth],
-  );
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -92,19 +81,9 @@ export const MainLayout = ({ children }: { children: React.ReactNode }) => {
         toggleDrawer={toggleLeftDrawer}
       />
       <Sidebar open={leftDrawerOpened} />
-      <FloatingButton
-        drawerOpen={rightDrawerOpened}
-        drawerWidth={rightDrawerWidth}
-        toggleDrawer={toggleRightDrawer}
-      />
 
       {/*@ts-ignore */}
       <Main theme={theme}>{children}</Main>
-      <Searchbar
-        open={rightDrawerOpened}
-        drawerWidth={rightDrawerWidth}
-        handleClose={toggleRightDrawer}
-      />
     </Box>
   );
 };

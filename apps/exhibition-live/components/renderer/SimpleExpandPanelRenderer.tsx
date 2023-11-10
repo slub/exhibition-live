@@ -106,6 +106,7 @@ export const SimpleExpandPanelRenderer = (
       queryBuildOptions: defaultQueryBuilderOptions,
       queryOptions: {
         enabled: !Boolean(data?.__draft),
+        initialData: data,
       },
       queryKey: "load",
     },

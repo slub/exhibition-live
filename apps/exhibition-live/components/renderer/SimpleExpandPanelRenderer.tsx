@@ -105,7 +105,7 @@ export const SimpleExpandPanelRenderer = (
   const { data: loadedData } = loadQuery;
   useEffect(() => {
     if (loadedData?.document) {
-      //onData(loadedData.document);
+      onData(loadedData.document);
     }
   }, [loadedData, onData]);
 

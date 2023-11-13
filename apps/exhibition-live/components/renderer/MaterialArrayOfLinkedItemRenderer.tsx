@@ -28,10 +28,7 @@ import {
   RankedTester,
   rankWith,
 } from "@jsonforms/core";
-import {
-  JsonFormsStateContext,
-  withJsonFormsArrayLayoutProps,
-} from "@jsonforms/react";
+import { withJsonFormsArrayLayoutProps } from "@jsonforms/react";
 import { Hidden } from "@mui/material";
 import React, { useCallback } from "react";
 

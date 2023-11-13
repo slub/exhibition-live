@@ -114,7 +114,7 @@ export const useSPARQL_CRUD = (
   const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
-    if (!entityIRI) return;
+    if (!entityIRI || !typeIRI) return;
     const _whereEntity = ` <${entityIRI}> a <${typeIRI}> . `;
     setWhereEntity(_whereEntity);
     return () => {
@@ -299,7 +299,7 @@ export const useSPARQL_CRUD = (
 
   const { enabled, ...queryOptionsRest } = queryOptions || {};
   const queryResults = useQuery(
-    [queryKey, entityIRI],
+    ["oldLoad", entityIRI],
     async () => {
       const res = await load();
       return res || null;

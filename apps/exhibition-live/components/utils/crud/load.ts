@@ -13,19 +13,18 @@ type LoadOptions = SPARQLCRUDOptions & {
   jsonldContext?: JsonLdContext;
 };
 
-type LoadResult = {
+export type LoadResult = {
   subjects: string[];
   document: any;
 };
 export const load = async (
-  data: NamedAndTypedEntity,
+  entityIRI: string,
+  typeIRI: string | undefined,
   schema: JSONSchema7,
   constructFetch: (query: string) => Promise<DatasetCore>,
   options: LoadOptions,
 ): Promise<LoadResult> => {
   const { walkerOptions, jsonldContext, ...crudOptions } = options;
-  const entityIRI = data["@id"];
-  const typeIRI = data["@type"];
   const constructQuery = makeSPARQLConstructQuery(
     entityIRI,
     typeIRI,

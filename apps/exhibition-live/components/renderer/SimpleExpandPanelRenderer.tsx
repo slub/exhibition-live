@@ -9,12 +9,9 @@ import {
   ListItemText,
   Stack,
 } from "@mui/material";
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 
 import find from "lodash/find";
-import { useSPARQL_CRUD } from "../state/useSPARQL_CRUD";
-import { defaultPrefix, defaultQueryBuilderOptions } from "../form/formConfigs";
-import { useGlobalCRUDOptions } from "../state/useGlobalCRUDOptions";
 
 import { OpenInNew, OpenInNewOff, Save } from "@mui/icons-material";
 import { BASE_IRI, primaryFields } from "../config";
@@ -27,6 +24,9 @@ import { bringDefinitionToTop } from "../utils/core";
 import { JSONSchema7 } from "json-schema";
 import { useJsonForms } from "@jsonforms/react";
 import dot from "dot";
+import { useCRUDWithQueryClient } from "../state/useCRUDWithQueryClient";
+import { useGlobalCRUDOptions } from "../state/useGlobalCRUDOptions";
+import { defaultJsonldContext, defaultPrefix } from "../form/formConfigs";
 
 type SimpleExpandPanelRendererProps = {
   data: any;
@@ -71,7 +71,6 @@ export const SimpleExpandPanelRenderer = (
       return applyToEachField(data, fieldDecl, extractFieldIfString);
     return {};
   }, [data, typeName, entityIRI]);
-  const draft = data?.__draft;
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const handleToggle = useCallback(() => {
     setModalIsOpen(!modalIsOpen);
@@ -90,33 +89,39 @@ export const SimpleExpandPanelRenderer = (
         console.warn("could not render childLabelTemplate", e);
       }
     }
-    return label;
+    return label || data?.__label;
   }, [childLabelTemplate, data, label]);
 
   const { crudOptions } = useGlobalCRUDOptions();
-  useSPARQL_CRUD(
+  const { loadQuery, saveMutation } = useCRUDWithQueryClient(
     entityIRI,
     typeIRI,
     subSchema,
-    //@ts-ignore
-    {
-      ...crudOptions,
-      defaultPrefix,
-      setData: onData,
-      queryBuildOptions: defaultQueryBuilderOptions,
-      queryOptions: {
-        enabled: !Boolean(data?.__draft),
-        initialData: data,
-      },
-      queryKey: "load",
-    },
+    defaultPrefix,
+    crudOptions,
+    defaultJsonldContext,
+    { enabled: false, initialData: data },
   );
+  const { data: loadedData } = loadQuery;
+  useEffect(() => {
+    if (loadedData?.document) {
+      //onData(loadedData.document);
+    }
+  }, [loadedData, onData]);
+
+  const handleSave = useCallback(async () => {
+    console.log({ saveMutation });
+    if (!saveMutation) return;
+    saveMutation.mutate(data);
+  }, [saveMutation, data]);
+  const draft = data?.__draft && !saveMutation.isSuccess;
+
   return (
     <ListItem
       secondaryAction={
         <Stack direction="row" spacing={1}>
           {draft ? (
-            <IconButton onClick={() => {}} aria-label={"Save"} size="large">
+            <IconButton onClick={handleSave} aria-label={"Save"} size="large">
               <Save />
             </IconButton>
           ) : (
@@ -140,7 +145,7 @@ export const SimpleExpandPanelRenderer = (
         </Stack>
       }
     >
-      <ListItemButton onClick={handleToggle}>
+      <ListItemButton onClick={!draft ? handleToggle : undefined}>
         <ListItemAvatar>
           <Avatar aria-label="Index" src={image}>
             {count + 1}
@@ -148,12 +153,12 @@ export const SimpleExpandPanelRenderer = (
         </ListItemAvatar>
         <ListItemText primary={realLabel} />
       </ListItemButton>
-      {typeIRI && (
+      {!draft && (
         <SemanticFormsModal
           schema={subSchema as JsonSchema}
           entityIRI={entityIRI}
           typeIRI={typeIRI}
-          label={label}
+          label={realLabel}
           open={modalIsOpen}
           askClose={() => setModalIsOpen(false)}
           askCancel={() => setModalIsOpen(false)}
@@ -162,19 +167,4 @@ export const SimpleExpandPanelRenderer = (
       )}
     </ListItem>
   );
-};
-
-export const getFirstPrimitivePropExceptJsonLD = (schema: any) => {
-  if (schema.properties) {
-    return find(Object.keys(schema.properties), (propName) => {
-      const prop = schema.properties[propName];
-      return (
-        (prop.type === "string" ||
-          prop.type === "number" ||
-          prop.type === "integer") &&
-        !propName.startsWith("@")
-      );
-    });
-  }
-  return undefined;
 };

@@ -2,10 +2,9 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import React, { useEffect, useMemo } from "react";
 
-import TypedForm from "../../../components/content/main/TypedFormNoSSR";
+import TypedForm from "../../../components/content/main/TypedForm";
 import { sladb } from "../../../components/form/formConfigs";
 import { MainLayout } from "../../../components/layout/main-layout";
-import { useFormData } from "../../../components/state";
 import { decodeIRI } from "../../../components/utils/core";
 
 type Props = {
@@ -27,17 +26,6 @@ export default () => {
     [encodedID],
   );
 
-  const { setFormData } = useFormData();
-
-  useEffect(() => {
-    if (id && classIRI) {
-      setFormData({
-        "@id": id,
-        "@type": classIRI,
-      });
-    }
-  }, [setFormData, id, classIRI]);
-
   return (
     <>
       <Head>
@@ -52,6 +40,7 @@ export default () => {
             <TypedForm
               key={id || "empty"}
               typeName={typeName as string}
+              entityIRI={id as string}
               classIRI={classIRI as string}
             />
           </>

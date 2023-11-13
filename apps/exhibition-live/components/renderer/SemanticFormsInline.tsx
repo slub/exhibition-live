@@ -2,18 +2,11 @@ import { JsonSchema } from "@jsonforms/core";
 import { JSONSchema7 } from "json-schema";
 import React, { useCallback, useState } from "react";
 
-import {
-  defaultJsonldContext,
-  defaultPrefix,
-  defaultQueryBuilderOptions,
-} from "../form/formConfigs";
-import SemanticJsonForm, {
-  SemanticJsonFormsProps,
-} from "../form/SemanticJsonForm";
 import { useUISchemaForType } from "../form/uischemaForType";
 import { uischemas } from "../form/uischemas";
-import { useGlobalCRUDOptions } from "../state/useGlobalCRUDOptions";
 import { useControlled } from "@mui/material";
+import { SemanticJsonFormNoOps } from "../form/SemanticJsonFormNoOps";
+import { SemanticJsonFormsProps } from "../form/SemanticJsonForm";
 
 type SemanticFormsInlineProps = {
   label?: string;
@@ -42,10 +35,6 @@ export const SemanticFormsInline = (props: SemanticFormsInlineProps) => {
     default: entityIRI ? { "@id": entityIRI } : {},
   });
 
-  const { crudOptions } = useGlobalCRUDOptions();
-  const [editMode, setEditMode] = useState(true);
-  const [searchText, setSearchText] = useState<string | undefined>();
-
   const uischemaExternal = typeIRI && useUISchemaForType(typeIRI);
 
   const handleDataChange = useCallback(
@@ -59,26 +48,18 @@ export const SemanticFormsInline = (props: SemanticFormsInlineProps) => {
   return (
     <>
       {schema && (
-        <SemanticJsonForm
+        <SemanticJsonFormNoOps
           {...semanticJsonFormsProps}
           data={formData}
-          forceEditMode={Boolean(editMode)}
-          hideToolbar={true}
-          entityIRI={entityIRI}
-          setData={handleDataChange}
-          shouldLoadInitially
+          forceEditMode={true}
+          onChange={handleDataChange}
           typeIRI={typeIRI}
-          crudOptions={crudOptions}
-          defaultPrefix={defaultPrefix}
-          jsonldContext={defaultJsonldContext}
-          queryBuildOptions={defaultQueryBuilderOptions}
           schema={schema as JSONSchema7}
           jsonFormsProps={{
             uischema: uischemaExternal || undefined,
             uischemas: uischemas,
           }}
           onEntityChange={onChange}
-          searchText={searchText}
         />
       )}
     </>

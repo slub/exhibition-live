@@ -13,61 +13,12 @@ import {
   jsonSchemaGraphInfuser,
   WalkerOptions,
 } from "../utils/graph/jsonSchemaGraphInfuser";
+import { addressSchema } from "../../fixtures/schema";
+import { bringDefinitionToTop } from "../utils/core";
 
 type Props = WalkerOptions;
 
-const schemaStub = {
-  $defs: {
-    Address: {
-      type: "object",
-      properties: {
-        addressCountry: {
-          type: "string",
-        },
-        addressRegion: {
-          type: "string",
-        },
-        postalCode: {
-          type: "string",
-        },
-        streetAddress: {
-          type: "string",
-        },
-      },
-    },
-    Person: {
-      title: "Person",
-      description: "A human being",
-      type: "object",
-      properties: {
-        familyName: {
-          type: "string",
-        },
-        givenName: {
-          type: "string",
-        },
-        child: {
-          type: "array",
-          items: {
-            $ref: "#/$defs/Person",
-          },
-        },
-        knows: {
-          type: "array",
-          items: {
-            $ref: "#/$defs/Person",
-          },
-        },
-        address: {
-          $ref: "#/$defs/Address",
-        },
-      },
-    },
-  },
-  $schema: "http://json-schema.org/draft-06/schema#",
-  $id: "https://example.com/person.schema.json",
-};
-const schema = { ...schemaStub, ...schemaStub.$defs.Person };
+const schema = bringDefinitionToTop(addressSchema, "Person");
 
 async function sampleDataset() {
   //const filename = path.join(path.dirname(require.resolve('tbbt-ld')), 'dist/tbbt.nq')

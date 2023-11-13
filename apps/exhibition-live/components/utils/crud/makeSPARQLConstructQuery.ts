@@ -6,18 +6,21 @@ import { CONSTRUCT } from "@tpluscode/sparql-builder";
 
 export const makeSPARQLConstructQuery = (
   entityIRI: string,
-  typeIRI: string,
+  typeIRI: string | undefined,
   schema: JSONSchema7,
   options: SPARQLCRUDOptions,
 ) => {
   const { defaultPrefix, queryBuildOptions } = options;
-  const wherePart = makeSPARQLWherePart(entityIRI, typeIRI);
+  const wherePart = typeIRI ? makeSPARQLWherePart(entityIRI, typeIRI) : "";
   const { construct, whereRequired, whereOptionals } = jsonSchema2construct(
     entityIRI,
     schema,
-    ["@id"],
+    [],
     ["@id", "@type"],
   );
+  if (wherePart + whereRequired + whereOptionals === "") {
+    throw new Error("makeSPARQLConstructQuery:empty WHERE clause");
+  }
   return withDefaultPrefix(
     defaultPrefix,
     CONSTRUCT` ${construct} `

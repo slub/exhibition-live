@@ -59,12 +59,26 @@ const DiscoverAutocompleteInput: FunctionComponent<Props> = ({
     default: defaultSelected || null,
   });
 
+  const [searchString, setSearchString] = useControlled<string | undefined>({
+    name: "DiscoverAutocompleteInput",
+    controlled: searchStringProp,
+    default: "",
+  });
   const handleChange = useCallback(
-    (_e: Event, item: AutocompleteSuggestion | null) => {
+    (e: Event, item: AutocompleteSuggestion | null) => {
+      e.stopPropagation();
+      e.preventDefault();
       onSelectionChange && onSelectionChange(item);
       setSelectedUncontrolled(item);
+      onSearchValueChange && onSearchValueChange(null);
+      setSearchString(null);
     },
-    [onSelectionChange, setSelectedUncontrolled],
+    [
+      onSelectionChange,
+      setSelectedUncontrolled,
+      onSearchValueChange,
+      setSearchString,
+    ],
   );
 
   const load = useCallback(
@@ -87,14 +101,10 @@ const DiscoverAutocompleteInput: FunctionComponent<Props> = ({
     [classType, crudOptions, limit],
   );
 
-  const [searchString, setSearchString] = useControlled<string | undefined>({
-    name: "DiscoverAutocompleteInput",
-    controlled: searchStringProp,
-    default: "",
-  });
   const handleEnter = useCallback(
     (e: React.KeyboardEvent<HTMLDivElement>) => {
-      if (e.key === "Enter") {
+      console.log("handleEnter", e.key, searchString?.length);
+      if (e.key === "Enter" && searchString?.length > 0) {
         onEnterSearch && onEnterSearch(searchString);
       }
     },

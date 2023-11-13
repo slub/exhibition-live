@@ -16,6 +16,7 @@ import { FormRefsProvider } from "../components/provider/formRefsContext";
 import ThemeComponent from "../components/theme/ThemeComponent";
 import NiceModal from "@ebay/nice-modal-react";
 import { SnackbarProvider } from "notistack";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 export const queryClient = new QueryClient();
 const QueryClientProviderWrapper = ({
@@ -31,15 +32,18 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <>
       <QueryClientProviderWrapper>
-        <FormRefsProvider>
-          <ThemeComponent>
-            <SnackbarProvider>
-              <NiceModal.Provider>
-                {<Component {...pageProps} />}
-              </NiceModal.Provider>
-            </SnackbarProvider>
-          </ThemeComponent>
-        </FormRefsProvider>
+        <>
+          <FormRefsProvider>
+            <ThemeComponent>
+              <SnackbarProvider>
+                <NiceModal.Provider>
+                  {<Component {...pageProps} />}
+                </NiceModal.Provider>
+              </SnackbarProvider>
+            </ThemeComponent>
+          </FormRefsProvider>
+          <ReactQueryDevtools initialIsOpen={false} />
+        </>
       </QueryClientProviderWrapper>
     </>
   );

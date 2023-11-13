@@ -5,6 +5,7 @@ const DynamicComponentWithNoSSR = dynamic(() => import("./TypedForm"), {
 });
 type MainFormProps = {
   typeName: string;
+  entityIRI: string;
   classIRI: string;
 };
 

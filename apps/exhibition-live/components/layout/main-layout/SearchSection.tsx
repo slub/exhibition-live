@@ -85,7 +85,7 @@ export const SearchSection = () => {
 
   const handleChange = useCallback(
     (value?: string | null) => {
-      value && router.push(`/create/${typeName}/${encodeIRI(value)}`);
+      value && router.push(`/create/${typeName}?encID=${encodeIRI(value)}`);
     },
     [typeName],
   );

@@ -7,7 +7,7 @@ import { JSONSchema7 } from "json-schema";
 import { makeSPARQLDeleteQuery } from "./makeSPARQLDeleteQuery";
 
 type SaveOptions = SPARQLCRUDOptions & {
-  skipRemove: boolean;
+  skipRemove?: boolean;
 };
 export const save = async (
   dataToBeSaved: NamedAndTypedEntity,

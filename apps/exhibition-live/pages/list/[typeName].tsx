@@ -4,10 +4,30 @@ import React from "react";
 
 import { MainLayout } from "../../components/layout/main-layout";
 import { TypedList } from "../../components/content/main/TypedList";
+import schema from "../../public/schema/Exhibition.schema.json";
 
-export default () => {
+type Props = {
+  typeName: string;
+};
+export async function getStaticPaths() {
+  const paths = Object.keys(schema.$defs || {}).map((typeName) => ({
+    params: { typeName },
+  }));
+
+  return { paths, fallback: false };
+}
+
+export async function getStaticProps({ params }) {
+  const typeName = params.typeName;
+  return {
+    props: {
+      typeName,
+    },
+  };
+}
+export default (props: Props) => {
   const router = useRouter();
-  const { typeName } = router.query as { typeName: string };
+  const { typeName } = props;
 
   return (
     <>

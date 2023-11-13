@@ -1,15 +1,15 @@
 import Head from "next/head";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/router";
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 
-import TypedForm from "../../components/content/main/TypedFormNoSSR";
+import TypedForm from "../../components/content/main/TypedForm";
 import { sladb, slent } from "../../components/form/formConfigs";
 import { MainLayout } from "../../components/layout/main-layout";
 import schema from "../../public/schema/Exhibition.schema.json";
 import { BASE_IRI } from "../../components/config";
 import { v4 as uuidv4 } from "uuid";
-import { useFormData } from "../../components/state";
+import { decodeIRI } from "../../components/utils/core";
 
 type Props = {
   typeName: string;
@@ -37,16 +37,14 @@ export default (props: Props) => {
     () => (typeof typeName === "string" ? sladb(typeName).value : undefined),
     [typeName],
   );
-  const { setFormData } = useFormData();
+  const [entityIRI, setEntityIRI] = useState(`${BASE_IRI}${uuidv4()}`);
   const searchParam = useSearchParams();
-  const handleNew = useCallback(() => {
-    const newURI = `${BASE_IRI}${uuidv4()}`;
-    const newData = {
-      "@id": newURI,
-      "@type": classIRI,
-    };
-    setFormData(newData);
-  }, [setFormData, classIRI]);
+  useEffect(() => {
+    const encID = searchParam.get("encID");
+    const id = typeof encID === "string" ? decodeIRI(encID) : undefined;
+    const newURI = id || `${BASE_IRI}${typeName}-${uuidv4()}`;
+    setEntityIRI(newURI);
+  }, [setEntityIRI, typeName, searchParam]);
 
   return (
     <>
@@ -59,7 +57,12 @@ export default (props: Props) => {
       <MainLayout>
         {classIRI && typeName && (
           <>
-            <TypedForm typeName={typeName} classIRI={classIRI} />
+            <TypedForm
+              key={entityIRI}
+              entityIRI={entityIRI}
+              typeName={typeName}
+              classIRI={classIRI}
+            />
           </>
         )}
       </MainLayout>

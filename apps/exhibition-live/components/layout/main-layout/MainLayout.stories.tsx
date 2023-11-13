@@ -19,7 +19,11 @@ const typeName = "Exhibition",
 export const MainLayoutWithForm = () => (
   <QueryClientProvider client={queryClient}>
     <MainLayout>
-      <TypedForm typeName={typeName} classIRI={classIRI} />
+      <TypedForm
+        entityIRI={slent.example.value}
+        typeName={typeName}
+        classIRI={classIRI}
+      />
     </MainLayout>
   </QueryClientProvider>
 );

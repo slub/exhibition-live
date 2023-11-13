@@ -9,15 +9,18 @@ import {
   defaultPrefix,
   defaultQueryBuilderOptions,
 } from "../form/formConfigs";
-import SemanticJsonForm, {
-  CRUDOpsType,
-  SemanticJsonFormsProps,
-} from "../form/SemanticJsonForm";
+import { CRUDOpsType, SemanticJsonFormsProps } from "../form/SemanticJsonForm";
 import { useUISchemaForType } from "../form/uischemaForType";
 import { uischemas } from "../form/uischemas";
 import MuiEditDialog from "./MuiEditDialog";
 import { useGlobalCRUDOptions } from "../state/useGlobalCRUDOptions";
 import { BASE_IRI } from "../config";
+import { SemanticJsonFormNoOps } from "../form/SemanticJsonFormNoOps";
+import { useCRUDWithQueryClient } from "../state/useCRUDWithQueryClient";
+import NiceModal from "@ebay/nice-modal-react";
+import GenericModal from "../form/GenericModal";
+import { useSnackbar } from "notistack";
+import { irisToData } from "../utils/core";
 
 type InlineSemanticFormsModalProps = {
   label?: string;
@@ -46,9 +49,8 @@ export const InlineSemanticFormsModal = (
     askClose,
     semanticJsonFormsProps,
   } = props;
-  const [formData, setFormData] = useState({ "@id": data });
-  const [CRUDOps, setCRUDOps] = useState<CRUDOpsType | undefined>();
-  const { load, save, remove } = CRUDOps || {};
+  const { $ref, typeIRI } = uischema.options?.context || {};
+  const [formData, setFormData] = useState(irisToData(data, typeIRI));
   const { crudOptions } = useGlobalCRUDOptions();
   const [editMode, setEditMode] = useState(true);
   const [searchText, setSearchText] = useState<string | undefined>();
@@ -62,15 +64,13 @@ export const InlineSemanticFormsModal = (
     [path, handleChange, data],
   );
 
-  const { $ref, typeIRI } = uischema.options?.context || {};
   const uischemaExternal = useUISchemaForType(typeIRI);
   const typeName = useMemo(
     () => typeIRI && typeIRI.substring(BASE_IRI.length, typeIRI.length),
     [typeIRI],
   );
 
-  const subSchema = useMemo(() => {
-    if (!$ref) return;
+  const subSchema: JSONSchema7 = useMemo(() => {
     const schema2 = {
       ...schema,
       $ref,
@@ -83,20 +83,8 @@ export const InlineSemanticFormsModal = (
     return {
       ...rootSchema,
       ...resolvedSchema,
-    };
+    } as JSONSchema7;
   }, [$ref, schema, rootSchema]);
-
-  const handleSave = useCallback(async () => {
-    console.log("handleSave");
-    if (!save) return;
-    await save();
-    //emitToSubscribers(subscriptionKeys.GLOBAL_DATA_CHANGE, subscriptions)
-    askClose && askClose();
-  }, [save]);
-  const handleRemove = useCallback(async () => {
-    if (!remove) return;
-    await remove();
-  }, [remove]);
 
   const handleSearchTextChange = useCallback(
     (searchText: string | undefined) => {
@@ -105,10 +93,47 @@ export const InlineSemanticFormsModal = (
     [setSearchText],
   );
 
-  const handleCRUDOpsChange = useCallback(
-    (crudOps) => setCRUDOps(crudOps),
-    [setCRUDOps],
-  );
+  const { loadQuery, existsQuery, saveMutation, removeMutation } =
+    useCRUDWithQueryClient(
+      data,
+      typeIRI,
+      subSchema,
+      defaultPrefix,
+      crudOptions,
+      defaultJsonldContext,
+      { enabled: false },
+    );
+
+  const { enqueueSnackbar } = useSnackbar();
+  const handleSave = useCallback(async () => {
+    saveMutation
+      .mutateAsync(data)
+      .then(async (skipLoading?: boolean) => {
+        enqueueSnackbar("Saved", { variant: "success" });
+        !skipLoading && (await loadQuery.refetch());
+      })
+      .catch((e) => {
+        enqueueSnackbar("Error while saving " + e.message, {
+          variant: "error",
+        });
+      });
+  }, [enqueueSnackbar, saveMutation, loadQuery, data]);
+
+  const handleRemove = useCallback(async () => {
+    NiceModal.show(GenericModal, {
+      type: "delete",
+    }).then(() => {
+      removeMutation.mutate();
+    });
+  }, [removeMutation]);
+
+  const handleReload = useCallback(async () => {
+    NiceModal.show(GenericModal, {
+      type: "reload",
+    }).then(() => {
+      loadQuery.refetch();
+    });
+  }, [loadQuery]);
 
   const handleEditToggle = useCallback(() => {
     setEditMode(!editMode);
@@ -120,7 +145,7 @@ export const InlineSemanticFormsModal = (
       onClose={askClose}
       onCancel={askClose}
       onSave={handleSave}
-      onReload={load}
+      onReload={handleReload}
       onEdit={handleEditToggle}
       editMode={Boolean(editMode)}
       search={
@@ -136,26 +161,18 @@ export const InlineSemanticFormsModal = (
     >
       <>
         {subSchema && (
-          <SemanticJsonForm
+          <SemanticJsonFormNoOps
             {...semanticJsonFormsProps}
             data={formData}
             forceEditMode={Boolean(editMode)}
-            hideToolbar={true}
-            entityIRI={data}
-            setData={(_data) => setFormData(_data)}
-            shouldLoadInitially
+            onChange={setFormData}
             typeIRI={typeIRI}
-            crudOptions={crudOptions}
-            defaultPrefix={defaultPrefix}
-            jsonldContext={defaultJsonldContext}
-            queryBuildOptions={defaultQueryBuilderOptions}
             schema={subSchema as JSONSchema7}
             jsonFormsProps={{
               uischema: uischemaExternal || undefined,
               uischemas: uischemas,
             }}
             onEntityChange={handleChange_}
-            onInit={handleCRUDOpsChange}
             searchText={searchText}
           />
         )}

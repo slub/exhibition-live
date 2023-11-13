@@ -6,12 +6,12 @@ import { SPARQLCRUDOptions } from "./types";
 
 export const makeSPARQLDeleteQuery = (
   entityIRI: string,
-  typeIRI: string,
+  typeIRI: string | undefined,
   schema: JSONSchema7,
   options: SPARQLCRUDOptions,
 ) => {
   const { defaultPrefix, queryBuildOptions } = options;
-  const wherePart = makeSPARQLWherePart(entityIRI, typeIRI);
+  const wherePart = typeIRI ? makeSPARQLWherePart(entityIRI, typeIRI) : "";
   const { construct, whereRequired, whereOptionals } = jsonSchema2construct(
     entityIRI,
     schema,

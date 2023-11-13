@@ -1,24 +1,22 @@
 import { JsonSchema } from "@jsonforms/core";
 import { JSONSchema7 } from "json-schema";
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 
 import DiscoverAutocompleteInput from "../form/discover/DiscoverAutocompleteInput";
-import {
-  defaultJsonldContext,
-  defaultPrefix,
-  defaultQueryBuilderOptions,
-} from "../form/formConfigs";
-import SemanticJsonForm, {
-  CRUDOpsType,
-  SemanticJsonFormsProps,
-} from "../form/SemanticJsonForm";
+import { defaultJsonldContext, defaultPrefix } from "../form/formConfigs";
 import { useUISchemaForType } from "../form/uischemaForType";
 import { uischemas } from "../form/uischemas";
 import MuiEditDialog from "./MuiEditDialog";
 import { useGlobalCRUDOptions } from "../state/useGlobalCRUDOptions";
 import { BASE_IRI } from "../config";
 import { useControlled } from "@mui/material";
-import { useCRUD } from "../state/useCRUD";
+import { useCRUDWithQueryClient } from "../state/useCRUDWithQueryClient";
+import { useSnackbar } from "notistack";
+import NiceModal from "@ebay/nice-modal-react";
+import GenericModal from "../form/GenericModal";
+import { SemanticJsonFormNoOps } from "../form/SemanticJsonFormNoOps";
+import { irisToData } from "../utils/core";
+import { SemanticJsonFormsProps } from "../form/SemanticJsonForm";
 
 type SemanticFormsModalProps = {
   label?: string;
@@ -50,11 +48,9 @@ export const SemanticFormsModal = (props: SemanticFormsModalProps) => {
   const [formData, setFormData] = useControlled({
     name: "FormData",
     controlled: formDataProp,
-    default: entityIRI ? { "@id": entityIRI } : {},
+    default: irisToData(entityIRI, typeIRI),
   });
-  const { save, remove, load } = useCRUD(formData, schema as JSONSchema7);
 
-  const { crudOptions } = useGlobalCRUDOptions();
   const [editMode, setEditMode] = useState(true);
   const [searchText, setSearchText] = useState<string | undefined>();
 
@@ -64,16 +60,63 @@ export const SemanticFormsModal = (props: SemanticFormsModalProps) => {
     [typeIRI],
   );
 
+  const { crudOptions } = useGlobalCRUDOptions();
+  const { loadQuery, existsQuery, saveMutation, removeMutation } =
+    useCRUDWithQueryClient(
+      entityIRI,
+      typeIRI,
+      schema as JSONSchema7,
+      defaultPrefix,
+      crudOptions,
+      defaultJsonldContext,
+      { enabled: true },
+    );
+  const { data: remoteData } = loadQuery;
+
+  useEffect(() => {
+    console.log("loadQuery.data", remoteData);
+    if (remoteData) {
+      const data = remoteData.document;
+      if (!data || !data["@id"] || !data["@type"]) return;
+      console.log("Setting data from loadQuery", loadQuery.data.document);
+      setFormData(data);
+      onFormDataChange && onFormDataChange(data);
+    }
+  }, [remoteData, setFormData, onFormDataChange]);
+
+  const { enqueueSnackbar } = useSnackbar();
   const handleSave = useCallback(async () => {
-    if (!save) return;
-    await save();
-    //emitToSubscribers(subscriptionKeys.GLOBAL_DATA_CHANGE, subscriptions)
-    askClose && askClose();
-  }, [save]);
+    saveMutation
+      .mutateAsync(formData)
+      .then(async (skipLoading?: boolean) => {
+        enqueueSnackbar("Saved", { variant: "success" });
+        !skipLoading && (await loadQuery.refetch());
+        askClose();
+      })
+      .catch((e) => {
+        enqueueSnackbar("Error while saving " + e.message, {
+          variant: "error",
+        });
+      });
+  }, [enqueueSnackbar, saveMutation, loadQuery, formData, askClose]);
+
   const handleRemove = useCallback(async () => {
-    if (!remove) return;
-    await remove();
-  }, [remove]);
+    NiceModal.show(GenericModal, {
+      type: "delete",
+    }).then(() => {
+      removeMutation.mutate();
+      enqueueSnackbar("Removed", { variant: "success" });
+      askClose();
+    });
+  }, [removeMutation]);
+
+  const handleReload = useCallback(async () => {
+    NiceModal.show(GenericModal, {
+      type: "reload",
+    }).then(() => {
+      loadQuery.refetch();
+    });
+  }, [loadQuery]);
 
   const handleSearchTextChange = useCallback(
     (searchText: string | undefined) => {
@@ -99,9 +142,9 @@ export const SemanticFormsModal = (props: SemanticFormsModalProps) => {
       onClose={askCancel}
       onCancel={askCancel}
       onSave={handleSave}
-      onReload={load}
+      onReload={handleReload}
       onEdit={handleEditToggle}
-      editMode={Boolean(editMode)}
+      editMode={editMode}
       search={
         <DiscoverAutocompleteInput
           typeIRI={typeIRI}
@@ -117,19 +160,12 @@ export const SemanticFormsModal = (props: SemanticFormsModalProps) => {
     >
       <>
         {schema && (
-          <SemanticJsonForm
+          <SemanticJsonFormNoOps
             {...semanticJsonFormsProps}
             data={formData}
             forceEditMode={Boolean(editMode)}
-            hideToolbar={true}
-            entityIRI={entityIRI}
-            setData={handleDataChange}
-            shouldLoadInitially
+            onChange={handleDataChange}
             typeIRI={typeIRI}
-            crudOptions={crudOptions}
-            defaultPrefix={defaultPrefix}
-            jsonldContext={defaultJsonldContext}
-            queryBuildOptions={defaultQueryBuilderOptions}
             schema={schema as JSONSchema7}
             jsonFormsProps={{
               uischema: uischemaExternal || undefined,

@@ -7,16 +7,15 @@ import { useState } from "react";
 
 import schema from "../../schema/exhibition-info.schema.json";
 import useExtendedSchema from "../state/useExtendedSchema";
-import { useLocalSettings, useSettings } from "../state/useLocalSettings";
+import { useSettings } from "../state/useLocalSettings";
 import { oxigraphCrudOptions } from "../utils/sparql/remoteOxigraph";
 import {
   defaultJsonldContext,
   defaultPrefix,
-  defaultQueryBuilderOptions,
   sladb,
   slent,
 } from "./formConfigs";
-import SemanticJsonForm from "./SemanticJsonForm";
+import NewSemanticJsonForm from "./SemanticJsonForm";
 
 export const queryClient = new QueryClient();
 
@@ -42,7 +41,7 @@ const SemanticJsonFormOneShot = () => {
   const loadedSchema = useExtendedSchema({ typeName, classIRI });
 
   return (
-    <SemanticJsonForm
+    <NewSemanticJsonForm
       data={data}
       setData={setData}
       entityIRI={data["@id"]}
@@ -52,7 +51,6 @@ const SemanticJsonFormOneShot = () => {
       searchText={""}
       shouldLoadInitially
       jsonldContext={defaultJsonldContext}
-      queryBuildOptions={defaultQueryBuilderOptions}
       schema={loadedSchema as JSONSchema7}
       jsonFormsProps={{}}
     />
@@ -73,5 +71,5 @@ export const SemanticJsonFormExhibition = () => {
 };
 export default {
   title: "form/exhibition/EditExhibitionJSONForm",
-  component: SemanticJsonForm,
-} as ComponentMeta<typeof SemanticJsonForm>;
+  component: NewSemanticJsonForm,
+} as ComponentMeta<typeof NewSemanticJsonForm>;

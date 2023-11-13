@@ -1,25 +1,21 @@
-import { Button, Card, CardContent } from "@mui/material";
+import { Button } from "@mui/material";
 import { JSONSchema7 } from "json-schema";
-import React, { useCallback, useMemo, useRef } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { SplitPane } from "react-collapse-pane";
 
 import { BASE_IRI } from "../../config";
 import ContentMainPreview from "../../content/ContentMainPreview";
-import {
-  defaultJsonldContext,
-  defaultPrefix,
-  defaultQueryBuilderOptions,
-} from "../../form/formConfigs";
-import SemanticJsonForm from "../../form/SemanticJsonForm";
+import { defaultJsonldContext, defaultPrefix } from "../../form/formConfigs";
 import { uischemata } from "../../form/uischemaForType";
 import { uischemas } from "../../form/uischemas";
 import { materialCategorizationStepperLayoutWithPortal } from "../../renderer/MaterialCategorizationStepperLayoutWithPortal";
-import { useFormData, useFormEditor, useGlobalSearch } from "../../state";
+import { useFormEditor, useGlobalSearch } from "../../state";
 import useExtendedSchema from "../../state/useExtendedSchema";
 import { useGlobalCRUDOptions } from "../../state/useGlobalCRUDOptions";
 import { useSettings } from "../../state/useLocalSettings";
 import { useRouter } from "next/router";
-import { encodeIRI } from "../../utils/core";
+import { encodeIRI, irisToData } from "../../utils/core";
+import NewSemanticJsonForm from "../../form/SemanticJsonForm";
 
 type Props = {
   children: React.ReactChild;
@@ -68,10 +64,12 @@ const WithPreviewForm = ({ classIRI, data, children }: Props) => {
 
 export type MainFormProps = {
   typeName: string;
+  entityIRI?: string;
   classIRI: string;
 };
-const TypedForm = ({ typeName, classIRI }: MainFormProps) => {
-  const { formData: data, setFormData: setData } = useFormData();
+const TypedForm = ({ typeName, entityIRI, classIRI }: MainFormProps) => {
+  //const { formData: data, setFormData: setData } = useFormData();
+  const [data, setData] = useState(irisToData(entityIRI, classIRI));
   const { crudOptions } = useGlobalCRUDOptions();
   const { search: searchText, setSearch } = useGlobalSearch();
   const router = useRouter();
@@ -95,7 +93,6 @@ const TypedForm = ({ typeName, classIRI }: MainFormProps) => {
     [setSearch],
   );
   const loadedSchema = useExtendedSchema({ typeName, classIRI });
-  const actionButtonAreaRef = useRef<HTMLDivElement>();
 
   //const { stepperRef, actionRef } = useFormRefsContext();
   const handleChangeData = useCallback(
@@ -111,13 +108,18 @@ const TypedForm = ({ typeName, classIRI }: MainFormProps) => {
     ];
   }, []);
 
+  const uischema = useMemo(
+    () => uischemata[typeName] || (uischemas as any)[typeName],
+    [typeName],
+  );
+
   return (
     <WithPreviewForm data={data} classIRI={classIRI}>
       {loadedSchema && (
-        <SemanticJsonForm
+        <NewSemanticJsonForm
           defaultEditMode={true}
           data={data}
-          entityIRI={data["@id"]}
+          entityIRI={entityIRI}
           setData={handleChangeData}
           searchText={searchText}
           shouldLoadInitially
@@ -126,13 +128,9 @@ const TypedForm = ({ typeName, classIRI }: MainFormProps) => {
           crudOptions={crudOptions}
           defaultPrefix={defaultPrefix}
           jsonldContext={defaultJsonldContext}
-          queryBuildOptions={defaultQueryBuilderOptions}
           schema={loadedSchema as JSONSchema7}
-          toolbarChildren={
-            <span ref={actionButtonAreaRef} style={{ float: "right" }}></span>
-          }
           jsonFormsProps={{
-            uischema: uischemata[typeName] || (uischemas as any)[typeName],
+            uischema,
             uischemas: uischemas,
             renderers: mainFormRenderers,
           }}

@@ -99,13 +99,15 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
         ctx?.core?.data,
         path.substring(0, path.length - ("@id".length + 1)),
       );
-      return (
-        parentData?.label ||
-        parentData?.name ||
-        parentData?.title ||
-        parentData?.["@id"]?.value ||
-        ""
-      );
+      const fieldDecl = primaryFields[typeName] as PrimaryField | undefined;
+      let label = data;
+      if (fieldDecl?.label)
+        label = extractFieldIfString(parentData, fieldDecl.label);
+      if (typeof label === "object") {
+        console.warn("label is object", label);
+        return JSON.stringify(label);
+      }
+      return label;
     });
   }, [data, ctx?.core?.data, path, setRealLabel]);
 
@@ -154,14 +156,22 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
       [uischemas, schema, uischema.scope, path, uischema, rootSchema]
   )*/
 
-  const handleToggle = useCallback(() => {
-    setModalIsOpen(!modalIsOpen);
-  }, [setModalIsOpen, modalIsOpen]);
+  const handleToggle = useCallback(
+    (event?: React.MouseEvent) => {
+      event?.stopPropagation();
+      setModalIsOpen(!modalIsOpen);
+    },
+    [setModalIsOpen, modalIsOpen],
+  );
 
-  const handleAddNew = useCallback(() => {
-    newURI();
-    setModalIsOpen(true);
-  }, [setModalIsOpen, newURI]);
+  const handleAddNew = useCallback(
+    (event?: React.MouseEvent) => {
+      event?.stopPropagation();
+      newURI();
+      setModalIsOpen(true);
+    },
+    [setModalIsOpen, newURI],
+  );
 
   const handleSaveAndClose = useCallback(() => {
     setModalIsOpen(false);
@@ -177,6 +187,17 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
     });
   }, [setModalIsOpen, formData, handleSelectedChange]);
 
+  const handleClose = useCallback(() => {
+    setModalIsOpen(false);
+  }, [setModalIsOpen]);
+
+  const handleFormDataChange = useCallback(
+    (data: any) => {
+      setFormData(data);
+    },
+    [setFormData],
+  );
+
   return (
     <Hidden xsUp={!visible}>
       <Grid container alignItems="baseline">
@@ -188,7 +209,7 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
             title={label || ""}
             typeName={typeName || ""}
             selected={selected}
-            onSelectionChange={(selection) => handleSelectedChange(selection)}
+            onSelectionChange={handleSelectedChange}
             onSearchValueChange={setSearchString}
             searchString={searchString}
           />
@@ -198,42 +219,32 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
             <Grid container direction="column">
               {typeof data == "string" && data.length > 0 && (
                 <Grid item>
-                  <IconButton
-                    sx={{ padding: 0 }}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleToggle();
-                    }}
-                  >
+                  <IconButton sx={{ padding: 0 }} onClick={handleToggle}>
                     {modalIsOpen ? <OpenInNewOff /> : <OpenInNew />}
                   </IconButton>
                 </Grid>
               )}
               <Grid item>
-                <IconButton
-                  sx={{ padding: 0 }}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleAddNew();
-                  }}
-                >
+                <IconButton sx={{ padding: 0 }} onClick={handleAddNew}>
                   {<Add />}
                 </IconButton>
               </Grid>
             </Grid>
-            {modalIsOpen && (
+            {
               <SemanticFormsModal
+                key={selected.value}
                 schema={subSchema as JsonSchema}
                 formData={formData}
+                entityIRI={formData["@id"]}
                 typeIRI={typeIRI}
                 label={label}
                 open={modalIsOpen}
                 askClose={handleSaveAndClose}
-                askCancel={() => setModalIsOpen(false)}
-                onFormDataChange={(data) => setFormData(data)}
+                askCancel={handleClose}
+                onFormDataChange={handleFormDataChange}
                 onChange={handleEntityIRIChange}
               />
-            )}
+            }
           </Grid>
         )}
       </Grid>

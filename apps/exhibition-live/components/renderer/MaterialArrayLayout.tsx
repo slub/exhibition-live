@@ -37,21 +37,26 @@ import range from "lodash/range";
 import React, { useCallback, useMemo, useState } from "react";
 
 import { ArrayLayoutToolbar, getDefaultKey } from "./ArrayToolbar";
-import ExpandPanelRenderer from "./ExpandPanelRenderer";
 import { useJsonForms } from "@jsonforms/react";
 import { memo } from "./config";
 import { uniqBy, orderBy, isArray } from "lodash";
 import { SimpleExpandPanelRenderer } from "./SimpleExpandPanelRenderer";
 import { SemanticFormsModal } from "./SemanticFormsModal";
 import { BASE_IRI } from "../config";
-import { bringDefinitionToTop } from "../utils/core";
+import { bringDefinitionToTop, irisToData } from "../utils/core";
 import { JSONSchema7 } from "json-schema";
-import { defaultJsonldContext, slent } from "../form/formConfigs";
+import {
+  defaultJsonldContext,
+  defaultPrefix,
+  slent,
+} from "../form/formConfigs";
 import { v4 as uuidv4 } from "uuid";
 import { Grid, IconButton, List } from "@mui/material";
 import { SemanticFormsInline } from "./SemanticFormsInline";
 import AddIcon from "@mui/icons-material/Add";
-import { useCRUD } from "../state/useCRUD";
+import { useGlobalCRUDOptions } from "../state/useGlobalCRUDOptions";
+import { useCRUDWithQueryClient } from "../state/useCRUDWithQueryClient";
+import { useSnackbar } from "notistack";
 
 type OwnProps = {
   removeItems(path: string, toDelete: number[]): () => void;
@@ -87,17 +92,16 @@ const MaterialArrayLayoutComponent = (props: ArrayLayoutProps & {}) => {
   const appliedUiSchemaOptions = merge({}, config, props.uischema.options);
   const { readonly, core } = useJsonForms();
   const realData = Resolve.data(core.data, path);
+  const typeIRI = schema.properties?.["@type"]?.const;
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [formData, setFormData] = useState<any>({
-    "@id": slent(uuidv4()).value,
-  });
+  const [formData, setFormData] = useState<any>(
+    irisToData(slent(uuidv4()).value, typeIRI),
+  );
 
   const handleCreateNew = useCallback(() => {
-    setFormData({ "@id": slent(uuidv4()).value });
+    setFormData(irisToData(slent(uuidv4()).value, typeIRI));
     setModalIsOpen(true);
-  }, [setModalIsOpen, setFormData]);
-
-  const typeIRI = schema.properties?.["@type"]?.const;
+  }, [setModalIsOpen, setFormData, typeIRI]);
   const typeName = useMemo(
     () => typeIRI && typeIRI.substring(BASE_IRI.length, typeIRI.length),
     [typeIRI],
@@ -107,22 +111,41 @@ const MaterialArrayLayoutComponent = (props: ArrayLayoutProps & {}) => {
       bringDefinitionToTop(rootSchema as JSONSchema7, typeName) as JsonSchema,
     [rootSchema, typeName],
   );
-  const { save } = useCRUD(formData, subSchema as JSONSchema7);
+  const { crudOptions } = useGlobalCRUDOptions();
+  const entityIRI = useMemo(() => formData["@id"], [formData]);
+  const { saveMutation } = useCRUDWithQueryClient(
+    entityIRI,
+    typeIRI,
+    subSchema as JSONSchema7,
+    defaultPrefix,
+    crudOptions,
+    defaultJsonldContext,
+    { enabled: false },
+  );
 
+  const { enqueueSnackbar } = useSnackbar();
   const handleSaveAndAdd = useCallback(() => {
-    const id = slent(uuidv4()).value;
     const finalData = {
       ...formData,
-      "@type": typeIRI,
-      "@id": id,
-      "@context": defaultJsonldContext,
     };
     //if(typeof saveMethod === 'function')  saveMethod();
-    save(finalData).then(() => {
-      addItem(path, finalData)();
-      setFormData({});
-    });
-  }, [save, addItem, setFormData]);
+    saveMutation
+      .mutateAsync(finalData)
+      .then((res) => {
+        enqueueSnackbar("Saved", { variant: "success" });
+        addItem(path, res)();
+        const id = slent(uuidv4()).value;
+        setFormData({
+          "@id": id,
+          "@type": typeIRI,
+        });
+      })
+      .catch((e) => {
+        enqueueSnackbar("Error while saving " + e.message, {
+          variant: "error",
+        });
+      });
+  }, [saveMutation, typeIRI, addItem, setFormData]);
 
   const handleAddNew = useCallback(() => {
     setModalIsOpen(false);
@@ -153,6 +176,7 @@ const MaterialArrayLayoutComponent = (props: ArrayLayoutProps & {}) => {
       {modalIsOpen && (
         <SemanticFormsModal
           schema={subSchema}
+          entityIRI={formData["@id"]}
           formData={formData}
           typeIRI={typeIRI}
           label={label}
@@ -170,6 +194,7 @@ const MaterialArrayLayoutComponent = (props: ArrayLayoutProps & {}) => {
           <Grid item flex={"1"}>
             <SemanticFormsInline
               schema={subSchema}
+              entityIRI={formData["@id"]}
               typeIRI={typeIRI}
               formData={formData}
               onFormDataChange={(data) => setFormData(data)}

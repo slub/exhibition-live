@@ -157,7 +157,7 @@ export const TypedList = ({ typeName }: Props) => {
   const router = useRouter();
   const editEntry = useCallback(
     (id: string) => {
-      router.push(`/create/${typeName}/${encodeIRI(id)}`);
+      router.push(`/create/${typeName}?encID=${encodeIRI(id)}`);
     },
     [router, typeName],
   );

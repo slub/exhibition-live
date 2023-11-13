@@ -6,3 +6,4 @@ export * from "./jsonSchema";
 export * from "./leftpad";
 export * from "./resolveObj";
 export * from "./specialDate";
+export * from "./irisToData";

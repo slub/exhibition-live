@@ -15,6 +15,7 @@ type CleanJSONLDOptions = {
   walkerOptions?: Partial<WalkerOptions>;
   jsonldContext?: JsonLdContext;
   defaultPrefix: string;
+  keepContext?: boolean;
 };
 
 const defaultOptions: Partial<WalkerOptions> = {
@@ -26,13 +27,14 @@ const defaultOptions: Partial<WalkerOptions> = {
   doNotRecurseNamedNodes: true,
 };
 
-const cleanJSONLD = async (
+export const cleanJSONLD = async (
   data: NamedEntityData,
   schema: JSONSchema7,
   {
     jsonldContext,
     defaultPrefix,
     walkerOptions: walkerOptionsPassed = {},
+    keepContext,
   }: CleanJSONLDOptions,
 ) => {
   const entityIRI = data["@id"];
@@ -72,13 +74,16 @@ const cleanJSONLD = async (
       datasetFactory.dataset(),
       parser.import(jsonldStream),
     );
-    return jsonSchemaGraphInfuser(
+    const res = jsonSchemaGraphInfuser(
       defaultPrefix,
       entityIRI,
       ds as Dataset,
       schema,
       walkerOptions,
     );
+    return keepContext && jsonldContext
+      ? { ...res, "@context": jsonldContext }
+      : res;
   } catch (e) {
     throw new Error("Cannot convert JSONLD to dataset", e);
   }

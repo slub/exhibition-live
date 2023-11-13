@@ -26,6 +26,7 @@ import { Details, Edit } from "@mui/icons-material";
 import { useRouter } from "next/router";
 import { primaryFields } from "../../config";
 import { parseMarkdownLinks } from "../../utils/core/parseMarkdownLink";
+import { useQuery } from "@tanstack/react-query";
 
 type Props = {
   typeName: string;
@@ -103,7 +104,6 @@ const defsFieldName = (schema as JSONSchema7).definitions
   ? "definitions"
   : "$defs";
 export const TypedList = ({ typeName }: Props) => {
-  const [tabValue, setTabValue] = useState(typeName);
   const classIRI = useMemo(() => {
     return sladb(typeName).value;
   }, [typeName]);
@@ -114,7 +114,7 @@ export const TypedList = ({ typeName }: Props) => {
         | undefined,
     [typeName],
   );
-  const [headerVars, setHeaderVars] = useState<string[] | undefined>();
+
   const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: 10,
@@ -132,17 +132,28 @@ export const TypedList = ({ typeName }: Props) => {
     );
   }, [loadedSchema, classIRI]);
 
-  const [resultList, setResultList] = useState([]);
+  const { data: resultListData, isLoading } = useQuery(
+    ["allEntries", classIRI],
+    async () => {
+      if (!sparqlQuery || !crudOptions?.selectFetch) {
+        return;
+      }
+      const res = await crudOptions.selectFetch(sparqlQuery, {
+        withHeaders: true,
+      });
+      return res;
+    },
+    { enabled: !!sparqlQuery && !!crudOptions?.selectFetch },
+  );
 
-  useEffect(() => {
-    if (!sparqlQuery || !crudOptions?.selectFetch) {
-      return;
-    }
-    crudOptions.selectFetch(sparqlQuery, { withHeaders: true }).then((res) => {
-      setResultList(res?.results?.bindings ?? []);
-      setHeaderVars(res?.head?.vars);
-    });
-  }, [sparqlQuery, crudOptions?.selectFetch, setResultList, setHeaderVars]);
+  const resultList = useMemo(
+    () => resultListData?.results?.bindings ?? [],
+    [resultListData],
+  );
+  const headerVars = useMemo(
+    () => resultListData?.head?.vars,
+    [resultListData],
+  );
 
   const columns = useMemo<MRT_ColumnDef<any>[]>(
     () => computeColumns(loadedSchema),
@@ -164,7 +175,7 @@ export const TypedList = ({ typeName }: Props) => {
 
   return (
     <>
-      {!resultList || columns.length <= 0 ? (
+      {isLoading || columns.length <= 0 ? (
         <Skeleton variant="rectangular" height={530} />
       ) : (
         <MaterialReactTable

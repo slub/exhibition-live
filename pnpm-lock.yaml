@@ -66,6 +66,7 @@ importers:
       '@storybook/testing-library': ^0.0.13
       '@tabler/icons': ^2.38.0
       '@tanstack/react-query': ^4.24.6
+      '@tanstack/react-query-devtools': ^5.8.2
       '@tpluscode/rdf-ns-builders': ^2.0.1
       '@tpluscode/rdfine': ^0.5.41
       '@tpluscode/sparql-builder': ^0.3.31
@@ -176,6 +177,7 @@ importers:
       '@rdfjs/types': 1.1.0
       '@tabler/icons': 2.39.0
       '@tanstack/react-query': 4.36.1_biqbaboplfbrettd7655fr4n2y
+      '@tanstack/react-query-devtools': 5.8.2_ld22fqkchjvaqjcac2ky56lfaa
       '@tpluscode/rdf-ns-builders': 2.0.1_2cpatzvooxs7ez5gdkar7opzca
       '@tpluscode/rdfine': 0.5.43_mxhbu3u53cv3m7tm4kumoxftha
       '@tpluscode/sparql-builder': 0.3.31_d7epmfznxyo7wcibbzzpj2g7ha
@@ -8193,6 +8195,23 @@ packages:
 
   /@tanstack/query-core/4.36.1:
     resolution: {integrity: sha512-DJSilV5+ytBP1FbFcEJovv4rnnm/CokuVvrBEtW/Va9DvuJ3HksbXUJEpI0aV1KtuL4ZoO9AVE6PyNLzF7tLeA==}
+    dev: false
+
+  /@tanstack/query-devtools/5.8.2:
+    resolution: {integrity: sha512-xzI5LpmCSed2/plSu1ujfYadkOay9AADTzQ7U3aGYXHgBkKJ5pZrcTVuK3SHHpuqsD+mNmpzq8jU8omfOsFLxg==}
+    dev: false
+
+  /@tanstack/react-query-devtools/5.8.2_ld22fqkchjvaqjcac2ky56lfaa:
+    resolution: {integrity: sha512-8vcntQbZ1uDhSxkCJmbmBOAWsJaj7KlMUt4JbI1CvmOwI6HQi5SVy5Z8gtDH4h17kZKlwCoDUiaKetPgdLqaeg==}
+    peerDependencies:
+      '@tanstack/react-query': ^5.8.2
+      react: ^18.0.0
+      react-dom: ^18.0.0
+    dependencies:
+      '@tanstack/query-devtools': 5.8.2
+      '@tanstack/react-query': 4.36.1_biqbaboplfbrettd7655fr4n2y
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
     dev: false
 
   /@tanstack/react-query/4.36.1_biqbaboplfbrettd7655fr4n2y:

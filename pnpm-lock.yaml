@@ -101,6 +101,7 @@ importers:
       dayjs: ^1.11.7
       dot: 2.0.0-beta.1
       eslint-config-edb: workspace:*
+      export-to-csv: ^1.2.1
       fast-xml-parser: ^4.2.7
       graphql-tag: ^2.12.6
       html-react-parser: ^3.0.7
@@ -194,6 +195,7 @@ importers:
       d3: 7.8.5
       dayjs: 1.11.10
       dot: 2.0.0-beta.1
+      export-to-csv: 1.2.1
       fast-xml-parser: 4.3.2
       graphql-tag: 2.12.6
       html-react-parser: 3.0.16_react@18.2.0
@@ -12637,6 +12639,10 @@ packages:
       jest-message-util: 29.7.0
       jest-util: 29.7.0
     dev: true
+
+  /export-to-csv/1.2.1:
+    resolution: {integrity: sha512-Q16f4RAu99VcBy3ZVXWAdJ4N+6GIijLI/7Uw5rQ4Mi1WeiAK+s6i11AN/wdYTS+hK14wM6xlSrVhnLyEVEvMFQ==}
+    dev: false
 
   /express/4.18.2:
     resolution: {integrity: sha512-5/PsL6iGPdfQ/lKM1UuielYgv3BUoJfz1aUwU9vHZ+J7gyvwdQXFEBIEIaxeGf0GIcreATNyBExtalisDbuMqQ==}

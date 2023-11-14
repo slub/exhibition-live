@@ -69,6 +69,7 @@
     "d3": "^7.8.5",
     "dayjs": "^1.11.7",
     "dot": "2.0.0-beta.1",
+    "export-to-csv": "^1.2.1",
     "fast-xml-parser": "^4.2.7",
     "graphql-tag": "^2.12.6",
     "html-react-parser": "^3.0.7",

@@ -24,7 +24,9 @@ import {
   MaterialReactTable,
   MRT_ColumnDef,
   MRT_EditActionButtons,
+  MRT_Row,
   MRT_SortingState,
+  MRT_TableInstance,
   MRT_Virtualizer,
 } from "material-react-table";
 import {
@@ -34,7 +36,14 @@ import {
   isJSONSchema,
 } from "../../utils/core";
 import { JSONSchema7 } from "json-schema";
-import { Add, Delete, Details, Edit, OpenInNew } from "@mui/icons-material";
+import {
+  Add,
+  Delete,
+  Details,
+  Edit,
+  FileDownload,
+  OpenInNew,
+} from "@mui/icons-material";
 import { useRouter } from "next/router";
 import { primaryFields } from "../../config";
 import { parseMarkdownLinks } from "../../utils/core/parseMarkdownLink";
@@ -51,6 +60,7 @@ import { withDefaultPrefix } from "../../utils/crud/makeSPARQLWherePart";
 import { flatten } from "lodash";
 import get from "lodash/get";
 import { ToolbarItems } from "@uiw/react-md-editor/lib/components/Toolbar";
+import { download, generateCsv, mkConfig } from "export-to-csv";
 
 type Props = {
   typeName: string;
@@ -70,10 +80,10 @@ const computeColumns: (
     ? []
     : [
         /*{
-    id: p([...path, "id"])
-    header: p([...path, "id"]),
-    accessorKey: `${p([...path, "entry"])}.value`,
-  },*/
+  id: p([...path, "id"])
+  header: p([...path, "id"]),
+  accessorKey: `${p([...path, "entry"])}.value`,
+},*/
         ...Object.keys(filterForPrimitiveProperties(schema.properties)).map(
           (key) => ({
             header: p([...path, key]),
@@ -131,6 +141,12 @@ const computeColumns: (
           ],
         ),
       ]) as any as MRT_ColumnDef<any>[];
+
+const csvConfig = mkConfig({
+  fieldSeparator: ",",
+  decimalSeparator: ".",
+  useKeysAsHeaders: true,
+});
 
 const defsFieldName = (schema as JSONSchema7).definitions
   ? "definitions"
@@ -235,6 +251,31 @@ export const TypedList = ({ typeName }: Props) => {
   const tableContainerRef = useRef<HTMLDivElement>(null); //we can get access to the underlying TableContainer element and react to its scroll events
   const rowVirtualizerInstanceRef =
     useRef<MRT_Virtualizer<HTMLDivElement, HTMLTableRowElement>>(null); //we can get access to the underlying Virtualizer instance and call its scrollToIndex method
+  const handleExportRows = (rows: MRT_Row<any>[]) => {
+    console.log({ rows });
+    const rowData = rows.map((row) =>
+      Object.fromEntries(
+        row.getAllCells().map((cell) => [cell.column.id, cell.getValue()]),
+      ),
+    );
+    const csv = generateCsv(csvConfig)(rowData);
+    download(csvConfig)(csv);
+  };
+
+  const handleExportData = () => {
+    //const rowData = table.getState().all  .map((row) => Object.fromEntries( row.getAllCells().map(cell => [cell.column.id, cell.getValue()])));
+    const csv = generateCsv(csvConfig)(
+      resultList.map((entity) =>
+        Object.fromEntries(
+          Object.entries(entity).map(([k, v]) => [
+            k,
+            String((v as any)?.value || ""),
+          ]),
+        ),
+      ),
+    );
+    download(csvConfig)(csv);
+  };
 
   return (
     <Box sx={{ width: "100%" }}>
@@ -319,6 +360,33 @@ export const TypedList = ({ typeName }: Props) => {
                   }}
                 >
                   <Add />
+                </Button>
+                <Button
+                  onClick={handleExportData}
+                  startIcon={<FileDownload />}
+                >
+                  Alle Daten exportieren
+                </Button>
+                <Button
+                  disabled={table.getRowModel().rows.length === 0}
+                  //export all rows as seen on the screen (respects pagination, sorting, filtering, etc.)
+                  onClick={() => handleExportRows(table.getRowModel().rows)}
+                  startIcon={<FileDownload />}
+                >
+                  Aktuelle Seite exportieren
+                </Button>
+                <Button
+                  disabled={
+                    !table.getIsSomeRowsSelected() &&
+                    !table.getIsAllRowsSelected()
+                  }
+                  //only export selected rows
+                  onClick={() =>
+                    handleExportRows(table.getSelectedRowModel().rows)
+                  }
+                  startIcon={<FileDownload />}
+                >
+                  Nur ausgewählte Zeilen exportieren
                 </Button>
               </Box>
             )}

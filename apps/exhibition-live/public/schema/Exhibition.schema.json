@@ -658,10 +658,16 @@
             "type": "string"
           }
         },
-        "exponats": {
+        "exponatsAndPersons": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/ExhibitionExponat"
+            "$ref": "#/$defs/ExponatsAndPersons"
+          }
+        },
+        "exponatsAndCorporations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ExponatsAndCorporations"
           }
         },
         "resources": {

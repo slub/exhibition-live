@@ -173,11 +173,22 @@
       "elements": [
         {
           "type": "Control",
-          "label": "Ausgestellte Werke",
-          "scope": "#/properties/exponats",
+          "label": "Ausgestellte Werke nach Personen",
+          "scope": "#/properties/exponatsAndPersons",
           "options": {
-            "elementLabelProp": "title",
-            "detail": "GENERATED"
+            "elementLabelTemplate": "{{=it.person?.name || ''}} - {{=it.exponat?.title || ''}})",
+            "detail": "GENERATED",
+            "isReifiedStatement": true
+          }
+        },
+        {
+          "type": "Control",
+          "label": "Ausgestellte Werke nach Institutionen",
+          "scope": "#/properties/exponatsAndCorporations",
+          "options": {
+            "elementLabelTemplate": "{{=it.corporation?.name || ''}} - {{=it.exponat?.title || ''}})",
+            "detail": "GENERATED",
+            "isReifiedStatement": true
           }
         },
         {

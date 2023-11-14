@@ -17,11 +17,13 @@ import PersonRoleUISchema from "./uischema/PersonRole.uischema.json";
 import CorporationRoleUISchema from "./uischema/CorporationRole.uischema.json";
 import EventTypeUISchema from "./uischema/EventType.uischema.json";
 import CorporationUISchema from "./uischema/Corporation.uischema.json";
+import InvolvedCoporationUISchema from "./uischema/InvolvedCorporation.uischema.json";
 
 export const uischemata = {
   Exhibition: ExhibitionUISchema,
   ExhibitionExponat: ExhibitionExponatUISchema,
   InvolvedPerson: InvolvedPersonUISchema,
+  InvolvedCorporation: InvolvedCoporationUISchema,
   Location: LocationUISchema,
   Person: PersonUISchema,
   Place: PlaceUISchema,

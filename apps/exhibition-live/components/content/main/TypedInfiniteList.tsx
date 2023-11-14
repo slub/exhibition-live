@@ -30,7 +30,6 @@ import {
   filterForArrayProperties,
   encodeIRI,
   isJSONSchema,
-
 } from "../../utils/core";
 import { JSONSchema7 } from "json-schema";
 import { Add, Details, Edit } from "@mui/icons-material";

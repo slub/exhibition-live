@@ -19,7 +19,6 @@ import {
   IconButton,
   Backdrop,
   CircularProgress,
-
 } from "@mui/material";
 import {
   MaterialReactTable,
@@ -33,7 +32,6 @@ import {
   filterForArrayProperties,
   encodeIRI,
   isJSONSchema,
-
 } from "../../utils/core";
 import { JSONSchema7 } from "json-schema";
 import { Add, Delete, Details, Edit, OpenInNew } from "@mui/icons-material";

@@ -4,7 +4,7 @@ import React from "react";
 import { sladb, slent } from "../components/form/formConfigs";
 import { MainLayout } from "../components/layout/main-layout";
 import { useRDFDataSources } from "../components/state";
-import {Dashboard} from "../components/content/main/Dashboard";
+import { Dashboard } from "../components/content/main/Dashboard";
 
 type Props = {
   children: React.ReactChild;

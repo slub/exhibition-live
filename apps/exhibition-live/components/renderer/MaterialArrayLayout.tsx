@@ -190,7 +190,12 @@ const MaterialArrayLayoutComponent = (props: ArrayLayoutProps & {}) => {
         />
       )}
       {isReifiedStatement && (
-        <Grid display={"flex"} direction={"row"} alignItems={"center"}>
+        <Grid
+          display={"flex"}
+          container
+          direction={"row"}
+          alignItems={"center"}
+        >
           <Grid item flex={"1"}>
             <SemanticFormsInline
               schema={subSchema}

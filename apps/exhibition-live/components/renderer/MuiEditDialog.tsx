@@ -59,6 +59,7 @@ export default function MuiEditDialog({
   onEdit,
   editMode,
   search,
+  actions,
 }: {
   onCancel?: () => void;
   onSave?: () => void;
@@ -69,8 +70,9 @@ export default function MuiEditDialog({
   editMode?: boolean;
   open?: boolean;
   title?: string;
-  search?: React.ReactChild;
-  children?: React.ReactChild;
+  search?: React.ReactNode;
+  children?: React.ReactNode;
+  actions?: React.ReactNode;
 }) {
   const theme = useTheme();
   const [forceFullscreen, setForceFullscreen] = useState(false);
@@ -189,6 +191,7 @@ export default function MuiEditDialog({
       <DialogContent>{children}</DialogContent>
       <Hidden mdDown={true}>
         <DialogActions>
+          {actions || null}
           {onCancel && (
             <Button autoFocus onClick={onCancel}>
               abbrechen

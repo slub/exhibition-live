@@ -30,6 +30,7 @@ type SemanticFormsModalProps = {
   onChange?: (data: string | undefined) => void;
   formData?: any;
   onFormDataChange?: (data: any) => void;
+  children?: React.ReactNode;
 };
 export const SemanticFormsModal = (props: SemanticFormsModalProps) => {
   const {
@@ -44,6 +45,7 @@ export const SemanticFormsModal = (props: SemanticFormsModalProps) => {
     semanticJsonFormsProps,
     formData: formDataProp,
     onFormDataChange,
+    children,
   } = props;
   const [formData, setFormData] = useControlled({
     name: "FormData",
@@ -145,6 +147,7 @@ export const SemanticFormsModal = (props: SemanticFormsModalProps) => {
       onReload={handleReload}
       onEdit={handleEditToggle}
       editMode={editMode}
+      actions={children}
       search={
         <DiscoverAutocompleteInput
           typeIRI={typeIRI}

@@ -4,6 +4,7 @@ import React from "react";
 import { sladb, slent } from "../components/form/formConfigs";
 import { MainLayout } from "../components/layout/main-layout";
 import { useRDFDataSources } from "../components/state";
+import {Dashboard} from "../components/content/main/Dashboard";
 
 type Props = {
   children: React.ReactChild;
@@ -27,7 +28,9 @@ export default () => {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <MainLayout>Welcome to the exhibition data entry app.</MainLayout>
+      <MainLayout>
+        <Dashboard />
+      </MainLayout>
     </>
   );
 };

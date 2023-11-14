@@ -239,7 +239,7 @@ export const TypedList = ({ typeName }: Props) => {
     useRef<MRT_Virtualizer<HTMLDivElement, HTMLTableRowElement>>(null); //we can get access to the underlying Virtualizer instance and call its scrollToIndex method
 
   return (
-    <Box sx={{ width: "100%", height: `calc(100vh - 280px)` }}>
+    <Box sx={{ width: "100%" }}>
       {isLoading && columns.length <= 0 ? (
         <Skeleton variant="rectangular" height={"50%"} />
       ) : (
@@ -256,7 +256,7 @@ export const TypedList = ({ typeName }: Props) => {
             rowVirtualizerInstanceRef={rowVirtualizerInstanceRef}
             muiTableContainerProps={{
               ref: tableContainerRef, //get access to the table container element
-              sx: { maxHeight: `calc(100vh - 280px)` }, //give the table a max height
+              sx: { maxHeight: `calc(100vh - 150px)` }, //give the table a max height
             }}
             rowVirtualizerOptions={{ overscan: 4 }}
             enableColumnVirtualization={false}

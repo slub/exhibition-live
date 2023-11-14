@@ -7,7 +7,7 @@ import {
 } from "../../form/formConfigs";
 import { defaultQuerySelect } from "../sparql/remoteOxigraph";
 
-function fixSparqlOrder(sparqlQuery) {
+export function fixSparqlOrder(sparqlQuery) {
   const regex = /(ORDER BY [^ ]+)(.*)(GROUP BY[^\)]+\))/gm;
   return sparqlQuery.replace(regex, "$3$2\n$1");
 }

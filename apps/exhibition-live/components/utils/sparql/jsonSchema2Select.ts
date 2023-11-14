@@ -117,8 +117,13 @@ const propertiesToSPARQLSelectPatterns = (
   };
 };
 
+type MultiSortOrder = {
+  descending: boolean;
+  orderBy: string;
+}[];
+
 type SPARQLSelectOptions = {
-  orderBy?: string;
+  orderBy?: string | MultiSortOrder;
   descending?: boolean;
   limit?: number;
   offset?: number;
@@ -127,9 +132,18 @@ type SPARQLSelectOptions = {
 
 const sparqlPartFromOptions = (options: SPARQLSelectOptions) => {
   let sparqlParts = [];
-  if (options.orderBy) {
+  if (typeof options.orderBy === "string") {
     sparqlParts.push(
       `ORDER BY ${options?.descending ? "DESC" : "ASC"}(${options.orderBy})`,
+    );
+  } else if (Array.isArray(options.orderBy) && options.orderBy.length > 0) {
+    sparqlParts.push(
+      `ORDER BY ${options.orderBy
+        .map(
+          ({ orderBy, descending }) =>
+            `${descending ? "DESC" : "ASC"}(?${orderBy})`,
+        )
+        .join(" ")}`,
     );
   }
   if (options.limit) {
@@ -160,6 +174,7 @@ export const jsonSchema2Select = (
   typeIRI?: string,
   excludeProperties?: string[],
   sparqlSelectOptions?: SPARQLSelectOptions,
+  countResults?: boolean,
 ) => {
   if (!rootSchema.properties) return "";
   const variable = "?entity";

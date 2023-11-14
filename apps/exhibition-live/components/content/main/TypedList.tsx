@@ -1,38 +1,69 @@
-import { defaultPrefix, sladb } from "../../form/formConfigs";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import {
+  defaultPrefix,
+  defaultQueryBuilderOptions,
+  sladb,
+  slent,
+} from "../../form/formConfigs";
+import { useCallback, useMemo, useRef, useState } from "react";
 import schema from "../../../public/schema/Exhibition.schema.json";
+import { v4 as uuidv4 } from "uuid";
 import { useGlobalCRUDOptions } from "../../state/useGlobalCRUDOptions";
 import { jsonSchema2Select } from "../../utils/sparql/jsonSchema2Select";
 import {
   Box,
-  Grid,
   Link,
   Skeleton,
   MenuItem,
   ListItemIcon,
-  Tab,
-  Tabs,
-  CssBaseline,
+  Tooltip,
+  IconButton,
+  Backdrop,
+  CircularProgress,
+
 } from "@mui/material";
-import { MaterialReactTable, MRT_ColumnDef } from "material-react-table";
+import {
+  MaterialReactTable,
+  MRT_ColumnDef,
+  MRT_EditActionButtons,
+  MRT_SortingState,
+  MRT_Virtualizer,
+} from "material-react-table";
 import {
   filterForPrimitiveProperties,
   filterForArrayProperties,
   encodeIRI,
   isJSONSchema,
+
 } from "../../utils/core";
 import { JSONSchema7 } from "json-schema";
-import { Details, Edit } from "@mui/icons-material";
+import { Add, Delete, Details, Edit, OpenInNew } from "@mui/icons-material";
 import { useRouter } from "next/router";
 import { primaryFields } from "../../config";
 import { parseMarkdownLinks } from "../../utils/core/parseMarkdownLink";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { SemanticFormsModal } from "../../renderer/SemanticFormsModal";
+import NiceModal from "@ebay/nice-modal-react";
+import GenericModal from "../../form/GenericModal";
+import { useSnackbar } from "notistack";
+import { remove } from "../../utils/crud";
+import { JsonSchema } from "@jsonforms/core";
+import useExtendedSchema from "../../state/useExtendedSchema";
+import Button from "@mui/material/Button";
+import { withDefaultPrefix } from "../../utils/crud/makeSPARQLWherePart";
+import { flatten } from "lodash";
+import get from "lodash/get";
+import { ToolbarItems } from "@uiw/react-md-editor/lib/components/Toolbar";
 
 type Props = {
   typeName: string;
 };
 
 const p = (path: string[]) => path.join("_");
+
+const mkAccessor =
+  (path: string, defaultValue?: string | any) => (row: any) => {
+    return get(row, path, defaultValue || "");
+  };
 const computeColumns: (
   schema: JSONSchema7,
   path?: string[],
@@ -41,15 +72,15 @@ const computeColumns: (
     ? []
     : [
         /*{
-      id: p([...path, "id"])
-      header: p([...path, "id"]),
-      accessorKey: `${p([...path, "entry"])}.value`,
-    },*/
+    id: p([...path, "id"])
+    header: p([...path, "id"]),
+    accessorKey: `${p([...path, "entry"])}.value`,
+  },*/
         ...Object.keys(filterForPrimitiveProperties(schema.properties)).map(
           (key) => ({
             header: p([...path, key]),
             id: p([...path, key, "single"]),
-            accessorKey: `${p([...path, key, "single"])}.value`,
+            accessorFn: mkAccessor(`${p([...path, key, "single"])}.value`, ""),
             Cell: ({ cell }) => <>{cell.getValue() ?? ""}</>,
           }),
         ),
@@ -69,7 +100,7 @@ const computeColumns: (
             {
               header: p([...path, key]) + " count",
               id: p([...path, key, "count"]),
-              accessorKey: `${p([...path, key, "count"])}.value`,
+              accessorFn: mkAccessor(`${p([...path, key, "count"])}.value`, 0),
               Cell: ({ cell }) => (
                 <Link href={"#"}>{cell.getValue() ?? 0}</Link>
               ),
@@ -77,7 +108,10 @@ const computeColumns: (
             {
               header: p([...path, key]),
               id: p([...path, key, "label_group"]),
-              accessorKey: `${p([...path, key, "label_group"])}.value`,
+              accessorFn: mkAccessor(
+                `${p([...path, key, "label_group"])}.value`,
+                "",
+              ),
               Cell: ({ cell }) => (
                 <>
                   {cell.getValue() &&
@@ -115,26 +149,29 @@ export const TypedList = ({ typeName }: Props) => {
     [typeName],
   );
 
-  const [pagination, setPagination] = useState({
-    pageIndex: 0,
-    pageSize: 10,
-  });
+  const [sorting, setSorting] = useState<MRT_SortingState>([
+    { id: "entity", desc: false },
+  ]);
+
+  const handleColumnOrderChange = useCallback(
+    (s: MRT_SortingState) => {
+      setSorting(s);
+    },
+    [setSorting],
+  );
 
   const { crudOptions } = useGlobalCRUDOptions();
-  const sparqlQuery = useMemo(() => {
-    if (!loadedSchema || !classIRI) return;
-    return (
-      `PREFIX : <${defaultPrefix}> \n` +
-      jsonSchema2Select(loadedSchema, classIRI, [], {
-        limit: 10000,
-        primaryFields: primaryFields,
-      })
-    );
-  }, [loadedSchema, classIRI]);
 
   const { data: resultListData, isLoading } = useQuery(
-    ["allEntries", classIRI],
+    ["allEntries", classIRI, sorting],
     async () => {
+      const sparqlQuery = withDefaultPrefix(
+        defaultPrefix,
+        jsonSchema2Select(loadedSchema, classIRI, [], {
+          primaryFields: primaryFields,
+          orderBy: sorting.map((s) => ({ orderBy: s.id, descending: s.desc })),
+        }),
+      );
       if (!sparqlQuery || !crudOptions?.selectFetch) {
         return;
       }
@@ -143,7 +180,7 @@ export const TypedList = ({ typeName }: Props) => {
       });
       return res;
     },
-    { enabled: !!sparqlQuery && !!crudOptions?.selectFetch },
+    { enabled: !!crudOptions?.selectFetch },
   );
 
   const resultList = useMemo(
@@ -172,61 +209,181 @@ export const TypedList = ({ typeName }: Props) => {
     },
     [router, typeName],
   );
+  const extendedSchema = useExtendedSchema({ typeName, classIRI });
+  const { mutate: removeEntity } = useMutation(
+    ["remove", (id: string) => id],
+    async (id: string) => {
+      if (!id || !crudOptions.updateFetch)
+        throw new Error("entityIRI or updateFetch is not defined");
+      return remove(id, classIRI, loadedSchema, crudOptions.updateFetch, {
+        defaultPrefix,
+        queryBuildOptions: defaultQueryBuilderOptions,
+      });
+    },
+  );
+  const { enqueueSnackbar } = useSnackbar();
+  const handleRemove = useCallback(
+    async (id: string) => {
+      NiceModal.show(GenericModal, {
+        type: "delete",
+      }).then(() => {
+        removeEntity(id);
+        enqueueSnackbar("Removed", { variant: "success" });
+      });
+    },
+    [removeEntity],
+  );
+
+  const tableContainerRef = useRef<HTMLDivElement>(null); //we can get access to the underlying TableContainer element and react to its scroll events
+  const rowVirtualizerInstanceRef =
+    useRef<MRT_Virtualizer<HTMLDivElement, HTMLTableRowElement>>(null); //we can get access to the underlying Virtualizer instance and call its scrollToIndex method
 
   return (
-    <>
-      {isLoading || columns.length <= 0 ? (
-        <Skeleton variant="rectangular" height={530} />
+    <Box sx={{ width: "100%", height: `calc(100vh - 280px)` }}>
+      {isLoading && columns.length <= 0 ? (
+        <Skeleton variant="rectangular" height={"50%"} />
       ) : (
-        <MaterialReactTable
-          columns={displayColumns}
-          data={resultList}
-          enableColumnOrdering //enable some features
-          enableRowSelection
-          manualPagination={false}
-          initialState={{
-            columnVisibility: { id: false, externalId_single: false },
-          }}
-          onPaginationChange={setPagination}
-          rowCount={resultList.length}
-          enableRowActions={true}
-          getRowId={(row) => (row as any).entity.value}
-          renderRowActionMenuItems={(row) => {
-            return [
-              <MenuItem
-                key={0}
-                onClick={() => {
-                  // View profile logic...
-                  row.closeMenu();
-                  editEntry(row.row.id);
-                }}
-                sx={{ m: 0 }}
-              >
-                <ListItemIcon>
-                  <Edit />
-                </ListItemIcon>
-                bearbeiten
-              </MenuItem>,
-              <MenuItem
-                key={1}
-                onClick={() => {
-                  row.closeMenu();
-                }}
-                sx={{ m: 0 }}
-              >
-                <ListItemIcon>
-                  <Details />
-                </ListItemIcon>
-                Details
-              </MenuItem>,
-            ];
-          }}
-          state={{
-            pagination,
-          }}
-        />
+        <>
+          <Backdrop
+            sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+            open={isLoading}
+          >
+            <CircularProgress color="inherit" />
+          </Backdrop>
+          <MaterialReactTable
+            columns={displayColumns}
+            data={resultList}
+            rowVirtualizerInstanceRef={rowVirtualizerInstanceRef}
+            muiTableContainerProps={{
+              ref: tableContainerRef, //get access to the table container element
+              sx: { maxHeight: `calc(100vh - 280px)` }, //give the table a max height
+            }}
+            rowVirtualizerOptions={{ overscan: 4 }}
+            enableColumnVirtualization={false}
+            enableColumnOrdering //enable some features
+            enableRowSelection
+            manualPagination={false}
+            manualSorting={true}
+            onSortingChange={handleColumnOrderChange}
+            initialState={{
+              columnVisibility: { id: false, externalId_single: false },
+            }}
+            rowCount={resultList.length}
+            enableRowActions={true}
+            renderCreateRowDialogContent={({
+              table,
+              row,
+              internalEditComponents,
+            }) => {
+              return (
+                <SemanticFormsModal
+                  open={true}
+                  askClose={() => table.setCreatingRow(row)}
+                  schema={extendedSchema as JsonSchema}
+                  entityIRI={slent(uuidv4()).value}
+                  typeIRI={classIRI}
+                >
+                  <MRT_EditActionButtons
+                    variant="text"
+                    table={table}
+                    row={row}
+                  />
+                </SemanticFormsModal>
+              );
+            }}
+            renderEditRowDialogContent={({
+              table,
+              row,
+              internalEditComponents,
+            }) => {
+              return (
+                <SemanticFormsModal
+                  open={true}
+                  askClose={() => table.setEditingRow(row)}
+                  schema={extendedSchema as JsonSchema}
+                  entityIRI={row.id}
+                  typeIRI={classIRI}
+                >
+                  <MRT_EditActionButtons
+                    variant="text"
+                    table={table}
+                    row={row}
+                  />
+                </SemanticFormsModal>
+              );
+            }}
+            renderTopToolbarCustomActions={({ table }) => (
+              <Box sx={{ display: "flex", gap: "1rem" }}>
+                <Button
+                  variant="contained"
+                  onClick={() => {
+                    table.setCreatingRow(true);
+                  }}
+                >
+                  <Add />
+                </Button>
+              </Box>
+            )}
+            getRowId={(row) => (row as any)?.entity?.value || uuidv4()}
+            renderRowActions={({ row, table }) => (
+              <Box sx={{ display: "flex" }}>
+                <Tooltip title="Edit">
+                  <IconButton onClick={() => editEntry(row.id)}>
+                    <Edit />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title="Edit inline">
+                  <IconButton onClick={() => table.setEditingRow(row)}>
+                    <OpenInNew />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title="Delete">
+                  <IconButton
+                    color="error"
+                    onClick={() => handleRemove(row.id)}
+                  >
+                    <Delete />
+                  </IconButton>
+                </Tooltip>
+              </Box>
+            )}
+            renderRowActionMenuItems={(row) => {
+              return [
+                <MenuItem
+                  key={0}
+                  onClick={() => {
+                    // View profile logic...
+                    row.closeMenu();
+                    editEntry((row.row.getValue("entity") as any).value);
+                  }}
+                  sx={{ m: 0 }}
+                >
+                  <ListItemIcon>
+                    <Edit />
+                  </ListItemIcon>
+                  bearbeiten
+                </MenuItem>,
+                <MenuItem
+                  key={1}
+                  onClick={() => {
+                    row.closeMenu();
+                  }}
+                  sx={{ m: 0 }}
+                >
+                  <ListItemIcon>
+                    <Details />
+                  </ListItemIcon>
+                  Details
+                </MenuItem>,
+              ];
+            }}
+            state={{
+              sorting,
+            }}
+          />
+        </>
       )}
-    </>
+    </Box>
   );
 };
 

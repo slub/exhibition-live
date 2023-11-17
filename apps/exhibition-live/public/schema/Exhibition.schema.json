@@ -103,6 +103,10 @@
         }
       }
     },
+    "AuthorityEntry": {
+      "type": "object",
+      "properties": {}
+    },
     "Person": {
       "type": "object",
       "properties": {

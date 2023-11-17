@@ -158,6 +158,80 @@ export const exhibitionDeclarativeMapping: DeclarativeMappings = [
   },
   {
     source: {
+      path: "organizerOrHost",
+    },
+    target: {
+      path: "involvedCorporations",
+    },
+    mapping: {
+      strategy: {
+        id: "createEntity",
+        options: {
+          typeIRI: sladb("InvolvedCorporation").value,
+          subFieldMapping: {
+            fromEntity: [
+              {
+                source: {
+                  path: "",
+                },
+                target: {
+                  path: "role.@id",
+                },
+                mapping: {
+                  strategy: {
+                    id: "constant",
+                    options: {
+                      value:
+                        "http://ontologies.slub-dresden.de/exhibition/organizer",
+                    },
+                  },
+                },
+              },
+              {
+                source: {
+                  path: "",
+                },
+                target: {
+                  path: "corporation",
+                },
+                mapping: {
+                  strategy: {
+                    id: "createEntity",
+                    options: {
+                      typeIRI: sladb("Corporation").value,
+                      typeName: "Corporation",
+                      subFieldMapping: {
+                        fromEntity: [
+                          {
+                            source: {
+                              path: "label",
+                            },
+                            target: {
+                              path: "name",
+                            },
+                          },
+                          {
+                            source: {
+                              path: "id",
+                            },
+                            target: {
+                              path: "idAuthority.@id",
+                            },
+                          },
+                        ],
+                      },
+                    },
+                  },
+                },
+              },
+            ],
+          },
+        },
+      },
+    },
+  },
+  {
+    source: {
       path: "topic",
     },
     target: {
@@ -346,6 +420,63 @@ export const corporateBodyDeclarativeMapping: DeclarativeMappings = [
       path: "name",
     },
   },
+  {
+    source: {
+      path: "variantName",
+    },
+    target: {
+      path: "nameVariant",
+    },
+    mapping: {
+      strategy: {
+        id: "append",
+      },
+    },
+  },
+  {
+    source: {
+      path: "id",
+    },
+    target: {
+      path: "idAuthority.@id",
+    },
+  },
+  {
+    source: {
+      path: "spatialAreaOfActivity",
+    },
+    target: {
+      path: "locations",
+    },
+    mapping: {
+      strategy: {
+        id: "createEntity",
+        options: {
+          typeIRI: sladb("Location").value,
+          subFieldMapping: {
+            fromEntity: [
+              {
+                source: {
+                  path: "label",
+                },
+                target: {
+                  path: "title",
+                },
+              },
+              {
+                source: {
+                  path: "id",
+                },
+                target: {
+                  path: "idAuthority.@id",
+                },
+              },
+            ],
+          },
+        },
+      },
+    },
+  },
 ];
 
 export const workDeclarativeMapping: DeclarativeMappings = [
@@ -370,7 +501,8 @@ export const workDeclarativeMapping: DeclarativeMappings = [
   },
 ];
 
-export const declarativeMappings: { [key: string]: DeclarativeMappings } = {
+export type DeclarativeMapping = { [key: string]: DeclarativeMappings };
+export const declarativeMappings: DeclarativeMapping = {
   Exhibition: exhibitionDeclarativeMapping,
   Person: personDeclarativeMapping,
   Corporation: corporateBodyDeclarativeMapping,

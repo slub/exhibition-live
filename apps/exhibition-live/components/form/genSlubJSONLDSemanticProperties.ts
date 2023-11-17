@@ -22,6 +22,10 @@ const makeGenSlubJSONLDSemanticProperties: (
       title: "Bild",
       type: "string",
     },
+    idAuthority: {
+      title: "Autorität",
+      $ref: "#/$defs/AuthorityEntry",
+    },
   });
 
 export default makeGenSlubJSONLDSemanticProperties(

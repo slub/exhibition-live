@@ -21,34 +21,40 @@ export const mapByConfig = async (
   for (const { source, target, mapping } of mappingConfig) {
     const { path: sourcePath, expectedSchema } = source;
     const { path: targetPath } = target;
-    const sourceValue = get(sourceData, sourcePath);
-    if (sourceValue) {
-      if (expectedSchema && !ajv.validate(expectedSchema, sourceValue)) {
-        console.warn(
+    const hasSourcePath = source?.path && source.path.length > 0;
+    const sourceValue = hasSourcePath
+      ? get(sourceData, sourcePath)
+      : sourceData;
+    if (isNil(sourceValue)) continue;
+    if (expectedSchema && !ajv.validate(expectedSchema, sourceValue)) {
+      if (strategyContext.options?.strictCheckTargetData)
+        throw new Error(
           `Value does not match expected schema ${JSON.stringify(
             expectedSchema,
           )}`,
         );
+      console.warn(
+        `Value does not match expected schema ${JSON.stringify(
+          expectedSchema,
+        )}`,
+      );
+    } else {
+      if (!mapping?.strategy) {
+        //take value as is if no strategy is defined
+        set(newData, targetPath, sourceValue);
       } else {
-        if (!mapping?.strategy) {
-          //take value as is if no strategy is defined
-          set(newData, targetPath, sourceValue);
-        } else {
-          const mappingFunction = strategyFunctionMap[mapping.strategy.id];
-          if (typeof mappingFunction !== "function") {
-            throw new Error(
-              `Strategy ${mapping.strategy.id} is not implemented`,
-            );
-          }
-          const strategyOptions = (mapping.strategy as any).options;
-          const value = await mappingFunction(
-            sourceValue,
-            get(newData, targetPath),
-            strategyOptions,
-            strategyContext,
-          );
-          if (!isNil(value)) set(newData, targetPath, value);
+        const mappingFunction = strategyFunctionMap[mapping.strategy.id];
+        if (typeof mappingFunction !== "function") {
+          throw new Error(`Strategy ${mapping.strategy.id} is not implemented`);
         }
+        const strategyOptions = (mapping.strategy as any).options;
+        const value = await mappingFunction(
+          sourceValue,
+          get(newData, targetPath),
+          strategyOptions,
+          strategyContext,
+        );
+        if (!isNil(value)) set(newData, targetPath, value);
       }
     }
   }

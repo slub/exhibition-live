@@ -5,6 +5,10 @@ import customParseFormat from "dayjs/plugin/customParseFormat";
 import { getPaddedDate } from "../core/specialDate";
 import { mapByConfig } from "./mapByConfig";
 import isNil from "lodash/isNil";
+import { DeclarativeMapping } from "../../config";
+import {
+  findEntityWithinLobidByIRI,
+} from "../lobid/findEntityWithinLobid";
 
 dayjs.extend(customParseFormat);
 
@@ -20,6 +24,11 @@ export type StrategyContext = {
   ) => Promise<string | null>;
   authorityIRI: string;
   newIRI: (typeIRI: string) => string;
+  options?: {
+    strictCheckSourceData?: boolean;
+    strictCheckTargetData?: boolean;
+  };
+  mappingTable?: DeclarativeMapping;
 };
 
 export type StrategyFunction = (
@@ -55,6 +64,9 @@ type AppendStrategy = Strategy & {
   id: "append";
   options?: {
     allowDuplicates?: boolean;
+    subFieldMapping?: {
+      fromSelf?: DeclarativeMappings;
+    };
   };
 };
 
@@ -74,13 +86,13 @@ type CreateEntityStrategy = Strategy & {
   id: "createEntity";
   options?: {
     typeIRI?: string;
+    typeName?: string;
     subFieldMapping: {
       fromSelf?: DeclarativeMappings;
       fromEntity?: DeclarativeMappings;
     };
   };
 };
-
 export const createEntity = async (
   sourceData: any,
   _targetData: any,
@@ -94,8 +106,9 @@ export const createEntity = async (
   const { getPrimaryIRIBySecondaryIRI, newIRI, authorityIRI } = context;
   const newDataElements = [];
   for (const sourceDataElement of sourceDataArray) {
+    const authorityEntryIRI = sourceDataElement.id;
     const primaryIRI = await getPrimaryIRIBySecondaryIRI(
-      sourceDataElement.id,
+      authorityEntryIRI,
       authorityIRI,
       typeIRI || "",
     );
@@ -105,15 +118,28 @@ export const createEntity = async (
         "@type": typeIRI,
         __draft: true,
       };
-      const entityIRI = primaryIRI || newIRI(typeIRI);
-      newDataElements.push(
-        await mapByConfig(
-          sourceDataElement,
-          targetData,
-          subFieldMapping.fromEntity || [],
-          context,
-        ),
-      );
+      if (options?.typeName && context.mappingTable?.[options.typeName]) {
+        const mapping = context.mappingTable[options.typeName];
+        const fullData = await findEntityWithinLobidByIRI(sourceDataElement.id);
+        if (fullData) {
+          const mappedData = await mapByConfig(
+            fullData,
+            targetData,
+            mapping,
+            context,
+          );
+          newDataElements.push(mappedData);
+        }
+      } else if (subFieldMapping) {
+        newDataElements.push(
+          await mapByConfig(
+            sourceDataElement,
+            targetData,
+            subFieldMapping.fromEntity || [],
+            context,
+          ),
+        );
+      }
     } else {
       newDataElements.push({
         "@id": primaryIRI,
@@ -121,6 +147,22 @@ export const createEntity = async (
     }
   }
   return isArray ? newDataElements : newDataElements[0];
+};
+
+type ConstantStrategy = Strategy & {
+  id: "constant";
+  options?: {
+    value: string | number;
+  };
+};
+
+const constantStrategy = (
+  _source: any,
+  _target: any,
+  options?: ConstantStrategy["options"],
+): string | number => {
+  const { value } = options || {};
+  return value;
 };
 
 type DateStringToSpecialInt = Strategy & {
@@ -188,7 +230,8 @@ type AnyStrategy =
   | CreateEntityStrategy
   | DateRangeStringToSpecialInt
   | DateStringToSpecialInt
-  | ExistsStrategy;
+  | ExistsStrategy
+  | ConstantStrategy;
 
 type SourceElement = {
   path: string;
@@ -215,4 +258,5 @@ export const strategyFunctionMap: { [strategyId: string]: StrategyFunction } = {
   dateStringToSpecialInt,
   dateRangeStringToSpecialInt,
   exists: existsStrategy,
+  constant: constantStrategy,
 };

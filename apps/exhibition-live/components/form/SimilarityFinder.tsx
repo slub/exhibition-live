@@ -13,7 +13,7 @@ import * as React from "react";
 import { FunctionComponent, useCallback, useMemo, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 
-import { BASE_IRI } from "../config";
+import { BASE_IRI, DeclarativeMapping } from "../config";
 import { declarativeMappings } from "../config/lobidMappings";
 import { useSettings } from "../state/useLocalSettings";
 import { NodePropertyItem } from "../utils/graph/nodeToPropertyTree";
@@ -48,9 +48,11 @@ type SelectedEntity = {
   source: KnowledgeSources;
 };
 
-const strategyContext: (doQuery: (query) => Promise<any>) => StrategyContext = (
-  doQuery,
-) => ({
+const strategyContext: (
+  doQuery: (query) => Promise<any>,
+  mappingTable?: DeclarativeMapping,
+) => StrategyContext = (doQuery, mappingTable) => ({
+  mappingTable,
   getPrimaryIRIBySecondaryIRI: async (
     secondaryIRI: string,
     authorityIRI: string,
@@ -148,7 +150,7 @@ const SimilarityFinder: FunctionComponent<Props> = ({
           entryData.allProps,
           {},
           mappingConfig,
-          strategyContext(crudOptions?.selectFetch),
+          strategyContext(crudOptions?.selectFetch, declarativeMappings),
         );
         const inject = {
           "@type": classIRI,

@@ -1,0 +1,55 @@
+{
+  "geographicAreaCode" : [ {
+    "id" : "https://d-nb.info/standards/vocab/gnd/geographic-area-code#XA-DE",
+    "label" : "Deutschland"
+  } ],
+  "dateOfConferenceOrEvent" : [ "02.08.2018-05.08.2018" ],
+  "describedBy" : {
+    "id" : "https://d-nb.info/gnd/1256926108/about",
+    "license" : {
+      "id" : "http://creativecommons.org/publicdomain/zero/1.0/",
+      "label" : "http://creativecommons.org/publicdomain/zero/1.0/"
+    },
+    "dateModified" : "2022-05-06T08:11:28.000",
+    "descriptionLevel" : {
+      "id" : "https://d-nb.info/standards/vocab/gnd/description-level#3",
+      "label" : "Religion"
+    }
+  },
+  "gndIdentifier" : "1256926108",
+  "id" : "https://d-nb.info/gnd/1256926108",
+  "preferredName" : "Rendezvous! Gemeinsam für Europa! (Veranstaltung)",
+  "type" : [ "ConferenceOrEvent", "AuthorityResource" ],
+  "variantName" : [ "Gemeinsames Landjugendtreffen (2018)" ],
+  "@context" : "http://lobid.org/gnd/context.jsonld",
+  "organizerOrHost" : [ {
+    "id" : "https://d-nb.info/gnd/2015505-0",
+    "label" : "Katholische Landjugendbewegung Deutschlands"
+  }, {
+    "id" : "https://d-nb.info/gnd/4494135-3",
+    "label" : "Mouvement Rural de la Jeunesse Chrétienne"
+  } ],
+  "placeOfConferenceOrEvent" : [ {
+    "id" : "https://d-nb.info/gnd/4005972-8",
+    "label" : "Besançon"
+  } ],
+  "sameAs" : [ {
+    "id" : "http://viaf.org/viaf/1688165272295710690002",
+    "collection" : {
+      "id" : "http://www.wikidata.org/entity/Q54919",
+      "abbr" : "VIAF",
+      "publisher" : "OCLC",
+      "icon" : "http://viaf.org/viaf/images/viaf.ico",
+      "name" : "Virtual International Authority File (VIAF)"
+    }
+  }, {
+    "collection" : {
+      "abbr" : "DNB",
+      "name" : "Gemeinsame Normdatei (GND) im Katalog der Deutschen Nationalbibliothek",
+      "publisher" : "Deutsche Nationalbibliothek",
+      "icon" : "https://www.dnb.de/SiteGlobals/Frontend/DNBWeb/Images/favicon.png?__blob=normal&v=4",
+      "id" : "http://www.wikidata.org/entity/Q36578"
+    },
+    "id" : "https://d-nb.info/gnd/1256926108/about"
+  } ]
+}

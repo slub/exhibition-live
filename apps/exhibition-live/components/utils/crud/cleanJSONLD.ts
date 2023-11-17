@@ -22,7 +22,7 @@ const defaultOptions: Partial<WalkerOptions> = {
   omitEmptyArrays: true,
   omitEmptyObjects: true,
   maxRecursionEachRef: 2,
-  maxRecursion: 1,
+  maxRecursion: 3,
   skipAtLevel: 3,
   doNotRecurseNamedNodes: true,
 };

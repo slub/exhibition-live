@@ -558,6 +558,12 @@
         "sourceCorporation": {
           "$ref": "#/$defs/Corporation"
         },
+        "fromDateDisplay": {
+          "type": "string"
+        },
+        "toDateDisplay": {
+          "type": "string"
+        },
         "startDate": {
           "type": "object",
           "properties": {

@@ -19,21 +19,29 @@ import {
   IconButton,
   Backdrop,
   CircularProgress,
+  Typography,
+  Toolbar,
+  Tab,
+  Tabs,
 } from "@mui/material";
 import {
   MaterialReactTable,
   MRT_ColumnDef,
+  MRT_ColumnFiltersState,
   MRT_EditActionButtons,
   MRT_Row,
+  MRT_RowSelectionState,
   MRT_SortingState,
   MRT_TableInstance,
   MRT_Virtualizer,
+  useMaterialReactTable,
 } from "material-react-table";
 import {
   filterForPrimitiveProperties,
   filterForArrayProperties,
   encodeIRI,
   isJSONSchema,
+  filterUndefOrNull,
 } from "../../utils/core";
 import { JSONSchema7 } from "json-schema";
 import {
@@ -41,8 +49,11 @@ import {
   Delete,
   Details,
   Edit,
+  Favorite,
   FileDownload,
   OpenInNew,
+  Person,
+  TimelineOutlined,
 } from "@mui/icons-material";
 import { useRouter } from "next/router";
 import { primaryFields } from "../../config";
@@ -61,6 +72,14 @@ import { flatten } from "lodash";
 import get from "lodash/get";
 import { ToolbarItems } from "@uiw/react-md-editor/lib/components/Toolbar";
 import { download, generateCsv, mkConfig } from "export-to-csv";
+import { ResizableDrawer } from "../drawer";
+import { useDrawerDimensions } from "../../state";
+import VisTimelineWrapper from "../visTimelineWrapper/VisTimelineWrapper";
+import * as React from "react";
+import { dateValueToDate } from "./Search";
+import { ParentSize } from "@visx/responsive";
+import { TimelineItem, TimelineOptions } from "vis-timeline/types";
+import { FlexibleViewDrawer } from "./FlexibleViewDrawer";
 
 type Props = {
   typeName: string;
@@ -79,11 +98,11 @@ const computeColumns: (
   (!schema?.properties
     ? []
     : [
-        /*{
-  id: p([...path, "id"])
-  header: p([...path, "id"]),
-  accessorKey: `${p([...path, "entry"])}.value`,
-},*/
+        {
+          id: p([...path, "id"]),
+          header: p([...path, "id"]),
+          accessorKey: `${p([...path, "entry"])}.value`,
+        },
         ...Object.keys(filterForPrimitiveProperties(schema.properties)).map(
           (key) => ({
             header: p([...path, key]),
@@ -173,6 +192,7 @@ export const TypedList = ({ typeName }: Props) => {
     },
     [setSorting],
   );
+  const { drawerHeight } = useDrawerDimensions();
 
   const { crudOptions } = useGlobalCRUDOptions();
 
@@ -252,7 +272,6 @@ export const TypedList = ({ typeName }: Props) => {
   const rowVirtualizerInstanceRef =
     useRef<MRT_Virtualizer<HTMLDivElement, HTMLTableRowElement>>(null); //we can get access to the underlying Virtualizer instance and call its scrollToIndex method
   const handleExportRows = (rows: MRT_Row<any>[]) => {
-    console.log({ rows });
     const rowData = rows.map((row) =>
       Object.fromEntries(
         row.getAllCells().map((cell) => [cell.column.id, cell.getValue()]),
@@ -277,6 +296,220 @@ export const TypedList = ({ typeName }: Props) => {
     download(csvConfig)(csv);
   };
 
+  const [rowSelection, setRowSelection] = useState<MRT_RowSelectionState>({});
+  const handleRowSelectionChange = useCallback(
+    (s: MRT_RowSelectionState) => {
+      setRowSelection(s);
+    },
+    [setRowSelection],
+  );
+  const handleSelectedIdsChange = useCallback(
+    (s: any) => {
+      if (s.items.length === 0) return;
+      const rowSelection = s.items.map((id: string) => ({ [id]: true }));
+      //console.log("rowSelection", rowSelection)
+      // setRowSelection(Object.assign({}, ...rowSelection));
+      //setSelectedIds([...s.items]);
+    },
+    [setRowSelection],
+  );
+
+  const timelineOptions = useMemo<TimelineOptions>(
+    () => ({
+      height: drawerHeight - 50,
+      multiselect: true,
+    }),
+    [drawerHeight],
+  );
+
+  const [columnFilters, setColumnFilters] = useState<MRT_ColumnFiltersState>(
+    [],
+  );
+  const handleColumnFilterChange = useCallback(
+    (s) => {
+      console.log("filter", s);
+      setColumnFilters((old) => {
+        const newFilter = s(old);
+        console.log("new", newFilter);
+        return newFilter;
+      });
+    },
+    [setColumnFilters],
+  );
+
+  const table = useMaterialReactTable({
+    columns: displayColumns,
+    data: resultList,
+    rowVirtualizerInstanceRef: rowVirtualizerInstanceRef,
+    muiTableContainerProps: {
+      ref: tableContainerRef, //get access to the table container element
+      sx: {
+        maxHeight: `calc(100vh - ${drawerHeight + 180}px)`,
+        "&::-webkit-scrollbar": {
+          height: 8,
+        },
+        "&::-webkit-scrollbar-track": {
+          backgroundColor: "#F8F8F8",
+          borderRadius: 4,
+        },
+        "&::-webkit-scrollbar-thumb": {
+          backgroundColor: "#B6BCC3",
+          borderRadius: 4,
+        },
+      },
+    },
+    rowVirtualizerOptions: { overscan: 4 },
+    enableColumnVirtualization: false,
+    enableColumnOrdering: true,
+    enableRowSelection: true,
+    onRowSelectionChange: handleRowSelectionChange,
+    manualPagination: false,
+    manualSorting: true,
+    onSortingChange: handleColumnOrderChange,
+    initialState: {
+      columnVisibility: { id: false, externalId_single: false },
+    },
+    rowCount: resultList.length,
+    enableRowActions: true,
+    renderCreateRowDialogContent: ({ table, row, internalEditComponents }) => {
+      return (
+        <SemanticFormsModal
+          open={true}
+          askClose={() => table.setCreatingRow(row)}
+          schema={extendedSchema as JsonSchema}
+          entityIRI={slent(uuidv4()).value}
+          typeIRI={classIRI}
+        >
+          <MRT_EditActionButtons variant="text" table={table} row={row} />
+        </SemanticFormsModal>
+      );
+    },
+    renderEditRowDialogContent: ({ table, row, internalEditComponents }) => {
+      return (
+        <SemanticFormsModal
+          open={true}
+          askClose={() => table.setEditingRow(row)}
+          schema={extendedSchema as JsonSchema}
+          entityIRI={row.id}
+          typeIRI={classIRI}
+        >
+          <MRT_EditActionButtons variant="text" table={table} row={row} />
+        </SemanticFormsModal>
+      );
+    },
+    renderTopToolbarCustomActions: ({ table }) => (
+      <Box sx={{ display: "flex", gap: "1rem" }}>
+        <Button
+          variant="contained"
+          onClick={() => {
+            table.setCreatingRow(true);
+          }}
+        >
+          <Add />
+        </Button>
+        <Button onClick={handleExportData} startIcon={<FileDownload />}>
+          Alle Daten exportieren
+        </Button>
+        <Button
+          disabled={table.getRowModel().rows.length === 0}
+          //export all rows as seen on the screen (respects pagination, sorting, filtering, etc.)
+          onClick={() => handleExportRows(table.getRowModel().rows)}
+          startIcon={<FileDownload />}
+        >
+          Aktuelle Seite exportieren
+        </Button>
+        <Button
+          disabled={
+            !table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected()
+          }
+          //only export selected rows
+          onClick={() => handleExportRows(table.getSelectedRowModel().rows)}
+          startIcon={<FileDownload />}
+        >
+          Nur ausgewählte Zeilen exportieren
+        </Button>
+      </Box>
+    ),
+    getRowId: (row) => (row as any)?.entity?.value || uuidv4(),
+    renderRowActions: ({ row, table }) => (
+      <Box sx={{ display: "flex" }}>
+        <Tooltip title="Edit">
+          <IconButton onClick={() => editEntry(row.id)}>
+            <Edit />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="Edit inline">
+          <IconButton onClick={() => table.setEditingRow(row)}>
+            <OpenInNew />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="Delete">
+          <IconButton color="error" onClick={() => handleRemove(row.id)}>
+            <Delete />
+          </IconButton>
+        </Tooltip>
+      </Box>
+    ),
+    renderRowActionMenuItems: (row) => {
+      return [
+        <MenuItem
+          key={0}
+          onClick={() => {
+            // View profile logic...
+            row.closeMenu();
+            editEntry((row.row.getValue("entity") as any).value);
+          }}
+          sx={{ m: 0 }}
+        >
+          <ListItemIcon>
+            <Edit />
+          </ListItemIcon>
+          bearbeiten
+        </MenuItem>,
+        <MenuItem
+          key={1}
+          onClick={() => {
+            row.closeMenu();
+          }}
+          sx={{ m: 0 }}
+        >
+          <ListItemIcon>
+            <Details />
+          </ListItemIcon>
+          Details
+        </MenuItem>,
+      ];
+    },
+    onColumnFiltersChange: handleColumnFilterChange,
+    state: {
+      sorting,
+      rowSelection,
+      columnFilters,
+    },
+  });
+
+  const selectedTimelineItems = useMemo<string[]>(
+    () =>
+      Object.entries(rowSelection)
+        .filter(([, s]) => s)
+        .map(([k]) => k),
+    [rowSelection],
+  );
+  //console.log("selectedTimelineItems", selectedTimelineItems)
+  const columnFilteredList = useMemo(() => {
+    return resultList.filter(
+      (entity) =>
+        columnFilters.length <= 0 ||
+        columnFilters
+          .map(
+            (f) =>
+              typeof entity[f.id]?.value === "string" &&
+              entity[f.id].value.includes(f.value),
+          )
+          .every((f) => f),
+    );
+  }, [columnFilters, resultList]);
+
   return (
     <Box sx={{ width: "100%" }}>
       {isLoading && columns.length <= 0 ? (
@@ -289,166 +522,18 @@ export const TypedList = ({ typeName }: Props) => {
           >
             <CircularProgress color="inherit" />
           </Backdrop>
-          <MaterialReactTable
-            columns={displayColumns}
-            data={resultList}
-            rowVirtualizerInstanceRef={rowVirtualizerInstanceRef}
-            muiTableContainerProps={{
-              ref: tableContainerRef, //get access to the table container element
-              sx: { maxHeight: `calc(100vh - 150px)` }, //give the table a max height
-            }}
-            rowVirtualizerOptions={{ overscan: 4 }}
-            enableColumnVirtualization={false}
-            enableColumnOrdering //enable some features
-            enableRowSelection
-            manualPagination={false}
-            manualSorting={true}
-            onSortingChange={handleColumnOrderChange}
-            initialState={{
-              columnVisibility: { id: false, externalId_single: false },
-            }}
-            rowCount={resultList.length}
-            enableRowActions={true}
-            renderCreateRowDialogContent={({
-              table,
-              row,
-              internalEditComponents,
-            }) => {
-              return (
-                <SemanticFormsModal
-                  open={true}
-                  askClose={() => table.setCreatingRow(row)}
-                  schema={extendedSchema as JsonSchema}
-                  entityIRI={slent(uuidv4()).value}
-                  typeIRI={classIRI}
-                >
-                  <MRT_EditActionButtons
-                    variant="text"
-                    table={table}
-                    row={row}
-                  />
-                </SemanticFormsModal>
-              );
-            }}
-            renderEditRowDialogContent={({
-              table,
-              row,
-              internalEditComponents,
-            }) => {
-              return (
-                <SemanticFormsModal
-                  open={true}
-                  askClose={() => table.setEditingRow(row)}
-                  schema={extendedSchema as JsonSchema}
-                  entityIRI={row.id}
-                  typeIRI={classIRI}
-                >
-                  <MRT_EditActionButtons
-                    variant="text"
-                    table={table}
-                    row={row}
-                  />
-                </SemanticFormsModal>
-              );
-            }}
-            renderTopToolbarCustomActions={({ table }) => (
-              <Box sx={{ display: "flex", gap: "1rem" }}>
-                <Button
-                  variant="contained"
-                  onClick={() => {
-                    table.setCreatingRow(true);
-                  }}
-                >
-                  <Add />
-                </Button>
-                <Button
-                  onClick={handleExportData}
-                  startIcon={<FileDownload />}
-                >
-                  Alle Daten exportieren
-                </Button>
-                <Button
-                  disabled={table.getRowModel().rows.length === 0}
-                  //export all rows as seen on the screen (respects pagination, sorting, filtering, etc.)
-                  onClick={() => handleExportRows(table.getRowModel().rows)}
-                  startIcon={<FileDownload />}
-                >
-                  Aktuelle Seite exportieren
-                </Button>
-                <Button
-                  disabled={
-                    !table.getIsSomeRowsSelected() &&
-                    !table.getIsAllRowsSelected()
-                  }
-                  //only export selected rows
-                  onClick={() =>
-                    handleExportRows(table.getSelectedRowModel().rows)
-                  }
-                  startIcon={<FileDownload />}
-                >
-                  Nur ausgewählte Zeilen exportieren
-                </Button>
-              </Box>
-            )}
-            getRowId={(row) => (row as any)?.entity?.value || uuidv4()}
-            renderRowActions={({ row, table }) => (
-              <Box sx={{ display: "flex" }}>
-                <Tooltip title="Edit">
-                  <IconButton onClick={() => editEntry(row.id)}>
-                    <Edit />
-                  </IconButton>
-                </Tooltip>
-                <Tooltip title="Edit inline">
-                  <IconButton onClick={() => table.setEditingRow(row)}>
-                    <OpenInNew />
-                  </IconButton>
-                </Tooltip>
-                <Tooltip title="Delete">
-                  <IconButton
-                    color="error"
-                    onClick={() => handleRemove(row.id)}
-                  >
-                    <Delete />
-                  </IconButton>
-                </Tooltip>
-              </Box>
-            )}
-            renderRowActionMenuItems={(row) => {
-              return [
-                <MenuItem
-                  key={0}
-                  onClick={() => {
-                    // View profile logic...
-                    row.closeMenu();
-                    editEntry((row.row.getValue("entity") as any).value);
-                  }}
-                  sx={{ m: 0 }}
-                >
-                  <ListItemIcon>
-                    <Edit />
-                  </ListItemIcon>
-                  bearbeiten
-                </MenuItem>,
-                <MenuItem
-                  key={1}
-                  onClick={() => {
-                    row.closeMenu();
-                  }}
-                  sx={{ m: 0 }}
-                >
-                  <ListItemIcon>
-                    <Details />
-                  </ListItemIcon>
-                  Details
-                </MenuItem>,
-              ];
-            }}
-            state={{
-              sorting,
-            }}
-          />
+          <MaterialReactTable table={table} />
         </>
       )}
+      <ResizableDrawer anchor="bottom">
+        <FlexibleViewDrawer
+          data={columnFilteredList}
+          typeIRI={classIRI}
+          drawerHeight={drawerHeight}
+          onEntitySelected={handleSelectedIdsChange}
+          selectedEntityIRI={selectedTimelineItems}
+        />
+      </ResizableDrawer>
     </Box>
   );
 };

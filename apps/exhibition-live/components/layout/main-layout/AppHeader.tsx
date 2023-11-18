@@ -16,21 +16,23 @@ export const AppHeader = ({ drawerOpen, toggleDrawer }: AppHeaderProps) => {
     <AppBar
       enableColorOnDark
       position="fixed"
-      elevation={1}
+      elevation={0}
       sx={{
         zIndex: (theme) => theme.zIndex.drawer + 1,
       }}
     >
       <Toolbar>
-        {/*<ButtonBase
-          sx={{
-            borderRadius: "12px",
-            overflow: "hidden",
-          }}
-          onClick={toggleDrawer}
-        >
-          {drawerOpen ? <MenuIcon /> : <ListIcon />}
-        </ButtonBase>*/}
+        {
+          <ButtonBase
+            sx={{
+              borderRadius: "12px",
+              overflow: "hidden",
+            }}
+            onClick={toggleDrawer}
+          >
+            {drawerOpen ? <MenuIcon /> : <ListIcon />}
+          </ButtonBase>
+        }
       </Toolbar>
     </AppBar>
   );

@@ -54,8 +54,6 @@ export const OwnCard = ({
   <Card
     raised
     sx={{
-      borderRadius: "2px",
-      m: 1,
       backgroundColor: (theme) => `rgba(255, 255, 255, 0.8)`,
     }}
   >
@@ -101,18 +99,17 @@ export const typeIRItoTypeName = (iri: string) => {
   return iri.substring(BASE_IRI.length, iri.length);
 };
 
+const relevantTypes = Object.keys(primaryFields).map((key) => sladb(key).value);
+
 export const Dashboard = (props) => {
   const { crudOptions } = useGlobalCRUDOptions();
   const { selectFetch } = crudOptions || {};
-  const relevantTypes = Object.keys(primaryFields).map(
-    (key) => `<${sladb(key).value}>`,
-  );
   const { data: typeCountData } = useQuery(
     ["typeCount"],
     () => {
       const query = SELECT`
       ?type (COUNT(?s) AS ?count)`.WHERE`
-      VALUES ?type { ${relevantTypes.join(" ")} }
+      VALUES ?type { ${relevantTypes.map((iri) => `<${iri}>`).join(" ")} }
       ?s a ?type
     `.GROUP().BY` ?type `.build();
       return selectFetch(query);
@@ -133,6 +130,8 @@ export const Dashboard = (props) => {
     [typeCountData],
   );
 
+  const items = useMemo(() => {}, []);
+
   return (
     <Box
       sx={{
@@ -148,25 +147,13 @@ export const Dashboard = (props) => {
         container
         justifyContent="space-evenly"
         alignItems="center"
+        spacing={3}
         sx={{ p: 10 }}
       >
         <Grid2 lg={12}>
-          <SearchBar />
+          <SearchBar relevantTypes={relevantTypes} />
         </Grid2>
-        <Grid2 xs={12} sm={6} md={4} lg={4}>
-          <Grid container justifyContent="space-evenly" alignItems="center">
-            {scoreCount.map((item, index) => (
-              <Grid item key={item.title}>
-                <OwnCard
-                  title={item.title}
-                  subheader={item.score}
-                  trendDirection={"up"}
-                ></OwnCard>
-              </Grid>
-            ))}
-          </Grid>
-        </Grid2>
-        <Grid2 xs={12} sm={6} md={8} lg={8}>
+        <Grid2 xs={12}>
           <OwnCard
             title={"Wichtigste Entitäten"}
             subheader={""}

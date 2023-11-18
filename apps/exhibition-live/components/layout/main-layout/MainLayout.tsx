@@ -16,6 +16,7 @@ import { AppHeader } from "./AppHeader";
 import { Sidebar } from "./Sidebar";
 import { Searchbar } from "./Searchbar";
 import { FloatingButton } from "./menu";
+import { useDrawerDimensions } from "../../state";
 
 export const gridSpacing = 3;
 export const leftDrawerWidth = 260;
@@ -27,41 +28,42 @@ type MainProps = {
 
 const Main = styled("main", {
   shouldForwardProp: (prop) => prop !== "open" && prop !== "theme",
-})(({ theme }: MainProps) => ({
-  // @ts-ignore
-  ...theme.typography.mainContent,
-  borderBottomLeftRadius: 0,
-  borderBottomRightRadius: 0,
-  flexGrow: 1,
-  [theme.breakpoints.up("md")]: {
-    marginLeft: "10px",
-    marginRight: "10px",
-    marginTop: "60px",
-    marginBottom: "10px",
-    padding: "16px",
-    minHeight: `calc(100vh - 70px)`,
-    width: `calc(100% - ${leftDrawerWidth}px)`,
-  },
-  [theme.breakpoints.down("md")]: {
-    marginLeft: "10px",
-    marginRight: "10px",
-    marginTop: "60px",
-    marginBottom: "10px",
-    padding: "16px",
-    minHeight: `calc(100vh - 70px)`,
-    width: `calc(100% - ${leftDrawerWidth}px)`,
-  },
-  [theme.breakpoints.down("sm")]: {
-    marginLeft: "10px",
-    marginRight: "10px",
-    marginTop: "60px",
-    marginBottom: "10px",
-    marginBotom: "10px",
-    minHeight: `calc(100vh - 70px)`,
-    width: `calc(100% - ${leftDrawerWidth}px)`,
-    padding: "16px",
-  },
-}));
+})(({ theme }: MainProps) => {
+  const { drawerHeight } = useDrawerDimensions();
+  return {
+    // @ts-ignore
+    ...theme.typography.mainContent,
+    borderBottomLeftRadius: 0,
+    borderBottomRightRadius: 0,
+    flexGrow: 1,
+    maxHeight: `calc(100vh - ${drawerHeight + 25}px)`,
+    [theme.breakpoints.up("md")]: {
+      marginLeft: "0",
+      marginRight: "0",
+      marginTop: "60px",
+      marginBottom: "10px",
+      padding: "0",
+      width: `calc(100% - ${leftDrawerWidth}px)`,
+    },
+    [theme.breakpoints.down("md")]: {
+      marginLeft: "10px",
+      marginRight: "10px",
+      marginTop: "60px",
+      marginBottom: "10px",
+      padding: "16px",
+      width: `calc(100% - ${leftDrawerWidth}px)`,
+    },
+    [theme.breakpoints.down("sm")]: {
+      marginLeft: "10px",
+      marginRight: "10px",
+      marginTop: "60px",
+      marginBottom: "10px",
+      marginBotom: "10px",
+      width: `calc(100% - ${leftDrawerWidth}px)`,
+      padding: "16px",
+    },
+  };
+});
 
 export const MainLayout = ({ children }: { children: React.ReactNode }) => {
   const theme = useTheme();

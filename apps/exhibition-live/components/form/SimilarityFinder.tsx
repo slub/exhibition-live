@@ -13,13 +13,13 @@ import * as React from "react";
 import { FunctionComponent, useCallback, useMemo, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 
-import { BASE_IRI, DeclarativeMapping } from "../config";
+import { BASE_IRI } from "../config";
 import { declarativeMappings } from "../config/lobidMappings";
 import { useSettings } from "../state/useLocalSettings";
 import { NodePropertyItem } from "../utils/graph/nodeToPropertyTree";
 import { Img } from "../utils/image/Img";
 import { mapByConfig } from "../utils/mapping/mapByConfig";
-import { StrategyContext } from "../utils/mapping/mappingStrategies";
+import {DeclarativeMapping, StrategyContext } from "../utils/mapping/mappingStrategies";
 import DiscoverSearchTable from "./discover/DiscoverSearchTable";
 import { slent } from "./formConfigs";
 import K10PlusSearchTable, {

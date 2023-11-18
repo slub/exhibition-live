@@ -22,6 +22,7 @@ import { SemanticJsonFormNoOps } from "./SemanticJsonFormNoOps";
 import { SemanticJsonFormToolbar } from "./SemanticJsonFormToolbar";
 import { useSettings } from "../state/useLocalSettings";
 import { useQueryKeyResolver } from "../state";
+import { Box } from "@mui/material";
 
 export type CRUDOpsType = {
   load: () => Promise<void>;
@@ -174,7 +175,7 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> = ({
   }, [enableDebug, data, schema, jsonldContext, defaultPrefix]);
 
   return (
-    <>
+    <Box sx={{ minHeight: "100%", width: "100%" }}>
       <FormDebuggingTools
         jsonData={{
           formData: data,
@@ -206,7 +207,7 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> = ({
         }
         {...rest}
       />
-    </>
+    </Box>
   );
 };
 

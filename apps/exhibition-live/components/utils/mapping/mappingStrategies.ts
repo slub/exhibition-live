@@ -6,9 +6,7 @@ import { getPaddedDate } from "../core/specialDate";
 import { mapByConfig } from "./mapByConfig";
 import isNil from "lodash/isNil";
 import { DeclarativeMapping } from "../../config";
-import {
-  findEntityWithinLobidByIRI,
-} from "../lobid/findEntityWithinLobid";
+import { findEntityWithinLobidByIRI } from "../lobid/findEntityWithinLobid";
 
 dayjs.extend(customParseFormat);
 

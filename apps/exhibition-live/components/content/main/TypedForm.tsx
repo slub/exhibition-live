@@ -1,4 +1,4 @@
-import { Button } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import { JSONSchema7 } from "json-schema";
 import React, { useCallback, useMemo, useState } from "react";
 import { SplitPane } from "react-collapse-pane";
@@ -9,7 +9,11 @@ import { defaultJsonldContext, defaultPrefix } from "../../form/formConfigs";
 import { uischemata } from "../../form/uischemaForType";
 import { uischemas } from "../../form/uischemas";
 import { materialCategorizationStepperLayoutWithPortal } from "../../renderer/MaterialCategorizationStepperLayoutWithPortal";
-import { useFormEditor, useGlobalSearch } from "../../state";
+import {
+  useDrawerDimensions,
+  useFormEditor,
+  useGlobalSearch,
+} from "../../state";
 import useExtendedSchema from "../../state/useExtendedSchema";
 import { useGlobalCRUDOptions } from "../../state/useGlobalCRUDOptions";
 import { useSettings } from "../../state/useLocalSettings";
@@ -116,27 +120,29 @@ const TypedForm = ({ typeName, entityIRI, classIRI }: MainFormProps) => {
   return (
     <WithPreviewForm data={data} classIRI={classIRI}>
       {loadedSchema && (
-        <NewSemanticJsonForm
-          defaultEditMode={true}
-          data={data}
-          entityIRI={entityIRI}
-          setData={handleChangeData}
-          searchText={searchText}
-          shouldLoadInitially
-          typeIRI={classIRI}
-          onEntityDataChange={handleChange}
-          crudOptions={crudOptions}
-          defaultPrefix={defaultPrefix}
-          jsonldContext={defaultJsonldContext}
-          schema={loadedSchema as JSONSchema7}
-          jsonFormsProps={{
-            uischema,
-            uischemas: uischemas,
-            renderers: mainFormRenderers,
-          }}
-          enableSidebar={true}
-          wrapWithinCard={true}
-        />
+        <Box sx={{ p: 4, display: "flex" }}>
+          <NewSemanticJsonForm
+            defaultEditMode={true}
+            data={data}
+            entityIRI={entityIRI}
+            setData={handleChangeData}
+            searchText={searchText}
+            shouldLoadInitially
+            typeIRI={classIRI}
+            onEntityDataChange={handleChange}
+            crudOptions={crudOptions}
+            defaultPrefix={defaultPrefix}
+            jsonldContext={defaultJsonldContext}
+            schema={loadedSchema as JSONSchema7}
+            jsonFormsProps={{
+              uischema,
+              uischemas: uischemas,
+              renderers: mainFormRenderers,
+            }}
+            enableSidebar={true}
+            wrapWithinCard={true}
+          />
+        </Box>
       )}
     </WithPreviewForm>
   );

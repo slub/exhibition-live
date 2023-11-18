@@ -19,6 +19,7 @@ export const AppHeader = ({ drawerOpen, toggleDrawer }: AppHeaderProps) => {
       elevation={0}
       sx={{
         zIndex: (theme) => theme.zIndex.drawer + 1,
+        color: theme.palette.text.primary,
       }}
     >
       <Toolbar>

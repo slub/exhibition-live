@@ -314,14 +314,6 @@ export const TypedList = ({ typeName }: Props) => {
     [setRowSelection],
   );
 
-  const timelineOptions = useMemo<TimelineOptions>(
-    () => ({
-      height: drawerHeight - 50,
-      multiselect: true,
-    }),
-    [drawerHeight],
-  );
-
   const [columnFilters, setColumnFilters] = useState<MRT_ColumnFiltersState>(
     [],
   );
@@ -340,6 +332,7 @@ export const TypedList = ({ typeName }: Props) => {
   const table = useMaterialReactTable({
     columns: displayColumns,
     data: resultList,
+    enableStickyHeader: true,
     rowVirtualizerInstanceRef: rowVirtualizerInstanceRef,
     muiTableContainerProps: {
       ref: tableContainerRef, //get access to the table container element

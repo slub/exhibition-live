@@ -182,22 +182,15 @@ export const SemanticJsonFormNoOps: FunctionComponent<
             }
           >
             <WithCard>
-              <>
-                {toolbar || null}
-                <JsonForms
-                  data={data}
-                  renderers={allRenderer}
-                  cells={materialCells}
-                  onChange={handleFormChange}
-                  schema={schema as JsonSchema}
-                  {...jfpProps}
-                />
-                <FormDebuggingTools
-                  jsonData={{
-                    formData: data,
-                  }}
-                />
-              </>
+              {toolbar ? toolbar : null}
+              <JsonForms
+                data={data}
+                renderers={allRenderer}
+                cells={materialCells}
+                onChange={handleFormChange}
+                schema={schema as JsonSchema}
+                {...jfpProps}
+              />
             </WithCard>
           </Grid>
           {!disableSimilarityFinder && !enableSidebar && searchText && (

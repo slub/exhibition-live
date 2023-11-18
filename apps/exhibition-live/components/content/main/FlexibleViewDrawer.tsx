@@ -1,4 +1,10 @@
-import { useCallback, useMemo, useState } from "react";
+import {
+  ReactEventHandler,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { TimelineItem, TimelineOptions } from "vis-timeline/types";
 import { filterUndefOrNull } from "../../utils/core";
 import { dateValueToDate } from "./Search";
@@ -8,6 +14,8 @@ import * as React from "react";
 import { typeIRItoTypeName } from "./Dashboard";
 import { JsonView } from "react-json-view-lite";
 import { Home, Timeline } from "@mui/icons-material";
+import { useDrawerDimensions } from "../../state";
+import { debounce } from "lodash";
 
 type FlexibleViewDrawerProps = {
   data: any;
@@ -139,6 +147,24 @@ const views: SemanticListView[] = [
   },
 ];
 
+export const useDebounce = (fnToDebounce, durationInMs = 200) => {
+  if (isNaN(durationInMs)) {
+    throw new TypeError("durationInMs for debounce should be a number");
+  }
+
+  if (fnToDebounce == null) {
+    throw new TypeError("fnToDebounce cannot be null");
+  }
+
+  if (typeof fnToDebounce !== "function") {
+    throw new TypeError("fnToDebounce should be a function");
+  }
+
+  return useCallback(debounce(fnToDebounce, durationInMs), [
+    fnToDebounce,
+    durationInMs,
+  ]);
+};
 export const FlexibleViewDrawer = ({
   data,
   typeIRI,
@@ -147,19 +173,25 @@ export const FlexibleViewDrawer = ({
 }: FlexibleViewDrawerProps) => {
   const typeName = useMemo(() => typeIRItoTypeName(typeIRI), [typeIRI]);
   const [selectedView, setSelectedView] = useState<number>(1);
+  const { setDrawerHeight, drawerHeight } = useDrawerDimensions();
   const handleViewChange = useCallback(
-    (id: number) => {
+    (_e: any, id: number) => {
       //if(! event.target.id in ViewType) return;
+      if (drawerHeight < 100) setDrawerHeight(500);
       setSelectedView(id);
     },
-    [setSelectedView],
+    [setSelectedView, setDrawerHeight, drawerHeight],
   );
   const CurrentSemanticListView = useMemo(
     () => views[selectedView]?.component,
     [selectedView],
   );
 
-  const drawerHeight = 500;
+  const [debouncedHeight, setDebouncedHeight] = useState(drawerHeight);
+  const setDrawerHeightDebounced = useDebounce(setDebouncedHeight, 500);
+  useEffect(() => {
+    setDrawerHeightDebounced(drawerHeight);
+  }, [drawerHeight, setDrawerHeightDebounced]);
 
   return (
     <Box
@@ -170,10 +202,13 @@ export const FlexibleViewDrawer = ({
         overflow: "auto",
       }}
     >
-      <Tabs value={selectedView} aria-label="icon label tabs example">
+      <Tabs
+        value={selectedView}
+        onChange={handleViewChange}
+        aria-label="icon label tabs example"
+      >
         {views.map((viewDesc, index) => (
           <Tab
-            onClick={() => handleViewChange(index)}
             key={viewDesc.type}
             label={viewDesc.label}
             icon={viewDesc.icon}
@@ -186,7 +221,7 @@ export const FlexibleViewDrawer = ({
           typeIRI={typeIRI}
           selectedEntityIRI={selectedEntityIRI}
           onEntitySelected={onEntitySelected}
-          drawerHeight={drawerHeight}
+          drawerHeight={debouncedHeight}
         />
       )}
     </Box>

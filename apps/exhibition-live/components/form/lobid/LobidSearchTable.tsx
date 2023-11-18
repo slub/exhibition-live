@@ -1,4 +1,4 @@
-import { List } from "@mui/material";
+import { List, useControlled } from "@mui/material";
 import React, {
   FunctionComponent,
   useCallback,
@@ -28,6 +28,7 @@ import { useQuery } from "@tanstack/react-query";
 type Props = {
   searchString: string;
   typeName?: string;
+  selectedId?: string | null;
   onSelect?: (id: string | undefined) => void;
   onAcceptItem?: (id: string | undefined, data: any) => void;
 };
@@ -77,7 +78,7 @@ const defaultPrimaryFields: PrimaryFieldExtract<any> = {
   label: "preferredName",
 };
 
-const gndEntryWithMainInfo = (allProps: any) => {
+export const gndEntryWithMainInfo = (allProps: any) => {
   const { id, type } = allProps;
   const primaryFieldDeclaration =
     getFirstMatchingFieldDeclaration(type, gndPrimaryFields) ||
@@ -101,9 +102,14 @@ const LobidSearchTable: FunctionComponent<Props> = ({
   typeName = "Person",
   onSelect,
   onAcceptItem,
+  selectedId: selectedIdProp,
 }) => {
   const [resultTable, setResultTable] = useState<LobIDEntry[] | undefined>();
-  const [selectedId, setSelectedId] = useState<string | undefined>();
+  const [selectedId, setSelectedId] = useControlled<string | undefined>({
+    name: "selectedId",
+    controlled: selectedIdProp,
+    default: undefined,
+  });
   const [selectedEntry, setSelectedEntry] = useState<LobIDEntry | undefined>();
 
   const fetchData = useCallback(async () => {
@@ -125,15 +131,15 @@ const LobidSearchTable: FunctionComponent<Props> = ({
     if (rawEntry) {
       const entry = gndEntryWithMainInfo(rawEntry);
       setSelectedEntry(entry);
-      onSelect && onSelect(entry.id);
     }
   }, [rawEntry, onSelect, setSelectedEntry]);
 
   const handleSelect = useCallback(
     async (id: string | undefined) => {
       setSelectedId(id);
+      onSelect && onSelect(id);
     },
-    [setSelectedId],
+    [setSelectedId, onSelect],
   );
 
   useEffect(() => {
@@ -169,32 +175,19 @@ const LobidSearchTable: FunctionComponent<Props> = ({
       ) : (
         <List>
           {// @ts-ignore
-          resultTable?.map(
-            (
-              {
-                id,
-                label,
-                dateOfBirthAndDeath,
-                dateOfBirth,
-                dateOfDeath,
-                avatar,
-                secondary,
-              },
-              idx,
-            ) => {
-              return (
-                <ClassicResultListItem
-                  key={id}
-                  id={id}
-                  onSelected={handleSelect}
-                  label={label}
-                  secondary={secondary}
-                  avatar={avatar}
-                  altAvatar={String(idx + 1)}
-                />
-              );
-            },
-          )}
+          resultTable?.map(({ id, label, avatar, secondary }, idx) => {
+            return (
+              <ClassicResultListItem
+                key={id}
+                id={id}
+                onSelected={handleSelect}
+                label={label}
+                secondary={secondary}
+                avatar={avatar}
+                altAvatar={String(idx + 1)}
+              />
+            );
+          })}
         </List>
       )}
     </>

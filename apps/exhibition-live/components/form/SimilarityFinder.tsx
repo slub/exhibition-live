@@ -48,7 +48,7 @@ type SelectedEntity = {
   source: KnowledgeSources;
 };
 
-const strategyContext: (
+export const makeDefaultMappingStrategyContext: (
   doQuery: (query) => Promise<any>,
   mappingTable?: DeclarativeMapping,
 ) => StrategyContext = (doQuery, mappingTable) => ({
@@ -56,10 +56,10 @@ const strategyContext: (
   getPrimaryIRIBySecondaryIRI: async (
     secondaryIRI: string,
     authorityIRI: string,
-    typeIRI: string,
+    typeIRI?: string | undefined,
   ) => {
     console.warn("using stub method");
-    const ids = await findEntityByAuthorityIRI(secondaryIRI, doQuery);
+    const ids = await findEntityByAuthorityIRI(secondaryIRI, typeIRI, doQuery);
     if (ids.length > 0) {
       console.warn("found entity more then one entity");
     }
@@ -150,7 +150,10 @@ const SimilarityFinder: FunctionComponent<Props> = ({
           entryData.allProps,
           {},
           mappingConfig,
-          strategyContext(crudOptions?.selectFetch, declarativeMappings),
+          makeDefaultMappingStrategyContext(
+            crudOptions?.selectFetch,
+            declarativeMappings,
+          ),
         );
         const inject = {
           "@type": classIRI,

@@ -5,7 +5,6 @@ import customParseFormat from "dayjs/plugin/customParseFormat";
 import { getPaddedDate } from "../core/specialDate";
 import { mapByConfig } from "./mapByConfig";
 import isNil from "lodash/isNil";
-import { DeclarativeMapping } from "../../config";
 import { findEntityWithinLobidByIRI } from "../lobid/findEntityWithinLobid";
 
 dayjs.extend(customParseFormat);
@@ -18,7 +17,7 @@ export type StrategyContext = {
   getPrimaryIRIBySecondaryIRI: (
     secondaryIRI: string,
     authorityIRI: string,
-    typeIRI: string,
+    typeIRI?: string,
   ) => Promise<string | null>;
   authorityIRI: string;
   newIRI: (typeIRI: string) => string;
@@ -108,7 +107,7 @@ export const createEntity = async (
     const primaryIRI = await getPrimaryIRIBySecondaryIRI(
       authorityEntryIRI,
       authorityIRI,
-      typeIRI || "",
+      typeIRI,
     );
     if (!primaryIRI) {
       const targetData = {
@@ -248,6 +247,7 @@ export type DeclarativeSimpleMapping = {
 
 export type DeclarativeMappings = DeclarativeSimpleMapping[];
 
+export type DeclarativeMapping = { [key: string]: DeclarativeMappings };
 export const strategyFunctionMap: { [strategyId: string]: StrategyFunction } = {
   concatenate,
   takeFirst,

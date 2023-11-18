@@ -60,6 +60,11 @@
         },
         {
           "type": "Control",
+          "label": "übergeordnete Ausstellung",
+          "scope": "#/properties/parent"
+        },
+        {
+          "type": "Control",
           "label": "Schlagwörter",
           "scope": "#/properties/tags"
         },

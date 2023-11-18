@@ -1,5 +1,8 @@
 import { sladb } from "../form/formConfigs";
-import { DeclarativeMappings } from "../utils/mapping/mappingStrategies";
+import {
+  DeclarativeMapping,
+  DeclarativeMappings,
+} from "../utils/mapping/mappingStrategies";
 
 export const exhibitionDeclarativeMapping: DeclarativeMappings = [
   {
@@ -226,6 +229,24 @@ export const exhibitionDeclarativeMapping: DeclarativeMappings = [
               },
             ],
           },
+        },
+      },
+    },
+  },
+  {
+    source: {
+      path: "hierarchicalSuperiorOfTheConferenceOrEvent.0",
+    },
+    target: {
+      path: "parent",
+    },
+    mapping: {
+      strategy: {
+        id: "createEntity",
+        options: {
+          typeIRI: sladb("Exhibition").value,
+          typeName: "Exhibition",
+          subFieldMapping: {},
         },
       },
     },
@@ -501,7 +522,6 @@ export const workDeclarativeMapping: DeclarativeMappings = [
   },
 ];
 
-export type DeclarativeMapping = { [key: string]: DeclarativeMappings };
 export const declarativeMappings: DeclarativeMapping = {
   Exhibition: exhibitionDeclarativeMapping,
   Person: personDeclarativeMapping,

@@ -48,6 +48,25 @@ export const findEntityWithinLobid = async (
   return await res.json();
 };
 
+export const findEntityWithinLobidWithCertainProperty = async (
+  property: string,
+  searchString: string | undefined,
+  typeName: string,
+  limit?: number,
+) => {
+  const res = await fetch(
+    lobidSearchURL +
+      "?" +
+      new URLSearchParams({
+        ...(searchString ? { q: searchString } : {}),
+        filter: `type:${mapTypeName(typeName)} AND _exists_:${property}`,
+        size: (limit || 10).toString(),
+        format: "json",
+      }).toString(),
+  );
+  return await res.json();
+};
+
 export const findEntityWithinLobidByID = async (id: string) => {
   const res = await fetch(`${lobidURL}${id}.json`);
   return await res.json();

@@ -7,13 +7,21 @@ import {
 
 export const findEntityByAuthorityIRI = async (
   authorityIRI: string,
+  typeIRI: string | undefined,
   doQuery: (query: string) => Promise<any>,
   limit: number = 10,
 ) => {
   const subjectV = variable("subject");
-  let query = SELECT.DISTINCT` ${subjectV}`.WHERE`
+  let query = (
+    typeIRI
+      ? SELECT.DISTINCT` ${subjectV}`.WHERE`
+    ${subjectV} :idAuthority <${authorityIRI}> .
+    ${subjectV} a <${typeIRI}> .
+  `
+      : SELECT.DISTINCT` ${subjectV}`.WHERE`
     ${subjectV} :idAuthority <${authorityIRI}> .
   `
+  )
     .LIMIT(limit)
     .build(defaultQueryBuilderOptions);
 

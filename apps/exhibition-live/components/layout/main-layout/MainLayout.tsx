@@ -36,7 +36,6 @@ const Main = styled("main", {
     borderBottomLeftRadius: 0,
     borderBottomRightRadius: 0,
     flexGrow: 1,
-    maxHeight: `calc(100vh - ${drawerHeight + 25}px)`,
     marginTop: "48px",
     width: `calc(100% - ${leftDrawerWidth}px)`,
   };

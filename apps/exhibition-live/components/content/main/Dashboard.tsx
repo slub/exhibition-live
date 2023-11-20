@@ -20,6 +20,8 @@ import { orderBy } from "lodash";
 import { useMemo } from "react";
 import { SearchBar } from "./Search";
 import { ParentSize } from "@visx/responsive";
+import {fixSparqlOrder} from "../../utils/discover";
+import {variable} from "@rdfjs/data-model";
 
 export const HeaderTitle = styled(Typography)(({ theme }) => ({
   fontFamily: "'Play', sans-serif",
@@ -107,11 +109,12 @@ export const Dashboard = (props) => {
   const { data: typeCountData } = useQuery(
     ["typeCount"],
     () => {
-      const query = SELECT`
-      ?type (COUNT(?s) AS ?count)`.WHERE`
+      const countV = variable("count");
+      const query = fixSparqlOrder( SELECT`
+      ?type (COUNT(?s) AS ${countV})`.WHERE`
       VALUES ?type { ${relevantTypes.map((iri) => `<${iri}>`).join(" ")} }
       ?s a ?type
-    `.GROUP().BY` ?type `.build();
+    `.GROUP().BY` ?type `.ORDER().BY(countV).build());
       return selectFetch(query);
     },
     { enabled: !!selectFetch, refetchInterval: 1000 * 10 },
@@ -135,20 +138,18 @@ export const Dashboard = (props) => {
   return (
     <Box
       sx={{
-        background: 'url("./images/bg3.jpeg")',
-        padding: "20px 30px 99px 30px",
-        backgroundSize: "cover",
+        padding:  { md: "20px 30px 99px 30px" },
       }}
     >
       <Box sx={{ marginBottom: "4rem", marginTop: "1em" }}>
-        <HeaderTitle>Willkommen bei der Ausstellungsdatenbank</HeaderTitle>
+        <HeaderTitle>Ausstellungsdatenbank</HeaderTitle>
       </Box>
       <Grid2
         container
         justifyContent="space-evenly"
-        alignItems="center"
+        alignItems="clinuxenter"
         spacing={3}
-        sx={{ p: 10 }}
+        sx={{ p: { md: 10 } }}
       >
         <Grid2 lg={12}>
           <SearchBar relevantTypes={relevantTypes} />

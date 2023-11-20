@@ -325,16 +325,17 @@ export const SearchBar = ({ relevantTypes }: { relevantTypes: string[] }) => {
         selectedClassIRIs.length > 0
           ? selectedClassIRIs.map((iri) => `<${iri}>`)
           : defaultClassIRIs;
-      const query = withDefaultPrefix(
+      const entityV = variable("entity");
+      const query = fixSparqlOrder( withDefaultPrefix(
         defaultPrefix,
-        SELECT.DISTINCT`?entity ?type ${selectPartOptionals} `.WHERE`
-    ?entity a ?type .
+        SELECT.DISTINCT`${entityV} ?type ${selectPartOptionals} `.WHERE`
+    ${entityV} a ?type .
     FILTER( ?type IN (${classIRIs.join(",")}) )
-    FILTER(isIRI(?entity))
+    FILTER(isIRI(${entityV}))
     ${searchString.length > 0 ? makeFilterUNION(searchString, 2) : ""}
     ${wherePartOptionals}
-    `.build() + " GROUP BY ?entity ?type",
-      );
+    `.GROUP().BY`${entityV} ?type`.ORDER().BY(entityV).build(),
+      ));
       return await selectFetch(query);
     },
     {

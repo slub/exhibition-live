@@ -1,33 +1,30 @@
-import isEmpty from 'lodash/isEmpty';
-import React, {useCallback} from 'react';
+import isEmpty from "lodash/isEmpty";
+import React, { useCallback } from "react";
 import {
   isBooleanControl,
   RankedTester,
   rankWith,
-  ControlProps, CellProps, WithClassname
-} from '@jsonforms/core';
-import { withJsonFormsControlProps } from '@jsonforms/react';
-import {Checkbox, FormControlLabel, Hidden} from '@mui/material';
+  ControlProps,
+  CellProps,
+  WithClassname,
+} from "@jsonforms/core";
+import { withJsonFormsControlProps } from "@jsonforms/react";
+import { Checkbox, FormControlLabel, Hidden } from "@mui/material";
 import merge from "lodash/merge";
 import isNil from "lodash/isNil";
 
 export const MuiCheckbox = React.memo((props: CellProps & WithClassname) => {
-  const {
-    data,
-    className,
-    id,
-    enabled,
-    uischema,
-    path,
-    handleChange,
-    config
-  } = props;
+  const { data, className, id, enabled, uischema, path, handleChange, config } =
+    props;
   const appliedUiSchemaOptions = merge({}, config, uischema.options);
   const inputProps = { autoFocus: !!appliedUiSchemaOptions.focus };
 
-  const handleThreestateChange = useCallback((_ev: React.ChangeEvent, isChecked: boolean) => {
-      handleChange(path, data ? undefined : (data === false))
-  }, [data, path, handleChange]);
+  const handleThreestateChange = useCallback(
+    (_ev: React.ChangeEvent, isChecked: boolean) => {
+      handleChange(path, data ? undefined : data === false);
+    },
+    [data, path, handleChange],
+  );
 
   return (
     <Checkbox
@@ -53,7 +50,7 @@ export const MaterialBooleanControl = ({
   handleChange,
   errors,
   path,
-  config
+  config,
 }: ControlProps) => {
   return (
     <Hidden xsUp={!visible}>
@@ -83,6 +80,6 @@ export const MaterialBooleanControl = ({
 
 export const materialBooleanControlTester: RankedTester = rankWith(
   5,
-  isBooleanControl
+  isBooleanControl,
 );
 export default withJsonFormsControlProps(MaterialBooleanControl);

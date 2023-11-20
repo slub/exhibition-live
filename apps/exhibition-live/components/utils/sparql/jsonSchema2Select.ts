@@ -20,7 +20,7 @@ const propertiesToSPARQLSelectPatterns = (
   path?: string[],
   level: number = 0,
   primaryFields?: PrimaryFieldDeclaration,
-  flavour?: "oxigraph" | "blazegraph" | "allegro"
+  flavour?: "oxigraph" | "blazegraph" | "allegro",
 ) => {
   let where = "";
   let select = "";
@@ -75,7 +75,7 @@ const propertiesToSPARQLSelectPatterns = (
             }
           }
         }
-        if(flavour === "oxigraph") {
+        if (flavour === "oxigraph") {
           //check if empty by comparing aggregated string length then 0 otherwise count
           select += ` (IF(STRLEN(GROUP_CONCAT(DISTINCT STR(${variable}); SEPARATOR=",")) = 0, 0, COUNT(DISTINCT ${variable})) AS ${variable}_count) `;
         } else {

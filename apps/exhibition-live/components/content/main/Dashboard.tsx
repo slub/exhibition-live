@@ -20,8 +20,8 @@ import { orderBy } from "lodash";
 import { useMemo } from "react";
 import { SearchBar } from "./Search";
 import { ParentSize } from "@visx/responsive";
-import {fixSparqlOrder} from "../../utils/discover";
-import {variable} from "@rdfjs/data-model";
+import { fixSparqlOrder } from "../../utils/discover";
+import { variable } from "@rdfjs/data-model";
 
 export const HeaderTitle = styled(Typography)(({ theme }) => ({
   fontFamily: "'Play', sans-serif",
@@ -110,11 +110,16 @@ export const Dashboard = (props) => {
     ["typeCount"],
     () => {
       const countV = variable("count");
-      const query = fixSparqlOrder( SELECT`
+      const query = fixSparqlOrder(
+        SELECT`
       ?type (COUNT(?s) AS ${countV})`.WHERE`
       VALUES ?type { ${relevantTypes.map((iri) => `<${iri}>`).join(" ")} }
       ?s a ?type
-    `.GROUP().BY` ?type `.ORDER().BY(countV).build());
+    `.GROUP().BY` ?type `
+          .ORDER()
+          .BY(countV)
+          .build(),
+      );
       return selectFetch(query);
     },
     { enabled: !!selectFetch, refetchInterval: 1000 * 10 },
@@ -138,7 +143,7 @@ export const Dashboard = (props) => {
   return (
     <Box
       sx={{
-        padding:  { md: "20px 30px 99px 30px" },
+        padding: { md: "20px 30px 99px 30px" },
       }}
     >
       <Box sx={{ marginBottom: "4rem", marginTop: "1em" }}>

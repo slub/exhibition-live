@@ -38,13 +38,13 @@ const schema: JsonSchema = {
           },
           password: {
             type: "string",
-            format: "password"
+            format: "password",
           },
           token: {
             type: "string",
-          }
-        }
-      }
+          },
+        },
+      },
     },
   },
 };

@@ -4,7 +4,7 @@ import datasetFactory from "@rdfjs/dataset";
 import N3 from "n3";
 
 import { CRUDFunctions } from "../../state/useSPARQL_CRUD";
-import {SparqlEndpoint} from "../../state/useLocalSettings";
+import { SparqlEndpoint } from "../../state/useLocalSettings";
 
 const cFetch = (query: string, endpoint: string) =>
   fetch(endpoint, {
@@ -73,9 +73,9 @@ export const defaultQuerySelect: (
   return ((await prepared.json())?.results?.bindings || []) as any[];
 };
 
-export const oxigraphCrudOptions: (endpoint: SparqlEndpoint) => CRUDFunctions = (
-  { endpoint: url }: SparqlEndpoint,
-) => ({
+export const oxigraphCrudOptions: (
+  endpoint: SparqlEndpoint,
+) => CRUDFunctions = ({ endpoint: url }: SparqlEndpoint) => ({
   askFetch: async (query: string) => {
     const res = await askFetch(query, url);
     const { boolean } = await res.json();

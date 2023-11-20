@@ -31,8 +31,7 @@ const exampleData = {
 const SemanticJsonFormOneShot = () => {
   const [data, setData] = useState<any>(exampleData);
   const { activeEndpoint } = useSettings();
-  const crudOptions =
-    activeEndpoint && oxigraphCrudOptions(activeEndpoint);
+  const crudOptions = activeEndpoint && oxigraphCrudOptions(activeEndpoint);
   button("generate random entry", () => {
     // @ts-ignore
     setData(JSONSchemaFaker.generate(exhibitionSchema));

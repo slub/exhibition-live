@@ -197,7 +197,9 @@ const propertyWalker = (
                 if (isNaN(val)) val = undefined;
                 break;
               case "boolean":
-                val = isNil(newNode.values[0]) ? undefined : newNode.values[0] === "true";
+                val = isNil(newNode.values[0])
+                  ? undefined
+                  : newNode.values[0] === "true";
                 break;
               case "string":
               default:

@@ -4,7 +4,7 @@ import N3 from "n3";
 import { useCallback, useEffect, useState } from "react";
 
 import { oxigraphCrudOptions } from "../utils/sparql/remoteOxigraph";
-import {allegroCrudOptions } from "../utils/sparql/remoteAllegro";
+import { allegroCrudOptions } from "../utils/sparql/remoteAllegro";
 import { useSettings } from "./useLocalSettings";
 import { useOxigraph } from "./useOxigraph";
 import { CRUDFunctions } from "./useSPARQL_CRUD";
@@ -37,9 +37,16 @@ export const useGlobalCRUDOptions: UseGlobalCRUDOptions = () => {
       activeEndpoint &&
         (activeEndpoint.endpoint === "urn:worker"
           ? localWorkerCRUDOptions
-          :  ( activeEndpoint.auth?.token ? allegroCrudOptions(activeEndpoint) : oxigraphCrudOptions(activeEndpoint)) ),
+          : activeEndpoint.auth?.token
+          ? allegroCrudOptions(activeEndpoint)
+          : oxigraphCrudOptions(activeEndpoint)),
     );
-  }, [localWorkerCRUDOptions, activeEndpoint?.endpoint, activeEndpoint?.auth, setCrudOptions]);
+  }, [
+    localWorkerCRUDOptions,
+    activeEndpoint?.endpoint,
+    activeEndpoint?.auth,
+    setCrudOptions,
+  ]);
 
   useEffect(() => {
     const localWorkerCRUD: CRUDFunctions = {

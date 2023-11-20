@@ -10,7 +10,7 @@ export type SparqlEndpoint = {
     username?: string;
     password?: string;
     token?: string;
-  }
+  };
 };
 
 type Features = {

@@ -37,7 +37,9 @@ import SimilarityFinder from "./SimilarityFinder";
 import { FormDebuggingTools } from "./FormDebuggingTools";
 import { SearchbarWithFloatingButton } from "../layout/main-layout/Searchbar";
 import { SearchForm } from "./SimilarityFinderForm";
-import MaterialBooleanControl, { materialBooleanControlTester} from "../renderer/MaterialBooleanControl";
+import MaterialBooleanControl, {
+  materialBooleanControlTester,
+} from "../renderer/MaterialBooleanControl";
 
 export type CRUDOpsType = {
   load: () => Promise<void>;
@@ -108,7 +110,7 @@ const renderers = [
   {
     tester: materialBooleanControlTester,
     renderer: MaterialBooleanControl,
-  }
+  },
 ];
 
 export const SemanticJsonFormNoOps: FunctionComponent<

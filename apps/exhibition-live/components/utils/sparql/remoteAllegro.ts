@@ -4,14 +4,14 @@ import datasetFactory from "@rdfjs/dataset";
 import N3 from "n3";
 
 import { CRUDFunctions } from "../../state/useSPARQL_CRUD";
-import {SparqlEndpoint} from "../../state/useLocalSettings";
+import { SparqlEndpoint } from "../../state/useLocalSettings";
 
 const cFetch = (query: string, endpoint: string, token?: string) =>
   fetch(endpoint, {
     headers: {
       accept: "application/n-triples,*/*;q=0.9",
       "content-type": "application/x-www-form-urlencoded",
-    ...(token ? {authorization: `${token}`} : {})
+      ...(token ? { authorization: `${token}` } : {}),
     },
     body: `query=${encodeURIComponent(query)}`,
     method: "POST",
@@ -24,7 +24,7 @@ const askFetch = (query: string, endpoint: string, token?: string) =>
     headers: {
       accept: "application/sparql-results+json,*/*;q=0.9",
       "content-type": "application/x-www-form-urlencoded",
-    ...(token ? {authorization: `${token}`} : {})
+      ...(token ? { authorization: `${token}` } : {}),
     },
     body: `query=${encodeURIComponent(query)}`,
     method: "POST",
@@ -51,14 +51,13 @@ const createCutomizedFetch: (
       body: query,
       method: "POST",
       catch: "no-cache",
-
     };
     return await fetch(input, newInit);
   };
 const defaultQueryFetch =
   (endpoint: string, accept?: string, contentType?: string, token?: string) =>
   async (query: string) => {
-    return  await cFetch(query, endpoint, token)
+    return await cFetch(query, endpoint, token);
   };
 export const defaultQuerySelect: (
   query: string,
@@ -71,9 +70,9 @@ export const defaultQuerySelect: (
   return ((await prepared.json())?.results?.bindings || []) as any[];
 };
 
-export const allegroCrudOptions: (endpoint: SparqlEndpoint) => CRUDFunctions = (
-  { endpoint: url, auth }: SparqlEndpoint,
-) => ({
+export const allegroCrudOptions: (
+  endpoint: SparqlEndpoint,
+) => CRUDFunctions = ({ endpoint: url, auth }: SparqlEndpoint) => ({
   askFetch: async (query: string) => {
     const res = await askFetch(query, url, auth?.token);
     const { boolean } = await res.json();

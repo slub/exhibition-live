@@ -8,6 +8,7 @@ import { JSONSchema7, JSONSchema7Definition } from "json-schema";
 
 import { filterUndefOrNull } from "../core";
 import { isJSONSchema, isJSONSchemaDefinition } from "../core/jsonSchema";
+import isNil from "lodash/isNil";
 
 export type WalkerOptions = {
   omitEmptyArrays: boolean;
@@ -196,7 +197,9 @@ const propertyWalker = (
                 if (isNaN(val)) val = undefined;
                 break;
               case "boolean":
-                val = newNode.values[0] === "true";
+                val = isNil(newNode.values[0])
+                  ? undefined
+                  : newNode.values[0] === "true";
                 break;
               case "string":
               default:

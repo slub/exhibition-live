@@ -21,14 +21,29 @@ const schema: JsonSchema = {
   items: {
     type: "object",
     properties: {
-      endpoint: {
+      label: {
         type: "string",
       },
-      label: {
+      endpoint: {
         type: "string",
       },
       active: {
         type: "boolean",
+      },
+      auth: {
+        type: "object",
+        properties: {
+          username: {
+            type: "string",
+          },
+          password: {
+            type: "string",
+            format: "password",
+          },
+          token: {
+            type: "string",
+          },
+        },
       },
     },
   },

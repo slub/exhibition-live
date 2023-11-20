@@ -6,11 +6,12 @@ import N3 from "n3";
 import { CRUDFunctions } from "../../state/useSPARQL_CRUD";
 import { SparqlEndpoint } from "../../state/useLocalSettings";
 
-const cFetch = (query: string, endpoint: string) =>
+const cFetch = (query: string, endpoint: string, token?: string) =>
   fetch(endpoint, {
     headers: {
       accept: "application/n-triples,*/*;q=0.9",
       "content-type": "application/x-www-form-urlencoded",
+      ...(token ? { authorization: `${token}` } : {}),
     },
     body: `query=${encodeURIComponent(query)}`,
     method: "POST",
@@ -18,11 +19,12 @@ const cFetch = (query: string, endpoint: string) =>
     credentials: "omit",
     cache: "no-cache",
   });
-const askFetch = (query: string, endpoint: string) =>
+const askFetch = (query: string, endpoint: string, token?: string) =>
   fetch(endpoint, {
     headers: {
       accept: "application/sparql-results+json,*/*;q=0.9",
       "content-type": "application/x-www-form-urlencoded",
+      ...(token ? { authorization: `${token}` } : {}),
     },
     body: `query=${encodeURIComponent(query)}`,
     method: "POST",
@@ -35,12 +37,14 @@ const createCutomizedFetch: (
   query: string,
   accept?: string,
   contentType?: string,
+  token?: string,
 ) => (input: RequestInfo | URL, init?: RequestInit) => Promise<Response> =
-  (query, accept, contentType = "application/sparql-query") =>
+  (query, accept, contentType = "application/sparql-query", token) =>
   async (input, init) => {
     const headers = new Headers(init?.headers);
     accept && headers.set("accept", accept);
     contentType && headers.set("Content-Type", contentType);
+    token && headers.set("authorization", `${token}`);
     const newInit = {
       ...(typeof init === "object" ? init : {}),
       headers,
@@ -51,50 +55,44 @@ const createCutomizedFetch: (
     return await fetch(input, newInit);
   };
 const defaultQueryFetch =
-  (endpoint: string, accept?: string, contentType?: string) =>
+  (endpoint: string, accept?: string, contentType?: string, token?: string) =>
   async (query: string) => {
-    const engine = new QueryEngine();
-    const prepared = await engine.query(query, {
-      sources: [endpoint] as [IDataSource],
-      fetch: createCutomizedFetch(
-        query,
-        accept || "application/sparql-results+json",
-        contentType,
-      ),
-    });
-    return await prepared.execute();
+    return await cFetch(query, endpoint, token);
   };
 export const defaultQuerySelect: (
   query: string,
   endpoint: string,
-) => Promise<any[]> = async (query: string, endpoint) => {
+  token?: string,
+) => Promise<any[]> = async (query: string, endpoint, token) => {
   const sFetch = createCutomizedFetch(query);
-  const prepared = await sFetch(endpoint);
+  const headers = token ? { authorization: `Bearer ${token}` } : {};
+  const prepared = await sFetch(endpoint, { headers });
   return ((await prepared.json())?.results?.bindings || []) as any[];
 };
 
-export const oxigraphCrudOptions: (
+export const allegroCrudOptions: (
   endpoint: SparqlEndpoint,
-) => CRUDFunctions = ({ endpoint: url }: SparqlEndpoint) => ({
+) => CRUDFunctions = ({ endpoint: url, auth }: SparqlEndpoint) => ({
   askFetch: async (query: string) => {
-    const res = await askFetch(query, url);
+    const res = await askFetch(query, url, auth?.token);
     const { boolean } = await res.json();
     return boolean === true;
   },
   constructFetch: async (query: string) => {
-    const res = await cFetch(query, url),
+    const res = await cFetch(query, url, auth?.token),
       reader = new N3.Parser(),
       ntriples = await res.text(),
       ds = datasetFactory.dataset(reader.parse(ntriples));
     return ds;
   },
   updateFetch: defaultQueryFetch(
-    url.replace("query", "update"),
+    url,
     undefined,
     "application/sparql-update",
+    auth?.token,
   ),
   selectFetch: async (query: string, options) => {
-    const res = await askFetch(query, url);
+    const res = await askFetch(query, url, auth?.token);
     const resultJson = await res.json();
     return options?.withHeaders ? resultJson : resultJson?.results?.bindings;
   },

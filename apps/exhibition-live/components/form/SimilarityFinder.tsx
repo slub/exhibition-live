@@ -19,7 +19,10 @@ import { useSettings } from "../state/useLocalSettings";
 import { NodePropertyItem } from "../utils/graph/nodeToPropertyTree";
 import { Img } from "../utils/image/Img";
 import { mapByConfig } from "../utils/mapping/mapByConfig";
-import {DeclarativeMapping, StrategyContext } from "../utils/mapping/mappingStrategies";
+import {
+  DeclarativeMapping,
+  StrategyContext,
+} from "../utils/mapping/mappingStrategies";
 import DiscoverSearchTable from "./discover/DiscoverSearchTable";
 import { slent } from "./formConfigs";
 import K10PlusSearchTable, {

@@ -2,10 +2,15 @@ import useLocalState from "@phntms/use-local-state";
 import { useCallback, useEffect, useState } from "react";
 import { create } from "zustand";
 
-type SparqlEndpoint = {
+export type SparqlEndpoint = {
   label?: string;
   endpoint: string;
   active: boolean;
+  auth?: {
+    username?: string;
+    password?: string;
+    token?: string;
+  };
 };
 
 type Features = {
@@ -26,7 +31,7 @@ type ExternalAuthorityConfig = {
   };
 };
 
-type Settings = {
+export type Settings = {
   sparqlEndpoints: SparqlEndpoint[];
 
   features: Features;
@@ -34,7 +39,7 @@ type Settings = {
   externalAuthority: ExternalAuthorityConfig;
 };
 
-type UseLocalSettings = {
+export type UseLocalSettings = {
   settingsOpen: boolean;
   sparqlEndpoints: SparqlEndpoint[];
   setSparqlEndpoints: (endpoints: SparqlEndpoint[]) => void;

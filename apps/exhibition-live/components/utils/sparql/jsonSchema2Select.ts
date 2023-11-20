@@ -20,6 +20,7 @@ const propertiesToSPARQLSelectPatterns = (
   path?: string[],
   level: number = 0,
   primaryFields?: PrimaryFieldDeclaration,
+  flavour?: "oxigraph" | "blazegraph" | "allegro"
 ) => {
   let where = "";
   let select = "";
@@ -67,15 +68,19 @@ const propertiesToSPARQLSelectPatterns = (
                     false,
                   );
                   //make a select that concatenates the entity link with the label to form a list of markdown links link (link1)[label1]; (link2)[label2]; ...)
-                  select += ` (GROUP_CONCAT(CONCAT("[", ${lableVariable}, "](", STR(${variable}), ")"); SEPARATOR="${defaultSeparator}") AS ${lableVariable}_group) `;
+                  select += ` (GROUP_CONCAT(DISTINCT CONCAT("[", ${lableVariable}, "](", STR(${variable}), ")"); SEPARATOR="${defaultSeparator}") AS ${lableVariable}_group) `;
                   //select += ` (GROUP_CONCAT(${lableVariable}; SEPARATOR="${defaultSeparator}") AS ${lableVariable}_group) `;
                 }
               }
             }
           }
         }
-        //check if empty by comparing aggregated string length then 0 otherwise count
-        select += ` (IF(STRLEN(GROUP_CONCAT(STR(${variable}); SEPARATOR=",")) = 0, 0, COUNT(DISTINCT ${variable})) AS ${variable}_count) `;
+        if(flavour === "oxigraph") {
+          //check if empty by comparing aggregated string length then 0 otherwise count
+          select += ` (IF(STRLEN(GROUP_CONCAT(DISTINCT STR(${variable}); SEPARATOR=",")) = 0, 0, COUNT(DISTINCT ${variable})) AS ${variable}_count) `;
+        } else {
+          select += ` (COUNT(DISTINCT ${variable}) AS ${variable}_count) `;
+        }
         //select += ` (COUNT(DISTINCT ${variable}) AS ${variable}_count) `;
         where += makeWherePart(
           ` ${currentVariable} ${prefixedProperty} ${variable} .

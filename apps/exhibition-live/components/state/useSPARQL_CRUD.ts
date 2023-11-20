@@ -64,6 +64,7 @@ export type CRUDFunctions = {
     | void
     | ResultStream<Bindings>
     | ResultStream<Quad>
+    | Response
   >;
   constructFetch: (query: string) => Promise<DatasetCore>;
   selectFetch: (query: string, options?: SelectFetchOptions) => Promise<any>;

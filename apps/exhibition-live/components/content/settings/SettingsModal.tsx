@@ -48,6 +48,7 @@ const SettingsModal: FunctionComponent<Props> = (props) => {
       open={settingsOpen}
       onClose={() => handleClose(false)}
       aria-labelledby="responsive-dialog-title"
+      fullWidth={true}
       closeAfterTransition
       slots={{ backdrop: Backdrop }}
       slotProps={{

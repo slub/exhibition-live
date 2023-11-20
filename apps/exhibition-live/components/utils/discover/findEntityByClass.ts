@@ -8,8 +8,8 @@ import {
 import { defaultQuerySelect } from "../sparql/remoteOxigraph";
 
 export function fixSparqlOrder(sparqlQuery) {
-  const regex = /(ORDER BY [^ ]+)(.*)(GROUP BY[^\)]+\))/gm;
-  return sparqlQuery.replace(regex, "$3$2\n$1");
+  const regex = /(ORDER BY\s+[^ ]+)(\s*)GROUP BY\s+\(([^\)]+)\)/gm;
+  return sparqlQuery.replace(regex, "GROUP BY $3 $2\n$1");
 }
 export const findEntityByClass = async (
   searchString: string | null,

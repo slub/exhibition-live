@@ -44,7 +44,7 @@ export const FloatingButton = ({
         width: "72px",
         height: "48px",
         top: "10%",
-        right: drawerOpen ? drawerWidth : "10px",
+        right: drawerOpen ? drawerWidth : 0,
         borderRadius: "24px 4px 4px 24px",
         zIndex: (theme) => theme.zIndex.drawer + 1,
       }}

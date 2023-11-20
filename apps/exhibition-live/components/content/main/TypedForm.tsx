@@ -120,7 +120,7 @@ const TypedForm = ({ typeName, entityIRI, classIRI }: MainFormProps) => {
   return (
     <WithPreviewForm data={data} classIRI={classIRI}>
       {loadedSchema && (
-        <Box sx={{ p: 4, display: "flex" }}>
+        <Box sx={{ p: 2.5, display: "flex" }}>
           <NewSemanticJsonForm
             defaultEditMode={true}
             data={data}

@@ -13,6 +13,15 @@ export default function componentStyleOverrides(theme: ThemeExtended) {
         },
       },
     },
+    MuiToolBar: {
+      styleOverrides: {
+        root: {
+          paddingTop: "12px",
+          paddingBottom: "12px",
+          maxHeight: "48px",
+        },
+      },
+    },
     MuiButton: {
       styleOverrides: {
         root: {

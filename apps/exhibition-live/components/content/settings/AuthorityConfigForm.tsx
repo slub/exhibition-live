@@ -65,7 +65,7 @@ const AuthorityConfigForm: FunctionComponent<Props> = (props) => {
   // a REACT MUI paper list with checkboxes
   return (
     <Box>
-      <Typography variant="h6">Autoritäten / Normdaten </Typography>
+      <Typography variant="h2">Autoritäten / Normdaten </Typography>
       <JsonForms
         data={externalAuthority || {}}
         schema={schema}

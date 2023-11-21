@@ -40,7 +40,7 @@ const FeatureForm: FunctionComponent<Props> = (props) => {
   // a REACT MUI paper list with checkboxes
   return (
     <Box>
-      <Typography variant="h6">Funktionen</Typography>
+      <Typography variant="h2">Funktionen</Typography>
       <JsonForms
         data={features}
         schema={schema}

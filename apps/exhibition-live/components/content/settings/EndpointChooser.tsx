@@ -30,6 +30,23 @@ const schema: JsonSchema = {
       active: {
         type: "boolean",
       },
+      provider: {
+        type: "string",
+        oneOf: [
+          {
+            const: "oxigraph",
+          },
+          {
+            const: "allegro",
+          },
+          {
+            const: "qlever",
+          },
+          {
+            const: "worker",
+          },
+        ]
+      },
       auth: {
         type: "object",
         properties: {
@@ -58,10 +75,9 @@ const EndpointChooser: FunctionComponent<Props> = (props) => {
     },
     [setSparqlEndpoints],
   );
-  // a REACT MUI paper list with checkboxes
   return (
     <Box>
-      <Typography variant="h6">Knowledge Base - SPARQL Endpunkte</Typography>
+      <Typography variant="h2">Knowledge Base - SPARQL Endpunkte</Typography>
       <JsonForms
         data={sparqlEndpoints}
         schema={schema}

@@ -38,7 +38,7 @@ const OpenAISettingsForm: FunctionComponent<Props> = (props) => {
   );
   return (
     <Box>
-      <Typography variant="h6">OpenAI Einstellungen</Typography>
+      <Typography variant="h2">OpenAI Einstellungen</Typography>
       <JsonForms
         data={openai}
         schema={schema}

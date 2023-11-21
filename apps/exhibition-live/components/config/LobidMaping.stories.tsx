@@ -12,7 +12,7 @@ import { declarativeMappings } from "./lobidMappings";
 import { mapByConfig } from "../utils/mapping/mapByConfig";
 import { useGlobalCRUDOptions } from "../state/useGlobalCRUDOptions";
 import { JsonView } from "react-json-view-lite";
-import { List } from "@mui/material";
+import {List, TextField} from "@mui/material";
 import ClassicResultListItem from "../form/result/ClassicResultListItem";
 
 export default {
@@ -88,6 +88,7 @@ export const LobidSearchForProperty = () => {
 
   return (
     <>
+      <TextField value={propertyName} onChange={(e) => setPropertyName(e.target.value)} />
       {selectedId && (
         <LobidMappingTester gndID={selectedId} typeName={"Exhibition"} />
       )}

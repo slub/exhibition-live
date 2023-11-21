@@ -11,6 +11,7 @@ export type SparqlEndpoint = {
     password?: string;
     token?: string;
   };
+  provider?: 'allegro' | 'oxigraph' | 'worker' | 'blazegraph' | 'virtuoso' | 'qlever';
 };
 
 type Features = {
@@ -63,6 +64,12 @@ const defaultSparqlEndpoints: SparqlEndpoint[] = [
     label: "Local",
     endpoint: "http://localhost:7878/query",
     active: false,
+  },
+  {
+    label: "QLever local",
+    endpoint: "http://localhost:7001",
+    active: false,
+    provider: "qlever",
   },
   {
     label: "in memory",

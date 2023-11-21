@@ -45,7 +45,7 @@ const schema: JsonSchema = {
           {
             const: "worker",
           },
-        ]
+        ],
       },
       auth: {
         type: "object",

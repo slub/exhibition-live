@@ -3,7 +3,7 @@ import { JSONSchema7 } from "json-schema";
 import { SPARQLCRUDOptions } from "./types";
 import { jsonSchema2construct } from "../sparql";
 import { CONSTRUCT } from "@tpluscode/sparql-builder";
-import {variable} from "@rdfjs/data-model";
+import { variable } from "@rdfjs/data-model";
 
 export const makeSPARQLConstructQuery = (
   entityIRI: string,

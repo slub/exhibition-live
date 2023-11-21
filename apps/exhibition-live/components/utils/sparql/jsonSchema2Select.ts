@@ -109,7 +109,7 @@ const propertiesToSPARQLSelectPatterns = (
             level + 1,
             primaryFields,
             flavour,
-            minimal
+            minimal,
           );
         where += makeWherePart(
           ` ${currentVariable} ${prefixedProperty} ${variable} . \n ${subWhere} `,

@@ -52,14 +52,22 @@ export const useCRUDWithQueryClient = (
     },
   );
 
-  const removeMutation = useMutation(["remove", entityIRI], async () => {
-    if (!entityIRI || !updateFetch)
-      throw new Error("entityIRI or updateFetch is not defined");
-    return remove(entityIRI, typeIRI, schema, updateFetch, {
-      defaultPrefix,
-      queryBuildOptions: defaultQueryBuilderOptions,
-    });
-  });
+  const removeMutation = useMutation(
+    ["remove", entityIRI],
+    async () => {
+      if (!entityIRI || !updateFetch)
+        throw new Error("entityIRI or updateFetch is not defined");
+      return remove(entityIRI, typeIRI, schema, updateFetch, {
+        defaultPrefix,
+        queryBuildOptions: defaultQueryBuilderOptions,
+      });
+    },
+    {
+      onSuccess: async () => {
+        queryClient.invalidateQueries(["list"]);
+      },
+    },
+  );
 
   const saveMutation = useMutation(
     ["save", entityIRI],

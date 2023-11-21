@@ -11,7 +11,13 @@ export type SparqlEndpoint = {
     password?: string;
     token?: string;
   };
-  provider?: 'allegro' | 'oxigraph' | 'worker' | 'blazegraph' | 'virtuoso' | 'qlever';
+  provider?:
+    | "allegro"
+    | "oxigraph"
+    | "worker"
+    | "blazegraph"
+    | "virtuoso"
+    | "qlever";
 };
 
 type Features = {

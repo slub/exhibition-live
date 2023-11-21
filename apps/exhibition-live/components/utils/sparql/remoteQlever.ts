@@ -1,4 +1,4 @@
-import dataFactory from '@rdfjs/data-model'
+import dataFactory from "@rdfjs/data-model";
 import datasetFactory from "@rdfjs/dataset";
 import N3 from "n3";
 
@@ -69,20 +69,26 @@ export const defaultQuerySelect: (
   return ((await prepared.json())?.results?.bindings || []) as any[];
 };
 
-export const qleverCrudOptions: (
-  endpoint: SparqlEndpoint,
-) => CRUDFunctions = ({ endpoint: url, auth }: SparqlEndpoint) => ({
+export const qleverCrudOptions: (endpoint: SparqlEndpoint) => CRUDFunctions = ({
+  endpoint: url,
+  auth,
+}: SparqlEndpoint) => ({
   askFetch: async (query: string) => {
     const res = await askFetch(query, url, auth?.token);
     const { boolean } = await res.json();
     return boolean === true;
   },
   constructFetch: async (query: string) => {
-    const res = await cFetch(query, url, auth?.token)
-    const jsonRes = await res.json()
-    const
-      reader = new N3.Parser(),
-      ntriples = jsonRes?.res?.map(([subject, predicate, object]) => `${subject} ${predicate} ${object} .`)?.join("\n") || "",
+    const res = await cFetch(query, url, auth?.token);
+    const jsonRes = await res.json();
+    const reader = new N3.Parser(),
+      ntriples =
+        jsonRes?.res
+          ?.map(
+            ([subject, predicate, object]) =>
+              `${subject} ${predicate} ${object} .`,
+          )
+          ?.join("\n") || "",
       ds = datasetFactory.dataset(reader.parse(ntriples));
     return ds;
   },

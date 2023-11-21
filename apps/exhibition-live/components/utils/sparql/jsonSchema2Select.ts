@@ -5,6 +5,7 @@ import { isJSONSchema, isJSONSchemaDefinition } from "../core/jsonSchema";
 
 import { PrimaryFieldDeclaration } from "../types";
 
+type SPARQLFlavour = "oxigraph" | "blazegraph" | "allegro";
 const makeWherePart = (queryClause: string, required: boolean) =>
   required ? queryClause : ` OPTIONAL { ${queryClause} } `;
 const makePrefixedProperty = (property: string, prefix: string = "") =>
@@ -20,7 +21,8 @@ const propertiesToSPARQLSelectPatterns = (
   path?: string[],
   level: number = 0,
   primaryFields?: PrimaryFieldDeclaration,
-  flavour?: "oxigraph" | "blazegraph" | "allegro",
+  flavour?: SPARQLFlavour,
+  minimal?: boolean,
 ) => {
   let where = "";
   let select = "";
@@ -36,7 +38,7 @@ const propertiesToSPARQLSelectPatterns = (
         isRequired = Boolean(schema.required?.includes(property)),
         prefixedProperty = makePrefixedProperty(property),
         variable = makeVariable(subPath);
-      if (subSchema.type === "array") {
+      if (subSchema.type === "array" && !minimal) {
         //count
         let innerWherePart = "";
         const ref = (subSchema.items as any)?.$ref as string | undefined;
@@ -106,6 +108,8 @@ const propertiesToSPARQLSelectPatterns = (
             subPath,
             level + 1,
             primaryFields,
+            flavour,
+            minimal
           );
         where += makeWherePart(
           ` ${currentVariable} ${prefixedProperty} ${variable} . \n ${subWhere} `,
@@ -180,6 +184,8 @@ export const jsonSchema2Select = (
   excludeProperties?: string[],
   sparqlSelectOptions?: SPARQLSelectOptions,
   countResults?: boolean,
+  flavour?: SPARQLFlavour,
+  minimal?: boolean,
 ) => {
   if (!rootSchema.properties) return "";
   const variable = "?entity";
@@ -191,6 +197,8 @@ export const jsonSchema2Select = (
     [],
     0,
     sparqlSelectOptions?.primaryFields,
+    flavour,
+    minimal,
   );
   const matchType = typeIRI ? `?entity a <${typeIRI}> .` : "";
   const sparqlFinish = sparqlSelectOptions

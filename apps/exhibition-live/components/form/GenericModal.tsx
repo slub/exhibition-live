@@ -38,6 +38,18 @@ const modalContent = [
     text: "Eintrag aus Datenbank neuladen? Nicht gespeicherte Einstellungen gehen verlorgen.",
     action: "Neuladen",
   },
+  {
+    modalType: "confirm mapping",
+    title: "Daten aus Mapping übernehmen",
+    text: "Eintrag aus Mapping übernehmen? Nicht gespeicherte Einstellungen gehen verlorgen.",
+    action: "Übernehmen",
+  },
+  {
+    modalType: "confirm save mapping",
+    title: "Daten aus Mapping speichern",
+    text: "Der Type des gemappten Eintrags stimmt nicht mit dem Typ des Formulars überein. Eintrag aus Mapping dennoch in Datenbank Speichern? Es wird nichts in das Formular übernommen.",
+    action: "Übernehmen",
+  },
 ];
 
 const GenericModal = NiceModal.create(({ type, id }: GenericModalProps) => {

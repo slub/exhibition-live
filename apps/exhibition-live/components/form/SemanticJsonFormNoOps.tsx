@@ -40,6 +40,10 @@ import { SearchForm } from "./SimilarityFinderForm";
 import MaterialBooleanControl, {
   materialBooleanControlTester,
 } from "../renderer/MaterialBooleanControl";
+import { primaryFields } from "../config";
+import { typeIRItoTypeName } from "../content/main/Dashboard";
+import NiceModal from "@ebay/nice-modal-react";
+import GenericModal from "./GenericModal";
 
 export type CRUDOpsType = {
   load: () => Promise<void>;
@@ -129,6 +133,10 @@ export const SemanticJsonFormNoOps: FunctionComponent<
   enableSidebar,
   wrapWithinCard,
 }) => {
+  const searchOnDataPath = useMemo(() => {
+    const typeName = typeIRItoTypeName(typeIRI);
+    return primaryFields[typeName]?.label;
+  }, [typeIRI]);
   const handleFormChange = useCallback(
     (state: Pick<JsonFormsCore, "data" | "errors">) => {
       onChange && onChange(state.data, "user");
@@ -141,16 +149,23 @@ export const SemanticJsonFormNoOps: FunctionComponent<
     (newData: any) => {
       if (!newData) return;
       //avoid overriding of id and type by mapped data
-      onChange(
-        (data: any) => ({
-          ...newData,
-          "@id": data["@id"],
-          "@type": data["@type"],
-        }),
-        "mapping",
-      );
+      NiceModal.show(GenericModal, {
+        type:
+          newData["@type"] !== typeIRI
+            ? "confirm save mapping"
+            : "confirm mapping",
+      }).then(() => {
+        onChange(
+          (data: any) => ({
+            ...newData,
+            "@id": data["@id"],
+            "@type": data["@type"],
+          }),
+          "mapping",
+        );
+      });
     },
-    [onChange],
+    [onChange, typeIRI],
   );
 
   const handleEntityIRIChange = useCallback(
@@ -208,7 +223,7 @@ export const SemanticJsonFormNoOps: FunctionComponent<
                 classIRI={typeIRI}
                 jsonSchema={schema}
                 onEntityIRIChange={handleEntityIRIChange}
-                //searchOnDataPath={"title"}
+                searchOnDataPath={searchOnDataPath}
                 onMappedDataAccepted={handleMappedData}
               />
             </Grid>
@@ -227,7 +242,7 @@ export const SemanticJsonFormNoOps: FunctionComponent<
                 classIRI={typeIRI}
                 jsonSchema={schema}
                 onEntityIRIChange={handleEntityIRIChange}
-                //searchOnDataPath={"title"}
+                searchOnDataPath={searchOnDataPath}
                 onMappedDataAccepted={handleMappedData}
               />
             </>

@@ -1,16 +1,25 @@
 import { Resolve } from "@jsonforms/core";
 import { Storage as KnowledgebaseIcon } from "@mui/icons-material";
 import {
+  Box,
   Chip,
   Divider,
   Grid,
+  MenuItem,
+  Select,
   ToggleButton,
   ToggleButtonGroup,
 } from "@mui/material";
 import { dcterms } from "@tpluscode/rdf-ns-builders";
 import { JSONSchema7 } from "json-schema";
 import * as React from "react";
-import { FunctionComponent, useCallback, useMemo, useState } from "react";
+import {
+  FunctionComponent,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { v4 as uuidv4 } from "uuid";
 
 import { BASE_IRI } from "../config";
@@ -24,7 +33,7 @@ import {
   StrategyContext,
 } from "../utils/mapping/mappingStrategies";
 import DiscoverSearchTable from "./discover/DiscoverSearchTable";
-import { slent } from "./formConfigs";
+import { sladb, slent } from "./formConfigs";
 import K10PlusSearchTable, {
   findFirstInProps,
 } from "./k10plus/K10PlusSearchTable";
@@ -32,6 +41,7 @@ import LobidSearchTable from "./lobid/LobidSearchTable";
 import { findEntityByAuthorityIRI } from "../utils/discover";
 import { useGlobalCRUDOptions } from "../state/useGlobalCRUDOptions";
 import { mapAbstractDataUsingAI, mapDataUsingAI } from "../utils/ai";
+import { typeIRItoTypeName } from "../content/main/Dashboard";
 
 // @ts-ignore
 type Props = {
@@ -75,7 +85,7 @@ export const makeDefaultMappingStrategyContext: (
 });
 const SimilarityFinder: FunctionComponent<Props> = ({
   data,
-  classIRI,
+  classIRI: preselectedClassIRI,
   onEntityIRIChange,
   onMappedDataAccepted,
   searchOnDataPath,
@@ -108,10 +118,19 @@ const SimilarityFinder: FunctionComponent<Props> = ({
     },
     [entitySelected, setEntitySelected, setSelectedKnowledgeSources],
   );
-  const typeName = useMemo(
-    () => classIRI.substring(BASE_IRI.length, classIRI.length),
-    [classIRI],
+
+  const [typeName, setTypeName] = useState(
+    typeIRItoTypeName(preselectedClassIRI),
   );
+  const classIRI = useMemo(() => sladb(typeName).value, [typeName]);
+  useEffect(() => {
+    setTypeName(typeIRItoTypeName(preselectedClassIRI));
+  }, [preselectedClassIRI, setTypeName]);
+  const handleTypeNameChange = useCallback(
+    (typeName_: string) => setTypeName(typeName_),
+    [setTypeName],
+  );
+
   const handleSelect = useCallback(
     (id: string | undefined, source: KnowledgeSources) => {
       setEntitySelected(id ? { id, source } : undefined);
@@ -171,7 +190,7 @@ const SimilarityFinder: FunctionComponent<Props> = ({
         console.error("could not map from authority", e);
       }
     },
-    [typeName, onMappedDataAccepted, crudOptions?.selectFetch],
+    [classIRI, typeName, onMappedDataAccepted, crudOptions?.selectFetch],
   );
 
   const handleAccept = useCallback(
@@ -232,30 +251,44 @@ const SimilarityFinder: FunctionComponent<Props> = ({
         sx={{ marginTop: "20px" }}
       >
         <Grid item>
-          <ToggleButtonGroup
-            value={selectedKnowledgeSources}
-            exclusive
-            onChange={handleKnowledgeSourceChange}
-            aria-label="Suche über verschiedene Wissensquellen"
-          >
-            <ToggleButton value="kb" aria-label="lokale Datenbank">
-              <KnowledgebaseIcon />
-            </ToggleButton>
-            <ToggleButton value="gnd" aria-label="GND">
-              <Img
-                alt={"gnd logo"}
-                width={24}
-                height={24}
-                src={"/Icons/gnd-logo.png"}
-              />
-            </ToggleButton>
-            {/*<ToggleButton value="wikidata" aria-label="Wikidata">
+          <Box display={"flex"}>
+            <Select
+              value={typeName}
+              onChange={(event) => {
+                handleTypeNameChange(event.target.value as string);
+              }}
+            >
+              {Object.keys(declarativeMappings).map((key) => (
+                <MenuItem key={key} value={key}>
+                  {key}
+                </MenuItem>
+              ))}
+            </Select>
+            <ToggleButtonGroup
+              value={selectedKnowledgeSources}
+              exclusive
+              onChange={handleKnowledgeSourceChange}
+              aria-label="Suche über verschiedene Wissensquellen"
+            >
+              <ToggleButton value="kb" aria-label="lokale Datenbank">
+                <KnowledgebaseIcon />
+              </ToggleButton>
+              <ToggleButton value="gnd" aria-label="GND">
+                <Img
+                  alt={"gnd logo"}
+                  width={24}
+                  height={24}
+                  src={"/Icons/gnd-logo.png"}
+                />
+              </ToggleButton>
+              {/*<ToggleButton value="wikidata" aria-label="Wikidata">
                 <Img alt={'wikidata logo'} width={30} height={24} src={'/Icons/Wikidata-logo-en.svg'}/>
               </ToggleButton>
               <ToggleButton value="k10plus" aria-label="Wikidata">
                 <Img alt={'k10plus logo'} width={40} height={30} src={'/Icons/k10plus-logo.png'}/>
               </ToggleButton>*/}
-          </ToggleButtonGroup>
+            </ToggleButtonGroup>
+          </Box>
         </Grid>
         <Grid item>
           {entitySelected && (

@@ -3,6 +3,7 @@ import { JSONSchema7 } from "json-schema";
 import { SPARQLCRUDOptions } from "./types";
 import { jsonSchema2construct } from "../sparql";
 import { CONSTRUCT } from "@tpluscode/sparql-builder";
+import {variable} from "@rdfjs/data-model";
 
 export const makeSPARQLConstructQuery = (
   entityIRI: string,
@@ -11,9 +12,10 @@ export const makeSPARQLConstructQuery = (
   options: SPARQLCRUDOptions,
 ) => {
   const { defaultPrefix, queryBuildOptions } = options;
-  const wherePart = typeIRI ? makeSPARQLWherePart(entityIRI, typeIRI) : "";
+  const subjectV = variable("subject");
+  const wherePart = makeSPARQLWherePart(entityIRI, typeIRI, subjectV);
   const { construct, whereRequired, whereOptionals } = jsonSchema2construct(
-    entityIRI,
+    subjectV,
     schema,
     [],
     ["@id", "@type"],

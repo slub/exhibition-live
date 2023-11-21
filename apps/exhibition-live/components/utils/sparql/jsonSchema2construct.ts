@@ -2,6 +2,7 @@ import { JsonSchema, resolveSchema } from "@jsonforms/core";
 import { JSONSchema7, JSONSchema7Definition } from "json-schema";
 
 import { isJSONSchema, isJSONSchemaDefinition } from "../core/jsonSchema";
+import {Variable} from "@rdfjs/types";
 
 const propertiesContainStopSymbol = (
   properties: object,
@@ -17,8 +18,9 @@ const propertiesContainStopSymbol = (
 const MAX_RECURSION = 4;
 const makePrefixed = (key: string) => (key.includes(":") ? key : `:${key}`);
 const doNotFollowItemsRefs = false;
+const mkSubject = (subjectURI: string) => subjectURI.startsWith('?') ? subjectURI : `<${subjectURI}>`;
 export const jsonSchema2construct: (
-  subjectURI: string,
+  subjectURI: string | Variable,
   rootSchema: JSONSchema7,
   stopSymbols?: string[],
   excludedProperties?: string[],
@@ -32,7 +34,7 @@ export const jsonSchema2construct: (
     whereOptionals = "",
     varIndex = 0;
   const whereRequired = "";
-  const s = `<${subjectURI}>`;
+  const s = mkSubject(typeof subjectURI === 'string'  ? subjectURI : `?${subjectURI.value}`);
   const propertiesToSPARQLPatterns = (
     sP: string,
     subSchema: JSONSchema7,

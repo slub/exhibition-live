@@ -481,28 +481,6 @@ export const TypedList = ({ typeName }: Props) => {
     },
   });
 
-  const selectedTimelineItems = useMemo<string[]>(
-    () =>
-      Object.entries(rowSelection)
-        .filter(([, s]) => s)
-        .map(([k]) => k),
-    [rowSelection],
-  );
-  //console.log("selectedTimelineItems", selectedTimelineItems)
-  const columnFilteredList = useMemo(() => {
-    return resultList.filter(
-      (entity) =>
-        columnFilters.length <= 0 ||
-        columnFilters
-          .map(
-            (f) =>
-              typeof entity[f.id]?.value === "string" &&
-              entity[f.id].value.includes(f.value),
-          )
-          .every((f) => f),
-    );
-  }, [columnFilters, resultList]);
-
   return (
     <Box sx={{ width: "100%" }}>
       {isLoading && columns.length <= 0 ? (
@@ -518,15 +496,6 @@ export const TypedList = ({ typeName }: Props) => {
           <MaterialReactTable table={table} />
         </>
       )}
-      <ResizableDrawer anchor="bottom">
-        <FlexibleViewDrawer
-          data={columnFilteredList}
-          typeIRI={classIRI}
-          drawerHeight={drawerHeight}
-          onEntitySelected={handleSelectedIdsChange}
-          selectedEntityIRI={selectedTimelineItems}
-        />
-      </ResizableDrawer>
     </Box>
   );
 };

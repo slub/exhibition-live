@@ -42,7 +42,7 @@ import { findEntityByAuthorityIRI } from "../utils/discover";
 import { useGlobalCRUDOptions } from "../state/useGlobalCRUDOptions";
 import { mapAbstractDataUsingAI, mapDataUsingAI } from "../utils/ai";
 import { typeIRItoTypeName } from "../content/main/Dashboard";
-import {useGlobalSearch} from "../state";
+import { useGlobalSearch } from "../state";
 
 // @ts-ignore
 type Props = {
@@ -126,7 +126,7 @@ const SimilarityFinder: FunctionComponent<Props> = ({
     typeIRItoTypeName(preselectedClassIRI),
   );
   useEffect(() => {
-    if(globalTypeName) setTypeName(globalTypeName);
+    if (globalTypeName) setTypeName(globalTypeName);
   }, [globalTypeName, setTypeName]);
   const classIRI = useMemo(() => sladb(typeName).value, [typeName]);
   useEffect(() => {

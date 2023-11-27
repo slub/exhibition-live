@@ -1,6 +1,5 @@
 import {
   ControlProps,
-  findUISchema,
   JsonSchema,
   Resolve,
   resolveSchema,
@@ -8,27 +7,24 @@ import {
 import { useJsonForms, withJsonFormsControlProps } from "@jsonforms/react";
 import { FormControl, Grid, Hidden, IconButton } from "@mui/material";
 import merge from "lodash/merge";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { v4 as uuidv4 } from "uuid";
 
 import { slent } from "../form/formConfigs";
-import { useUISchemaForType } from "../form/uischemaForType";
-import { uischemas } from "../form/uischemas";
 import { Add, OpenInNew, OpenInNewOff } from "@mui/icons-material";
 import DiscoverAutocompleteInput from "../form/discover/DiscoverAutocompleteInput";
-import { useGlobalCRUDOptions } from "../state/useGlobalCRUDOptions";
-import { InlineSemanticFormsModal } from "./InlineSemanticFormsModal";
-import { BASE_IRI, primaryFields } from "../config";
+import { primaryFields } from "../config";
 import { AutocompleteSuggestion } from "../form/DebouncedAutoComplete";
 import { SemanticFormsModal } from "./SemanticFormsModal";
-import { JSONSchema7 } from "json-schema";
-import {
-  applyToEachField,
-  extractFieldIfString,
-} from "../utils/mapping/simpleFieldExtractor";
+import { extractFieldIfString } from "../utils/mapping/simpleFieldExtractor";
 import { PrimaryField } from "../utils/types";
-import {typeIRItoTypeName} from "../content/main/Dashboard";
-import {useGlobalSearch} from "../state";
+import { typeIRItoTypeName } from "../content/main/Dashboard";
+import { useGlobalSearch } from "../state";
 
 const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
   const {
@@ -49,10 +45,7 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
   } = props;
   const [formData, setFormData] = useState<any>({ "@id": data });
   const [searchString, setSearchString] = useState<string | undefined>("");
-  const {
-    setTypeName,
-    setSearch
-  } = useGlobalSearch();
+  const { setTypeName, setSearch } = useGlobalSearch();
   const isValid = errors.length === 0;
   const appliedUiSchemaOptions = merge({}, config, uischema.options);
   const [editMode, setEditMode] = useState(false);
@@ -204,16 +197,21 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
     [setFormData],
   );
 
+  const handleFocus = useCallback(
+    (event: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      setTypeName(typeName);
+      console.log("focus", event);
+    },
+    [setTypeName, typeName],
+  );
 
-  const handleFocus = useCallback((event: FocusEvent<HTMLInputElement>) => {
-    setTypeName(typeName);
-    console.log("focus", event)
-  }, [setTypeName, typeName]);
-
-  const handleSearchValueChange = useCallback((v: string) => {
-    setSearch(v);
-    setSearchString(v);
-  }, [setSearch, setSearchString]);
+  const handleSearchValueChange = useCallback(
+    (v: string) => {
+      setSearch(v);
+      setSearchString(v);
+    },
+    [setSearch, setSearchString],
+  );
 
   return (
     <Hidden xsUp={!visible}>

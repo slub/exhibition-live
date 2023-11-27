@@ -30,6 +30,7 @@ import {
   GenericListItem,
   GenericVirtualizedList,
 } from "./GenericVirtualizedList";
+import { useTranslation } from "react-i18next";
 
 const makeFilterUNION2 = (searchString: string, length: number) => {
   const filterUNION = [];
@@ -222,6 +223,7 @@ const itemToTimelineItem = (
   return null;
 };
 export const SearchBar = ({ relevantTypes }: { relevantTypes: string[] }) => {
+  const { t } = useTranslation();
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [searchText, setSearchText] = useState<string>("");
   const { crudOptions } = useGlobalCRUDOptions();
@@ -260,7 +262,7 @@ export const SearchBar = ({ relevantTypes }: { relevantTypes: string[] }) => {
       );
       return (await selectFetch(query))?.map((item) => ({
         id: item.type?.value,
-        title: typeIRItoTypeName(item.type?.value),
+        title: t(typeIRItoTypeName(item.type?.value)),
         score: parseInt(item.count?.value) || 0,
       }));
     },
@@ -279,14 +281,14 @@ export const SearchBar = ({ relevantTypes }: { relevantTypes: string[] }) => {
           .filter((iri) => !searchResults?.find(({ id }) => id === iri))
           .map((iri) => ({
             id: iri,
-            title: typeIRItoTypeName(iri),
+            title: t(typeIRItoTypeName(iri)),
             score: 0,
           })),
       ],
       ["title"],
       ["desc"],
     );
-  }, [searchResults, selectedClassIRIs]);
+  }, [t, searchResults, selectedClassIRIs]);
 
   const handleTimelineSelect = useCallback(
     (selection: any) => {
@@ -480,14 +482,18 @@ export const SearchBar = ({ relevantTypes }: { relevantTypes: string[] }) => {
                 <Tab
                   icon={<Polyline />}
                   iconPosition={"start"}
-                  label="Liniendiagramm"
+                  label={t("line chart")}
                 />
                 <Tab
                   icon={<Timeline />}
                   iconPosition={"start"}
-                  label="Zeitstrahl"
+                  label={t("timeline")}
                 />
-                <Tab icon={<ListAlt />} iconPosition={"start"} label="Liste" />
+                <Tab
+                  icon={<ListAlt />}
+                  iconPosition={"start"}
+                  label={t("List")}
+                />
               </Tabs>
               <Box sx={{ width: "100%", height: "40vh" }}>
                 {

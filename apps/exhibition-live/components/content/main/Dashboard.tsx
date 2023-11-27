@@ -22,6 +22,7 @@ import { SearchBar } from "./Search";
 import { ParentSize } from "@visx/responsive";
 import { fixSparqlOrder } from "../../utils/discover";
 import { variable } from "@rdfjs/data-model";
+import { useTranslation } from "react-i18next";
 
 export const HeaderTitle = styled(Typography)(({ theme }) => ({
   fontFamily: "'Play', sans-serif",
@@ -104,6 +105,7 @@ export const typeIRItoTypeName = (iri: string) => {
 const relevantTypes = Object.keys(primaryFields).map((key) => sladb(key).value);
 
 export const Dashboard = (props) => {
+  const { t } = useTranslation();
   const { crudOptions } = useGlobalCRUDOptions();
   const { selectFetch } = crudOptions || {};
   const { data: typeCountData } = useQuery(
@@ -129,7 +131,7 @@ export const Dashboard = (props) => {
     () =>
       orderBy(
         typeCountData?.map((item) => ({
-          title: typeIRItoTypeName(item.type?.value),
+          title: t(typeIRItoTypeName(item.type?.value)),
           score: parseInt(item.count?.value) || 0,
         })),
         ["score"],

@@ -10,6 +10,7 @@ import schema from "../../public/schema/Exhibition.schema.json";
 import { BASE_IRI } from "../../components/config";
 import { v4 as uuidv4 } from "uuid";
 import { decodeIRI } from "../../components/utils/core";
+import { useTranslation } from "react-i18next";
 
 type Props = {
   typeName: string;
@@ -32,6 +33,7 @@ export async function getStaticProps({ params }) {
 }
 export default (props: Props) => {
   const router = useRouter();
+  const { t } = useTranslation();
   const { typeName } = props;
   const classIRI: string | undefined = useMemo(
     () => (typeof typeName === "string" ? sladb(typeName).value : undefined),
@@ -49,7 +51,7 @@ export default (props: Props) => {
   return (
     <>
       <Head>
-        <title>Neue {typeName} anlegen - Ausstellungserfassung</title>
+        <title>Neue {t(typeName)} anlegen - Ausstellungserfassung</title>
         <meta name="description" content="a knowledge base about exhibitions" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />

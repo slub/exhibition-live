@@ -40,17 +40,17 @@ export const SemanticJsonFormToolbar = ({
             </IconButton>
           )}
           {onRemove && (
-            <IconButton onClick={onRemove} aria-lable="remove">
+            <IconButton onClick={onRemove} aria-label="remove">
               <Delete />
             </IconButton>
           )}
           {onReload && (
-            <IconButton onClick={onReload} aria-lable="reload from server">
+            <IconButton onClick={onReload} aria-label="reload from server">
               <Refresh />
             </IconButton>
           )}
           {onReset && (
-            <IconButton onClick={onReset} aria-lable="full reload">
+            <IconButton onClick={onReset} aria-label="full reload">
               <DangerousOutlined />
             </IconButton>
           )}

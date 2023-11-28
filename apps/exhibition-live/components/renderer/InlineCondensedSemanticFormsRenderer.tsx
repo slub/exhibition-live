@@ -7,12 +7,7 @@ import {
 import { useJsonForms, withJsonFormsControlProps } from "@jsonforms/react";
 import { FormControl, Grid, Hidden, IconButton } from "@mui/material";
 import merge from "lodash/merge";
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 
 import { slent } from "../form/formConfigs";

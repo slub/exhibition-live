@@ -1,9 +1,4 @@
-import {
-  Box,
-  Divider,
-  ListItemButton,
-  ListItemText,
-} from "@mui/material";
+import { Box, Divider, ListItemButton, ListItemText } from "@mui/material";
 import { KeyboardArrowDown } from "@mui/icons-material";
 import { FunctionComponent, useCallback, useState } from "react";
 
@@ -24,39 +19,37 @@ const ClassicResultListWrapper: FunctionComponent<Props> = ({
     setOpen(!open);
   }, [setOpen, open]);
 
-
   return (
     <Box>
-      <ListItemButton
-        alignItems="flex-start"
-        onClick={toggleOpen}
-      >
+      <ListItemButton alignItems="flex-start" onClick={toggleOpen}>
         <ListItemText
           primary={label}
           primaryTypographyProps={{
             fontSize: 15,
-            fontWeight: 'medium',
-            lineHeight: '20px',
-            mb: '2px',
+            fontWeight: "medium",
+            lineHeight: "20px",
+            mb: "2px",
           }}
-          secondary={selected ? "Suche liefert folgende Treffer" : "Keine Suche"}
+          secondary={
+            selected ? "Suche liefert folgende Treffer" : "Keine Suche"
+          }
           secondaryTypographyProps={{
             noWrap: true,
             fontSize: 12,
-            lineHeight: '16px',
+            lineHeight: "16px",
           }}
           sx={{ my: 0 }}
         />
-          <KeyboardArrowDown
-            sx={{
-              mr: -1,
-              transform: open ? 'rotate(-180deg)' : 'rotate(0)',
-              transitiotn: '0.2s',
-            }}
-          />
+        <KeyboardArrowDown
+          sx={{
+            mr: -1,
+            transform: open ? "rotate(-180deg)" : "rotate(0)",
+            transitiotn: "0.2s",
+          }}
+        />
       </ListItemButton>
       <Divider />
-      { selected && open && children}
+      {selected && open && children}
     </Box>
   );
 };

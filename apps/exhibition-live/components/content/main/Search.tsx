@@ -501,7 +501,7 @@ export const SearchBar = ({ relevantTypes }: { relevantTypes: string[] }) => {
                       searchResultsLoading ? (
                         <Skeleton width={width} height={height} />
                       ) : (
-                        <Box>
+                        <>
                           {[
                             tabIndex === 0 && (
                               <LineChart
@@ -543,7 +543,7 @@ export const SearchBar = ({ relevantTypes }: { relevantTypes: string[] }) => {
                               />
                             ),
                           ]}
-                        </Box>
+                        </>
                       )
                     }
                   </ParentSize>

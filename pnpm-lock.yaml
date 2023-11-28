@@ -124,6 +124,8 @@ importers:
       mui-image: ^1.0.7
       n3: ^1.16.3
       next: 13.1.1
+      next-i18next: ^15.0.0
+      next-language-detector: ^1.1.0
       next-remove-imports: ^1.0.8
       ni18n: ^1.1.0
       notistack: ^3.0.1
@@ -229,6 +231,8 @@ importers:
       mui-image: 1.0.7_fkubh7a66rvsqz3hz6os5u7boy
       n3: 1.17.1
       next: 13.1.1_qxvrohpe4bapdpzk72juyfoxtm
+      next-i18next: 15.0.0_za5uatyoxlwrn2hvo6tt6obvvy
+      next-language-detector: 1.1.0
       ni18n: 1.1.0_za5uatyoxlwrn2hvo6tt6obvvy
       notistack: 3.0.1_s7mghcr6idhb4d5ook54gl4n44
       openai: 3.3.0
@@ -1733,6 +1737,13 @@ packages:
       core-js-pure: 3.33.1
       regenerator-runtime: 0.14.0
     dev: true
+
+  /@babel/runtime/7.16.7:
+    resolution: {integrity: sha512-9E9FJowqAsytyOY6LG+1KuueckRL+aQW+mKvXRXnuFGyRAyepJPmEo9vgMfXUA6O9u3IeEdv9MAkppFcaQwogQ==}
+    engines: {node: '>=6.9.0'}
+    dependencies:
+      regenerator-runtime: 0.13.11
+    dev: false
 
   /@babel/runtime/7.23.2:
     resolution: {integrity: sha512-mM8eg4yl5D6i3lu2QKPuPH4FArvJ8KhTofbE7jwMUv9KX5mBvwPAqnV3MlyBNqdp9RyRKP6Yck8TrfYrPvX3bg==}
@@ -8878,6 +8889,13 @@ packages:
       '@types/unist': 2.0.9
     dev: false
 
+  /@types/hoist-non-react-statics/3.3.5:
+    resolution: {integrity: sha512-SbcrWzkKBw2cdwRTwQAswfpB9g9LJWfjtUeW/jvNwbhC8cpmmNYVePa+ncbUe0rGTQ7G3Ff6mYUN2VMfLVr+Sg==}
+    dependencies:
+      '@types/react': 18.2.33
+      hoist-non-react-statics: 3.3.2
+    dev: false
+
   /@types/html-minifier-terser/6.1.0:
     resolution: {integrity: sha512-oh/6byDPnL1zeNXFrDXFLyZjkr1MsBG667IM792caf1L2UPOOMf65NFzjUH/ltyfwjAGfs1rsX1eftK0jC/KIg==}
     dev: true
@@ -11053,7 +11071,6 @@ packages:
   /core-js/3.33.1:
     resolution: {integrity: sha512-qVSq3s+d4+GsqN0teRCJtM6tdEEXyWxjzbhVrCHmBS5ZTM0FS2MOS0D13dUXAWDUN6a+lHI/N1hF9Ytz6iLl9Q==}
     requiresBuild: true
-    dev: true
 
   /core-util-is/1.0.3:
     resolution: {integrity: sha512-ZQBvi1DcpJ4GDqanjucZ2Hj3wEO5pZDS89BWbkcrvdxksJorwUDDZamX9ldFkp9aw2lmBDLgkObEA4DWNJ9FYQ==}
@@ -13916,6 +13933,12 @@ packages:
     resolution: {integrity: sha512-ygGZLjmXfPHj+ZWh6LwbC37l43MhfztxetbFCoYTM2VjkIUpeHgSNn7QIyVFj7YQ1Wl9Cbw5sholVJPzWvC2MQ==}
     dev: false
 
+  /i18next-browser-languagedetector/7.2.0:
+    resolution: {integrity: sha512-U00DbDtFIYD3wkWsr2aVGfXGAj2TgnELzOX9qv8bT0aJtvPV9CRO77h+vgmHFBMe7LAxdwvT/7VkCWGya6L3tA==}
+    dependencies:
+      '@babel/runtime': 7.23.2
+    dev: false
+
   /i18next-fs-backend/2.2.0:
     resolution: {integrity: sha512-VOPHhdDX0M/csRqEw+9Ectpf6wvTIg1MZDfAHxc3JKnAlJz7fcZSAKAeyDohOq0xuLx57esYpJopIvBaRb0Bag==}
     dev: false
@@ -16379,6 +16402,33 @@ packages:
     engines: {node: '>= 0.4.0'}
     dev: true
 
+  /next-i18next/15.0.0_za5uatyoxlwrn2hvo6tt6obvvy:
+    resolution: {integrity: sha512-9iGEU4dt1YCC5CXh6H8YHmDpmeWKjxES6XfoABxy9mmfaLLJcqS92F56ZKmVuZUPXEOLtgY/JtsnxsHYom9J4g==}
+    engines: {node: '>=14'}
+    peerDependencies:
+      i18next: ^23.6.0
+      next: '>= 12.0.0'
+      react: '>= 17.0.2'
+      react-i18next: ^13.3.1
+    dependencies:
+      '@babel/runtime': 7.23.2
+      '@types/hoist-non-react-statics': 3.3.5
+      core-js: 3.33.1
+      hoist-non-react-statics: 3.3.2
+      i18next: 23.6.0
+      i18next-fs-backend: 2.2.0
+      next: 13.1.1_qxvrohpe4bapdpzk72juyfoxtm
+      react: 18.2.0
+      react-i18next: 13.3.1_hv3wqpusfuaxw6ocr52s2col5q
+    dev: false
+
+  /next-language-detector/1.1.0:
+    resolution: {integrity: sha512-TLXMSqweKrrIID0a+PxotItN8MBwIurso3oyz9Odq1VPv3/sdrSpfam2V2eoF462+ibjtSW/P0Xs7gFmeA4Ktw==}
+    dependencies:
+      '@babel/runtime': 7.16.7
+      i18next-browser-languagedetector: 7.2.0
+    dev: false
+
   /next-remove-imports/1.0.12_webpack@5.89.0:
     resolution: {integrity: sha512-3tdL6VuSykJ/mcUwxfjQ+Fd4OpEmrwWVHtLZ/fhNcSaToWCutUp7nrfIww7/4CURe9I7BDCQE9AWl4fkY3YZOQ==}
     dependencies:
@@ -18266,7 +18316,6 @@ packages:
 
   /regenerator-runtime/0.13.11:
     resolution: {integrity: sha512-kY1AZVr2Ra+t+piVaJ4gxaFaReZVH40AKNo7UCX6W+dEwBo/2oZJzqfuN1qLq1oL45o56cPaTXELwrTh8Fpggg==}
-    dev: true
 
   /regenerator-runtime/0.14.0:
     resolution: {integrity: sha512-srw17NI0TUWHuGa5CFGGmhfNIeja30WMBfbslPNhf6JrqQlLN5gcrvig1oqPxiVaXb0oW0XRKtH6Nngs5lKCIA==}

@@ -7,18 +7,17 @@ import "../styles/tooltipster-sideTip-shadow.min.css";
 import "../styles/layout.css";
 import "../styles/temp.css";
 import "leaflet/dist/leaflet.css";
-import "../components/i18n/i18n";
-import { appWithI18Next } from "ni18n";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import type { AppProps } from "next/app";
 
 import { FormRefsProvider } from "../components/provider/formRefsContext";
 import ThemeComponent from "../components/theme/ThemeComponent";
-import { ni18n } from "../components/i18n";
 import NiceModal from "@ebay/nice-modal-react";
 import { SnackbarProvider } from "notistack";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { appWithTranslation, UserConfig } from "next-i18next";
+import nextI18NextConfig from "../next-i18next.config";
 
 export const queryClient = new QueryClient();
 const QueryClientProviderWrapper = ({
@@ -32,23 +31,21 @@ const QueryClientProviderWrapper = ({
 };
 function App({ Component, pageProps }: AppProps) {
   return (
-    <>
-      <QueryClientProviderWrapper>
-        <>
-          <FormRefsProvider>
-            <ThemeComponent>
-              <SnackbarProvider>
-                <NiceModal.Provider>
-                  {<Component {...pageProps} />}
-                </NiceModal.Provider>
-              </SnackbarProvider>
-            </ThemeComponent>
-          </FormRefsProvider>
-          <ReactQueryDevtools initialIsOpen={false} />
-        </>
-      </QueryClientProviderWrapper>
-    </>
+    <QueryClientProviderWrapper>
+      <>
+        <FormRefsProvider>
+          <ThemeComponent>
+            <SnackbarProvider>
+              <NiceModal.Provider>
+                {<Component {...pageProps} />}
+              </NiceModal.Provider>
+            </SnackbarProvider>
+          </ThemeComponent>
+        </FormRefsProvider>
+        <ReactQueryDevtools initialIsOpen={false} />
+      </>
+    </QueryClientProviderWrapper>
   );
 }
 
-export default appWithI18Next(App, ni18n);
+export default appWithTranslation(App, nextI18NextConfig as any as UserConfig);

@@ -1,1 +1,2 @@
-export * from "./ni18n";
+export * from "./getStaticPage";
+export * from "./Redirect";

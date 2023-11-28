@@ -6,10 +6,6 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-  i18n: {
-    defaultLocale: 'de',
-    locales: ['de', 'en'],
-  },
   basePath: process.env.NEXT_PUBLIC_BASE_PATH || '',
 }
 

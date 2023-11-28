@@ -105,7 +105,7 @@ export const typeIRItoTypeName = (iri: string) => {
 const relevantTypes = Object.keys(primaryFields).map((key) => sladb(key).value);
 
 export const Dashboard = (props) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation("translation");
   const { crudOptions } = useGlobalCRUDOptions();
   const { selectFetch } = crudOptions || {};
   const { data: typeCountData } = useQuery(

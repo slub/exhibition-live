@@ -36,7 +36,6 @@ import TypeOfRenderer from "../renderer/TypeOfRenderer";
 import SimilarityFinder from "./SimilarityFinder";
 import { FormDebuggingTools } from "./FormDebuggingTools";
 import { SearchbarWithFloatingButton } from "../layout/main-layout/Searchbar";
-import { SearchForm } from "./SimilarityFinderForm";
 import MaterialBooleanControl, {
   materialBooleanControlTester,
 } from "../renderer/MaterialBooleanControl";
@@ -235,7 +234,6 @@ export const SemanticJsonFormNoOps: FunctionComponent<
           {" "}
           <SearchbarWithFloatingButton>
             <>
-              <SearchForm />
               <SimilarityFinder
                 search={searchText}
                 data={data}

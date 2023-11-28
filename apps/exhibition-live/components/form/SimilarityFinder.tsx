@@ -249,24 +249,22 @@ const SimilarityFinder: FunctionComponent<Props> = ({
 
   return (
     <>
-      <Grid
-        container
-        alignItems="center"
-        direction={"column"}
-        spacing={2}
-      >
-        <Grid item sx={{ width: '100%' }}>
-          <Grid container spacing={2}
+      <Grid container alignItems="center" direction={"column"} spacing={2}>
+        <Grid item sx={{ width: "100%" }}>
+          <Grid
+            container
+            spacing={2}
             sx={{
               m: 2,
               px: 2,
               py: 1,
               width: "auto",
               border: 1,
-              borderColor: 'primary.main',
+              borderColor: "primary.main",
               borderRadius: "4px",
-            }}>
-             {/*<Box display={"flex"}>
+            }}
+          >
+            {/*<Box display={"flex"}>
               <Select
                 value={typeName}
                 onChange={(event) => {
@@ -280,7 +278,7 @@ const SimilarityFinder: FunctionComponent<Props> = ({
                 ))}
               </Select>
             </Box>*/}
-            <Box sx={{ flexGrow: 1}}>
+            <Box sx={{ flexGrow: 1 }}>
               <Typography gutterBottom variant="caption" component="div">
                 Suche in {typeName} nach
               </Typography>
@@ -288,7 +286,13 @@ const SimilarityFinder: FunctionComponent<Props> = ({
                 {searchString}
               </Typography>
             </Box>
-            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
               <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
               <ToggleButtonGroup
                 size="small"
@@ -324,7 +328,7 @@ const SimilarityFinder: FunctionComponent<Props> = ({
             </Box>
           </Grid>
         </Grid>
-        <Grid item sx={{ width: '100%' }}>
+        <Grid item sx={{ width: "100%" }}>
           <ClassicResultListWrapper
             label="Treffer in lokaler Datenbank"
             selected={selectedKnowledgeSources?.includes("kb")}

@@ -1,11 +1,9 @@
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import AddIcon from "@mui/icons-material/Add";
-import SearchIcon from "@mui/icons-material/Search";
 import {
   Avatar,
   Chip,
   Divider,
-  IconButton,
   ListItem,
   ListItemButton,
   ListItemIcon,
@@ -14,9 +12,8 @@ import {
   useMediaQuery,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import Link from "next/link";
-import { useRouter } from "next/router";
-import { forwardRef, useEffect, useCallback } from "react";
+import { useModifiedRouter } from "../../../basic";
+import { useEffect, useCallback } from "react";
 
 import { useThemeSettings } from "../../../state";
 import { MenuItem } from "./types";
@@ -34,8 +31,8 @@ export const NavItem = ({
   open = true,
 }: NavItemProps) => {
   const theme = useTheme();
-  const { pathname } = useRouter();
-  const router = useRouter();
+  const router = useModifiedRouter();
+  const { pathname } = router;
   const customization = useThemeSettings();
   const matchesSM = useMediaQuery(theme.breakpoints.down("lg"));
 
@@ -176,13 +173,6 @@ export const NavItem = ({
         </ListItem>
       ) : (
         <ListItemButton
-          component={(props) =>
-            item.url ? (
-              <Link {...props} href={item.url} target={itemTarget} />
-            ) : (
-              <div />
-            )
-          }
           disabled={item.disabled}
           sx={{
             // borderRadius: `${customization.borderRadius}px`,

@@ -25,6 +25,7 @@ import DiscoverAutocompleteInput from "../../form/discover/DiscoverAutocompleteI
 import { sladb, slent } from "../../form/formConfigs";
 import { useGlobalSearch } from "../../state";
 import { encodeIRI } from "../../utils/core";
+import { useModifiedRouter } from "../../basic";
 
 // styles
 const PopperStyle = styled(Popper, { shouldForwardProp })(({ theme }) => ({
@@ -78,7 +79,7 @@ const HeaderAvatarStyle = styled(Avatar, { shouldForwardProp })(
 export const SearchSection = () => {
   const { t } = useTranslation();
   const { search, setSearch } = useGlobalSearch();
-  const router = useRouter();
+  const router = useModifiedRouter();
   const { typeName } = router.query as { typeName: string | null | undefined };
   const classIRI: string | undefined =
     typeof typeName === "string" ? sladb(typeName).value : undefined;

@@ -48,6 +48,7 @@ import Button from "@mui/material/Button";
 import { withDefaultPrefix } from "../../utils/crud/makeSPARQLWherePart";
 import { flatten } from "lodash";
 import get from "lodash/get";
+import { useModifiedRouter } from "../../basic";
 
 type Props = {
   typeName: string;
@@ -203,7 +204,7 @@ export const TypedInfiniteList = ({ typeName }: Props) => {
     [columns, headerVars],
   );
 
-  const router = useRouter();
+  const router = useModifiedRouter();
   const editEntry = useCallback(
     (id: string) => {
       router.push(`/create/${typeName}?encID=${encodeIRI(id)}`);

@@ -121,7 +121,7 @@ export const useSPARQL_CRUD = (
     return () => {
       resolveSourceIRIs(entityIRI);
     };
-  }, [entityIRI, typeIRI, setWhereEntity]);
+  }, [entityIRI, typeIRI, setWhereEntity, resolveSourceIRIs]);
 
   const getClassIRIs = useCallback(
     async (entityIRI_: string) => {
@@ -151,7 +151,7 @@ export const useSPARQL_CRUD = (
       console.error(e);
     }
     return false;
-  }, [whereEntity, setIsUpdate, defaultPrefix, askFetch]);
+  }, [whereEntity, askFetch, queryBuildOptions]);
 
   const load = useCallback(async () => {
     if (!entityIRI || !whereEntity) return;
@@ -198,6 +198,10 @@ export const useSPARQL_CRUD = (
     defaultPrefix,
     constructFetch,
     updateSourceToTargets,
+    onLoad,
+    schema,
+    queryBuildOptions,
+    walkerOptions,
   ]);
 
   const remove = useCallback(async () => {
@@ -215,7 +219,15 @@ export const useSPARQL_CRUD = (
     query = `PREFIX : <${defaultPrefix}> ` + query;
     await updateFetch(query);
     enqueueSnackbar("Daten wurden entfernt", { variant: "info" });
-  }, [entityIRI, whereEntity, defaultPrefix, updateFetch]);
+  }, [
+    entityIRI,
+    whereEntity,
+    defaultPrefix,
+    updateFetch,
+    enqueueSnackbar,
+    queryBuildOptions,
+    schema,
+  ]);
 
   //TODO: this code is a mess, refactor it (it has matured historically)
   const save = useCallback(
@@ -271,7 +283,6 @@ export const useSPARQL_CRUD = (
     [
       entityIRI,
       typeIRI,
-      whereEntity,
       data,
       isUpdate,
       setIsUpdate,
@@ -279,6 +290,10 @@ export const useSPARQL_CRUD = (
       updateFetch,
       upsertByDefault,
       queryClient,
+      enqueueSnackbar,
+      resolveSourceIRIs,
+      schema,
+      queryBuildOptions,
     ],
   );
 
@@ -287,7 +302,7 @@ export const useSPARQL_CRUD = (
     setLastEntityLoaded(undefined);
     load();
     enqueueSnackbar("Daten wurden zurückgesetzt", { variant: "info" });
-  }, [setData, setLastEntityLoaded, load]);
+  }, [setData, setLastEntityLoaded, load, enqueueSnackbar]);
   const handleLoadSuccess = useCallback(
     (data: any) => {
       if (data) {

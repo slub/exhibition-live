@@ -223,7 +223,7 @@ const itemToTimelineItem = (
   return null;
 };
 export const SearchBar = ({ relevantTypes }: { relevantTypes: string[] }) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation("translation");
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [searchText, setSearchText] = useState<string>("");
   const { crudOptions } = useGlobalCRUDOptions();
@@ -292,10 +292,9 @@ export const SearchBar = ({ relevantTypes }: { relevantTypes: string[] }) => {
 
   const handleTimelineSelect = useCallback(
     (selection: any) => {
-      console.log("selection", selection);
       setSelectedId(selection?.items?.[0]);
     },
-    [selectedId],
+    [setSelectedId],
   );
 
   const { data: allExhibitionsData } = useQuery(
@@ -502,7 +501,7 @@ export const SearchBar = ({ relevantTypes }: { relevantTypes: string[] }) => {
                       searchResultsLoading ? (
                         <Skeleton width={width} height={height} />
                       ) : (
-                        <Box>
+                        <>
                           {[
                             tabIndex === 0 && (
                               <LineChart
@@ -524,6 +523,7 @@ export const SearchBar = ({ relevantTypes }: { relevantTypes: string[] }) => {
                             ),
                             tabIndex === 1 && (
                               <VisTimelineWrapper
+                                key={"timeline"}
                                 items={timelineItems}
                                 options={{
                                   width: `${width}px`,
@@ -536,13 +536,14 @@ export const SearchBar = ({ relevantTypes }: { relevantTypes: string[] }) => {
                             ),
                             tabIndex === 2 && (
                               <GenericVirtualizedList
+                                key={"list"}
                                 items={listItems}
                                 width={width}
                                 height={height}
                               />
                             ),
                           ]}
-                        </Box>
+                        </>
                       )
                     }
                   </ParentSize>

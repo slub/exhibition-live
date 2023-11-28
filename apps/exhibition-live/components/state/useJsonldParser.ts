@@ -95,7 +95,16 @@ export const useJsonldParser = (
         console.error("Cannot convert JSONLD to dataset", e);
       }
     },
-    [onFormDataChange, onJsonldData, setEntityIRI, entityIRI],
+    [
+      onFormDataChange,
+      onJsonldData,
+      setEntityIRI,
+      entityIRI,
+      defaultPrefix,
+      schema,
+      walkerOptions,
+      jsonldContext,
+    ],
   );
 
   useEffect(() => {

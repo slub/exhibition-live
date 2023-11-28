@@ -233,7 +233,7 @@ export const TypedInfiniteList = ({ typeName }: Props) => {
         enqueueSnackbar("Removed", { variant: "success" });
       });
     },
-    [removeEntity],
+    [removeEntity, enqueueSnackbar],
   );
 
   const tableContainerRef = useRef<HTMLDivElement>(null); //we can get access to the underlying TableContainer element and react to its scroll events

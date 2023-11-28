@@ -94,7 +94,7 @@ const PropertyContextMenu = ({
   const [mappingModalOpen, setMappingModalOpen] = useState<boolean>(false);
   const handleCreateMapping = useCallback(() => {
     setMappingModalOpen(true);
-  }, [onClose, setMappingModalOpen]);
+  }, [setMappingModalOpen]);
 
   const handleMappingModalClose = useCallback(() => {
     setMappingModalOpen(false);

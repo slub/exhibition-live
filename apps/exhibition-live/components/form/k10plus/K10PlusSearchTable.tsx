@@ -134,7 +134,7 @@ const K10PlusSearchTable: FunctionComponent<Props> = ({
       setSelectedEntry(cachedEntry);
       onSelect && onSelect(id);
     },
-    [setSelectedId, resultTable, setSelectedEntry, onSelect],
+    [setSelectedId, resultTable, setSelectedEntry, onSelect, pushHistory],
   );
 
   useEffect(() => {
@@ -145,7 +145,7 @@ const K10PlusSearchTable: FunctionComponent<Props> = ({
     (id: string | undefined) => {
       onAcceptItem && onAcceptItem(id, selectedEntry);
     },
-    [onAcceptItem, selectedEntry, pushHistory],
+    [onAcceptItem, selectedEntry],
   );
 
   return (

@@ -29,7 +29,7 @@ export const useRDFDataSources = (source: string) => {
     } else {
       init();
     }
-  }, [init, oxigraph, data]);
+  }, [init, oxigraph, data, load]);
 
   return {
     bulkLoading,

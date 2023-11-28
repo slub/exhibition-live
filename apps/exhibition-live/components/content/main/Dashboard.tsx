@@ -137,7 +137,7 @@ export const Dashboard = (props) => {
         ["score"],
         ["desc"],
       ),
-    [typeCountData],
+    [typeCountData, t],
   );
 
   const items = useMemo(() => {}, []);

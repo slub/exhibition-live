@@ -33,7 +33,7 @@ const useExtendedSchema = ({ typeName, classIRI }: UseExtendedSchemaProps) => {
       ...specificModel,
     };
     return finalSchema;
-  }, [typeName, classIRI]);
+  }, [typeName]);
 };
 
 export default useExtendedSchema;

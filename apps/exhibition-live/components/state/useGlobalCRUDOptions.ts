@@ -74,7 +74,7 @@ export const useGlobalCRUDOptions: UseGlobalCRUDOptions = () => {
       }
       return await oxigraph.ao.query(query);
     },
-    [oxigraph],
+    [oxigraph, init],
   );
 
   useEffect(() => {
@@ -85,7 +85,7 @@ export const useGlobalCRUDOptions: UseGlobalCRUDOptions = () => {
           activeEndpoint.provider === "worker" ? { doQuery } : undefined,
         ),
     );
-  }, [doQuery, activeEndpoint?.endpoint, activeEndpoint?.auth, setCrudOptions]);
+  }, [doQuery, activeEndpoint, activeEndpoint?.auth, setCrudOptions]);
   return {
     crudOptions,
     doLocalQuery: doQuery,

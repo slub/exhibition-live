@@ -116,18 +116,25 @@ export const ResizableDrawer = (props: MiniDrawerProps) => {
         }
       }
     },
-    [horizontal, setTempDrawerHeight, minDrawerWidth, maxDrawerWidth],
+    [
+      horizontal,
+      setTempDrawerHeight,
+      minDrawerWidth,
+      maxDrawerWidth,
+      maxDrawerHeight,
+      minDrawerHeight,
+    ],
   );
 
   const handleMouseUp = useCallback(() => {
     document.removeEventListener("mouseup", handleMouseUp, true);
     document.removeEventListener("mousemove", handleMouseMove, true);
-  }, [handleMouseMove, drawerHeight]);
+  }, [handleMouseMove]);
 
-  const handleMouseDown = () => {
+  const handleMouseDown = useCallback(() => {
     document.addEventListener("mouseup", handleMouseUp, true);
     document.addEventListener("mousemove", handleMouseMove, true);
-  };
+  }, [handleMouseMove, handleMouseUp]);
 
   // https://stackblitz.com/edit/react-2h1g6x?file=ResponsiveDrawer.js
   // React.useEffect(() => {

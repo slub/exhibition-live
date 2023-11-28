@@ -266,7 +266,7 @@ export const TypedList = ({ typeName }: Props) => {
         enqueueSnackbar("Removed", { variant: "success" });
       });
     },
-    [removeEntity],
+    [removeEntity, enqueueSnackbar],
   );
 
   const tableContainerRef = useRef<HTMLDivElement>(null); //we can get access to the underlying TableContainer element and react to its scroll events
@@ -301,16 +301,6 @@ export const TypedList = ({ typeName }: Props) => {
   const handleRowSelectionChange = useCallback(
     (s: MRT_RowSelectionState) => {
       setRowSelection(s);
-    },
-    [setRowSelection],
-  );
-  const handleSelectedIdsChange = useCallback(
-    (s: any) => {
-      if (s.items.length === 0) return;
-      const rowSelection = s.items.map((id: string) => ({ [id]: true }));
-      //console.log("rowSelection", rowSelection)
-      // setRowSelection(Object.assign({}, ...rowSelection));
-      //setSelectedIds([...s.items]);
     },
     [setRowSelection],
   );

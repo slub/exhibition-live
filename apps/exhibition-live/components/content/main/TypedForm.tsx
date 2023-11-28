@@ -89,7 +89,7 @@ const TypedForm = ({ typeName, entityIRI, classIRI }: MainFormProps) => {
       const typeName = typeIRI.substring(BASE_IRI.length, typeIRI.length);
       router.push(`/create/${typeName}/${encodeIRI(entityIRI)}`);
     },
-    [setData, classIRI, router],
+    [router],
   );
   const handleSearchTextChange = useCallback(
     (searchText: string | undefined) => {

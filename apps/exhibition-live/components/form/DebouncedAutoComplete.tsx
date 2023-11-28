@@ -61,6 +61,7 @@ export const DebouncedAutocomplete: FunctionComponent<
 
   const [initiallyLoaded, setInitiallyLoaded] = useState(false);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedRequest = useCallback(
     debounce(async (value: string) => {
       const data = await load(value);
@@ -84,7 +85,7 @@ export const DebouncedAutocomplete: FunctionComponent<
         debouncedRequest(value);
       }
     },
-    [setLoading, debouncedRequest, minSearchLength],
+    [setLoading, debouncedRequest, minSearchLength, onSearchValueChange],
   );
 
   useEffect(() => {

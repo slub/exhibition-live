@@ -72,6 +72,7 @@ const DeepGraphToJSONShowcase: FunctionComponent<Props> = ({
     omitEmptyObjects,
     maxRecursionEachRef,
     maxRecursion,
+    skipAtLevel,
   ]);
 
   return (

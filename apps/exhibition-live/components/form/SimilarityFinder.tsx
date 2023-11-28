@@ -22,7 +22,6 @@ import {
 } from "react";
 import { v4 as uuidv4 } from "uuid";
 
-import { BASE_IRI } from "../config";
 import { declarativeMappings } from "../config/lobidMappings";
 import { useSettings } from "../state/useLocalSettings";
 import { NodePropertyItem } from "../utils/graph/nodeToPropertyTree";
@@ -151,7 +150,7 @@ const SimilarityFinder: FunctionComponent<Props> = ({
       });
       onMappedDataAccepted && onMappedDataAccepted(newData);
     },
-    [typeName, onMappedDataAccepted, jsonSchema],
+    [typeName, onMappedDataAccepted, jsonSchema, openai],
   );
   const handleMapUsingAI = useCallback(
     async (id: string | undefined, entryData: any) => {
@@ -161,7 +160,7 @@ const SimilarityFinder: FunctionComponent<Props> = ({
       });
       onMappedDataAccepted && onMappedDataAccepted(newData);
     },
-    [typeName, onMappedDataAccepted, jsonSchema],
+    [typeName, onMappedDataAccepted, jsonSchema, openai],
   );
 
   const { crudOptions } = useGlobalCRUDOptions();
@@ -212,7 +211,6 @@ const SimilarityFinder: FunctionComponent<Props> = ({
 
   const handleAcceptKXP = useCallback(
     (id: string | undefined, entryData: NodePropertyItem) => {
-      console.log("handleAcceptKXP", id, entryData);
       const props = entryData.properties;
       if (!props) return;
       const title = findFirstInProps(props, dcterms.title);
@@ -220,7 +218,7 @@ const SimilarityFinder: FunctionComponent<Props> = ({
       const abstract = findFirstInProps(props, dcterms.abstract);
       handleMapAbstractAndDescUsingAI(id, { title, description, abstract });
     },
-    [handleManuallyMapData, handleMapUsingAI, selectedKnowledgeSources],
+    [handleMapAbstractAndDescUsingAI],
   );
 
   const handleEntityChange = useCallback(

@@ -53,7 +53,7 @@ const LobidMappingTester = ({
       });
     } catch (e) {}
     return;
-  }, [allProps]);
+  }, [allProps, crudOptions?.selectFetch, typeName]);
   return (
     <div>
       <h1>Mapping for {gndID}</h1>

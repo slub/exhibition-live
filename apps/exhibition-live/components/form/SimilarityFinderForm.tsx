@@ -1,28 +1,14 @@
-import React, {
-  FunctionComponent,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
-  Box,
-  IconButton,
   InputBase,
   Divider,
   Paper,
   ToggleButton,
   ToggleButtonGroup,
 } from "@mui/material";
-import {
-  Search as SearchIcon,
-  Storage as KnowledgebaseIcon,
-} from "@mui/icons-material";
-import { sladb, slent } from "./formConfigs";
+import { Storage as KnowledgebaseIcon } from "@mui/icons-material";
 import { Img } from "../utils/image/Img";
-import { useRouter } from "next/router";
 import { useTranslation } from "react-i18next";
-import { useFormRefsContext } from "../provider/formRefsContext";
 import { useGlobalSearch } from "../state";
 
 type KnowledgeSources = "kb" | "gnd" | "wikidata" | "k10plus" | "ai";
@@ -73,7 +59,7 @@ export const SearchForm = () => {
 
   useEffect(() => {
     handleSearchTextChange(value);
-  }, [value]);
+  }, [value, handleSearchTextChange]);
 
   return (
     <Paper

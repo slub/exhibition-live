@@ -27,7 +27,7 @@ export const FloatingButton = ({
       return;
     }
     toggleDrawer();
-  }, [toggleDrawer, pathname, drawerOpen]);
+  }, [toggleDrawer, pathname, drawerOpen, enqueueSnackbar]);
 
   return (
     <Button

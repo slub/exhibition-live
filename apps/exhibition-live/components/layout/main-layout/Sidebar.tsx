@@ -1,26 +1,12 @@
-import { Settings, Search, Add } from "@mui/icons-material";
-import {
-  Box,
-  Button,
-  Chip,
-  Stack,
-  useMediaQuery,
-  useTheme,
-  List,
-  Divider,
-  Toolbar,
-} from "@mui/material";
-import { useQuery } from "@tanstack/react-query";
+import { Settings } from "@mui/icons-material";
+import { useMediaQuery, useTheme, List, Divider, Toolbar } from "@mui/material";
 import { JSONSchema7 } from "json-schema";
-import React, { ForwardedRef, useMemo } from "react";
-import { BrowserView, MobileView } from "react-device-detect";
+import React, { useMemo } from "react";
 
 import loadedSchema from "../../../public/schema/Exhibition.schema.json";
 import SettingsModal from "../../content/settings/SettingsModal";
-import { sladb } from "../../form/formConfigs";
 import { useFormRefsContext } from "../../provider/formRefsContext";
 import { useLocalSettings } from "../../state/useLocalSettings";
-import { Logo } from "./Logo";
 import { MenuGroup, NavGroup, NavItem, Drawer } from "./menu";
 import menuLists from "./menu/menuLists";
 import { useGlobalAuth } from "../../state";
@@ -31,14 +17,9 @@ const MenuList = () => {
     return loadedSchema
       ? menuLists(loadedSchema as JSONSchema7, getPermission)
       : (null as MenuGroup);
-  }, [loadedSchema]);
-  return (
-    menuGroup && (
-      <>
-        <NavGroup key={menuGroup.id} item={menuGroup} />
-      </>
-    )
-  );
+  }, [getPermission]);
+
+  return menuGroup && <NavGroup key={menuGroup.id} item={menuGroup} />;
 };
 const MenuCard = () => {
   const { stepperRef } = useFormRefsContext();
@@ -93,7 +74,7 @@ const Navigation = ({ open }) => {
     return loadedSchema
       ? menuLists(loadedSchema as JSONSchema7, getPermission)
       : (null as MenuGroup);
-  }, [loadedSchema]);
+  }, [getPermission]);
   return (
     menuGroup && (
       <>

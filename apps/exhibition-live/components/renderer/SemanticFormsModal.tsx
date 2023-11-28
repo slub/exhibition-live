@@ -76,11 +76,9 @@ export const SemanticFormsModal = (props: SemanticFormsModalProps) => {
   const { data: remoteData } = loadQuery;
 
   useEffect(() => {
-    console.log("loadQuery.data", remoteData);
     if (remoteData) {
       const data = remoteData.document;
       if (!data || !data["@id"] || !data["@type"]) return;
-      console.log("Setting data from loadQuery", loadQuery.data.document);
       setFormData(data);
       onFormDataChange && onFormDataChange(data);
     }

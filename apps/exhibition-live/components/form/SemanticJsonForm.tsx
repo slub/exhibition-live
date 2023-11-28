@@ -96,7 +96,6 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> = ({
       const data = loadQuery.data.document;
       updateSourceToTargets(entityIRI, loadQuery.data.subjects);
       if (!data["@id"] || !data["@type"]) return;
-      console.log("Setting data from loadQuery", loadQuery.data.document);
       setData(data);
     }
   }, [loadQuery.data, entityIRI, setData, updateSourceToTargets]);

@@ -27,6 +27,33 @@ const defaultOptions: Partial<WalkerOptions> = {
   doNotRecurseNamedNodes: true,
 };
 
+const cleanProperty = (data: any) => {
+  return Array.isArray(data)
+    ? data.map(cleanProperty)
+    : Object.keys(data).reduce((acc, key) => {
+        const prop = data[key];
+        if (typeof prop === "object") {
+          const cleanedProp = cleanProperty(prop);
+          if (Array.isArray(cleanedProp) && prop.length === 0) return acc;
+          if (
+            !Array.isArray(cleanedProp) &&
+            (Object.keys(cleanedProp).length === 0 ||
+              (Object.keys(cleanedProp).length === 1 && cleanedProp["@type"]))
+          ) {
+            return acc;
+          }
+          return {
+            ...acc,
+            [key]: cleanedProp,
+          };
+        }
+        return {
+          ...acc,
+          [key]: prop,
+        };
+      }, {});
+};
+
 export const cleanJSONLD = async (
   data: NamedEntityData,
   schema: JSONSchema7,
@@ -43,29 +70,10 @@ export const cleanJSONLD = async (
     ...walkerOptionsPassed,
   };
 
-  //iterate through object and filter out every key, whose value is an empty object or an empty array
-  const jsonldDoc = Object.keys(data).reduce(
-    (acc, key) => {
-      const prop = data[key];
-      if (Array.isArray(prop) && prop.length === 0) return acc;
-      if (
-        typeof prop === "object" &&
-        (Object.keys(prop).length === 0 ||
-          (Object.keys(prop).length === 1 && prop["@type"]))
-      ) {
-        return acc;
-      }
-      return {
-        ...acc,
-        [key]: data[key],
-      };
-    },
-    jsonldContext
-      ? {
-          "@context": jsonldContext,
-        }
-      : {},
-  );
+  const jsonldDoc = {
+    ...cleanProperty(data),
+    ...(jsonldContext ? { "@context": jsonldContext } : {}),
+  };
 
   try {
     const jsonldStream = stringToStream(JSON.stringify(jsonldDoc));

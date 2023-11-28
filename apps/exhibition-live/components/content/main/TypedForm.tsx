@@ -20,6 +20,7 @@ import { useSettings } from "../../state/useLocalSettings";
 import { useRouter } from "next/router";
 import { encodeIRI, irisToData } from "../../utils/core";
 import NewSemanticJsonForm from "../../form/SemanticJsonForm";
+import { useModifiedRouter } from "../../basic";
 
 type Props = {
   children: React.ReactChild;
@@ -76,7 +77,7 @@ const TypedForm = ({ typeName, entityIRI, classIRI }: MainFormProps) => {
   const [data, setData] = useState(irisToData(entityIRI, classIRI));
   const { crudOptions } = useGlobalCRUDOptions();
   const { search: searchText, setSearch } = useGlobalSearch();
-  const router = useRouter();
+  const router = useModifiedRouter();
 
   const handleChange = useCallback(
     (entityData: any) => {

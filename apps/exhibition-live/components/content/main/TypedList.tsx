@@ -80,6 +80,7 @@ import { dateValueToDate } from "./Search";
 import { ParentSize } from "@visx/responsive";
 import { TimelineItem, TimelineOptions } from "vis-timeline/types";
 import { FlexibleViewDrawer } from "./FlexibleViewDrawer";
+import { useModifiedRouter } from "../../basic";
 
 type Props = {
   typeName: string;
@@ -236,7 +237,7 @@ export const TypedList = ({ typeName }: Props) => {
     [columns, headerVars],
   );
 
-  const router = useRouter();
+  const router = useModifiedRouter();
   const editEntry = useCallback(
     (id: string) => {
       router.push(`/create/${typeName}?encID=${encodeIRI(id)}`);

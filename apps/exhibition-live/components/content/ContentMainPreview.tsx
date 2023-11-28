@@ -1,5 +1,5 @@
 import dayjs from "dayjs";
-import Link from "next/link";
+import { Link } from "../basic/Link";
 import React, { FunctionComponent } from "react";
 
 interface OwnProps {

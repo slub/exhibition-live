@@ -2,26 +2,31 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import React from "react";
 
-import { MainLayout } from "../../components/layout/main-layout";
-import schema from "../../public/schema/Exhibition.schema.json";
-import { TypedInfiniteList } from "../../components/content/main/TypedInfiniteList";
+import { MainLayout } from "../../../components/layout/main-layout";
+import schema from "../../../public/schema/Exhibition.schema.json";
+import { TypedInfiniteList } from "../../../components/content/main/TypedInfiniteList";
+import { getI18nProps, mixinStaticPathsParams } from "../../../components/i18n";
 
 type Props = {
   typeName: string;
 };
 export async function getStaticPaths() {
-  const paths = Object.keys(schema.$defs || {}).map((typeName) => ({
-    params: { typeName },
-  }));
+  const paths = mixinStaticPathsParams(
+    Object.keys(schema.$defs || {}).map((typeName) => ({
+      params: { typeName },
+    })),
+  );
 
   return { paths, fallback: false };
 }
 
-export async function getStaticProps({ params }) {
+export async function getStaticProps(ctx) {
+  const params = ctx?.params || {};
   const typeName = params.typeName;
   return {
     props: {
       typeName,
+      ...getI18nProps(ctx),
     },
   };
 }

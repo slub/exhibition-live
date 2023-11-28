@@ -7,9 +7,11 @@ import {
   Grid,
   MenuItem,
   Select,
+  Typography,
   ToggleButton,
   ToggleButtonGroup,
 } from "@mui/material";
+import ClassicResultListWrapper from "./result/ClassicResultListWrapper";
 import { dcterms } from "@tpluscode/rdf-ns-builders";
 import { JSONSchema7 } from "json-schema";
 import * as React from "react";
@@ -252,95 +254,128 @@ const SimilarityFinder: FunctionComponent<Props> = ({
         alignItems="center"
         direction={"column"}
         spacing={2}
-        sx={{ marginTop: "20px" }}
       >
-        <Grid item>
-          <Box display={"flex"}>
-            <Select
-              value={typeName}
-              onChange={(event) => {
-                handleTypeNameChange(event.target.value as string);
-              }}
-            >
-              {Object.keys(declarativeMappings).map((key) => (
-                <MenuItem key={key} value={key}>
-                  {key}
-                </MenuItem>
-              ))}
-            </Select>
-            <ToggleButtonGroup
-              value={selectedKnowledgeSources}
-              exclusive
-              onChange={handleKnowledgeSourceChange}
-              aria-label="Suche über verschiedene Wissensquellen"
-            >
-              <ToggleButton value="kb" aria-label="lokale Datenbank">
-                <KnowledgebaseIcon />
-              </ToggleButton>
-              <ToggleButton value="gnd" aria-label="GND">
-                <Img
-                  alt={"gnd logo"}
-                  width={24}
-                  height={24}
-                  src={"/Icons/gnd-logo.png"}
-                />
-              </ToggleButton>
-              {/*<ToggleButton value="wikidata" aria-label="Wikidata">
-                <Img alt={'wikidata logo'} width={30} height={24} src={'/Icons/Wikidata-logo-en.svg'}/>
-              </ToggleButton>
-              <ToggleButton value="k10plus" aria-label="Wikidata">
-                <Img alt={'k10plus logo'} width={40} height={30} src={'/Icons/k10plus-logo.png'}/>
-              </ToggleButton>*/}
-            </ToggleButtonGroup>
-          </Box>
+        <Grid item sx={{ width: '100%' }}>
+          <Grid container spacing={2}
+            sx={{
+              m: 2,
+              px: 2,
+              py: 1,
+              width: "auto",
+              border: 1,
+              borderColor: 'primary.main',
+              borderRadius: "4px",
+            }}>
+             {/*<Box display={"flex"}>
+              <Select
+                value={typeName}
+                onChange={(event) => {
+                  handleTypeNameChange(event.target.value as string);
+                }}
+              >
+                {Object.keys(declarativeMappings).map((key) => (
+                  <MenuItem key={key} value={key}>
+                    {key}
+                  </MenuItem>
+                ))}
+              </Select>
+            </Box>*/}
+            <Box sx={{ flexGrow: 1}}>
+              <Typography gutterBottom variant="caption" component="div">
+                Suche in {typeName} nach
+              </Typography>
+              <Typography variant="body2" gutterBottom>
+                {searchString}
+              </Typography>
+            </Box>
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+              <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
+              <ToggleButtonGroup
+                size="small"
+                exclusive
+                value={selectedKnowledgeSources}
+                onChange={handleKnowledgeSourceChange}
+                aria-label="Suche über verschiedene Wissensquellen"
+              >
+                <ToggleButton
+                  value="kb"
+                  aria-label="lokale Datenbank"
+                  sx={{
+                    border: 0,
+                  }}
+                >
+                  <KnowledgebaseIcon />
+                </ToggleButton>
+                <ToggleButton
+                  value="gnd"
+                  aria-label="GND"
+                  sx={{
+                    border: 0,
+                  }}
+                >
+                  <Img
+                    alt={"gnd logo"}
+                    width={24}
+                    height={24}
+                    src={"/Icons/gnd-logo.png"}
+                  />
+                </ToggleButton>
+              </ToggleButtonGroup>
+            </Box>
+          </Grid>
         </Grid>
-        <Grid item>
-          {entitySelected && (
-            <Chip
-              label={`${entitySelected.source}:${entitySelected.id}`}
-              onDelete={() => handleSelect(undefined, entitySelected.source)}
-            />
-          )}
-          {searchString && <Chip label={`Suchwort:${searchString}`} />}
+        <Grid item sx={{ width: '100%' }}>
+          <ClassicResultListWrapper
+            label="Treffer in lokaler Datenbank"
+            selected={selectedKnowledgeSources?.includes("kb")}
+          >
+            {searchString &&
+              (!entitySelected || entitySelected.source == "kb") &&
+              selectedKnowledgeSources?.includes("kb") && (
+                <DiscoverSearchTable
+                  searchString={searchString}
+                  typeName={typeName}
+                  classIRI={classIRI}
+                  onAcceptItem={handleEntityChange}
+                  onSelect={handleSelectKB}
+                />
+              )}
+          </ClassicResultListWrapper>
+          <ClassicResultListWrapper
+            label="Treffer in gnd"
+            selected={selectedKnowledgeSources?.includes("gnd")}
+          >
+            {searchString &&
+              (!entitySelected || entitySelected.source == "gnd") &&
+              selectedKnowledgeSources?.includes("gnd") && (
+                <>
+                  <LobidSearchTable
+                    onAcceptItem={handleAccept}
+                    searchString={searchString}
+                    typeName={typeName}
+                    onSelect={handleSelectGND}
+                  />
+                  <Divider />
+                </>
+              )}
+          </ClassicResultListWrapper>
+          {/*<ClassicResultListWrapper
+            label="Treffer im k10plus"
+            selected={selectedKnowledgeSources?.includes("k10plus")}
+          >
+            {searchString &&
+              (!entitySelected || entitySelected.source == "k10plus") &&
+              selectedKnowledgeSources?.includes("k10plus") && (
+                <K10PlusSearchTable
+                  onAcceptItem={handleAcceptKXP}
+                  searchString={searchString}
+                  typeName={typeName}
+                  onSelect={handleSelectK10plus}
+                />
+              )}
+          </ClassicResultListWrapper>*/}
         </Grid>
       </Grid>
-      {searchString &&
-        (!entitySelected || entitySelected.source == "kb") &&
-        selectedKnowledgeSources?.includes("kb") && (
-          <>
-            <DiscoverSearchTable
-              searchString={searchString}
-              typeName={typeName}
-              classIRI={classIRI}
-              onAcceptItem={handleEntityChange}
-              onSelect={handleSelectKB}
-            />
-            <Divider />
-          </>
-        )}
-      {searchString &&
-        (!entitySelected || entitySelected.source == "gnd") &&
-        selectedKnowledgeSources?.includes("gnd") && (
-          <>
-            <LobidSearchTable
-              onAcceptItem={handleAccept}
-              searchString={searchString}
-              typeName={typeName}
-              onSelect={handleSelectGND}
-            />
-            <Divider />
-          </>
-        )}
-      {searchString &&
-        (!entitySelected || entitySelected.source == "k10plus") &&
-        selectedKnowledgeSources?.includes("k10plus") && (
-          <K10PlusSearchTable
-            onAcceptItem={handleAcceptKXP}
-            searchString={searchString}
-            typeName={typeName}
-            onSelect={handleSelectK10plus}
-          />
-        )}
     </>
   );
 };

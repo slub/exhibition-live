@@ -7,6 +7,7 @@ import { JSONSchema7 } from "json-schema";
 
 import { MenuGroup } from "./types";
 import { Permission } from "../../../config";
+import {TFunction} from "i18next";
 
 const icons = { IconFaceId, IconPaint, IconDots };
 
@@ -15,7 +16,8 @@ const topLevel = ["Exhibition", "Person"];
 const lists: (
   schema: JSONSchema7,
   getPermission: (typeName: string) => Permission,
-) => MenuGroup = (exhibitionSchema, getPermission) => ({
+  t: TFunction
+) => MenuGroup = (exhibitionSchema, getPermission, t) => ({
   id: "lists",
   // title: "Explorieren",
   type: "group",
@@ -58,7 +60,7 @@ const lists: (
         .filter(([key]) => !topLevel.includes(key))
         .map(([key, value]) => ({
           id: `list_${key}`,
-          title: (value as any).title || key,
+          title: t(key),
           type: "item",
           typeName: key,
           readOnly: !getPermission(key).edit,

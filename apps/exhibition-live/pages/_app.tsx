@@ -11,7 +11,6 @@ import "leaflet/dist/leaflet.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import type { AppProps } from "next/app";
 
-import { FormRefsProvider } from "../components/provider/formRefsContext";
 import ThemeComponent from "../components/theme/ThemeComponent";
 import NiceModal from "@ebay/nice-modal-react";
 import { SnackbarProvider } from "notistack";
@@ -33,7 +32,6 @@ function App({ Component, pageProps }: AppProps) {
   return (
     <QueryClientProviderWrapper>
       <>
-        <FormRefsProvider>
           <ThemeComponent>
             <SnackbarProvider>
               <NiceModal.Provider>
@@ -41,7 +39,6 @@ function App({ Component, pageProps }: AppProps) {
               </NiceModal.Provider>
             </SnackbarProvider>
           </ThemeComponent>
-        </FormRefsProvider>
         <ReactQueryDevtools initialIsOpen={false} />
       </>
     </QueryClientProviderWrapper>

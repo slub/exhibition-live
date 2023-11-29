@@ -10,14 +10,16 @@ import { useLocalSettings } from "../../state/useLocalSettings";
 import { MenuGroup, NavGroup, NavItem, Drawer } from "./menu";
 import menuLists from "./menu/menuLists";
 import { useGlobalAuth } from "../../state";
+import {useTranslation} from "react-i18next";
 
 const MenuList = () => {
+  const { t } = useTranslation('translation')
   const { getPermission } = useGlobalAuth();
   const menuGroup = useMemo<MenuGroup | null>(() => {
     return loadedSchema
-      ? menuLists(loadedSchema as JSONSchema7, getPermission)
+      ? menuLists(loadedSchema as JSONSchema7, getPermission, t)
       : (null as MenuGroup);
-  }, [getPermission]);
+  }, [getPermission, t]);
 
   return menuGroup && <NavGroup key={menuGroup.id} item={menuGroup} />;
 };
@@ -69,12 +71,13 @@ const Options = ({ open }) => {
 };
 
 const Navigation = ({ open }) => {
+  const { t } = useTranslation('translation')
   const { getPermission } = useGlobalAuth();
   const menuGroup = useMemo<MenuGroup | null>(() => {
     return loadedSchema
-      ? menuLists(loadedSchema as JSONSchema7, getPermission)
+      ? menuLists(loadedSchema as JSONSchema7, getPermission, t)
       : (null as MenuGroup);
-  }, [getPermission]);
+  }, [getPermission, t]);
   return (
     menuGroup && (
       <>

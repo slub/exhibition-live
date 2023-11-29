@@ -28,6 +28,7 @@ export const useCRUDWithQueryClient = (
   crudOptionsPart: Partial<CRUDOptions> = {},
   jsonldContext?: JsonLdContext,
   queryOptions?: QueryObserverOptions<any, Error>,
+  loadQueryKey?: string,
 ) => {
   const { crudOptions } = useGlobalCRUDOptions();
   const { constructFetch, updateFetch, askFetch } = crudOptions || {};
@@ -36,7 +37,7 @@ export const useCRUDWithQueryClient = (
   const queryClient = useQueryClient();
 
   const loadQuery = useQuery<LoadResult | null>(
-    ["load", entityIRI],
+    [loadQueryKey || "load", entityIRI],
     async () => {
       if (!entityIRI || !constructFetch) return null;
       const res = await load(entityIRI, typeIRI, schema, constructFetch, {

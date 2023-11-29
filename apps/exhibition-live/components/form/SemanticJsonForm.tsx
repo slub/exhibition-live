@@ -88,6 +88,7 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> = ({
       crudOptions,
       jsonldContext,
       { enabled: false },
+      "rootLoad",
     );
 
   const { updateSourceToTargets, removeSource } = useQueryKeyResolver();
@@ -122,16 +123,19 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> = ({
   const handleSave = useCallback(async () => {
     saveMutation
       .mutateAsync(data)
-      .then(async (skipLoading?: boolean) => {
-        enqueueSnackbar("Saved", { variant: "success" });
-        !skipLoading && (await loadQuery.refetch());
+      .then(async () => {
+        setData({});
+        setTimeout(() => {
+          enqueueSnackbar("Saved", { variant: "success" });
+          loadQuery.refetch();
+        }, 10);
       })
       .catch((e) => {
         enqueueSnackbar("Error while saving " + e.message, {
           variant: "error",
         });
       });
-  }, [enqueueSnackbar, saveMutation, loadQuery, data]);
+  }, [enqueueSnackbar, saveMutation, loadQuery, data, setData]);
 
   const handleRemove = useCallback(async () => {
     NiceModal.show(GenericModal, {

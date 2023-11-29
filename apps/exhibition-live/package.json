@@ -78,6 +78,7 @@
     "html-react-parser": "^3.0.7",
     "i18next": "^23.7.7",
     "i18next-http-backend": "^2.4.2",
+    "i18next-resources-to-backend": "^1.2.0",
     "json-schema": "^0.4.0",
     "jsonld": "^8.1.0",
     "jsonld-context-parser": "^2.3.3",

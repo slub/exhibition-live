@@ -7,6 +7,9 @@ const nextConfig = {
     unoptimized: true,
   },
   basePath: process.env.NEXT_PUBLIC_BASE_PATH || '/exhibition-live',
+  publicRuntimeConfig: {
+    NEXT_PUBLIC_BASE_PATH: process.env.NEXT_PUBLIC_BASE_PATH || '/exhibition-live',
+  }
 }
 
 module.exports = nextConfig

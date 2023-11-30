@@ -8,7 +8,10 @@ import { useCallback, useMemo, useRef, useState } from "react";
 import schema from "../../../public/schema/Exhibition.schema.json";
 import { v4 as uuidv4 } from "uuid";
 import { useGlobalCRUDOptions } from "../../state/useGlobalCRUDOptions";
-import { jsonSchema2Select } from "../../utils/sparql/jsonSchema2Select";
+import {
+  jsonSchema2Select,
+  SPARQLFlavour,
+} from "../../utils/sparql/jsonSchema2Select";
 import {
   Box,
   Link,
@@ -20,9 +23,7 @@ import {
   Backdrop,
   CircularProgress,
   Typography,
-  Toolbar,
-  Tab,
-  Tabs,
+  Grid,
 } from "@mui/material";
 import {
   MaterialReactTable,
@@ -41,7 +42,7 @@ import {
   filterForArrayProperties,
   encodeIRI,
   isJSONSchema,
-  filterUndefOrNull,
+
 } from "../../utils/core";
 import { JSONSchema7 } from "json-schema";
 import {
@@ -49,13 +50,11 @@ import {
   Delete,
   Details,
   Edit,
-  Favorite,
   FileDownload,
-  OpenInNew,
-  Person,
-  TimelineOutlined,
+
+
+
 } from "@mui/icons-material";
-import { useRouter } from "next/router";
 import { primaryFields } from "../../config";
 import { parseMarkdownLinks } from "../../utils/core/parseMarkdownLink";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -68,22 +67,34 @@ import { JsonSchema } from "@jsonforms/core";
 import useExtendedSchema from "../../state/useExtendedSchema";
 import Button from "@mui/material/Button";
 import { withDefaultPrefix } from "../../utils/crud/makeSPARQLWherePart";
-import { flatten } from "lodash";
 import get from "lodash/get";
-import { ToolbarItems } from "@uiw/react-md-editor/lib/components/Toolbar";
 import { download, generateCsv, mkConfig } from "export-to-csv";
-import { ResizableDrawer } from "../drawer";
 import { useDrawerDimensions } from "../../state";
-import VisTimelineWrapper from "../visTimelineWrapper/VisTimelineWrapper";
 import * as React from "react";
-import { dateValueToDate } from "./Search";
-import { ParentSize } from "@visx/responsive";
-import { TimelineItem, TimelineOptions } from "vis-timeline/types";
-import { FlexibleViewDrawer } from "./FlexibleViewDrawer";
 import { useModifiedRouter } from "../../basic";
+import { OverflowContainer } from "../../lists";
+import isNil from "lodash/isNil";
+import { OverflowChip } from "../../lists/OverflowChip";
+import {
+  SparqlEndpoint,
+  useSettings,
+} from "../../state/useLocalSettings";
 
 type Props = {
   typeName: string;
+};
+
+const getFlavour = (endpoint?: SparqlEndpoint): SPARQLFlavour => {
+  switch (endpoint?.provider) {
+    case "oxigraph":
+      return "oxigraph";
+    case "blazegraph":
+      return "blazegraph";
+    case "allegro":
+      return "allegro";
+    default:
+      return "default";
+  }
 };
 
 const p = (path: string[]) => path.join("_");
@@ -92,6 +103,21 @@ const mkAccessor =
   (path: string, defaultValue?: string | any) => (row: any) => {
     return get(row, path, defaultValue || "");
   };
+
+type PathKeyMap = {
+  [key: string]: {
+    path: string;
+    defaultValue?: any;
+  };
+};
+const mkMultiAccessor = (pathKeysMap: PathKeyMap) => (row: any) => {
+  return Object.fromEntries(
+    Object.entries(pathKeysMap).map(([key, { path, defaultValue }]) => [
+      key,
+      get(row, path, defaultValue || ""),
+    ]),
+  );
+};
 const computeColumns: (
   schema: JSONSchema7,
   path?: string[],
@@ -108,8 +134,11 @@ const computeColumns: (
           (key) => ({
             header: p([...path, key]),
             id: p([...path, key, "single"]),
+            maxSize: 400,
             accessorFn: mkAccessor(`${p([...path, key, "single"])}.value`, ""),
-            Cell: ({ cell }) => <>{cell.getValue() ?? ""}</>,
+            Cell: ({ cell }) => (
+              <OverflowContainer>{cell.getValue() ?? ""}</OverflowContainer>
+            ),
           }),
         ),
         ...Object.entries(schema.properties || {})
@@ -126,37 +155,49 @@ const computeColumns: (
         ...Object.keys(filterForArrayProperties(schema.properties)).flatMap(
           (key) => [
             {
-              header: p([...path, key]) + " count",
-              id: p([...path, key, "count"]),
-              accessorFn: mkAccessor(`${p([...path, key, "count"])}.value`, 0),
-              Cell: ({ cell }) => (
-                <Link href={"#"}>{cell.getValue() ?? 0}</Link>
-              ),
-            },
-            {
               header: p([...path, key]),
               id: p([...path, key, "label_group"]),
-              accessorFn: mkAccessor(
-                `${p([...path, key, "label_group"])}.value`,
-                "",
-              ),
-              Cell: ({ cell }) => (
-                <>
-                  {cell.getValue() &&
-                    parseMarkdownLinks(cell.getValue()).map(
-                      ({ label, url }) => {
+              maxSize: 500,
+              accessorFn: mkMultiAccessor({
+                group: {
+                  path: `${p([...path, key, "label_group"])}.value`,
+                  defaultValue: "",
+                },
+                count: {
+                  path: `${p([...path, key, "count"])}.value`,
+                  defaultValue: 0,
+                },
+              }),
+              Cell: ({ cell, table }) => {
+                const { group, count } = cell.getValue();
+                const table_ = table as MRT_TableInstance<any>;
+                return (
+                  <Grid
+                    container
+                    flexWrap={
+                      table_.getState().density === "spacious"
+                        ? "wrap"
+                        : "nowrap"
+                    }
+                    alignItems={"center"}
+                  >
+                    <Grid item>
+                      <Typography variant={"body2"}>{count}</Typography>
+                    </Grid>
+                    {!isNil(count) &&
+                      count > 0 &&
+                      parseMarkdownLinks(group).map(({ label, url }) => {
                         return (
-                          <span key={url}>
-                            {" "}
+                          <Grid item key={url} sx={{ m: 0.5 }}>
                             <Link href={`/show/${encodeIRI(url)}`}>
-                              {label}
-                            </Link>{" "}
-                          </span>
+                              <OverflowChip label={label} />
+                            </Link>
+                          </Grid>
                         );
-                      },
-                    )}
-                </>
-              ),
+                      })}
+                  </Grid>
+                );
+              },
             },
           ],
         ),
@@ -183,6 +224,8 @@ export const TypedList = ({ typeName }: Props) => {
     [typeName],
   );
 
+  const { activeEndpoint } = useSettings();
+
   const [sorting, setSorting] = useState<MRT_SortingState>([
     { id: "entity", desc: false },
   ]);
@@ -202,10 +245,20 @@ export const TypedList = ({ typeName }: Props) => {
     async () => {
       const sparqlQuery = withDefaultPrefix(
         defaultPrefix,
-        jsonSchema2Select(loadedSchema, classIRI, [], {
-          primaryFields: primaryFields,
-          orderBy: sorting.map((s) => ({ orderBy: s.id, descending: s.desc })),
-        }),
+        jsonSchema2Select(
+          loadedSchema,
+          classIRI,
+          [],
+          {
+            primaryFields: primaryFields,
+            orderBy: sorting.map((s) => ({
+              orderBy: s.id,
+              descending: s.desc,
+            })),
+          },
+          undefined,
+          getFlavour(activeEndpoint),
+        ),
       );
       if (!sparqlQuery || !crudOptions?.selectFetch) {
         return;
@@ -328,7 +381,7 @@ export const TypedList = ({ typeName }: Props) => {
     muiTableContainerProps: {
       ref: tableContainerRef, //get access to the table container element
       sx: {
-        maxHeight: `calc(100vh - ${drawerHeight + 180}px)`,
+        maxHeight: `calc(100vh - 180px)`,
         "&::-webkit-scrollbar": {
           height: 8,
         },
@@ -352,6 +405,7 @@ export const TypedList = ({ typeName }: Props) => {
     onSortingChange: handleColumnOrderChange,
     initialState: {
       columnVisibility: { id: false, externalId_single: false },
+      pagination: { pageIndex: 0, pageSize: 100 },
     },
     rowCount: resultList.length,
     enableRowActions: true,
@@ -362,19 +416,6 @@ export const TypedList = ({ typeName }: Props) => {
           askClose={() => table.setCreatingRow(row)}
           schema={extendedSchema as JsonSchema}
           entityIRI={slent(uuidv4()).value}
-          typeIRI={classIRI}
-        >
-          <MRT_EditActionButtons variant="text" table={table} row={row} />
-        </SemanticFormsModal>
-      );
-    },
-    renderEditRowDialogContent: ({ table, row, internalEditComponents }) => {
-      return (
-        <SemanticFormsModal
-          open={true}
-          askClose={() => table.setEditingRow(row)}
-          schema={extendedSchema as JsonSchema}
-          entityIRI={row.id}
           typeIRI={classIRI}
         >
           <MRT_EditActionButtons variant="text" table={table} row={row} />
@@ -422,11 +463,6 @@ export const TypedList = ({ typeName }: Props) => {
             <Edit />
           </IconButton>
         </Tooltip>
-        <Tooltip title="Edit inline">
-          <IconButton onClick={() => table.setEditingRow(row)}>
-            <OpenInNew />
-          </IconButton>
-        </Tooltip>
         <Tooltip title="Delete">
           <IconButton color="error" onClick={() => handleRemove(row.id)}>
             <Delete />
@@ -464,6 +500,7 @@ export const TypedList = ({ typeName }: Props) => {
         </MenuItem>,
       ];
     },
+    enableColumnResizing: true,
     onColumnFiltersChange: handleColumnFilterChange,
     state: {
       sorting,

@@ -32,13 +32,13 @@ function App({ Component, pageProps }: AppProps) {
   return (
     <QueryClientProviderWrapper>
       <>
-          <ThemeComponent>
-            <SnackbarProvider>
-              <NiceModal.Provider>
-                {<Component {...pageProps} />}
-              </NiceModal.Provider>
-            </SnackbarProvider>
-          </ThemeComponent>
+        <ThemeComponent>
+          <SnackbarProvider>
+            <NiceModal.Provider>
+              {<Component {...pageProps} />}
+            </NiceModal.Provider>
+          </SnackbarProvider>
+        </ThemeComponent>
         <ReactQueryDevtools initialIsOpen={false} />
       </>
     </QueryClientProviderWrapper>

@@ -10,10 +10,10 @@ import { useLocalSettings } from "../../state/useLocalSettings";
 import { MenuGroup, NavGroup, NavItem, Drawer } from "./menu";
 import menuLists from "./menu/menuLists";
 import { useGlobalAuth } from "../../state";
-import {useTranslation} from "react-i18next";
+import { useTranslation } from "react-i18next";
 
 const MenuList = () => {
-  const { t } = useTranslation('translation')
+  const { t } = useTranslation("translation");
   const { getPermission } = useGlobalAuth();
   const menuGroup = useMemo<MenuGroup | null>(() => {
     return loadedSchema
@@ -71,7 +71,7 @@ const Options = ({ open }) => {
 };
 
 const Navigation = ({ open }) => {
-  const { t } = useTranslation('translation')
+  const { t } = useTranslation("translation");
   const { getPermission } = useGlobalAuth();
   const menuGroup = useMemo<MenuGroup | null>(() => {
     return loadedSchema

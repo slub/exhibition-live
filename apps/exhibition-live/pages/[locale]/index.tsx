@@ -3,14 +3,15 @@ import React from "react";
 
 import { MainLayout } from "../../components/layout/main-layout";
 import { Dashboard } from "../../components/content/main/Dashboard";
-import { mixinStaticPathsParams, getI18nProps} from "../../components/i18n";
-import {useTranslation} from "react-i18next";
+import { mixinStaticPathsParams, getI18nProps } from "../../components/i18n";
+import { useTranslation } from "react-i18next";
 
 export async function getStaticPaths() {
-  const paths = mixinStaticPathsParams([{
-      params: {  },
-    }]
-  );
+  const paths = mixinStaticPathsParams([
+    {
+      params: {},
+    },
+  ]);
 
   return { paths, fallback: false };
 }
@@ -18,13 +19,13 @@ export async function getStaticPaths() {
 export async function getStaticProps(ctx) {
   return {
     props: {
-      ...await getI18nProps(ctx),
+      ...(await getI18nProps(ctx)),
     },
   };
 }
 
 export default () => {
-  const { t } = useTranslation('translation' )
+  const { t } = useTranslation("translation");
   return (
     <>
       <Head>

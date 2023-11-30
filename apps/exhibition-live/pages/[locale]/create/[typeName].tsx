@@ -32,7 +32,7 @@ export async function getStaticProps(ctx) {
   return {
     props: {
       typeName,
-      ...await getI18nProps(ctx),
+      ...(await getI18nProps(ctx)),
     },
   };
 }

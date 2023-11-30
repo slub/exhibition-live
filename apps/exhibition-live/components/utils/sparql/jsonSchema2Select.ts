@@ -5,7 +5,7 @@ import { isJSONSchema, isJSONSchemaDefinition } from "../core/jsonSchema";
 
 import { PrimaryFieldDeclaration } from "../types";
 
-type SPARQLFlavour = "oxigraph" | "blazegraph" | "allegro";
+export type SPARQLFlavour = "default" | "oxigraph" | "blazegraph" | "allegro";
 const makeWherePart = (queryClause: string, required: boolean) =>
   required ? queryClause : ` OPTIONAL { ${queryClause} } `;
 const makePrefixedProperty = (property: string, prefix: string = "") =>

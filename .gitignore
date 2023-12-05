@@ -10,7 +10,7 @@ node_modules
 /coverage
 
 # next.js
-/.next/
+.next/
 /out/
 
 # production
@@ -20,6 +20,7 @@ node_modules
 .DS_Store
 *.pem
 *.log
+.turbo/
 
 # debug
 npm-debug.log*

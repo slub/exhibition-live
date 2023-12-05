@@ -421,6 +421,14 @@ export const personDeclarativeMapping: DeclarativeMappings = [
   },
   {
     source: {
+      path: "professionOrOccupation",
+    },
+    target: {
+      path: "profession",
+    },
+  },
+  {
+    source: {
       path: "depiction.0.thumbnail",
     },
     target: {

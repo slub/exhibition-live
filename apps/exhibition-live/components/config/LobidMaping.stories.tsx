@@ -72,6 +72,12 @@ export const LobidMappingDefault = () => {
   return <LobidMappingTester gndID={gndID} typeName={typeName} />;
 };
 
+export const LobidMappingPerson = () => {
+  const gndID = "https://d-nb.info/gnd/141691824";
+  const typeName = "Person";
+  return <LobidMappingTester gndID={gndID} typeName={typeName} />;
+}
+
 export const LobidSearchForProperty = () => {
   const [propertyName, setPropertyName] = useState(
     "hierarchicalSuperiorOfTheConferenceOrEvent",

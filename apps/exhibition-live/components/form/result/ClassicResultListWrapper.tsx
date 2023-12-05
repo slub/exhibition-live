@@ -6,12 +6,14 @@ type Props = {
   label?: string;
   selected?: boolean;
   children?: React.ReactNode;
+  handleClick?: (id: undefined) => void;
 };
 
 const ClassicResultListWrapper: FunctionComponent<Props> = ({
   label,
   selected,
   children,
+  handleClick,
 }) => {
   const [open, setOpen] = useState<boolean>(true);
 
@@ -21,7 +23,7 @@ const ClassicResultListWrapper: FunctionComponent<Props> = ({
 
   return (
     <Box>
-      <ListItemButton alignItems="flex-start" onClick={toggleOpen}>
+      <ListItemButton alignItems="flex-start" onClick={handleClick}>
         <ListItemText
           primary={label}
           primaryTypographyProps={{
@@ -40,16 +42,16 @@ const ClassicResultListWrapper: FunctionComponent<Props> = ({
           }}
           sx={{ my: 0 }}
         />
-        <KeyboardArrowDown
+        {/*<KeyboardArrowDown
           sx={{
             mr: -1,
             transform: open ? "rotate(-180deg)" : "rotate(0)",
             transitiotn: "0.2s",
           }}
-        />
+        />*/}
       </ListItemButton>
       <Divider />
-      {selected && open && children}
+      {selected && children}
     </Box>
   );
 };

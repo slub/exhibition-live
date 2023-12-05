@@ -1,6 +1,7 @@
 import { Resolve } from "@jsonforms/core";
 import { Storage as KnowledgebaseIcon } from "@mui/icons-material";
 import {
+  Badge,
   Box,
   Chip,
   Divider,
@@ -110,18 +111,6 @@ const SimilarityFinder: FunctionComponent<Props> = ({
       null,
     [data, searchOnDataPath, search, globalSearch],
   );
-  const handleKnowledgeSourceChange = useCallback(
-    (
-      event: React.MouseEvent<HTMLElement>,
-      newKnowledgeSources: KnowledgeSources[],
-    ) => {
-      if (entitySelected) {
-        setEntitySelected(undefined);
-      }
-      setSelectedKnowledgeSources(newKnowledgeSources);
-    },
-    [entitySelected, setEntitySelected, setSelectedKnowledgeSources],
-  );
 
   const [typeName, setTypeName] = useState(
     typeIRItoTypeName(preselectedClassIRI),
@@ -133,16 +122,13 @@ const SimilarityFinder: FunctionComponent<Props> = ({
   useEffect(() => {
     setTypeName(typeIRItoTypeName(preselectedClassIRI));
   }, [preselectedClassIRI, setTypeName]);
-  const handleTypeNameChange = useCallback(
-    (typeName_: string) => setTypeName(typeName_),
-    [setTypeName],
-  );
 
   const handleSelect = useCallback(
     (id: string | undefined, source: KnowledgeSources) => {
+      !selectedKnowledgeSources?.includes(source) && setSelectedKnowledgeSources([source] as KnowledgeSources[]);
       setEntitySelected(id ? { id, source } : undefined);
     },
-    [setEntitySelected],
+    [setEntitySelected, setSelectedKnowledgeSources, selectedKnowledgeSources],
   );
   const handleMapAbstractAndDescUsingAI = useCallback(
     async (id: string | undefined, entryData: any) => {
@@ -264,20 +250,6 @@ const SimilarityFinder: FunctionComponent<Props> = ({
               borderRadius: "4px",
             }}
           >
-            {/*<Box display={"flex"}>
-              <Select
-                value={typeName}
-                onChange={(event) => {
-                  handleTypeNameChange(event.target.value as string);
-                }}
-              >
-                {Object.keys(declarativeMappings).map((key) => (
-                  <MenuItem key={key} value={key}>
-                    {key}
-                  </MenuItem>
-                ))}
-              </Select>
-            </Box>*/}
             <Box sx={{ flexGrow: 1 }}>
               <Typography gutterBottom variant="caption" component="div">
                 Suche in {typeName} nach
@@ -294,37 +266,35 @@ const SimilarityFinder: FunctionComponent<Props> = ({
               }}
             >
               <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
-              <ToggleButtonGroup
-                size="small"
-                exclusive
-                value={selectedKnowledgeSources}
-                onChange={handleKnowledgeSourceChange}
-                aria-label="Suche über verschiedene Wissensquellen"
+              <Badge
+                color="primary"
+                anchorOrigin={{
+                  vertical: 'bottom',
+                  horizontal: 'right'
+                }}
+                variant="dot"
+                overlap="circular"
+                invisible={!selectedKnowledgeSources?.includes("kb")}
               >
-                <ToggleButton
-                  value="kb"
-                  aria-label="lokale Datenbank"
-                  sx={{
-                    border: 0,
-                  }}
-                >
-                  <KnowledgebaseIcon />
-                </ToggleButton>
-                <ToggleButton
-                  value="gnd"
-                  aria-label="GND"
-                  sx={{
-                    border: 0,
-                  }}
-                >
-                  <Img
-                    alt={"gnd logo"}
-                    width={24}
-                    height={24}
-                    src={"/Icons/gnd-logo.png"}
-                  />
-                </ToggleButton>
-              </ToggleButtonGroup>
+                <KnowledgebaseIcon />
+              </Badge>
+              <Badge
+                color="primary"
+                anchorOrigin={{
+                  vertical: 'bottom',
+                  horizontal: 'right'
+                }}
+                variant="dot"
+                overlap="circular"
+                invisible={!selectedKnowledgeSources?.includes("gnd")}
+              >
+                <Img
+                  alt={"gnd logo"}
+                  width={24}
+                  height={24}
+                  src={"/Icons/gnd-logo.png"}
+                />
+              </Badge>
             </Box>
           </Grid>
         </Grid>
@@ -332,6 +302,7 @@ const SimilarityFinder: FunctionComponent<Props> = ({
           <ClassicResultListWrapper
             label="Treffer in lokaler Datenbank"
             selected={selectedKnowledgeSources?.includes("kb")}
+            handleClick={handleSelectKB}
           >
             {searchString &&
               (!entitySelected || entitySelected.source == "kb") &&
@@ -348,6 +319,7 @@ const SimilarityFinder: FunctionComponent<Props> = ({
           <ClassicResultListWrapper
             label="Treffer in gnd"
             selected={selectedKnowledgeSources?.includes("gnd")}
+            handleClick={handleSelectGND}
           >
             {searchString &&
               (!entitySelected || entitySelected.source == "gnd") &&
@@ -366,6 +338,7 @@ const SimilarityFinder: FunctionComponent<Props> = ({
           {/*<ClassicResultListWrapper
             label="Treffer im k10plus"
             selected={selectedKnowledgeSources?.includes("k10plus")}
+            handleClick={handleSelectK10plus}
           >
             {searchString &&
               (!entitySelected || entitySelected.source == "k10plus") &&

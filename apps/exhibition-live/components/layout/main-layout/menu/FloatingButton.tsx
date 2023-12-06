@@ -12,7 +12,6 @@ export const FloatingButton = ({
   drawerWidth,
   toggleDrawer,
 }: FloatingButtonProps) => {
-
   return (
     <Button
       variant="contained"
@@ -31,10 +30,11 @@ export const FloatingButton = ({
         right: drawerOpen ? drawerWidth : 0,
         borderRadius: "24px 4px 4px 24px",
         zIndex: (theme) => theme.zIndex.drawer + 1,
-        transition: (theme) => theme.transitions.create("right", {
-          easing: theme.transitions.easing.easeOut,
-          duration: theme.transitions.duration.leavingScreen,
-        }),
+        transition: (theme) =>
+          theme.transitions.create("right", {
+            easing: theme.transitions.easing.easeOut,
+            duration: theme.transitions.duration.leavingScreen,
+          }),
       }}
       onClick={toggleDrawer}
     >

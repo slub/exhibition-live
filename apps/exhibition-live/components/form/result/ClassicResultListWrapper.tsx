@@ -16,7 +16,7 @@ const ClassicResultListWrapper: FunctionComponent<Props> = ({
 }) => {
 
   return (
-    <Paper sx={selected ? { width: '100%', flex: 2 } : { width: '100%' }}>
+    <Paper sx={{ width: '100%' }}>
       <Grid container sx={{ width: '100%', display: 'block'}}>
         <Grid item sx={{ width: '100%'}}>
         <ListItemButton sx={{ width: '100%', flexGrow: 0 }} alignItems="flex-start" onClick={handleClick}>

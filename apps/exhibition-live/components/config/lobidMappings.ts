@@ -1,4 +1,4 @@
-import { sladb } from "../form/formConfigs";
+import {sladb} from "../form/formConfigs";
 import {
   DeclarativeMapping,
   DeclarativeMappings,
@@ -323,6 +323,25 @@ export const locationDeclarativeMapping: DeclarativeMappings = [
   },
 ];
 
+export const occupationDeclarativeMapping: DeclarativeMappings = [
+  {
+    source: {
+      path: "label",
+    },
+    target: {
+      path: "title",
+    },
+  },
+  {
+    source: {
+      path: "id",
+    },
+    target: {
+      path: "idAuthority.@id",
+    },
+  },
+];
+
 export const personDeclarativeMapping: DeclarativeMappings = [
   {
     source: {
@@ -422,6 +441,33 @@ export const personDeclarativeMapping: DeclarativeMappings = [
   {
     source: {
       path: "professionOrOccupation",
+    },
+    target: {
+      path: "occupation",
+    },
+    mapping: {
+      strategy: {
+        id: "createEntity",
+        options: {
+          typeIRI: sladb("Occupation").value,
+          subFieldMapping: {
+            fromEntity: occupationDeclarativeMapping,
+          },
+        },
+      },
+    }
+  },
+  {
+    source: {
+      path: "professionOrOccupation",
+    },
+    target: {
+      path: "professionWithGND",
+    },
+  },
+  {
+    source: {
+      path: "$.professionOrOccupation[*].label",
     },
     target: {
       path: "profession",

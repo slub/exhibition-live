@@ -16,6 +16,21 @@
         }
       }
     },
+    "Occupation": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "description": {
+          "type": "string"
+        },
+        "parent": {
+          "$ref": "#/$defs/Occupation"
+        }
+      }
+    },
     "SeriesType": {
       "type": "object",
       "properties": {
@@ -123,9 +138,31 @@
         "deathDate": {
           "type": "integer"
         },
+        "occupation": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Occupation"
+          }
+        },
         "profession": {
-          "type": "string",
-          "maxLength": 200
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "professionWithGND": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "label": {
+                "type": "string"
+              }
+            }
+          }
         },
         "nameVariants": {
           "type": "string",

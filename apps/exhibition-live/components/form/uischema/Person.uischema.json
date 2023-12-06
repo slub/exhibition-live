@@ -30,13 +30,26 @@
                   "type": "Control",
                   "label": "Geschlecht",
                   "scope": "#/properties/gender"
-                },
-                {
-                  "type": "Control",
-                  "label": "Berufe",
-                  "scope": "#/properties/profession"
                 }
               ]
+            },
+            {
+              "type": "Control",
+              "label": "Berufe",
+              "scope": "#/properties/profession"
+            },
+            {
+              "type": "Control",
+              "label": "Berufe",
+              "scope": "#/properties/professionWithGND"
+            },
+            {
+              "type": "Control",
+              "label": "Berufe",
+              "scope": "#/properties/occupation",
+              "options": {
+                "elementLabelProp": "title"
+              }
             },
             {
               "type": "Control",

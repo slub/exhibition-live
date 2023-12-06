@@ -12,7 +12,7 @@ import { declarativeMappings } from "./lobidMappings";
 import { mapByConfig } from "../utils/mapping/mapByConfig";
 import { useGlobalCRUDOptions } from "../state/useGlobalCRUDOptions";
 import { JsonView } from "react-json-view-lite";
-import { List, TextField } from "@mui/material";
+import {Grid, List, TextField} from "@mui/material";
 import ClassicResultListItem from "../form/result/ClassicResultListItem";
 
 export default {
@@ -57,7 +57,17 @@ const LobidMappingTester = ({
   return (
     <div>
       <h1>Mapping for {gndID}</h1>
-      <JsonView data={mappedData} shouldInitiallyExpand={(lvl) => lvl < 5} />
+      <Grid container>
+        <Grid item>
+          <JsonView data={allProps} shouldInitiallyExpand={(lvl) => lvl < 5} />
+        </Grid>
+        <Grid item>
+          <JsonView data={declarativeMappings[typeName]} shouldInitiallyExpand={(lvl) => lvl < 5} />
+        </Grid>
+        <Grid item>
+          <JsonView data={mappedData} shouldInitiallyExpand={(lvl) => lvl < 5} />
+        </Grid>
+      </Grid>
       <LobidSearchTable
         searchString=""
         typeName={typeName}

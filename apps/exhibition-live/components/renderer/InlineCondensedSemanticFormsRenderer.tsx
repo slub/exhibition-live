@@ -40,7 +40,7 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
   } = props;
   const [formData, setFormData] = useState<any>({ "@id": data });
   const [searchString, setSearchString] = useState<string | undefined>("");
-  const { setTypeName, setSearch } = useGlobalSearch();
+  const { setTypeName, setSearch, setPath } = useGlobalSearch();
   const isValid = errors.length === 0;
   const appliedUiSchemaOptions = merge({}, config, uischema.options);
   const [editMode, setEditMode] = useState(false);
@@ -189,15 +189,17 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
     (data: any) => {
       setFormData(data);
     },
-    [setFormData],
+    [setFormData, setPath],
   );
 
   const handleFocus = useCallback(
     (event: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       setTypeName(typeName);
       console.log("focus", event);
+      console.log(path)
+      setPath(path);
     },
-    [setTypeName, typeName],
+    [setTypeName, typeName, setPath, path],
   );
 
   const handleSearchValueChange = useCallback(

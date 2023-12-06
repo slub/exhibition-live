@@ -30,28 +30,31 @@ const defaultOptions: Partial<WalkerOptions> = {
 const cleanProperty = (data: any) => {
   return Array.isArray(data)
     ? data.map(cleanProperty)
-    : Object.keys(data).reduce((acc, key) => {
-        const prop = data[key];
-        if (typeof prop === "object") {
-          const cleanedProp = cleanProperty(prop);
-          if (Array.isArray(cleanedProp) && prop.length === 0) return acc;
-          if (
-            !Array.isArray(cleanedProp) &&
-            (Object.keys(cleanedProp).length === 0 ||
-              (Object.keys(cleanedProp).length === 1 && cleanedProp["@type"]))
-          ) {
-            return acc;
+    : typeof data === 'object'
+      ? Object.keys(data).reduce((acc, key) => {
+          const prop = data[key];
+          if (typeof prop === "object") {
+            const cleanedProp = cleanProperty(prop);
+            if (Array.isArray(cleanedProp) && prop.length === 0) return acc;
+            if (
+              !Array.isArray(cleanedProp) &&
+              (Object.keys(cleanedProp).length === 0 ||
+                (Object.keys(cleanedProp).length === 1 && cleanedProp["@type"]))
+            ) {
+              return acc;
+            }
+            return {
+              ...acc,
+              [key]: cleanedProp,
+            };
           }
           return {
             ...acc,
-            [key]: cleanedProp,
+            [key]: prop,
           };
         }
-        return {
-          ...acc,
-          [key]: prop,
-        };
-      }, {});
+        , {})
+      : data;
 };
 
 export const cleanJSONLD = async (

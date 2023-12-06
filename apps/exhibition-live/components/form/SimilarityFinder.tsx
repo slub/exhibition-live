@@ -268,6 +268,7 @@ const SimilarityFinder: FunctionComponent<Props> = ({
               <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
               <Badge
                 color="primary"
+                sx={{ m: 0.5 }}
                 anchorOrigin={{
                   vertical: 'bottom',
                   horizontal: 'right'
@@ -280,6 +281,7 @@ const SimilarityFinder: FunctionComponent<Props> = ({
               </Badge>
               <Badge
                 color="primary"
+                sx={{ m: 0.5 }}
                 anchorOrigin={{
                   vertical: 'bottom',
                   horizontal: 'right'

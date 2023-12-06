@@ -45,7 +45,7 @@ import { useGlobalCRUDOptions } from "../state/useGlobalCRUDOptions";
 import { mapAbstractDataUsingAI, mapDataUsingAI } from "../utils/ai";
 import { typeIRItoTypeName } from "../content/main/Dashboard";
 import { useGlobalSearch } from "../state";
-import {useTranslation} from "react-i18next";
+import { useTranslation } from "react-i18next";
 
 // @ts-ignore
 type Props = {
@@ -103,8 +103,12 @@ const SimilarityFinder: FunctionComponent<Props> = ({
   const [entitySelected, setEntitySelected] = useState<
     SelectedEntity | undefined
   >();
-  const { search: globalSearch, typeName: globalTypeName, path:   globalPath } = useGlobalSearch();
-  const { t } = useTranslation("translation")
+  const {
+    search: globalSearch,
+    typeName: globalTypeName,
+    path: globalPath,
+  } = useGlobalSearch();
+  const { t } = useTranslation("translation");
   const searchString = useMemo<string | null>(
     () =>
       globalSearch ||
@@ -121,7 +125,11 @@ const SimilarityFinder: FunctionComponent<Props> = ({
       if (entitySelected) {
         setEntitySelected(undefined);
       }
-      setSelectedKnowledgeSources(Array.isArray(newKnowledgeSources) ?  newKnowledgeSources : [newKnowledgeSources]);
+      setSelectedKnowledgeSources(
+        Array.isArray(newKnowledgeSources)
+          ? newKnowledgeSources
+          : [newKnowledgeSources],
+      );
     },
     [entitySelected, setEntitySelected, setSelectedKnowledgeSources],
   );
@@ -267,7 +275,8 @@ const SimilarityFinder: FunctionComponent<Props> = ({
           >
             <Box sx={{ flexGrow: 1 }}>
               <Typography gutterBottom variant="caption" component="div">
-                Suche in {selectedKnowledgeSources.join(',')} nach {t(typeName)} ({globalPath})
+                Suche in {selectedKnowledgeSources.join(",")} nach {t(typeName)}{" "}
+                ({globalPath})
               </Typography>
               <Typography variant="body2" gutterBottom>
                 {searchString}

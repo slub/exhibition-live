@@ -1,4 +1,4 @@
-import {sladb} from "../form/formConfigs";
+import { sladb } from "../form/formConfigs";
 import {
   DeclarativeMapping,
   DeclarativeMappings,
@@ -455,7 +455,7 @@ export const personDeclarativeMapping: DeclarativeMappings = [
           },
         },
       },
-    }
+    },
   },
   {
     source: {

@@ -164,11 +164,13 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> = ({
   useEffect(() => {
     if (!data || !enableDebug) return;
     try {
-      cleanJSONLD(data, schema, { jsonldContext, defaultPrefix }).then(
-        (cleanedData) => {
-          setCleanedData(cleanedData);
-        },
-      );
+      cleanJSONLD(data, schema, {
+        jsonldContext,
+        defaultPrefix,
+        keepContext: true,
+      }).then((cleanedData) => {
+        setCleanedData(cleanedData);
+      });
     } catch (e) {
       setCleanedData({
         error: "Error while cleaning JSON-LD ",

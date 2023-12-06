@@ -6,7 +6,8 @@ import {
   isObjectArrayControl,
   JsonFormsCore,
   JsonSchema,
-  rankWith, schemaMatches,
+  rankWith,
+  schemaMatches,
   scopeEndsWith,
   UISchemaElement,
 } from "@jsonforms/core";
@@ -90,18 +91,26 @@ const renderers = [
     renderer: TypeOfRenderer,
   },
   {
-    tester: rankWith(5, and(
-      isObjectArray,
-      schemaMatches(
-        (schema) => {
-          // @ts-ignore
-          if (!(schema.type === "array" && typeof schema.items === 'object' && schema.items.properties)) {
-            return Boolean((schema.items as JSONSchema7).$ref)
+    tester: rankWith(
+      5,
+      and(
+        isObjectArray,
+        schemaMatches((schema) => {
+          if (
+            !(
+              schema.type === "array" &&
+              typeof schema.items === "object" &&
+              (schema.items as JSONSchema7).properties
+            )
+          ) {
+            return Boolean((schema.items as JSONSchema7).$ref);
           }
-          const props = (schema.items as JSONSchema7).properties
-          return Boolean(props["@id"] && props["@type"])
-        }))),
-      renderer: MaterialArrayOfLinkedItemRenderer,
+          const props = (schema.items as JSONSchema7).properties;
+          return Boolean(props["@id"] && props["@type"]);
+        }),
+      ),
+    ),
+    renderer: MaterialArrayOfLinkedItemRenderer,
   },
   {
     tester: rankWith(14, (uischema: UISchemaElement, schema, ctx): boolean => {

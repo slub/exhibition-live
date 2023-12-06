@@ -11,15 +11,18 @@ import {
   strategyFunctionMap,
 } from "./mappingStrategies";
 
-const getViaSourcePath = (sourceData: any, sourcePath: string[] | string): any => {
-  if(Array.isArray(sourcePath)) {
-    return get(sourceData, sourcePath)
+const getViaSourcePath = (
+  sourceData: any,
+  sourcePath: string[] | string,
+): any => {
+  if (Array.isArray(sourcePath)) {
+    return get(sourceData, sourcePath);
   }
-  if(typeof sourcePath === "string") {
-    if(sourcePath.startsWith("$")) {
-      return jsonpath.query(sourceData, sourcePath)
+  if (typeof sourcePath === "string") {
+    if (sourcePath.startsWith("$")) {
+      return jsonpath.query(sourceData, sourcePath);
     }
-    return get(sourceData, sourcePath)
+    return get(sourceData, sourcePath);
   }
 };
 

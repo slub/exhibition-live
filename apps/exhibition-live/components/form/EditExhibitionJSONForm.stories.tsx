@@ -5,7 +5,7 @@ import { JSONSchema7 } from "json-schema";
 import { JSONSchemaFaker } from "json-schema-faker";
 import { useState } from "react";
 
-import schema from '../../public/schema/Exhibition.schema.json'
+import schema from "../../public/schema/Exhibition.schema.json";
 import useExtendedSchema from "../state/useExtendedSchema";
 import { useSettings } from "../state/useLocalSettings";
 import { oxigraphCrudOptions } from "../utils/sparql/remoteOxigraph";

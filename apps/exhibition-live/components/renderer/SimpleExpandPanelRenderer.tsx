@@ -56,7 +56,7 @@ export const SimpleExpandPanelRenderer = (
     onChange,
     count,
     childLabelTemplate,
-    elementLabelProp
+    elementLabelProp,
   } = props;
   const typeIRI = schema.properties?.["@type"]?.const;
   const typeName = useMemo(

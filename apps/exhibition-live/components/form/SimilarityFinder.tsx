@@ -298,7 +298,7 @@ const SimilarityFinder: FunctionComponent<Props> = ({
             </Box>
           </Grid>
         </Grid>
-        <Grid item sx={{ width: "100%" }}>
+        <Grid item sx={{ width: "100%", height: `calc(100vh - 150px)`, display: 'flex', flexDirection: 'column', /* flexWrap: 'wrap'*/  }}>
           <ClassicResultListWrapper
             label="Treffer in lokaler Datenbank"
             selected={selectedKnowledgeSources?.includes("kb")}
@@ -335,7 +335,7 @@ const SimilarityFinder: FunctionComponent<Props> = ({
                 </>
               )}
           </ClassicResultListWrapper>
-          {/*<ClassicResultListWrapper
+          <ClassicResultListWrapper
             label="Treffer im k10plus"
             selected={selectedKnowledgeSources?.includes("k10plus")}
             handleClick={handleSelectK10plus}
@@ -350,7 +350,7 @@ const SimilarityFinder: FunctionComponent<Props> = ({
                   onSelect={handleSelectK10plus}
                 />
               )}
-          </ClassicResultListWrapper>*/}
+          </ClassicResultListWrapper>
         </Grid>
       </Grid>
     </>

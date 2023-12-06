@@ -1,5 +1,4 @@
-import { Box, Divider, ListItemButton, ListItemText } from "@mui/material";
-import { KeyboardArrowDown } from "@mui/icons-material";
+import { Divider, ListItemButton, ListItemText, Paper, Grid } from "@mui/material";
 import { FunctionComponent, useCallback, useState } from "react";
 
 type Props = {
@@ -15,15 +14,12 @@ const ClassicResultListWrapper: FunctionComponent<Props> = ({
   children,
   handleClick,
 }) => {
-  const [open, setOpen] = useState<boolean>(true);
-
-  const toggleOpen = useCallback(() => {
-    setOpen(!open);
-  }, [setOpen, open]);
 
   return (
-    <Box>
-      <ListItemButton alignItems="flex-start" onClick={handleClick}>
+    <Paper sx={selected ? { width: '100%', flex: 2 } : { width: '100%' }}>
+      <Grid container sx={{ width: '100%', display: 'block'}}>
+        <Grid item sx={{ width: '100%'}}>
+        <ListItemButton sx={{ width: '100%', flexGrow: 0 }} alignItems="flex-start" onClick={handleClick}>
         <ListItemText
           primary={label}
           primaryTypographyProps={{
@@ -42,17 +38,21 @@ const ClassicResultListWrapper: FunctionComponent<Props> = ({
           }}
           sx={{ my: 0 }}
         />
-        {/*<KeyboardArrowDown
-          sx={{
-            mr: -1,
-            transform: open ? "rotate(-180deg)" : "rotate(0)",
-            transitiotn: "0.2s",
-          }}
-        />*/}
       </ListItemButton>
-      <Divider />
-      {selected && children}
-    </Box>
+        </Grid>
+        <Divider />
+        <Grid item>
+          {selected && (
+            <>
+              <Paper sx={{ maxHeight: '100%', display: 'block', flexGrow: 1, overflow: 'auto' }}>
+                {children}
+              </Paper>
+              <Divider />
+            </>
+          )}
+        </Grid>
+      </Grid>
+    </Paper>
   );
 };
 

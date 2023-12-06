@@ -19,7 +19,7 @@
                 {
                   "type": "Control",
                   "label": "Namensvarianten",
-                  "scope": "#/properties/nameVariants"
+                  "scope": "#/properties/nameVariant"
                 }
               ]
             },

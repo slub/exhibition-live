@@ -11,7 +11,7 @@
         },
         {
           "type": "Control",
-          "scope": "#/properties/nameVariants",
+          "scope": "#/properties/nameVariant",
           "label": "Alternative Bezeichnungen"
         }
       ]

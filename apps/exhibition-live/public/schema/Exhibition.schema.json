@@ -164,9 +164,11 @@
             }
           }
         },
-        "nameVariants": {
-          "type": "string",
-          "maxLength": 2000
+        "nameVariant": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
         },
         "gender": {
           "type": "string",
@@ -318,9 +320,11 @@
         "description": {
           "type": "string"
         },
-        "nameVariants": {
-          "type": "string",
-          "maxLength": 600
+        "nameVariant": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
         },
         "parent": {
           "$ref": "#/$defs/Corporation"

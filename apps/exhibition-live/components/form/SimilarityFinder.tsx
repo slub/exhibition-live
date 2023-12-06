@@ -125,7 +125,8 @@ const SimilarityFinder: FunctionComponent<Props> = ({
 
   const handleSelect = useCallback(
     (id: string | undefined, source: KnowledgeSources) => {
-      !selectedKnowledgeSources?.includes(source) && setSelectedKnowledgeSources([source] as KnowledgeSources[]);
+      !selectedKnowledgeSources?.includes(source) &&
+        setSelectedKnowledgeSources([source] as KnowledgeSources[]);
       setEntitySelected(id ? { id, source } : undefined);
     },
     [setEntitySelected, setSelectedKnowledgeSources, selectedKnowledgeSources],
@@ -270,8 +271,8 @@ const SimilarityFinder: FunctionComponent<Props> = ({
                 color="primary"
                 sx={{ m: 0.5 }}
                 anchorOrigin={{
-                  vertical: 'bottom',
-                  horizontal: 'right'
+                  vertical: "bottom",
+                  horizontal: "right",
                 }}
                 variant="dot"
                 overlap="circular"
@@ -283,8 +284,8 @@ const SimilarityFinder: FunctionComponent<Props> = ({
                 color="primary"
                 sx={{ m: 0.5 }}
                 anchorOrigin={{
-                  vertical: 'bottom',
-                  horizontal: 'right'
+                  vertical: "bottom",
+                  horizontal: "right",
                 }}
                 variant="dot"
                 overlap="circular"
@@ -300,7 +301,15 @@ const SimilarityFinder: FunctionComponent<Props> = ({
             </Box>
           </Grid>
         </Grid>
-        <Grid item sx={{ width: "100%", height: `calc(100vh - 150px)`, display: 'flex', flexDirection: 'column', /* flexWrap: 'wrap'*/  }}>
+        <Grid
+          item
+          sx={{
+            width: "100%",
+            height: `calc(100vh - 150px)`,
+            display: "flex",
+            flexDirection: "column" /* flexWrap: 'wrap'*/,
+          }}
+        >
           <ClassicResultListWrapper
             label="Treffer in lokaler Datenbank"
             selected={selectedKnowledgeSources?.includes("kb")}

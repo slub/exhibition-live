@@ -37,19 +37,26 @@ const ClassicResultListItem: FunctionComponent<Props> = ({
 
   return (
     <>
-      <ListItem sx={{ p:0 }} alignItems="flex-start">
-        <ListItemButton sx={{ backgroundColor: "transparent", "&:hover": { backgroundColor: "transparent" } }} onClick={handleSelect}>
+      <ListItem sx={{ p: 0 }} alignItems="flex-start">
+        <ListItemButton
+          sx={{
+            backgroundColor: "transparent",
+            "&:hover": { backgroundColor: "transparent" },
+          }}
+          onClick={handleSelect}
+        >
           <ListItemAvatar>
-            <Avatar sx={{ width: "32px", height: "32px"}} aria-label="Photo" src={avatar}>
+            <Avatar
+              sx={{ width: "32px", height: "32px" }}
+              aria-label="Photo"
+              src={avatar}
+            >
               {!avatar ? altAvatar : ""}
             </Avatar>
           </ListItemAvatar>
           <ListItemText
             primary={
-              <Typography
-                variant="h5"
-                color="inherit"
-              >
+              <Typography variant="h5" color="inherit">
                 {label}
               </Typography>
             }
@@ -60,8 +67,8 @@ const ClassicResultListItem: FunctionComponent<Props> = ({
               >
                 {secondary}
               </Typography>
-              }
-            />
+            }
+          />
         </ListItemButton>
       </ListItem>
       <Divider variant="inset" component="li" />

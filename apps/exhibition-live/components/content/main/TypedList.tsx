@@ -42,19 +42,9 @@ import {
   filterForArrayProperties,
   encodeIRI,
   isJSONSchema,
-
 } from "../../utils/core";
 import { JSONSchema7 } from "json-schema";
-import {
-  Add,
-  Delete,
-  Details,
-  Edit,
-  FileDownload,
-
-
-
-} from "@mui/icons-material";
+import { Add, Delete, Details, Edit, FileDownload } from "@mui/icons-material";
 import { primaryFields } from "../../config";
 import { parseMarkdownLinks } from "../../utils/core/parseMarkdownLink";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -75,10 +65,7 @@ import { useModifiedRouter } from "../../basic";
 import { OverflowContainer } from "../../lists";
 import isNil from "lodash/isNil";
 import { OverflowChip } from "../../lists/OverflowChip";
-import {
-  SparqlEndpoint,
-  useSettings,
-} from "../../state/useLocalSettings";
+import { SparqlEndpoint, useSettings } from "../../state/useLocalSettings";
 
 type Props = {
   typeName: string;

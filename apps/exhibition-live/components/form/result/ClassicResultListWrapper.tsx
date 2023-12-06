@@ -1,4 +1,10 @@
-import { Divider, ListItemButton, ListItemText, Paper, Grid } from "@mui/material";
+import {
+  Divider,
+  ListItemButton,
+  ListItemText,
+  Paper,
+  Grid,
+} from "@mui/material";
 import { FunctionComponent, useCallback, useState } from "react";
 
 type Props = {
@@ -14,37 +20,47 @@ const ClassicResultListWrapper: FunctionComponent<Props> = ({
   children,
   handleClick,
 }) => {
-
   return (
-    <Paper sx={{ width: '100%' }}>
-      <Grid container sx={{ width: '100%', display: 'block'}}>
-        <Grid item sx={{ width: '100%'}}>
-        <ListItemButton sx={{ width: '100%', flexGrow: 0 }} alignItems="flex-start" onClick={handleClick}>
-        <ListItemText
-          primary={label}
-          primaryTypographyProps={{
-            fontSize: 15,
-            fontWeight: "medium",
-            lineHeight: "20px",
-            mb: "2px",
-          }}
-          secondary={
-            selected ? "Suche liefert folgende Treffer" : "Keine Suche"
-          }
-          secondaryTypographyProps={{
-            noWrap: true,
-            fontSize: 12,
-            lineHeight: "16px",
-          }}
-          sx={{ my: 0 }}
-        />
-      </ListItemButton>
+    <Paper sx={{ width: "100%" }}>
+      <Grid container sx={{ width: "100%", display: "block" }}>
+        <Grid item sx={{ width: "100%" }}>
+          <ListItemButton
+            sx={{ width: "100%", flexGrow: 0 }}
+            alignItems="flex-start"
+            onClick={handleClick}
+          >
+            <ListItemText
+              primary={label}
+              primaryTypographyProps={{
+                fontSize: 15,
+                fontWeight: "medium",
+                lineHeight: "20px",
+                mb: "2px",
+              }}
+              secondary={
+                selected ? "Suche liefert folgende Treffer" : "Keine Suche"
+              }
+              secondaryTypographyProps={{
+                noWrap: true,
+                fontSize: 12,
+                lineHeight: "16px",
+              }}
+              sx={{ my: 0 }}
+            />
+          </ListItemButton>
         </Grid>
         <Divider />
         <Grid item>
           {selected && (
             <>
-              <Paper sx={{ maxHeight: '100%', display: 'block', flexGrow: 1, overflow: 'auto' }}>
+              <Paper
+                sx={{
+                  maxHeight: "100%",
+                  display: "block",
+                  flexGrow: 1,
+                  overflow: "auto",
+                }}
+              >
                 {children}
               </Paper>
               <Divider />

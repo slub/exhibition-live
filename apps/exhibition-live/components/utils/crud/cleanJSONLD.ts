@@ -30,31 +30,80 @@ const defaultOptions: Partial<WalkerOptions> = {
 const cleanProperty = (data: any) => {
   return Array.isArray(data)
     ? data.map(cleanProperty)
-    : typeof data === 'object'
-      ? Object.keys(data).reduce((acc, key) => {
-          const prop = data[key];
-          if (typeof prop === "object") {
-            const cleanedProp = cleanProperty(prop);
-            if (Array.isArray(cleanedProp) && prop.length === 0) return acc;
-            if (
-              !Array.isArray(cleanedProp) &&
-              (Object.keys(cleanedProp).length === 0 ||
-                (Object.keys(cleanedProp).length === 1 && cleanedProp["@type"]))
-            ) {
-              return acc;
-            }
-            return {
-              ...acc,
-              [key]: cleanedProp,
-            };
+    : typeof data === "object"
+    ? Object.keys(data).reduce((acc, key) => {
+        const prop = data[key];
+        if (typeof prop === "object") {
+          const cleanedProp = cleanProperty(prop);
+          if (Array.isArray(cleanedProp) && prop.length === 0) return acc;
+          if (
+            !Array.isArray(cleanedProp) &&
+            (Object.keys(cleanedProp).length === 0 ||
+              (Object.keys(cleanedProp).length === 1 && cleanedProp["@type"]))
+          ) {
+            return acc;
           }
           return {
             ...acc,
-            [key]: prop,
+            [key]: cleanedProp,
           };
         }
-        , {})
-      : data;
+        return {
+          ...acc,
+          [key]: prop,
+        };
+      }, {})
+    : data;
+};
+
+const collect = (schema: JSONSchema7, container: "@list" | "@set" = "@set") => {
+  if (schema.type === "array" && !Array.isArray(schema.items)) {
+    if ((schema.items as JSONSchema7)?.type) {
+      const itemsType = (schema.items as JSONSchema7)?.type;
+      if (!Array.isArray(itemsType)) {
+        switch (itemsType) {
+          case "object":
+            return undefined;
+          case "array":
+            return undefined;
+          case "integer":
+            return {
+              "@container": container,
+              "@type": "xs:integer",
+            };
+          case "number":
+            return {
+              "@container": container,
+              "@type": "xs:double",
+            };
+          case "boolean":
+            return {
+              "@container": container,
+              "@type": "xs:boolean",
+            };
+          case "string":
+          default:
+            return {
+              "@container": container,
+              "@type": "xs:string",
+            };
+        }
+      }
+    }
+  }
+};
+const collectPrimitiveArrayFields = (schema: JSONSchema7) => {
+  return Object.fromEntries(
+    Object.entries(schema.properties)
+      .map(([key, subSchema]) => {
+        if ((subSchema as JSONSchema7)?.type === "array") {
+          return [key, collect(subSchema as JSONSchema7)];
+        } else {
+          return [key, undefined];
+        }
+      })
+      .filter(([_, value]) => value !== undefined),
+  );
 };
 
 export const cleanJSONLD = async (
@@ -73,9 +122,16 @@ export const cleanJSONLD = async (
     ...walkerOptionsPassed,
   };
 
+  const finalJsonldContext =
+    typeof jsonldContext === "object"
+      ? {
+          ...jsonldContext,
+        }
+      : {};
+
   const jsonldDoc = {
     ...cleanProperty(data),
-    ...(jsonldContext ? { "@context": jsonldContext } : {}),
+    ...(finalJsonldContext ? { "@context": finalJsonldContext } : {}),
   };
 
   try {
@@ -92,8 +148,8 @@ export const cleanJSONLD = async (
       schema,
       walkerOptions,
     );
-    return keepContext && jsonldContext
-      ? { ...res, "@context": jsonldContext }
+    return keepContext && finalJsonldContext
+      ? { ...res, "@context": finalJsonldContext }
       : res;
   } catch (e) {
     throw new Error("Cannot convert JSONLD to dataset", e);

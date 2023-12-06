@@ -6,7 +6,9 @@ import {
   ListItemAvatar,
   ListItemButton,
   ListItemText,
+  Typography,
 } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import * as React from "react";
 import { FunctionComponent, useCallback } from "react";
 
@@ -27,20 +29,39 @@ const ClassicResultListItem: FunctionComponent<Props> = ({
   secondary,
   altAvatar,
 }) => {
+  const theme = useTheme();
+
   const handleSelect = useCallback(() => {
     onSelected(id);
   }, [onSelected, id]);
 
   return (
     <>
-      <ListItem alignItems="flex-start">
-        <ListItemButton onClick={handleSelect}>
+      <ListItem sx={{ p:0 }} alignItems="flex-start">
+        <ListItemButton sx={{ backgroundColor: "transparent", "&:hover": { backgroundColor: "transparent" } }} onClick={handleSelect}>
           <ListItemAvatar>
-            <Avatar aria-label="Photo" src={avatar}>
+            <Avatar sx={{ width: "32px", height: "32px"}} aria-label="Photo" src={avatar}>
               {!avatar ? altAvatar : ""}
             </Avatar>
           </ListItemAvatar>
-          <ListItemText primary={label} secondary={secondary} />
+          <ListItemText
+            primary={
+              <Typography
+                variant="h5"
+                color="inherit"
+              >
+                {label}
+              </Typography>
+            }
+            secondary={
+              <Typography
+                variant="caption"
+                sx={{ ...theme.typography.caption }}
+              >
+                {secondary}
+              </Typography>
+              }
+            />
         </ListItemButton>
       </ListItem>
       <Divider variant="inset" component="li" />

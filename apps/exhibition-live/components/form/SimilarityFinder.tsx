@@ -337,7 +337,7 @@ const SimilarityFinder: FunctionComponent<Props> = ({
                 </>
               )}
           </ClassicResultListWrapper>
-          <ClassicResultListWrapper
+          {/*<ClassicResultListWrapper
             label="Treffer im k10plus"
             selected={selectedKnowledgeSources?.includes("k10plus")}
             handleClick={handleSelectK10plus}
@@ -352,7 +352,7 @@ const SimilarityFinder: FunctionComponent<Props> = ({
                   onSelect={handleSelectK10plus}
                 />
               )}
-          </ClassicResultListWrapper>
+              </ClassicResultListWrapper>*/}
         </Grid>
       </Grid>
     </>

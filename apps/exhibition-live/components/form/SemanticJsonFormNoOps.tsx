@@ -1,11 +1,12 @@
 import "react-json-view-lite/dist/index.css";
 
 import {
+  and,
   isObjectArray,
   isObjectArrayControl,
   JsonFormsCore,
   JsonSchema,
-  rankWith,
+  rankWith, schemaMatches,
   scopeEndsWith,
   UISchemaElement,
 } from "@jsonforms/core";
@@ -89,8 +90,18 @@ const renderers = [
     renderer: TypeOfRenderer,
   },
   {
-    tester: rankWith(5, isObjectArray),
-    renderer: MaterialArrayOfLinkedItemRenderer,
+    tester: rankWith(5, and(
+      isObjectArray,
+      schemaMatches(
+        (schema) => {
+          // @ts-ignore
+          if (!(schema.type === "array" && typeof schema.items === 'object' && schema.items.properties)) {
+            return Boolean((schema.items as JSONSchema7).$ref)
+          }
+          const props = (schema.items as JSONSchema7).properties
+          return Boolean(props["@id"] && props["@type"])
+        }))),
+      renderer: MaterialArrayOfLinkedItemRenderer,
   },
   {
     tester: rankWith(14, (uischema: UISchemaElement, schema, ctx): boolean => {

@@ -27,6 +27,7 @@ import dot from "dot";
 import { useCRUDWithQueryClient } from "../state/useCRUDWithQueryClient";
 import { useGlobalCRUDOptions } from "../state/useGlobalCRUDOptions";
 import { defaultJsonldContext, defaultPrefix } from "../form/formConfigs";
+import get from "lodash/get";
 
 type SimpleExpandPanelRendererProps = {
   data: any;
@@ -39,6 +40,7 @@ type SimpleExpandPanelRendererProps = {
   onChange: (data: any) => void;
   path: string;
   childLabelTemplate?: string;
+  elementLabelProp?: string;
 };
 export const SimpleExpandPanelRenderer = (
   props: SimpleExpandPanelRendererProps,
@@ -54,6 +56,7 @@ export const SimpleExpandPanelRenderer = (
     onChange,
     count,
     childLabelTemplate,
+    elementLabelProp
   } = props;
   const typeIRI = schema.properties?.["@type"]?.const;
   const typeName = useMemo(
@@ -88,9 +91,12 @@ export const SimpleExpandPanelRenderer = (
       } catch (e) {
         console.warn("could not render childLabelTemplate", e);
       }
+    } else if (elementLabelProp) {
+      const label = get(data, elementLabelProp);
+      if (label) return label;
     }
     return label || data?.__label;
-  }, [childLabelTemplate, data, label]);
+  }, [childLabelTemplate, elementLabelProp, data, label]);
 
   const { crudOptions } = useGlobalCRUDOptions();
   const { loadQuery, saveMutation } = useCRUDWithQueryClient(

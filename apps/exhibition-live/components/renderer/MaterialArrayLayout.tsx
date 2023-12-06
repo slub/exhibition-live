@@ -244,6 +244,9 @@ const MaterialArrayLayoutComponent = (props: ArrayLayoutProps & {}) => {
                   childLabelTemplate={
                     appliedUiSchemaOptions.elementLabelTemplate
                   }
+                  elementLabelProp={
+                    appliedUiSchemaOptions.elementLabelProp || "label"
+                  }
                 />
               );
             })

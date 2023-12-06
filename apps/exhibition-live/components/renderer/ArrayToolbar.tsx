@@ -75,7 +75,7 @@ export const ArrayLayoutToolbar = memo(
       [addItem, path, typeIRI],
     );
     const typeName = useMemo(
-      () => typeIRI.substring(BASE_IRI.length, typeIRI.length),
+      () => typeIRI?.substring(BASE_IRI.length, typeIRI.length),
       [typeIRI],
     );
     return (

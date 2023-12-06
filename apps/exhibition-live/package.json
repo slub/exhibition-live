@@ -82,6 +82,7 @@
     "json-schema": "^0.4.0",
     "jsonld": "^8.1.0",
     "jsonld-context-parser": "^2.3.3",
+    "jsonpath": "^1.1.1",
     "jsonref": "^8.0.8",
     "keycharm": "^0.4.0",
     "leaflet": "^1.9.3",

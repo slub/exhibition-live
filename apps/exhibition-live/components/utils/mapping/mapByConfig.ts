@@ -3,12 +3,25 @@ import cloneDeep from "lodash/cloneDeep";
 import get from "lodash/get";
 import isNil from "lodash/isNil";
 import set from "lodash/set";
+import jsonpath from "jsonpath";
 
 import {
   DeclarativeMappings,
   StrategyContext,
   strategyFunctionMap,
 } from "./mappingStrategies";
+
+const getViaSourcePath = (sourceData: any, sourcePath: string[] | string): any => {
+  if(Array.isArray(sourcePath)) {
+    return get(sourceData, sourcePath)
+  }
+  if(typeof sourcePath === "string") {
+    if(sourcePath.startsWith("$")) {
+      return jsonpath.query(sourceData, sourcePath)
+    }
+    return get(sourceData, sourcePath)
+  }
+};
 
 export const mapByConfig = async (
   sourceData: Record<string, any>,
@@ -23,7 +36,7 @@ export const mapByConfig = async (
     const { path: targetPath } = target;
     const hasSourcePath = source?.path && source.path.length > 0;
     const sourceValue = hasSourcePath
-      ? get(sourceData, sourcePath)
+      ? getViaSourcePath(sourceData, sourcePath)
       : sourceData;
     if (isNil(sourceValue)) continue;
     if (expectedSchema && !ajv.validate(expectedSchema, sourceValue)) {

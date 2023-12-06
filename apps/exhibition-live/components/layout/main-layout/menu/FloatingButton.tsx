@@ -1,8 +1,5 @@
-import { Button, useTheme } from "@mui/material";
+import { Button } from "@mui/material";
 import { Search as SearchIcon } from "@mui/icons-material";
-import React, { useCallback } from "react";
-import { useSnackbar } from "notistack";
-import { useRouter } from "next/router";
 
 type FloatingButtonProps = {
   drawerOpen: boolean;
@@ -15,19 +12,6 @@ export const FloatingButton = ({
   drawerWidth,
   toggleDrawer,
 }: FloatingButtonProps) => {
-  const theme = useTheme();
-  const { enqueueSnackbar } = useSnackbar();
-  const { pathname } = useRouter();
-
-  const handleClick = useCallback(() => {
-    if (!pathname.includes("/create/") && !drawerOpen) {
-      enqueueSnackbar("🦄 Noch keine Funktion in dieser Ansicht!", {
-        variant: "warning",
-      });
-      return;
-    }
-    toggleDrawer();
-  }, [toggleDrawer, pathname, drawerOpen, enqueueSnackbar]);
 
   return (
     <Button
@@ -48,7 +32,7 @@ export const FloatingButton = ({
         borderRadius: "24px 4px 4px 24px",
         zIndex: (theme) => theme.zIndex.drawer + 1,
       }}
-      onClick={handleClick}
+      onClick={toggleDrawer}
     >
       <SearchIcon />
     </Button>

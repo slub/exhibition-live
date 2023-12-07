@@ -24,7 +24,7 @@ export const Link = ({
     if (href_.toString().indexOf("http") === 0) skipLocaleHandling_ = true;
     if (locale && !skipLocaleHandling_) {
       href_ = href_
-        ? `/${locale}${href}`
+        ? `/${locale}${href_}`
         : router.pathname.replace("[locale]", locale.toString());
     }
     return href_;

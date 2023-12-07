@@ -7,3 +7,4 @@ export * from "./leftpad";
 export * from "./resolveObj";
 export * from "./specialDate";
 export * from "./irisToData";
+export * from "./makeFormsPath";

@@ -43,7 +43,7 @@ import { uniqBy, orderBy, isArray } from "lodash";
 import { SimpleExpandPanelRenderer } from "./SimpleExpandPanelRenderer";
 import { SemanticFormsModal } from "./SemanticFormsModal";
 import { BASE_IRI } from "../config";
-import { bringDefinitionToTop, irisToData } from "../utils/core";
+import { bringDefinitionToTop, irisToData, makeFormsPath } from "../utils/core";
 import { JSONSchema7 } from "json-schema";
 import {
   defaultJsonldContext,
@@ -206,6 +206,7 @@ const MaterialArrayLayoutComponent = (props: ArrayLayoutProps & {}) => {
               semanticJsonFormsProps={{
                 disableSimilarityFinder: true,
               }}
+              formsPath={makeFormsPath(config?.formsPath, path)}
             />
           </Grid>
           <Grid item>
@@ -247,6 +248,7 @@ const MaterialArrayLayoutComponent = (props: ArrayLayoutProps & {}) => {
                   elementLabelProp={
                     appliedUiSchemaOptions.elementLabelProp || "label"
                   }
+                  formsPath={makeFormsPath(config?.formsPath, childPath)}
                 />
               );
             })

@@ -70,6 +70,7 @@ export interface SemanticJsonFormsNoOpsProps {
   disableSimilarityFinder?: boolean;
   enableSidebar?: boolean;
   wrapWithinCard?: boolean;
+  formsPath?: string;
 }
 
 const renderers = [
@@ -151,6 +152,7 @@ export const SemanticJsonFormNoOps: FunctionComponent<
   disableSimilarityFinder,
   enableSidebar,
   wrapWithinCard,
+  formsPath,
 }) => {
   const searchOnDataPath = useMemo(() => {
     const typeName = typeIRItoTypeName(typeIRI);
@@ -206,7 +208,14 @@ export const SemanticJsonFormNoOps: FunctionComponent<
         ),
     [wrapWithinCard],
   );
-  const { renderers: jfpRenderers, ...jfpProps } = jsonFormsProps;
+  const { renderers: jfpRenderers, config, ...jfpProps } = jsonFormsProps;
+  const finalJsonFormsProps = {
+    ...jfpProps,
+    config: {
+      ...config,
+      formsPath,
+    },
+  };
   const allRenderer = useMemo(
     () => [...renderers, ...(jfpRenderers || [])],
     [jfpRenderers],
@@ -230,7 +239,7 @@ export const SemanticJsonFormNoOps: FunctionComponent<
                 cells={materialCells}
                 onChange={handleFormChange}
                 schema={schema as JsonSchema}
-                {...jfpProps}
+                {...finalJsonFormsProps}
               />
             </WithCard>
           </Grid>

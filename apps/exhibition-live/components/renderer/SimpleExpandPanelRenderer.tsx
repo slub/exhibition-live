@@ -41,6 +41,7 @@ type SimpleExpandPanelRendererProps = {
   path: string;
   childLabelTemplate?: string;
   elementLabelProp?: string;
+  formsPath?: string;
 };
 export const SimpleExpandPanelRenderer = (
   props: SimpleExpandPanelRendererProps,
@@ -57,6 +58,7 @@ export const SimpleExpandPanelRenderer = (
     count,
     childLabelTemplate,
     elementLabelProp,
+    formsPath,
   } = props;
   const typeIRI = schema.properties?.["@type"]?.const;
   const typeName = useMemo(

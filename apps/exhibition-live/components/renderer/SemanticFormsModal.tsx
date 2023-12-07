@@ -31,6 +31,7 @@ type SemanticFormsModalProps = {
   formData?: any;
   onFormDataChange?: (data: any) => void;
   children?: React.ReactNode;
+  formsPath?: string;
 };
 export const SemanticFormsModal = (props: SemanticFormsModalProps) => {
   const {
@@ -46,6 +47,7 @@ export const SemanticFormsModal = (props: SemanticFormsModalProps) => {
     formData: formDataProp,
     onFormDataChange,
     children,
+    formsPath,
   } = props;
   const [formData, setFormData] = useControlled({
     name: "FormData",
@@ -174,6 +176,7 @@ export const SemanticFormsModal = (props: SemanticFormsModalProps) => {
             }}
             onEntityChange={onChange}
             searchText={searchText}
+            formsPath={formsPath}
           />
         )}
       </>

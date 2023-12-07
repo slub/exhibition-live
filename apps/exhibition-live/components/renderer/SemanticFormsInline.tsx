@@ -17,6 +17,7 @@ type SemanticFormsInlineProps = {
   onChange?: (data: string | undefined) => void;
   formData?: any;
   onFormDataChange?: (data: any) => void;
+  formsPath?: string;
 };
 export const SemanticFormsInline = (props: SemanticFormsInlineProps) => {
   const {
@@ -28,6 +29,7 @@ export const SemanticFormsInline = (props: SemanticFormsInlineProps) => {
     semanticJsonFormsProps,
     formData: formDataProp,
     onFormDataChange,
+    formsPath,
   } = props;
   const [formData, setFormData] = useControlled({
     name: "FormData",
@@ -60,6 +62,7 @@ export const SemanticFormsInline = (props: SemanticFormsInlineProps) => {
             uischemas: uischemas,
           }}
           onEntityChange={onChange}
+          formsPath={formsPath}
         />
       )}
     </>

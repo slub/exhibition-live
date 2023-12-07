@@ -1,6 +1,7 @@
 import { Box, Drawer, Toolbar } from "@mui/material";
 import React, { useCallback, useState } from "react";
 import { FloatingButton } from "./menu";
+import { useRightDrawerState } from "../../state";
 
 type SearchbarWithFloatingButtonProps = {
   children?: React.ReactNode;
@@ -16,10 +17,14 @@ type SearchbarProps = {
 export const SearchbarWithFloatingButton = ({
   children,
 }: SearchbarWithFloatingButtonProps) => {
-  const [rightDrawerOpened, setRightDrawerOpened] = useState<boolean>(false);
-  const [rightDrawerWidth, setRightDrawerWidth] = useState<number>(500);
+  const {
+    open: rightDrawerOpened,
+    setOpen: setRightDrawerOpened,
+    width: rightDrawerWidth,
+    setWidth: setRightDrawerWidth,
+  } = useRightDrawerState();
   const toggleRightDrawer = useCallback(() => {
-    setRightDrawerOpened((rightDrawerOpened) => !rightDrawerOpened);
+    setRightDrawerOpened((prev: boolean) => !prev);
   }, [setRightDrawerOpened]);
   return (
     <>
@@ -46,7 +51,7 @@ export const Searchbar = ({
   children,
 }: SearchbarProps) => {
   return (
-    <>
+    <Box sx={{ position: "absolute" }}>
       <Drawer
         variant="persistent"
         anchor="right"
@@ -64,6 +69,6 @@ export const Searchbar = ({
         <Toolbar />
         <Box>{children}</Box>
       </Drawer>
-    </>
+    </Box>
   );
 };

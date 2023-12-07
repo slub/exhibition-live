@@ -13,6 +13,7 @@ import {
   useDrawerDimensions,
   useFormEditor,
   useGlobalSearch,
+  useRightDrawerState,
 } from "../../state";
 import useExtendedSchema from "../../state/useExtendedSchema";
 import { useGlobalCRUDOptions } from "../../state/useGlobalCRUDOptions";
@@ -99,6 +100,13 @@ const TypedForm = ({ typeName, entityIRI, classIRI }: MainFormProps) => {
   );
   const loadedSchema = useExtendedSchema({ typeName, classIRI });
 
+  const { width: rightDrawerWidth, open: rightDrawerOpen } =
+    useRightDrawerState();
+  const rightBoxWidth = useMemo(
+    () => (rightDrawerOpen ? rightDrawerWidth + 10 : 0),
+    [rightDrawerOpen, rightDrawerWidth],
+  );
+
   //const { stepperRef, actionRef } = useFormRefsContext();
   const handleChangeData = useCallback(
     (data: any) => {
@@ -140,8 +148,19 @@ const TypedForm = ({ typeName, entityIRI, classIRI }: MainFormProps) => {
               uischemas: uischemas,
               renderers: mainFormRenderers,
             }}
-            enableSidebar={true}
+            enableSidebar={false}
+            disableSimilarityFinder={true}
             wrapWithinCard={true}
+          />
+          <Box
+            sx={{
+              width: rightBoxWidth,
+              flexShrink: 0,
+              "& .MuiDrawer-paper": {
+                width: rightBoxWidth,
+                // boxSizing: 'border-box',
+              },
+            }}
           />
         </Box>
       )}

@@ -20,6 +20,13 @@ import { extractFieldIfString } from "../utils/mapping/simpleFieldExtractor";
 import { PrimaryField } from "../utils/types";
 import { typeIRItoTypeName } from "../content/main/Dashboard";
 import { useGlobalSearch } from "../state";
+import { TabIcon } from "../theme/icons";
+import { makeFormsPath } from "../utils/core";
+import { SearchbarWithFloatingButton } from "../layout/main-layout/Searchbar";
+import SimilarityFinder from "../form/SimilarityFinder";
+import NiceModal from "@ebay/nice-modal-react";
+import GenericModal from "../form/GenericModal";
+import { JSONSchema7 } from "json-schema";
 
 const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
   const {
@@ -38,15 +45,25 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
     label,
     description,
   } = props;
+  const enableDrawer = true;
   const [formData, setFormData] = useState<any>({ "@id": data });
   const [searchString, setSearchString] = useState<string | undefined>("");
-  const { setTypeName, setSearch, setPath } = useGlobalSearch();
+  const {
+    setTypeName,
+    setSearch,
+    setPath,
+    path: globalPath,
+  } = useGlobalSearch();
   const isValid = errors.length === 0;
   const appliedUiSchemaOptions = merge({}, config, uischema.options);
   const [editMode, setEditMode] = useState(false);
   const ctx = useJsonForms();
   const [realLabel, setRealLabel] = useState("");
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const formsPath = useMemo(
+    () => makeFormsPath(config?.formsPath, path),
+    [config?.formsPath, path],
+  );
   const selected = useMemo(
     () => ({ value: data || null, label: realLabel }),
     [data, realLabel],
@@ -167,6 +184,11 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
     [setModalIsOpen, newURI],
   );
 
+  const searchOnDataPath = useMemo(() => {
+    const typeName = typeIRItoTypeName(typeIRI);
+    return primaryFields[typeName]?.label;
+  }, [typeIRI]);
+
   const handleSaveAndClose = useCallback(() => {
     setModalIsOpen(false);
     const id = formData["@id"];
@@ -195,11 +217,9 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
   const handleFocus = useCallback(
     (event: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       setTypeName(typeName);
-      console.log("focus", event);
-      console.log(path)
-      setPath(path);
+      setPath(formsPath);
     },
-    [setTypeName, typeName, setPath, path],
+    [setTypeName, typeName, setPath, formsPath],
   );
 
   const handleSearchValueChange = useCallback(
@@ -208,6 +228,26 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
       setSearchString(v);
     },
     [setSearch, setSearchString],
+  );
+
+  const handleMappedData = useCallback(
+    (newData: any) => {
+      if (!newData) return;
+      //avoid overriding of id and type by mapped data
+      NiceModal.show(GenericModal, {
+        type:
+          newData["@type"] !== typeIRI
+            ? "confirm save mapping"
+            : "confirm mapping",
+      }).then(() => {
+        handleChange(path, {
+          ...newData,
+          "@id": data["@id"],
+          "@type": data["@type"],
+        });
+      });
+    },
+    [handleChange, path, typeIRI],
   );
 
   return (
@@ -233,11 +273,32 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
           <Grid item>
             <Grid container direction="column">
               {typeof data == "string" && data.length > 0 && (
-                <Grid item>
-                  <IconButton sx={{ padding: 0 }} onClick={handleToggle}>
-                    {modalIsOpen ? <OpenInNewOff /> : <OpenInNew />}
-                  </IconButton>
-                </Grid>
+                <>
+                  <Grid item>
+                    <IconButton sx={{ padding: 0 }} onClick={handleToggle}>
+                      {modalIsOpen ? <OpenInNewOff /> : <OpenInNew />}
+                    </IconButton>
+                  </Grid>
+                  <Grid item>
+                    <IconButton
+                      component={React.forwardRef<HTMLSpanElement, any>(
+                        ({ children, ...props }, ref) => (
+                          <span {...props} ref={ref}>
+                            <a
+                              href={`/de/create/${typeName}`}
+                              target="_blank"
+                              rel="noopener"
+                            >
+                              {children}
+                            </a>
+                          </span>
+                        ),
+                      )}
+                    >
+                      <TabIcon />
+                    </IconButton>
+                  </Grid>
+                </>
               )}
               <Grid item>
                 <IconButton sx={{ padding: 0 }} onClick={handleAddNew}>
@@ -258,8 +319,24 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
                 askCancel={handleClose}
                 onFormDataChange={handleFormDataChange}
                 onChange={handleEntityIRIChange}
+                formsPath={formsPath}
               />
             }
+            {globalPath === formsPath && (
+              <SearchbarWithFloatingButton>
+                <>
+                  <SimilarityFinder
+                    search={searchString}
+                    data={data}
+                    classIRI={typeIRI}
+                    jsonSchema={schema as JSONSchema7}
+                    onEntityIRIChange={handleEntityIRIChange}
+                    searchOnDataPath={searchOnDataPath}
+                    onMappedDataAccepted={handleMappedData}
+                  />
+                </>
+              </SearchbarWithFloatingButton>
+            )}
           </Grid>
         )}
       </Grid>

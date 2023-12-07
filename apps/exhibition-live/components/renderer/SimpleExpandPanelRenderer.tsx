@@ -11,16 +11,18 @@ import {
 } from "@mui/material";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 
-import find from "lodash/find";
-
-import { OpenInNew, OpenInNewOff, Save } from "@mui/icons-material";
+import {
+  OpenInNew,
+  OpenInNewOff,
+  Save,
+} from "@mui/icons-material";
 import { BASE_IRI, primaryFields } from "../config";
 import {
   applyToEachField,
   extractFieldIfString,
 } from "../utils/mapping/simpleFieldExtractor";
 import { SemanticFormsModal } from "./SemanticFormsModal";
-import { bringDefinitionToTop } from "../utils/core";
+import { bringDefinitionToTop, encodeIRI } from "../utils/core";
 import { JSONSchema7 } from "json-schema";
 import { useJsonForms } from "@jsonforms/react";
 import dot from "dot";
@@ -28,6 +30,7 @@ import { useCRUDWithQueryClient } from "../state/useCRUDWithQueryClient";
 import { useGlobalCRUDOptions } from "../state/useGlobalCRUDOptions";
 import { defaultJsonldContext, defaultPrefix } from "../form/formConfigs";
 import get from "lodash/get";
+import { TabIcon } from "../theme/icons";
 
 type SimpleExpandPanelRendererProps = {
   data: any;
@@ -108,8 +111,9 @@ export const SimpleExpandPanelRenderer = (
     defaultPrefix,
     crudOptions,
     defaultJsonldContext,
-    { enabled: false, initialData: data },
+    { enabled: !data?.__draft, initialData: data, refetchOnWindowFocus: true },
   );
+  const draft = data?.__draft && !saveMutation.isSuccess;
   const { data: loadedData } = loadQuery;
   useEffect(() => {
     if (loadedData?.document) {
@@ -122,7 +126,6 @@ export const SimpleExpandPanelRenderer = (
     if (!saveMutation) return;
     saveMutation.mutate(data);
   }, [saveMutation, data]);
-  const draft = data?.__draft && !saveMutation.isSuccess;
 
   return (
     <ListItem
@@ -133,15 +136,36 @@ export const SimpleExpandPanelRenderer = (
               <Save />
             </IconButton>
           ) : (
-            <IconButton
-              sx={{ padding: 0 }}
-              onClick={(e) => {
-                e.stopPropagation();
-                handleToggle();
-              }}
-            >
-              {modalIsOpen ? <OpenInNewOff /> : <OpenInNew />}
-            </IconButton>
+            <>
+              <IconButton
+                sx={{ padding: 0 }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleToggle();
+                }}
+              >
+                {modalIsOpen ? <OpenInNewOff /> : <OpenInNew />}
+              </IconButton>
+              <IconButton
+                component={React.forwardRef<HTMLSpanElement, any>(
+                  ({ children, ...props }, ref) => (
+                    <span {...props} ref={ref}>
+                      <a
+                        href={`/de/create/${typeName}?encID=${encodeIRI(
+                          entityIRI,
+                        )}`}
+                        target="_blank"
+                        rel="noopener"
+                      >
+                        {children}
+                      </a>
+                    </span>
+                  ),
+                )}
+              >
+                <TabIcon />
+              </IconButton>
+            </>
           )}
           <IconButton
             aria-label={"Delete"}

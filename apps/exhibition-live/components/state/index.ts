@@ -8,3 +8,4 @@ export * from "./useThemeSettings";
 export * from "./useQueryKeyResolver";
 export * from "./useGlobalAuth";
 export * from "./useDrawerDimensions";
+export * from "./useRightDrawerState";

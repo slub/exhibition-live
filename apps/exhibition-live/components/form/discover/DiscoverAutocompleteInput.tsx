@@ -103,7 +103,6 @@ const DiscoverAutocompleteInput: FunctionComponent<Props> = ({
 
   const handleEnter = useCallback(
     (e: React.KeyboardEvent<HTMLDivElement>) => {
-      console.log("handleEnter", e.key, searchString?.length);
       if (e.key === "Enter" && searchString?.length > 0) {
         onEnterSearch && onEnterSearch(searchString);
       }

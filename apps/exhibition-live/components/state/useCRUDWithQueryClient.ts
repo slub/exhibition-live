@@ -29,6 +29,7 @@ export const useCRUDWithQueryClient = (
   jsonldContext?: JsonLdContext,
   queryOptions?: QueryObserverOptions<any, Error>,
   loadQueryKey?: string,
+  allowUnsafeSourceIRIs?: boolean,
 ) => {
   const { crudOptions } = useGlobalCRUDOptions();
   const { constructFetch, updateFetch, askFetch } = crudOptions || {};
@@ -73,13 +74,15 @@ export const useCRUDWithQueryClient = (
   const saveMutation = useMutation(
     ["save", entityIRI],
     async (data: Record<string, any>) => {
-      if (!entityIRI || !typeIRI || !updateFetch)
-        throw new Error("entityIRI or typeIRI or  updateFetch is not defined");
+      if(!allowUnsafeSourceIRIs) {
+        if (!entityIRI || !typeIRI || !updateFetch)
+          throw new Error("entityIRI or typeIRI or  updateFetch is not defined");
+      }
       const dataWithId: NamedAndTypedEntity = {
         ...data,
-        "@id": entityIRI,
-        "@type": typeIRI,
-      };
+        ...(entityIRI ? {"@id": entityIRI} : {}),
+        ...(typeIRI ? {"@type": typeIRI} : {})
+      } as NamedAndTypedEntity;
       const cleanData = await cleanJSONLD(dataWithId, schema, {
         jsonldContext,
         defaultPrefix,

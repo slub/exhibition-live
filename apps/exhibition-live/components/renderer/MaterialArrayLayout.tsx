@@ -172,6 +172,7 @@ const MaterialArrayLayoutComponent = (props: ArrayLayoutProps & {}) => {
         createDefault={innerCreateDefaultValue}
         readonly={readonly}
         isReifiedStatement={isReifiedStatement}
+        formsPath={makeFormsPath(config?.formsPath, path)}
       />
       {modalIsOpen && (
         <SemanticFormsModal
@@ -187,6 +188,7 @@ const MaterialArrayLayoutComponent = (props: ArrayLayoutProps & {}) => {
             entityIRI && setFormData({ "@id": entityIRI })
           }
           onFormDataChange={(data) => setFormData(data)}
+          formsPath={makeFormsPath(config?.formsPath, path)}
         />
       )}
       {isReifiedStatement && (

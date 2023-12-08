@@ -47,7 +47,8 @@ export const ArrayLayoutToolbar = memo(
     readonly,
     onCreate,
     isReifiedStatement,
-  }: ArrayLayoutToolbarProps & { schema?: JsonSchema7 }) => {
+    formsPath,
+  }: ArrayLayoutToolbarProps & { schema?: JsonSchema7, formsPath?: string }) => {
     const { t } = useTranslation();
     const typeIRI = useMemo(
       () => schema?.properties?.["@type"]?.const,

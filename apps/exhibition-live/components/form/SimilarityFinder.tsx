@@ -99,7 +99,7 @@ const SimilarityFinder: FunctionComponent<Props> = ({
   const { openai } = useSettings();
   const [selectedKnowledgeSources, setSelectedKnowledgeSources] = useState<
     KnowledgeSources[]
-  >(["kb"]);
+  >(["kb", "gnd"]);
   const [entitySelected, setEntitySelected] = useState<
     SelectedEntity | undefined
   >();
@@ -117,22 +117,6 @@ const SimilarityFinder: FunctionComponent<Props> = ({
       null,
     [data, searchOnDataPath, search, globalSearch],
   );
-  const handleKnowledgeSourceChange = useCallback(
-    (
-      event: React.MouseEvent<HTMLElement>,
-      newKnowledgeSources: KnowledgeSources[],
-    ) => {
-      if (entitySelected) {
-        setEntitySelected(undefined);
-      }
-      setSelectedKnowledgeSources(
-        Array.isArray(newKnowledgeSources)
-          ? newKnowledgeSources
-          : [newKnowledgeSources],
-      );
-    },
-    [entitySelected, setEntitySelected, setSelectedKnowledgeSources],
-  );
 
   const [typeName, setTypeName] = useState(
     typeIRItoTypeName(preselectedClassIRI),
@@ -145,10 +129,19 @@ const SimilarityFinder: FunctionComponent<Props> = ({
     setTypeName(typeIRItoTypeName(preselectedClassIRI));
   }, [preselectedClassIRI, setTypeName]);
 
+  const handleToggle = useCallback(
+    (id: string | undefined, source: KnowledgeSources) => {
+      !selectedKnowledgeSources?.includes(source)
+        ? setSelectedKnowledgeSources(before => [...before ,source] as KnowledgeSources[])
+        : setSelectedKnowledgeSources(before => before.filter(s => s != source) as KnowledgeSources[]);
+      setEntitySelected(id ? { id, source } : undefined);
+    },
+    [setEntitySelected, setSelectedKnowledgeSources, selectedKnowledgeSources],
+  );
   const handleSelect = useCallback(
     (id: string | undefined, source: KnowledgeSources) => {
-      !selectedKnowledgeSources?.includes(source) &&
-        setSelectedKnowledgeSources([source] as KnowledgeSources[]);
+      !selectedKnowledgeSources?.includes(source)
+        && setSelectedKnowledgeSources(before => [...before ,source] as KnowledgeSources[])
       setEntitySelected(id ? { id, source } : undefined);
     },
     [setEntitySelected, setSelectedKnowledgeSources, selectedKnowledgeSources],

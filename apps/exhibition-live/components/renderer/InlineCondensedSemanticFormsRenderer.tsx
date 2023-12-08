@@ -10,7 +10,7 @@ import merge from "lodash/merge";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 
-import { slent } from "../form/formConfigs";
+import {defaultJsonldContext, defaultPrefix, slent} from "../form/formConfigs";
 import { Add, OpenInNew, OpenInNewOff } from "@mui/icons-material";
 import DiscoverAutocompleteInput from "../form/discover/DiscoverAutocompleteInput";
 import { primaryFields } from "../config";
@@ -27,6 +27,9 @@ import SimilarityFinder from "../form/SimilarityFinder";
 import NiceModal from "@ebay/nice-modal-react";
 import GenericModal from "../form/GenericModal";
 import { JSONSchema7 } from "json-schema";
+import {useCRUDWithQueryClient} from "../state/useCRUDWithQueryClient";
+import {useGlobalCRUDOptions} from "../state/useGlobalCRUDOptions";
+import get from "lodash/get";
 
 const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
   const {
@@ -230,6 +233,19 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
     [setSearch, setSearchString],
   );
 
+  const { crudOptions } = useGlobalCRUDOptions();
+  const { saveMutation } = useCRUDWithQueryClient(
+    data,
+    typeIRI,
+    subSchema as JSONSchema7,
+    defaultPrefix,
+    crudOptions,
+    defaultJsonldContext,
+    { enabled: false},
+    undefined,
+    true
+  );
+
   const handleMappedData = useCallback(
     (newData: any) => {
       if (!newData) return;
@@ -240,14 +256,21 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
             ? "confirm save mapping"
             : "confirm mapping",
       }).then(() => {
-        handleChange(path, {
+        const prefix = schema.title || slent[""].value;
+        const newIRI = `${prefix}${uuidv4()}`;
+        saveMutation.mutate({
           ...newData,
-          "@id": data["@id"],
-          "@type": data["@type"],
+          "@id": newIRI,
+          "@type": typeIRI
+        })
+        const label = get(newData, primaryFields[typeName]?.label);
+        handleSelectedChange({
+          value: newIRI,
+          label: typeof label === "string" ? label : newIRI,
         });
       });
     },
-    [handleChange, path, typeIRI],
+    [saveMutation, handleSelectedChange, schema,  path, typeIRI, data],
   );
 
   return (

@@ -2,12 +2,10 @@ import { MoreVert as MoreVertIcon } from "@mui/icons-material";
 import {
   Button,
   Container,
-  IconButton,
   Link,
   Menu,
   MenuItem,
   MenuList,
-  Paper,
   Table,
   TableBody,
   TableCell,
@@ -157,33 +155,35 @@ const PropertyItem = ({
         </Menu>
       </TableCell>
       <TableCell align="right">
-        {(Array.isArray(value) &&
-          value.map((v, index) => {
-            const comma = index < value.length - 1 ? "," : "";
-            if (typeof v === "string") {
-              return (
-                <span key={v}>
-                  {v}
-                  {comma}{" "}
-                </span>
-              );
-            }
-            if (typeof v.id === "string") {
-              return (
-                <span key={v.id}>
-                  <LabledLink
-                    uri={v.id}
-                    label={v.label}
-                    onClick={() => onEntityChange && onEntityChange(v.id)}
-                  />
-                  {comma}{" "}
-                </span>
-              );
-            }
-          })) ||
-          typeof value === "string" ||
-          typeof value === "number" ||
-          (typeof value === "boolean" && value)}
+        {Array.isArray(value)
+          ? value.map((v, index) => {
+              const comma = index < value.length - 1 ? "," : "";
+              if (typeof v === "string") {
+                return (
+                  <span key={v}>
+                    {v}
+                    {comma}{" "}
+                  </span>
+                );
+              }
+              if (typeof v.id === "string") {
+                return (
+                  <span key={v.id}>
+                    <LabledLink
+                      uri={v.id}
+                      label={v.label}
+                      onClick={() => onEntityChange && onEntityChange(v.id)}
+                    />
+                    {comma}{" "}
+                  </span>
+                );
+              }
+            })
+          : typeof value === "string" ||
+            typeof value === "number" ||
+            typeof value === "boolean"
+          ? value.toString()
+          : ""}
       </TableCell>
     </TableRow>
   );

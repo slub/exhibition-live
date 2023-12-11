@@ -24,7 +24,7 @@ type Props = {
   data: EntityCardData;
   id: string;
   onBack?: () => void;
-  onAcceptItem?: (id: string | undefined) => void;
+  onAcceptItem?: (id: string | undefined, data: any) => void;
   onSelectItem?: (id: string | undefined) => void;
   detailView?: React.ReactNode;
   acceptTitle: string;
@@ -83,7 +83,7 @@ const ClassicEntityCard: FunctionComponent<Props> = ({
               size="small"
               color="primary"
               variant="contained"
-              onClick={() => onAcceptItem(data?.id)}
+              onClick={() => onAcceptItem(data?.id, data)}
             >
               {acceptTitle}
             </Button>

@@ -54,6 +54,7 @@ type Props = {
   jsonSchema: JSONSchema7;
   onEntityIRIChange?: (entityIRI: string | undefined) => void;
   onMappedDataAccepted?: (data: any) => void;
+  onExistingEntityAccepted?: (entityIRI: string, data: any) => void;
   searchOnDataPath?: string;
   search?: string;
 };
@@ -91,6 +92,7 @@ const SimilarityFinder: FunctionComponent<Props> = ({
   data,
   classIRI: preselectedClassIRI,
   onEntityIRIChange,
+  onExistingEntityAccepted,
   onMappedDataAccepted,
   searchOnDataPath,
   search,
@@ -226,10 +228,11 @@ const SimilarityFinder: FunctionComponent<Props> = ({
   );
 
   const handleEntityChange = useCallback(
-    (id: string | undefined) => {
+    (id: string | undefined, data: any) => {
       onEntityIRIChange && onEntityIRIChange(id);
+      onExistingEntityAccepted && onExistingEntityAccepted(id, data);
     },
-    [onEntityIRIChange],
+    [onEntityIRIChange, onExistingEntityAccepted],
   );
 
   const handleSelectGND = useCallback(

@@ -18,7 +18,7 @@ type Props = {
   typeName?: string;
   classIRI?: string;
   onSelect?: (id: string | undefined) => void;
-  onAcceptItem?: (id: string | undefined) => void;
+  onAcceptItem?: (id: string | undefined, data: any) => void;
 };
 
 const DiscoverSearchTable: FunctionComponent<Props> = ({

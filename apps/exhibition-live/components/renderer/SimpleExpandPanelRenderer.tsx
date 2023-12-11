@@ -11,11 +11,7 @@ import {
 } from "@mui/material";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 
-import {
-  OpenInNew,
-  OpenInNewOff,
-  Save,
-} from "@mui/icons-material";
+import { OpenInNew, OpenInNewOff, Save } from "@mui/icons-material";
 import { BASE_IRI, primaryFields } from "../config";
 import {
   applyToEachField,
@@ -97,8 +93,8 @@ export const SimpleExpandPanelRenderer = (
         console.warn("could not render childLabelTemplate", e);
       }
     } else if (elementLabelProp) {
-      const label = get(data, elementLabelProp);
-      if (label) return label;
+      const label_ = get(data, elementLabelProp);
+      if (label_) return label_;
     }
     return label || data?.__label;
   }, [childLabelTemplate, elementLabelProp, data, label]);
@@ -111,7 +107,11 @@ export const SimpleExpandPanelRenderer = (
     defaultPrefix,
     crudOptions,
     defaultJsonldContext,
-    { enabled: !data?.__draft, initialData: data, refetchOnWindowFocus: true },
+    {
+      enabled: !data?.__draft && !data?.__label,
+      initialData: data,
+      refetchOnWindowFocus: true,
+    },
   );
   const draft = data?.__draft && !saveMutation.isSuccess;
   const { data: loadedData } = loadQuery;

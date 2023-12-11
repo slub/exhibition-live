@@ -13,11 +13,22 @@ import { v4 as uuidv4 } from "uuid";
 
 import ValidationIcon from "./ValidationIcon";
 import DiscoverAutocompleteInput from "../form/discover/DiscoverAutocompleteInput";
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import { JsonSchema7 } from "@jsonforms/core";
-import { sladb, slent } from "../form/formConfigs";
+import {
+  sladb,
+  slent,
+} from "../form/formConfigs";
 import { BASE_IRI } from "../config";
 import { memo } from "./config";
+import {
+  useGlobalSearchWithHelper,
+
+} from "../state";
+import { SearchbarWithFloatingButton } from "../layout/main-layout/Searchbar";
+import SimilarityFinder from "../form/SimilarityFinder";
+import { JSONSchema7 } from "json-schema";
+import { AutocompleteSuggestion } from "../form/DebouncedAutoComplete";
 
 export interface ArrayLayoutToolbarProps {
   label: string;
@@ -48,17 +59,21 @@ export const ArrayLayoutToolbar = memo(
     onCreate,
     isReifiedStatement,
     formsPath,
-  }: ArrayLayoutToolbarProps & { schema?: JsonSchema7, formsPath?: string }) => {
+  }: ArrayLayoutToolbarProps & {
+    schema?: JsonSchema7;
+    formsPath?: string;
+  }) => {
     const { t } = useTranslation();
     const typeIRI = useMemo(
       () => schema?.properties?.["@type"]?.const,
       [schema],
     );
-    const handleChange_ = React.useCallback(
-      (value: any, label: string) => {
+    const handleSelectedChange = React.useCallback(
+      (v: AutocompleteSuggestion) => {
+        if (!v) return;
         addItem(path, {
-          "@id": value,
-          __label: label,
+          "@id": v.value,
+          __label: v.label,
         })();
       },
       [addItem, path],
@@ -79,6 +94,34 @@ export const ArrayLayoutToolbar = memo(
       () => typeIRI?.substring(BASE_IRI.length, typeIRI.length),
       [typeIRI],
     );
+    const handleEntityIRIChange = useCallback(
+      (iri: string) => {
+        handleSelectedChange({ value: iri, label: iri });
+      },
+      [handleSelectedChange],
+    );
+
+    const handleMappedDataAccepted = useCallback(
+      (newData: any) => {
+        addItem(path, newData)();
+      },
+      [addItem, path],
+    );
+
+    const {
+      path: globalPath,
+      searchString,
+      handleSearchStringChange,
+      handleMappedData,
+      handleFocus,
+    } = useGlobalSearchWithHelper(
+      typeName,
+      typeIRI,
+      schema as JSONSchema7,
+      formsPath,
+      handleMappedDataAccepted,
+    );
+
     return (
       <Toolbar disableGutters={true} sx={{ padding: 0 }}>
         <Grid container alignItems="center" justifyContent="space-between">
@@ -102,9 +145,12 @@ export const ArrayLayoutToolbar = memo(
                     typeName={typeName}
                     title={label || ""}
                     onEnterSearch={handleCreateNewFromSearch}
-                    onSelectionChange={(selection) =>
-                      handleChange_(selection?.value, selection?.label)
-                    }
+                    searchString={searchString}
+                    onSearchValueChange={handleSearchStringChange}
+                    onSelectionChange={handleSelectedChange}
+                    inputProps={{
+                      onFocus: handleFocus,
+                    }}
                   />
                 </Grid>
                 <Grid item>
@@ -126,6 +172,18 @@ export const ArrayLayoutToolbar = memo(
             </Grid>
           )}
         </Grid>
+        {globalPath === formsPath && (
+          <SearchbarWithFloatingButton>
+            <SimilarityFinder
+              search={searchString}
+              data={{}}
+              classIRI={typeIRI}
+              jsonSchema={schema as JSONSchema7}
+              onEntityIRIChange={handleEntityIRIChange}
+              onMappedDataAccepted={handleMappedData}
+            />
+          </SearchbarWithFloatingButton>
+        )}
       </Toolbar>
     );
   },

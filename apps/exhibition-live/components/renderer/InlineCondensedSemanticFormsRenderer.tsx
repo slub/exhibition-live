@@ -10,7 +10,9 @@ import merge from "lodash/merge";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 
-import {defaultJsonldContext, defaultPrefix, slent} from "../form/formConfigs";
+import {
+  slent,
+} from "../form/formConfigs";
 import { Add, OpenInNew, OpenInNewOff } from "@mui/icons-material";
 import DiscoverAutocompleteInput from "../form/discover/DiscoverAutocompleteInput";
 import { primaryFields } from "../config";
@@ -19,17 +21,12 @@ import { SemanticFormsModal } from "./SemanticFormsModal";
 import { extractFieldIfString } from "../utils/mapping/simpleFieldExtractor";
 import { PrimaryField } from "../utils/types";
 import { typeIRItoTypeName } from "../content/main/Dashboard";
-import { useGlobalSearch } from "../state";
+import { useGlobalSearchWithHelper } from "../state";
 import { TabIcon } from "../theme/icons";
 import { makeFormsPath } from "../utils/core";
 import { SearchbarWithFloatingButton } from "../layout/main-layout/Searchbar";
 import SimilarityFinder from "../form/SimilarityFinder";
-import NiceModal from "@ebay/nice-modal-react";
-import GenericModal from "../form/GenericModal";
 import { JSONSchema7 } from "json-schema";
-import {useCRUDWithQueryClient} from "../state/useCRUDWithQueryClient";
-import {useGlobalCRUDOptions} from "../state/useGlobalCRUDOptions";
-import get from "lodash/get";
 
 const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
   const {
@@ -50,13 +47,6 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
   } = props;
   const enableDrawer = true;
   const [formData, setFormData] = useState<any>({ "@id": data });
-  const [searchString, setSearchString] = useState<string | undefined>("");
-  const {
-    setTypeName,
-    setSearch,
-    setPath,
-    path: globalPath,
-  } = useGlobalSearch();
   const isValid = errors.length === 0;
   const appliedUiSchemaOptions = merge({}, config, uischema.options);
   const [editMode, setEditMode] = useState(false);
@@ -125,50 +115,20 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
     });
   }, [data, ctx?.core?.data, path, setRealLabel]);
 
-  const newURI = useCallback(() => {
-    const prefix = schema.title || slent[""].value;
-    const newURI = `${prefix}${uuidv4()}`;
-    const fieldDecl = primaryFields[typeName] as PrimaryField | undefined;
-    const labelKey = fieldDecl?.label || "title";
-    setFormData({ "@id": newURI, [labelKey]: searchString });
-  }, [schema, data, searchString, setFormData]);
-
-  const handleEntityIRIChange = useCallback((v: string) => {
-    handleSelectedChange({ value: v, label: v });
-  }, []);
+  const handleExistingEntityAccepted = useCallback(
+    (entityIRI: string, data: any) => {
+      handleSelectedChange({
+        value: entityIRI,
+        label: data.label || entityIRI,
+      });
+    },
+    [handleSelectedChange],
+  );
 
   const typeName = useMemo(
     () => typeIRI && typeIRItoTypeName(typeIRI),
     [typeIRI],
   );
-  //const uischemaExternal = useUISchemaForType(typeIRI || '')
-
-  /*const subSchema = useMemo(() => {
-    if (!$ref) return
-    const schema2 = {
-      ...schema,
-      $ref
-    }
-    const resolvedSchema = resolveSchema(schema2 as JsonSchema, '', rootSchema as JsonSchema)
-    return {
-      ...rootSchema,
-      ...resolvedSchema
-    }
-  }, [$ref, schema, rootSchema])
-
-  const foundUISchema = useMemo(
-      () =>
-          findUISchema(
-              uischemas || [],
-              schema,
-              uischema.scope,
-              path,
-              undefined,
-              uischema,
-              rootSchema
-          ),
-      [uischemas, schema, uischema.scope, path, uischema, rootSchema]
-  )*/
 
   const handleToggle = useCallback(
     (event?: React.MouseEvent) => {
@@ -176,15 +136,6 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
       setModalIsOpen(!modalIsOpen);
     },
     [setModalIsOpen, modalIsOpen],
-  );
-
-  const handleAddNew = useCallback(
-    (event?: React.MouseEvent) => {
-      event?.stopPropagation();
-      newURI();
-      setModalIsOpen(true);
-    },
-    [setModalIsOpen, newURI],
   );
 
   const searchOnDataPath = useMemo(() => {
@@ -214,63 +165,50 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
     (data: any) => {
       setFormData(data);
     },
-    [setFormData, setPath],
+    [setFormData],
   );
 
-  const handleFocus = useCallback(
-    (event: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-      setTypeName(typeName);
-      setPath(formsPath);
-    },
-    [setTypeName, typeName, setPath, formsPath],
-  );
-
-  const handleSearchValueChange = useCallback(
-    (v: string) => {
-      setSearch(v);
-      setSearchString(v);
-    },
-    [setSearch, setSearchString],
-  );
-
-  const { crudOptions } = useGlobalCRUDOptions();
-  const { saveMutation } = useCRUDWithQueryClient(
-    data,
-    typeIRI,
-    subSchema as JSONSchema7,
-    defaultPrefix,
-    crudOptions,
-    defaultJsonldContext,
-    { enabled: false},
-    undefined,
-    true
-  );
-
-  const handleMappedData = useCallback(
+  const handleMappedDataAccepted = useCallback(
     (newData: any) => {
-      if (!newData) return;
-      //avoid overriding of id and type by mapped data
-      NiceModal.show(GenericModal, {
-        type:
-          newData["@type"] !== typeIRI
-            ? "confirm save mapping"
-            : "confirm mapping",
-      }).then(() => {
-        const prefix = schema.title || slent[""].value;
-        const newIRI = `${prefix}${uuidv4()}`;
-        saveMutation.mutate({
-          ...newData,
-          "@id": newIRI,
-          "@type": typeIRI
-        })
-        const label = get(newData, primaryFields[typeName]?.label);
-        handleSelectedChange({
-          value: newIRI,
-          label: typeof label === "string" ? label : newIRI,
-        });
+      const newIRI = newData["@id"];
+      if (!newIRI) return;
+      console.log("handleMappedDataAccepted", newData, newIRI);
+      handleSelectedChange({
+        value: newIRI,
+        label: newData.__label || newIRI,
       });
     },
-    [saveMutation, handleSelectedChange, schema,  path, typeIRI, data],
+    [handleSelectedChange],
+  );
+  const {
+    path: globalPath,
+    searchString,
+    handleSearchStringChange,
+    handleMappedData,
+    handleFocus,
+  } = useGlobalSearchWithHelper(
+    typeName,
+    typeIRI,
+    subSchema as JSONSchema7,
+    formsPath,
+    handleMappedDataAccepted,
+  );
+
+  const newURI = useCallback(() => {
+    const prefix = schema.title || slent[""].value;
+    const newURI = `${prefix}${uuidv4()}`;
+    const fieldDecl = primaryFields[typeName] as PrimaryField | undefined;
+    const labelKey = fieldDecl?.label || "title";
+    setFormData({ "@id": newURI, [labelKey]: searchString });
+  }, [schema, data, searchString, setFormData]);
+
+  const handleAddNew = useCallback(
+    (event?: React.MouseEvent) => {
+      event?.stopPropagation();
+      newURI();
+      setModalIsOpen(true);
+    },
+    [setModalIsOpen, newURI],
   );
 
   return (
@@ -285,7 +223,7 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
             typeName={typeName || ""}
             selected={selected}
             onSelectionChange={handleSelectedChange}
-            onSearchValueChange={handleSearchValueChange}
+            onSearchValueChange={handleSearchStringChange}
             searchString={searchString}
             inputProps={{
               onFocus: handleFocus,
@@ -341,23 +279,20 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
                 askClose={handleSaveAndClose}
                 askCancel={handleClose}
                 onFormDataChange={handleFormDataChange}
-                onChange={handleEntityIRIChange}
                 formsPath={formsPath}
               />
             }
             {globalPath === formsPath && (
               <SearchbarWithFloatingButton>
-                <>
-                  <SimilarityFinder
-                    search={searchString}
-                    data={data}
-                    classIRI={typeIRI}
-                    jsonSchema={schema as JSONSchema7}
-                    onEntityIRIChange={handleEntityIRIChange}
-                    searchOnDataPath={searchOnDataPath}
-                    onMappedDataAccepted={handleMappedData}
-                  />
-                </>
+                <SimilarityFinder
+                  search={searchString}
+                  data={data}
+                  classIRI={typeIRI}
+                  jsonSchema={schema as JSONSchema7}
+                  onExistingEntityAccepted={handleExistingEntityAccepted}
+                  searchOnDataPath={searchOnDataPath}
+                  onMappedDataAccepted={handleMappedData}
+                />
               </SearchbarWithFloatingButton>
             )}
           </Grid>

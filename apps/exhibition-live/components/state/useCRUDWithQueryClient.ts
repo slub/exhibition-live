@@ -74,14 +74,16 @@ export const useCRUDWithQueryClient = (
   const saveMutation = useMutation(
     ["save", entityIRI],
     async (data: Record<string, any>) => {
-      if(!allowUnsafeSourceIRIs) {
+      if (!allowUnsafeSourceIRIs) {
         if (!entityIRI || !typeIRI || !updateFetch)
-          throw new Error("entityIRI or typeIRI or  updateFetch is not defined");
+          throw new Error(
+            "entityIRI or typeIRI or  updateFetch is not defined",
+          );
       }
       const dataWithId: NamedAndTypedEntity = {
         ...data,
-        ...(entityIRI ? {"@id": entityIRI} : {}),
-        ...(typeIRI ? {"@type": typeIRI} : {})
+        ...(entityIRI ? { "@id": entityIRI } : {}),
+        ...(typeIRI ? { "@type": typeIRI } : {}),
       } as NamedAndTypedEntity;
       const cleanData = await cleanJSONLD(dataWithId, schema, {
         jsonldContext,

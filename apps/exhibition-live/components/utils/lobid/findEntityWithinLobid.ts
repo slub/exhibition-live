@@ -1,4 +1,5 @@
 import { gndBaseIRI } from "../gnd/prefixes";
+import { lobidTypemap } from "../../config";
 
 /**
  * {
@@ -17,18 +18,7 @@ import { gndBaseIRI } from "../gnd/prefixes";
 const lobidSearchURL = "https://lobid.org/gnd/search";
 const lobidURL = "https://lobid.org/gnd/";
 
-const LobidTypemap: Record<string, string> = {
-  Organization: "CorporateBody",
-  Person: "DifferentiatedPerson",
-  Corporation: "CorporateBody",
-  Exhibition: "ConferenceOrEvent",
-  Place: "CorporateBody",
-  Location: "TerritorialCorporateBodyOrAdministrativeUnit",
-  Tag: "SubjectHeading",
-  ExhibitionExponat: "Work",
-};
-
-const mapTypeName = (typeName: string) => LobidTypemap[typeName] || typeName;
+const mapTypeName = (typeName: string) => lobidTypemap[typeName] || typeName;
 const gndIRIToID = (iri: string) => iri.substring(gndBaseIRI.length);
 export const findEntityWithinLobid = async (
   searchString: string,

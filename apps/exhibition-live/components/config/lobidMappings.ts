@@ -483,6 +483,19 @@ export const personDeclarativeMapping: DeclarativeMappings = [
   },
 ];
 
+export const corporateBody2PlaceDeclarativeMapping: DeclarativeMappings = [
+  {
+    source: {
+      path: "preferredName",
+      expectedSchema: {
+        type: "string",
+      },
+    },
+    target: {
+      path: "title",
+    },
+  },
+];
 export const corporateBodyDeclarativeMapping: DeclarativeMappings = [
   {
     source: {
@@ -576,10 +589,42 @@ export const workDeclarativeMapping: DeclarativeMappings = [
   },
 ];
 
+export const tagMapping: DeclarativeMappings = [
+  {
+    source: {
+      path: "preferredName",
+    },
+    target: {
+      path: "title",
+    },
+  },
+  {
+    source: {
+      path: "id",
+    },
+    target: {
+      path: "idAuthority.@id",
+    },
+  },
+];
+
+export const lobidTypemap: Record<string, string> = {
+  Exhibition: "ConferenceOrEvent",
+  Person: "DifferentiatedPerson",
+  Corporation: "CorporateBody",
+  Place: "CorporateBody",
+  Organization: "CorporateBody",
+  ExhibitionExponat: "Work",
+  Location: "TerritorialCorporateBodyOrAdministrativeUnit",
+  Tag: "SubjectHeading",
+};
 export const declarativeMappings: DeclarativeMapping = {
   Exhibition: exhibitionDeclarativeMapping,
   Person: personDeclarativeMapping,
   Corporation: corporateBodyDeclarativeMapping,
+  Place: corporateBody2PlaceDeclarativeMapping,
+  Organization: corporateBodyDeclarativeMapping,
   ExhibitionExponat: workDeclarativeMapping,
   Location: locationDeclarativeMapping,
+  Tag: tagMapping,
 };

@@ -100,16 +100,17 @@ const K10PlusSearchTable: FunctionComponent<Props> = ({
 
   const fetchData = useCallback(async () => {
     if (!searchString || searchString.length < 1) return;
-    const mappedFields = (
-      await findEntityWithinK10Plus(
-        searchString,
-        typeName,
-        k10PlusEndpointURL,
-        10,
-        externalAuthority.kxp?.recordSchema,
-      )
-    ).searchRetrieveResponse.records?.record?.map((record) =>
-      marcRecord2RDF(record),
+
+    const entities = await findEntityWithinK10Plus(
+      searchString,
+      typeName,
+      k10PlusEndpointURL,
+      10,
+      externalAuthority.kxp?.recordSchema,
+    );
+    if (!entities?.searchRetrieveResponse) return;
+    const mappedFields = entities.searchRetrieveResponse.records?.record?.map(
+      (record) => marcRecord2RDF(record),
     );
     setResultTable(mappedFields);
   }, [

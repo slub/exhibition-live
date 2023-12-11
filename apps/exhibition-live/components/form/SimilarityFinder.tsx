@@ -134,16 +134,22 @@ const SimilarityFinder: FunctionComponent<Props> = ({
   const handleToggle = useCallback(
     (id: string | undefined, source: KnowledgeSources) => {
       !selectedKnowledgeSources?.includes(source)
-        ? setSelectedKnowledgeSources(before => [...before ,source] as KnowledgeSources[])
-        : setSelectedKnowledgeSources(before => before.filter(s => s != source) as KnowledgeSources[]);
+        ? setSelectedKnowledgeSources(
+            (before) => [...before, source] as KnowledgeSources[],
+          )
+        : setSelectedKnowledgeSources(
+            (before) => before.filter((s) => s != source) as KnowledgeSources[],
+          );
       setEntitySelected(id ? { id, source } : undefined);
     },
     [setEntitySelected, setSelectedKnowledgeSources, selectedKnowledgeSources],
   );
   const handleSelect = useCallback(
     (id: string | undefined, source: KnowledgeSources) => {
-      !selectedKnowledgeSources?.includes(source)
-        && setSelectedKnowledgeSources(before => [...before ,source] as KnowledgeSources[])
+      !selectedKnowledgeSources?.includes(source) &&
+        setSelectedKnowledgeSources(
+          (before) => [...before, source] as KnowledgeSources[],
+        );
       setEntitySelected(id ? { id, source } : undefined);
     },
     [setEntitySelected, setSelectedKnowledgeSources, selectedKnowledgeSources],
@@ -317,6 +323,24 @@ const SimilarityFinder: FunctionComponent<Props> = ({
                   src={"/Icons/gnd-logo.png"}
                 />
               </Badge>
+              <Badge
+                color="primary"
+                sx={{ m: 0.5 }}
+                anchorOrigin={{
+                  vertical: "bottom",
+                  horizontal: "right",
+                }}
+                variant="dot"
+                overlap="circular"
+                invisible={!selectedKnowledgeSources?.includes("k10plus")}
+              >
+                <Img
+                  alt={"gnd logo"}
+                  width={24}
+                  height={24}
+                  src={"/Icons/k10plus-logo.png"}
+                />
+              </Badge>
             </Box>
           </Grid>
         </Grid>
@@ -365,22 +389,24 @@ const SimilarityFinder: FunctionComponent<Props> = ({
                 </>
               )}
           </ClassicResultListWrapper>
-          {/*<ClassicResultListWrapper
-            label="Treffer im k10plus"
-            selected={selectedKnowledgeSources?.includes("k10plus")}
-            handleClick={handleSelectK10plus}
-          >
-            {searchString &&
-              (!entitySelected || entitySelected.source == "k10plus") &&
-              selectedKnowledgeSources?.includes("k10plus") && (
-                <K10PlusSearchTable
-                  onAcceptItem={handleAcceptKXP}
-                  searchString={searchString}
-                  typeName={typeName}
-                  onSelect={handleSelectK10plus}
-                />
-              )}
-              </ClassicResultListWrapper>*/}
+          {
+            <ClassicResultListWrapper
+              label="Treffer im k10plus"
+              selected={selectedKnowledgeSources?.includes("k10plus")}
+              handleClick={handleSelectK10plus}
+            >
+              {searchString &&
+                (!entitySelected || entitySelected.source == "k10plus") &&
+                selectedKnowledgeSources?.includes("k10plus") && (
+                  <K10PlusSearchTable
+                    onAcceptItem={handleAcceptKXP}
+                    searchString={searchString}
+                    typeName={typeName}
+                    onSelect={handleSelectK10plus}
+                  />
+                )}
+            </ClassicResultListWrapper>
+          }
         </Grid>
       </Grid>
     </>

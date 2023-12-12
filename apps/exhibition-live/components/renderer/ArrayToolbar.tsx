@@ -15,16 +15,10 @@ import ValidationIcon from "./ValidationIcon";
 import DiscoverAutocompleteInput from "../form/discover/DiscoverAutocompleteInput";
 import { useCallback, useMemo } from "react";
 import { JsonSchema7 } from "@jsonforms/core";
-import {
-  sladb,
-  slent,
-} from "../form/formConfigs";
+import { sladb, slent } from "../form/formConfigs";
 import { BASE_IRI } from "../config";
 import { memo } from "./config";
-import {
-  useGlobalSearchWithHelper,
-
-} from "../state";
+import { useGlobalSearchWithHelper } from "../state";
 import { SearchbarWithFloatingButton } from "../layout/main-layout/Searchbar";
 import SimilarityFinder from "../form/SimilarityFinder";
 import { JSONSchema7 } from "json-schema";

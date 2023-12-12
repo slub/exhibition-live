@@ -10,9 +10,7 @@ import merge from "lodash/merge";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 
-import {
-  slent,
-} from "../form/formConfigs";
+import { slent } from "../form/formConfigs";
 import { Add, OpenInNew, OpenInNewOff } from "@mui/icons-material";
 import DiscoverAutocompleteInput from "../form/discover/DiscoverAutocompleteInput";
 import { primaryFields } from "../config";

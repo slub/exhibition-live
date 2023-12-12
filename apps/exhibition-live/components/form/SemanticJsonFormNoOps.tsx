@@ -239,6 +239,7 @@ export const SemanticJsonFormNoOps: FunctionComponent<
     () => [...renderers, ...(jfpRenderers || []), ...primaryFieldRenderer],
     [jfpRenderers, primaryFieldRenderer],
   );
+  const { path: globalPath } = useGlobalSearch();
 
   return (
     <Grid container spacing={0}>
@@ -277,21 +278,19 @@ export const SemanticJsonFormNoOps: FunctionComponent<
           )}
         </Grid>
       </Grid>
-      {enableSidebar && (
+      {formsPath === globalPath && (
         <Grid item>
           {" "}
           <SearchbarWithFloatingButton>
-            <>
-              <SimilarityFinder
-                search={searchText}
-                data={data}
-                classIRI={typeIRI}
-                jsonSchema={schema}
-                onEntityIRIChange={handleEntityIRIChange}
-                searchOnDataPath={searchOnDataPath}
-                onMappedDataAccepted={handleMappedData}
-              />
-            </>
+            <SimilarityFinder
+              search={searchText}
+              data={data}
+              classIRI={typeIRI}
+              jsonSchema={schema}
+              onEntityIRIChange={handleEntityIRIChange}
+              searchOnDataPath={searchOnDataPath}
+              onMappedDataAccepted={handleMappedData}
+            />
           </SearchbarWithFloatingButton>{" "}
         </Grid>
       )}

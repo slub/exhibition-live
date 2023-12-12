@@ -192,6 +192,7 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> = ({
         data={data}
         onChange={setData}
         schema={schema}
+        formsPath="root"
         jsonFormsProps={{
           readonly: !editMode,
           ...(jsonFormsProps || {}),

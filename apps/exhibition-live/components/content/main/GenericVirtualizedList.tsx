@@ -3,6 +3,8 @@ import {
   List,
   ListItem,
   ListItemAvatar,
+  ListItemIcon,
+  ListItemButton,
   ListItemText,
   Typography,
 } from "@mui/material";
@@ -17,6 +19,7 @@ import {
   useRef,
 } from "react";
 import PerfectScrollbar from "perfect-scrollbar";
+import { Img } from "../../utils/image/Img";
 
 const Scroller: ComponentType<ScrollerProps> = forwardRef<HTMLDivElement, any>(
   ({ children, style, ...props }, ref) => {
@@ -51,6 +54,7 @@ export type GenericListItem = {
 
 type GenericListItemProps = GenericListItem & {
   index: number;
+  onClick?: (entry: any) => void;
 };
 
 export const GenericListItem = ({
@@ -59,32 +63,50 @@ export const GenericListItem = ({
   secondary,
   description,
   avatar,
+  onClick,
 }: GenericListItemProps) => {
   return (
     <>
-      <ListItemAvatar>
-        {
-          <Avatar alt={primary} src={avatar}>
-            {index + 1}
-          </Avatar>
-        }
-      </ListItemAvatar>
-      <ListItemText
-        primary={primary}
-        secondary={
-          <>
-            <Typography
-              sx={{ display: "inline" }}
-              component="span"
-              variant="body2"
-              color="text.primary"
-            >
-              {withEllipsis(secondary, 50)}
-            </Typography>
-            {withEllipsis(description, 100)}
-          </>
-        }
-      />
+      <ListItemIcon>
+        <Img alt={primary} width={48} height={48} src={avatar}></Img>
+      </ListItemIcon>
+      {onClick ? (
+        <ListItemButton onClick={onClick}>
+          <ListItemText
+            primary={primary}
+            secondary={
+              <>
+                <Typography
+                  sx={{ display: "inline" }}
+                  component="span"
+                  variant="body2"
+                  color="text.primary"
+                >
+                  {withEllipsis(secondary, 50)}
+                </Typography>
+                {withEllipsis(description, 100)}
+              </>
+            }
+          />
+        </ListItemButton>
+      ) : (
+        <ListItemText
+          primary={primary}
+          secondary={
+            <>
+              <Typography
+                sx={{ display: "inline" }}
+                component="span"
+                variant="body2"
+                color="text.primary"
+              >
+                {withEllipsis(secondary, 50)}
+              </Typography>
+              {withEllipsis(description, 100)}
+            </>
+          }
+        />
+      )}
     </>
   );
 };

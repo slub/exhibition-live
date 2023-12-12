@@ -74,6 +74,11 @@
           "scope": "#/properties/exhibitionweblink"
         },
         {
+          "type": "Control",
+          "label": "Bild",
+          "scope": "#/properties/image"
+        },
+        {
           "type": "HorizontalLayout",
           "elements": [
             {

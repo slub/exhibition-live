@@ -727,6 +727,10 @@
             "$ref": "#/$defs/Resource"
           }
         },
+        "image": {
+          "type": "string",
+          "format": "uri"
+        },
         "parent": {
           "$ref": "#/$defs/Exhibition"
         }

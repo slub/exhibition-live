@@ -44,7 +44,7 @@ import {
   isJSONSchema,
 } from "../../utils/core";
 import { JSONSchema7 } from "json-schema";
-import { Add, Delete, Details, Edit, FileDownload } from "@mui/icons-material";
+import {Add, Delete, Details, Edit, FileDownload, OpenInNew} from "@mui/icons-material";
 import { primaryFields } from "../../config";
 import { parseMarkdownLinks } from "../../utils/core/parseMarkdownLink";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -66,6 +66,7 @@ import { OverflowContainer } from "../../lists";
 import isNil from "lodash/isNil";
 import { OverflowChip } from "../../lists/OverflowChip";
 import { SparqlEndpoint, useSettings } from "../../state/useLocalSettings";
+import {EntityDetailModal} from "../../form/show";
 
 type Props = {
   typeName: string;
@@ -284,6 +285,15 @@ export const TypedList = ({ typeName }: Props) => {
     },
     [router, typeName],
   );
+  const showEntry = useCallback(
+    (id: string) => {
+      NiceModal.show(EntityDetailModal, {
+        typeIRI: classIRI,
+        entityIRI: id,
+      });
+    },
+    [classIRI],
+  );
   const extendedSchema = useExtendedSchema({ typeName, classIRI });
   const { mutate: removeEntity } = useMutation(
     ["remove", (id: string) => id],
@@ -360,6 +370,7 @@ export const TypedList = ({ typeName }: Props) => {
     [setColumnFilters],
   );
 
+
   const table = useMaterialReactTable({
     columns: displayColumns,
     data: resultList,
@@ -414,7 +425,8 @@ export const TypedList = ({ typeName }: Props) => {
         <Button
           variant="contained"
           onClick={() => {
-            table.setCreatingRow(true);
+            //table.setCreatingRow(true);
+            editEntry(slent(uuidv4()).value);
           }}
         >
           <Add />
@@ -445,6 +457,11 @@ export const TypedList = ({ typeName }: Props) => {
     getRowId: (row) => (row as any)?.entity?.value || uuidv4(),
     renderRowActions: ({ row, table }) => (
       <Box sx={{ display: "flex" }}>
+        <Tooltip title="Show">
+          <IconButton onClick={() => showEntry(row.id)}>
+            <OpenInNew />
+          </IconButton>
+        </Tooltip>
         <Tooltip title="Edit">
           <IconButton onClick={() => editEntry(row.id)}>
             <Edit />

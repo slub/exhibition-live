@@ -3,7 +3,7 @@ import {
   DangerousOutlined,
   Delete,
   Edit,
-  EditOff,
+  EditOff, OpenInNew,
   Refresh,
   Save,
 } from "@mui/icons-material";
@@ -16,6 +16,7 @@ type SemanticJsonFormsToolbarProps = {
   onRemove?: () => void;
   onReload?: () => void;
   onReset?: () => void;
+  onShow?: () => void;
   children?: React.ReactNode;
 };
 export const SemanticJsonFormToolbar = ({
@@ -25,10 +26,14 @@ export const SemanticJsonFormToolbar = ({
   onSave,
   onRemove,
   onReload,
+  onShow,
   children,
 }: SemanticJsonFormsToolbarProps) => {
   return (
     <Toolbar>
+      <IconButton onClick={onShow}>
+        <OpenInNew />
+      </IconButton>
       <IconButton onClick={onEditModeToggle}>
         {editMode ? <EditOff /> : <Edit />}
       </IconButton>

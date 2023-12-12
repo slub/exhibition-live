@@ -77,7 +77,7 @@ const TypedForm = ({ typeName, entityIRI, classIRI }: MainFormProps) => {
   //const { formData: data, setFormData: setData } = useFormData();
   const [data, setData] = useState(irisToData(entityIRI, classIRI));
   const { crudOptions } = useGlobalCRUDOptions();
-  const { search: searchText, setSearch } = useGlobalSearch();
+  const { search: searchText } = useGlobalSearch();
   const router = useModifiedRouter();
 
   const handleChange = useCallback(
@@ -91,12 +91,6 @@ const TypedForm = ({ typeName, entityIRI, classIRI }: MainFormProps) => {
       router.push(`/create/${typeName}/${encodeIRI(entityIRI)}`);
     },
     [router],
-  );
-  const handleSearchTextChange = useCallback(
-    (searchText: string | undefined) => {
-      setSearch(searchText);
-    },
-    [setSearch],
   );
   const loadedSchema = useExtendedSchema({ typeName, classIRI });
 

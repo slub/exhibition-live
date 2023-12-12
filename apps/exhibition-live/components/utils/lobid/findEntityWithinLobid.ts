@@ -25,17 +25,22 @@ export const findEntityWithinLobid = async (
   typeName: string,
   limit?: number,
 ) => {
-  const res = await fetch(
-    lobidSearchURL +
-      "?" +
-      new URLSearchParams({
-        q: searchString,
-        filter: `type:${mapTypeName(typeName)}`,
-        size: (limit || 10).toString(),
-        format: "json",
-      }).toString(),
-  );
-  return await res.json();
+  try {
+    const res = await fetch(
+      lobidSearchURL +
+        "?" +
+        new URLSearchParams({
+          q: searchString,
+          filter: `type:${mapTypeName(typeName)}`,
+          size: (limit || 10).toString(),
+          format: "json",
+        }).toString(),
+    );
+    return await res.json();
+  } catch (e) {
+    console.error("error while querying lobid", e);
+    return [];
+  }
 };
 
 export const findEntityWithinLobidWithCertainProperty = async (

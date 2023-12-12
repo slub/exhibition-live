@@ -13,3 +13,4 @@ export * from "./SelectListWithDetailMasterItem";
 export * from "./ValidationIcon";
 export * from "./withContextToMasterListItem";
 export * from "./withJsonFormsArrayLayoutProps";
+export * from "./PrimaryFieldTextRenderer";

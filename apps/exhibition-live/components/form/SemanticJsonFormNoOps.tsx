@@ -45,6 +45,11 @@ import { primaryFields } from "../config";
 import { typeIRItoTypeName } from "../content/main/Dashboard";
 import NiceModal from "@ebay/nice-modal-react";
 import GenericModal from "./GenericModal";
+import {
+  primaryTextFieldControlTester,
+  PrimaryTextFieldRenderer,
+} from "../renderer/PrimaryFieldTextRenderer";
+import { useGlobalSearch } from "../state";
 
 export type CRUDOpsType = {
   load: () => Promise<void>;
@@ -158,6 +163,19 @@ export const SemanticJsonFormNoOps: FunctionComponent<
     const typeName = typeIRItoTypeName(typeIRI);
     return primaryFields[typeName]?.label;
   }, [typeIRI]);
+  const primaryFieldRenderer = useMemo(
+    () =>
+      primaryFields[typeIRItoTypeName(typeIRI)]?.label
+        ? [
+            {
+              tester: primaryTextFieldControlTester(typeIRItoTypeName(typeIRI)),
+              renderer: PrimaryTextFieldRenderer,
+            },
+          ]
+        : [],
+    [typeIRI],
+  );
+
   const handleFormChange = useCallback(
     (state: Pick<JsonFormsCore, "data" | "errors">) => {
       onChange && onChange(state.data, "user");
@@ -214,11 +232,12 @@ export const SemanticJsonFormNoOps: FunctionComponent<
     config: {
       ...config,
       formsPath,
+      typeIRI,
     },
   };
   const allRenderer = useMemo(
-    () => [...renderers, ...(jfpRenderers || [])],
-    [jfpRenderers],
+    () => [...renderers, ...(jfpRenderers || []), ...primaryFieldRenderer],
+    [jfpRenderers, primaryFieldRenderer],
   );
 
   return (

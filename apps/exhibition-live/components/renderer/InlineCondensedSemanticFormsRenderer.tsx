@@ -21,10 +21,13 @@ import { PrimaryField } from "../utils/types";
 import { typeIRItoTypeName } from "../content/main/Dashboard";
 import { useGlobalSearchWithHelper } from "../state";
 import { TabIcon } from "../theme/icons";
-import { makeFormsPath } from "../utils/core";
+import {encodeIRI, makeFormsPath} from "../utils/core";
 import { SearchbarWithFloatingButton } from "../layout/main-layout/Searchbar";
 import SimilarityFinder from "../form/SimilarityFinder";
 import { JSONSchema7 } from "json-schema";
+import {useParams} from "next/navigation";
+import {useRouter} from "next/router";
+import {useTranslation} from "react-i18next";
 
 const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
   const {
@@ -128,12 +131,19 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
     [typeIRI],
   );
 
+  const router = useRouter();
+  const locale = router.query.locale || "";
   const handleToggle = useCallback(
     (event?: React.MouseEvent) => {
       event?.stopPropagation();
+      //open new tab if middle mouse click
+      if(event?.button === 1) {
+        window.open(`/${locale}/create/${typeName}?encID=${encodeIRI(data)}`, '_blank');
+        return;
+      }
       setModalIsOpen(!modalIsOpen);
     },
-    [setModalIsOpen, modalIsOpen],
+    [setModalIsOpen, modalIsOpen, locale, typeName],
   );
 
   const searchOnDataPath = useMemo(() => {
@@ -170,7 +180,6 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
     (newData: any) => {
       const newIRI = newData["@id"];
       if (!newIRI) return;
-      console.log("handleMappedDataAccepted", newData, newIRI);
       handleSelectedChange({
         value: newIRI,
         label: newData.__label || newIRI,
@@ -194,10 +203,11 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
 
   const newURI = useCallback(() => {
     const prefix = schema.title || slent[""].value;
-    const newURI = `${prefix}${uuidv4()}`;
+    const iri = `${prefix}${uuidv4()}`;
     const fieldDecl = primaryFields[typeName] as PrimaryField | undefined;
     const labelKey = fieldDecl?.label || "title";
-    setFormData({ "@id": newURI, [labelKey]: searchString });
+    setFormData({ "@id": iri, [labelKey]: searchString });
+    return iri;
   }, [schema, data, searchString, setFormData]);
 
   const handleAddNew = useCallback(
@@ -207,6 +217,22 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
       setModalIsOpen(true);
     },
     [setModalIsOpen, newURI],
+  );
+
+  const { t } = useTranslation()
+
+  const handleAddNewWithinNewTab = useCallback(
+    (event: React.MouseEvent) => {
+      if(event.button !== 1) return;
+      event?.stopPropagation();
+      const newIRI = newURI();
+      handleSelectedChange({
+        value: newIRI,
+        label: `${t(typeName)} neu (${newIRI.substring(newIRI.lastIndexOf('/') + 1, newIRI.length)})`,
+      });
+      window.open(`/${locale}/create/${typeName}?encID=${encodeIRI(newIRI)}`, '_blank');
+    },
+    [setModalIsOpen, newURI, typeName, locale],
   );
 
   return (
@@ -230,37 +256,16 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
         </Grid>
         {!ctx.readonly && (
           <Grid item>
-            <Grid container direction="column">
+            <Grid container direction="column" spacing={0}>
               {typeof data == "string" && data.length > 0 && (
-                <>
                   <Grid item>
-                    <IconButton sx={{ padding: 0 }} onClick={handleToggle}>
+                    <IconButton sx={{ padding: 0 }} onClick={handleToggle} onAuxClick={handleToggle}>
                       {modalIsOpen ? <OpenInNewOff /> : <OpenInNew />}
                     </IconButton>
                   </Grid>
-                  <Grid item>
-                    <IconButton
-                      component={React.forwardRef<HTMLSpanElement, any>(
-                        ({ children, ...props }, ref) => (
-                          <span {...props} ref={ref}>
-                            <a
-                              href={`/de/create/${typeName}`}
-                              target="_blank"
-                              rel="noopener"
-                            >
-                              {children}
-                            </a>
-                          </span>
-                        ),
-                      )}
-                    >
-                      <TabIcon />
-                    </IconButton>
-                  </Grid>
-                </>
               )}
               <Grid item>
-                <IconButton sx={{ padding: 0 }} onClick={handleAddNew}>
+                <IconButton sx={{ padding: 0 }} onClick={handleAddNew} onAuxClick={handleAddNewWithinNewTab}>
                   {<Add />}
                 </IconButton>
               </Grid>

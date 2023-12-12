@@ -23,6 +23,7 @@ import { ParentSize } from "@visx/responsive";
 import { fixSparqlOrder } from "../../utils/discover";
 import { variable } from "@rdfjs/data-model";
 import { useTranslation } from "react-i18next";
+import { Login } from "../../google/GoogleOAuth";
 
 export const HeaderTitle = styled(Typography)(({ theme }) => ({
   fontFamily: "'Play', sans-serif",
@@ -158,6 +159,9 @@ export const Dashboard = (props) => {
         spacing={3}
         sx={{ p: { md: 10 } }}
       >
+        <Grid2 lg={12}>
+          <Login />
+        </Grid2>
         <Grid2 lg={12}>
           <SearchBar relevantTypes={relevantTypes} />
         </Grid2>

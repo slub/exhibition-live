@@ -23,7 +23,7 @@ import { SemanticJsonFormToolbar } from "./SemanticJsonFormToolbar";
 import { useSettings } from "../state/useLocalSettings";
 import { useQueryKeyResolver } from "../state";
 import { Box } from "@mui/material";
-import {EntityDetailModal} from "./show";
+import { EntityDetailModal } from "./show";
 
 export type CRUDOpsType = {
   load: () => Promise<void>;
@@ -180,15 +180,12 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> = ({
     }
   }, [enableDebug, data, schema, jsonldContext, defaultPrefix]);
 
-  const handleShowEntry = useCallback(
-    () => {
-      NiceModal.show(EntityDetailModal, {
-        typeIRI,
-        entityIRI: entityIRI,
-      });
-    },
-    [ typeIRI, entityIRI],
-  );
+  const handleShowEntry = useCallback(() => {
+    NiceModal.show(EntityDetailModal, {
+      typeIRI,
+      entityIRI: entityIRI,
+    });
+  }, [typeIRI, entityIRI]);
 
   return (
     <Box sx={{ minHeight: "100%", width: "100%" }}>

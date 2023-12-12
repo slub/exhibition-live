@@ -44,7 +44,14 @@ import {
   isJSONSchema,
 } from "../../utils/core";
 import { JSONSchema7 } from "json-schema";
-import {Add, Delete, Details, Edit, FileDownload, OpenInNew} from "@mui/icons-material";
+import {
+  Add,
+  Delete,
+  Details,
+  Edit,
+  FileDownload,
+  OpenInNew,
+} from "@mui/icons-material";
 import { primaryFields } from "../../config";
 import { parseMarkdownLinks } from "../../utils/core/parseMarkdownLink";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -66,7 +73,7 @@ import { OverflowContainer } from "../../lists";
 import isNil from "lodash/isNil";
 import { OverflowChip } from "../../lists/OverflowChip";
 import { SparqlEndpoint, useSettings } from "../../state/useLocalSettings";
-import {EntityDetailModal} from "../../form/show";
+import { EntityDetailModal } from "../../form/show";
 
 type Props = {
   typeName: string;
@@ -369,7 +376,6 @@ export const TypedList = ({ typeName }: Props) => {
     },
     [setColumnFilters],
   );
-
 
   const table = useMaterialReactTable({
     columns: displayColumns,

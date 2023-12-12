@@ -3,7 +3,8 @@ import {
   DangerousOutlined,
   Delete,
   Edit,
-  EditOff, OpenInNew,
+  EditOff,
+  OpenInNew,
   Refresh,
   Save,
 } from "@mui/icons-material";

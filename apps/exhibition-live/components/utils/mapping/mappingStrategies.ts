@@ -22,6 +22,10 @@ export type StrategyContext = {
     authorityIRI: string,
     typeIRI?: string,
   ) => Promise<string | null>;
+  searchEntityByLabel: (
+    label: string,
+    typeIRI: string,
+  ) => Promise<string | null>;
   authorityIRI: string;
   newIRI: (typeIRI: string) => string;
   options?: {
@@ -82,6 +86,130 @@ export const append = (
   return [...new Set(all).values()];
 };
 
+type StatementProperty = {
+  property: string;
+  offset: number;
+  mapping?: {
+    strategy: AnyStrategy;
+  };
+};
+
+type CreateEntityWithReificationFromString = Strategy & {
+  id: "createEntityWithReificationFromString";
+  options?: {
+    typeIRI?: string;
+    typeName?: string;
+    mainProperty: {
+      property: string;
+      offset?: number;
+      mapping?: {
+        strategy: AnyStrategy;
+      };
+    };
+    statementProperties: StatementProperty[];
+  };
+};
+
+export const createEntityWithReificationFromString = async (
+  sourceData: any,
+  _targetData: any,
+  options?: CreateEntityWithReificationFromString["options"],
+  context?: StrategyContext,
+): Promise<any> => {
+  if (!context) throw new Error("No context provided");
+  const { typeIRI, mainProperty, statementProperties } = options || {};
+  const { newIRI } = context;
+  if (!Array.isArray(sourceData))
+    throw new Error("Source data is not an array");
+  const newDataElements = [];
+  const amount = statementProperties.length + 1;
+  if (sourceData.length % amount !== 0)
+    throw new Error(
+      `Source data length ${sourceData.length} is not a multiple of ${amount}`,
+    );
+  //group source data by amount
+  const groupedSourceData = [];
+  for (let i = 0; i < sourceData.length; i += amount) {
+    groupedSourceData.push(sourceData.slice(i, i + amount));
+  }
+
+  for (const sourceDataElements of groupedSourceData) {
+    const newData = {};
+
+    const mainSourceDataElement = sourceDataElements[mainProperty.offset || 0];
+    if (
+      typeof mainSourceDataElement !== "string" ||
+      mainSourceDataElement.length === 0
+    ) {
+      continue;
+    }
+    const trimmedMainSourceDataElement = mainSourceDataElement.trim();
+    const mainPropertyStrategy = mainProperty.mapping?.strategy;
+    if (!mainPropertyStrategy) {
+      set(newData, mainProperty.property, trimmedMainSourceDataElement);
+    } else {
+      const mappingFunction = strategyFunctionMap[mainPropertyStrategy.id];
+      if (typeof mappingFunction !== "function") {
+        throw new Error(
+          `Strategy ${mainPropertyStrategy.id} is not implemented`,
+        );
+      }
+      const strategyOptions = (mainPropertyStrategy as any).options;
+      const value = await mappingFunction(
+        trimmedMainSourceDataElement,
+        get(newData, mainProperty.property),
+        strategyOptions,
+        context,
+      );
+      if (!isNil(value)) set(newData, mainProperty.property, value);
+    }
+
+    for (const statementProperty of statementProperties) {
+      const sourceDataElement =
+        sourceDataElements[statementProperty.offset || 0];
+      if (
+        typeof sourceDataElement !== "string" ||
+        sourceDataElement.length === 0
+      ) {
+        continue;
+      }
+      const trimmedSourceDataElement = sourceDataElement.trim();
+      const strategy = statementProperty.mapping?.strategy;
+      if (!strategy) {
+        set(newData, statementProperty.property, trimmedSourceDataElement);
+      } else {
+        const mappingFunction = strategyFunctionMap[strategy.id];
+        if (typeof mappingFunction !== "function") {
+          throw new Error(`Strategy ${strategy.id} is not implemented`);
+        }
+        const strategyOptions = (strategy as any).options;
+        const value = await mappingFunction(
+          trimmedSourceDataElement,
+          get(newData, statementProperty.property),
+          strategyOptions,
+          context,
+        );
+        if (!isNil(value)) set(newData, statementProperty.property, value);
+      }
+    }
+    newDataElements.push(newData);
+  }
+  return newDataElements.map((newData) => ({
+    "@id": newIRI(typeIRI || ""),
+    "@type": typeIRI,
+    __draft: true,
+    ...newData,
+  }));
+};
+
+type CreateEntityFromStringStrategy = Strategy & {
+  id: "createEntityFromString";
+  options?: {
+    typeIRI?: string;
+    typeName?: string;
+  };
+};
+
 type CreateEntityStrategy = Strategy & {
   id: "createEntity";
   options?: {
@@ -93,6 +221,51 @@ type CreateEntityStrategy = Strategy & {
     };
   };
 };
+
+export const createEntityFromString = async (
+  sourceData: any,
+  _targetData: any,
+  options?: CreateEntityFromStringStrategy["options"],
+  context?: StrategyContext,
+): Promise<any> => {
+  if (!context) throw new Error("No context provided");
+  const { typeIRI } = options || {};
+  const { searchEntityByLabel, newIRI } = context;
+  const isArray = Array.isArray(sourceData);
+  const sourceDataArray = isArray ? sourceData : [sourceData];
+  const newDataElements = [];
+  for (const sourceDataElement of sourceDataArray) {
+    if (
+      typeof sourceDataElement !== "string" ||
+      sourceDataElement.length === 0
+    ) {
+      continue;
+    }
+    const trimmedSourceDataElement = sourceDataElement.trim();
+    const primaryIRI = await searchEntityByLabel(
+      trimmedSourceDataElement,
+      typeIRI,
+    );
+    const typeName = typeIRItoTypeName(typeIRI);
+    const primaryField = primaryFields[typeName];
+    const labelField = primaryField?.label || "label";
+    if (!primaryIRI) {
+      const targetData = {
+        "@id": newIRI(typeIRI || ""),
+        "@type": typeIRI,
+        [labelField]: trimmedSourceDataElement,
+        __draft: true,
+      };
+      newDataElements.push(targetData);
+    } else {
+      newDataElements.push({
+        "@id": primaryIRI,
+      });
+    }
+  }
+  return isArray ? newDataElements : newDataElements[0];
+};
+
 export const createEntity = async (
   sourceData: any,
   _targetData: any,
@@ -169,6 +342,32 @@ type DateStringToSpecialInt = Strategy & {
   id: "dateStringToSpecialInt";
 };
 
+type DateArrayToSpecialInt = Strategy & {
+  id: "dateArrayToSpecialInt";
+};
+
+const stringToInt = (input: string | number): number | null => {
+  if (typeof input === "number") return input;
+  const num = Number(input);
+  if (isNaN(num)) return null;
+  return num;
+};
+const dateArrayToSpecialInt = (
+  sourceData: (string | number)[],
+  _targetData: any,
+): number | null => {
+  if (sourceData.length < 0) return null;
+  const date = dayjs();
+  const day = stringToInt(sourceData[0]);
+  const month = stringToInt(sourceData[1]);
+  const year = stringToInt(sourceData[2]);
+  if (!year) return null;
+  date.year(year);
+  if (month) date.month(month - 1);
+  if (day) date.date(day);
+  return dayJsDateToSpecialInt(date);
+};
+
 const dayJsDateToSpecialInt = (
   date: dayjs.Dayjs,
   yearOnly?: boolean,
@@ -193,6 +392,37 @@ export const dateStringToSpecialInt = (
     ? "YYYY"
     : (en ? ["YYYY", "MM", "DD"] : ["DD", "MM", "YYYY"]).join(separator);
   return dayJsDateToSpecialInt(dayjs(data, formatString), yearOnly);
+};
+
+type SplitStrategy = Strategy & {
+  id: "split";
+  options?: {
+    separator?: string;
+    mapping?: {
+      strategy: AnyStrategy;
+    };
+  };
+};
+
+const splitStrategy = async (
+  sourceData: any,
+  _targetData: any,
+  options?: SplitStrategy["options"],
+  context?: StrategyContext,
+): Promise<any[]> => {
+  const { separator, mapping } = options || {};
+  const mappingFunction = strategyFunctionMap[mapping?.strategy.id];
+  if (typeof mappingFunction !== "function") {
+    throw new Error(`Strategy ${mapping?.strategy.id} is not implemented`);
+  }
+  const strategyOptions = (mapping?.strategy as any)?.options;
+  const values = sourceData.split(separator);
+  return Promise.all(
+    values.map(
+      async (value) =>
+        await mappingFunction(value, null, strategyOptions, context),
+    ),
+  );
 };
 
 type ExistsStrategy = Strategy & {
@@ -228,10 +458,22 @@ type AnyStrategy =
   | TakeFirstStrategy
   | AppendStrategy
   | CreateEntityStrategy
+  | CreateEntityFromStringStrategy
+  | CreateEntityWithReificationFromString
   | DateRangeStringToSpecialInt
   | DateStringToSpecialInt
   | ExistsStrategy
-  | ConstantStrategy;
+  | ConstantStrategy
+  | SplitStrategy;
+
+type AnyFlatStrategy =
+  | ConcatenateStrategy
+  | TakeFirstStrategy
+  | ExistsStrategy
+  | CreateEntityFromStringStrategy
+  | CreateEntityWithReificationFromString
+  | DateArrayToSpecialInt
+  | SplitStrategy;
 
 type SourceElement = {
   path: string;
@@ -248,16 +490,42 @@ export type DeclarativeSimpleMapping = {
   };
 };
 
+export type FlatSourceElement = {
+  columns: string[] | number[];
+  expectedSchema?: JsonSchema;
+};
+
+export type DeclarativeFlatMapping = {
+  source: FlatSourceElement;
+  target: {
+    path: string;
+  };
+  mapping?: {
+    strategy: AnyFlatStrategy;
+  };
+};
+
 export type DeclarativeMappings = DeclarativeSimpleMapping[];
 
+export type DeclarativeFlatMappings = DeclarativeFlatMapping[];
+
 export type DeclarativeMapping = { [key: string]: DeclarativeMappings };
+
+export type DeclarativeFinalFlatMapping = {
+  [key: string]: DeclarativeFlatMappings;
+};
+
 export const strategyFunctionMap: { [strategyId: string]: StrategyFunction } = {
   concatenate,
   takeFirst,
   append,
   createEntity,
+  createEntityFromString,
+  createEntityWithReificationFromString,
   dateStringToSpecialInt,
   dateRangeStringToSpecialInt,
   exists: existsStrategy,
   constant: constantStrategy,
+  split: splitStrategy,
+  dateArrayToSpecialInt,
 };

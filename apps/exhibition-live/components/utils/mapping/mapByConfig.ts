@@ -6,10 +6,12 @@ import set from "lodash/set";
 import jsonpath from "jsonpath";
 
 import {
+  DeclarativeFlatMappings,
   DeclarativeMappings,
   StrategyContext,
   strategyFunctionMap,
 } from "./mappingStrategies";
+import { filterUndefOrNull } from "../core";
 
 const getViaSourcePath = (
   sourceData: any,
@@ -24,6 +26,69 @@ const getViaSourcePath = (
     }
     return get(sourceData, sourcePath);
   }
+};
+
+const getViaColumnPaths = (
+  accessorFn: (col: number | string) => any,
+  columnPaths: string[] | number[],
+): any => {
+  const values = columnPaths.map((path) => accessorFn(path));
+  return values;
+};
+
+export const mapByConfigFlat = async (
+  accessorFn: (col: number | string) => any,
+  targetData: any,
+  mappingConfig: DeclarativeFlatMappings,
+  strategyContext: StrategyContext,
+): Promise<any> => {
+  const newData = cloneDeep(targetData); //clone targetData to not mutate it accidentally
+  const ajv = new Ajv();
+  for (const { source, target, mapping } of mappingConfig) {
+    const { path: targetPath } = target;
+    if (!source?.columns || source.columns.length === 0)
+      throw new Error(
+        `No source path defined for mapping ${JSON.stringify(mapping)}`,
+      );
+    const isList = source.columns.length === 1 && source.columns[0];
+    if (!mapping?.strategy) {
+      //take value as is if no strategy is defined
+      const sourceValue = filterUndefOrNull(
+        getViaColumnPaths(accessorFn, source.columns),
+      );
+      if (sourceValue.length === 0) continue;
+      if (isList) {
+        set(newData, targetPath, sourceValue[0]);
+      } else {
+        set(newData, targetPath, sourceValue);
+      }
+    } else {
+      const mappingFunction = strategyFunctionMap[mapping.strategy.id];
+      if (typeof mappingFunction !== "function") {
+        throw new Error(`Strategy ${mapping.strategy.id} is not implemented`);
+      }
+      const strategyOptions = (mapping.strategy as any).options;
+      let value;
+      if (isList) {
+        value = await mappingFunction(
+          getViaColumnPaths(accessorFn, source.columns)[0],
+          get(newData, targetPath),
+          strategyOptions,
+          strategyContext,
+        );
+      } else {
+        value = await mappingFunction(
+          getViaColumnPaths(accessorFn, source.columns),
+          get(newData, targetPath),
+          strategyOptions,
+          strategyContext,
+        );
+        if (Array.isArray(value)) value = filterUndefOrNull(value);
+      }
+      if (!isNil(value)) set(newData, targetPath, value);
+    }
+  }
+  return newData;
 };
 
 export const mapByConfig = async (

@@ -18,15 +18,11 @@ import { useGoogleToken } from "./useGoogleToken";
 import { GenericListItem } from "../content/main/GenericVirtualizedList";
 import NiceModal, { useModal } from "@ebay/nice-modal-react";
 import { Close as CloseIcon } from "@mui/icons-material";
-import { SpreadSheetViewModal } from "./SpreadSheetView";
 
 const googleApiURL = "https://content.googleapis.com/drive/v3/files";
 const mimeIconsBase =
   "https://raw.githubusercontent.com/pasnox/oxygen-icons-png/master/";
 const theme = "oxygen";
-/*
-
- */
 const mimeMap = {
   "application/vnd.google-apps.folder": "inode/directory",
   "application/vnd.google-apps.document": "application/msword",
@@ -43,7 +39,15 @@ const getMimeIcon = (mimeType: string, size: number = 128) => {
   const subtype = splitted[1];
   return `${mimeIconsBase}${theme}/${size}x${size}/mimetypes/${type}-${subtype}.png`;
 };
-export const GoogleDrivePicker: FC = () => {
+
+type GoogleDrivePickerProps = {
+  supportedMimeTypes?: string[];
+  onPicked: (documentId: string) => void;
+};
+export const GoogleDrivePicker: FC<GoogleDrivePickerProps> = ({
+  onPicked,
+  supportedMimeTypes,
+}) => {
   const { credentials } = useGoogleToken();
   const { data: files } = useQuery(
     ["files"],
@@ -79,9 +83,12 @@ export const GoogleDrivePicker: FC = () => {
     }));
   }, [files]);
 
-  const handleOpenSpreadSheet = useCallback((file: any) => {
-    NiceModal.show(SpreadSheetViewModal, { sheetId: file.id });
-  }, []);
+  const handleOpenDocument = useCallback(
+    (file: any) => {
+      onPicked(file.id);
+    },
+    [onPicked],
+  );
 
   return (
     <Box>
@@ -92,8 +99,9 @@ export const GoogleDrivePicker: FC = () => {
               index={index}
               avatar={file.avatar}
               onClick={
-                file.mimeType === "application/vnd.google-apps.spreadsheet"
-                  ? () => handleOpenSpreadSheet(file)
+                !supportedMimeTypes ||
+                supportedMimeTypes.includes(file.mimeType)
+                  ? () => handleOpenDocument(file)
                   : undefined
               }
               id={file.id}
@@ -136,7 +144,13 @@ export const GoogleDrivePickerModal = NiceModal.create(({}) => {
         </Toolbar>
       </AppBar>
       <DialogContent>
-        <GoogleDrivePicker />
+        <GoogleDrivePicker
+          onPicked={(documentId: string) => {
+            modal.resolve(documentId);
+            modal.remove();
+          }}
+          supportedMimeTypes={["application/vnd.google-apps.spreadsheet"]}
+        />
       </DialogContent>
       <DialogActions>
         <Button onClick={() => modal.remove()}>Abbrechen</Button>

@@ -13,7 +13,7 @@ import { TrendingDown, TrendingUp } from "@mui/icons-material";
 import { useQuery } from "@tanstack/react-query";
 import { useGlobalCRUDOptions } from "../../state/useGlobalCRUDOptions";
 import { SELECT } from "@tpluscode/sparql-builder";
-import { BASE_IRI, primaryFields } from "../../config";
+import { primaryFields, typeIRItoTypeName } from "../../config";
 import { sladb } from "../../form/formConfigs";
 import BarReChart from "../charts/BarReChart";
 import { orderBy } from "lodash";
@@ -98,10 +98,6 @@ export const OwnCard = ({
     </CardContent>
   </Card>
 );
-
-export const typeIRItoTypeName = (iri: string) => {
-  return iri.substring(BASE_IRI.length, iri.length);
-};
 
 const relevantTypes = Object.keys(primaryFields).map((key) => sladb(key).value);
 

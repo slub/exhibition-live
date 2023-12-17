@@ -12,8 +12,7 @@ import {
 } from "@mui/material";
 import { Close as CloseIcon } from "@mui/icons-material";
 import { useMemo } from "react";
-import { primaryFields } from "../../config";
-import { typeIRItoTypeName } from "../../content/main/Dashboard";
+import { primaryFields, typeIRItoTypeName } from "../../config";
 import {
   applyToEachField,
   extractFieldIfString,

@@ -6,6 +6,9 @@ import { getPaddedDate } from "../core/specialDate";
 import { mapByConfig } from "./mapByConfig";
 import isNil from "lodash/isNil";
 import { findEntityWithinLobidByIRI } from "../lobid/findEntityWithinLobid";
+import { primaryFields, typeIRItoTypeName } from "../../config";
+import set from "lodash/set";
+import get from "lodash/get";
 
 dayjs.extend(customParseFormat);
 

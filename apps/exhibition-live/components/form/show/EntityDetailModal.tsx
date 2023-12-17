@@ -17,8 +17,7 @@ import { useGlobalCRUDOptions } from "../../state/useGlobalCRUDOptions";
 import { useCRUDWithQueryClient } from "../../state/useCRUDWithQueryClient";
 import { defaultJsonldContext, defaultPrefix } from "../formConfigs";
 import { useMemo } from "react";
-import { primaryFields } from "../../config";
-import { typeIRItoTypeName } from "../../content/main/Dashboard";
+import { primaryFields, typeIRItoTypeName } from "../../config";
 import {
   applyToEachField,
   extractFieldIfString,

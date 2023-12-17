@@ -41,8 +41,7 @@ import { SearchbarWithFloatingButton } from "../layout/main-layout/Searchbar";
 import MaterialBooleanControl, {
   materialBooleanControlTester,
 } from "../renderer/MaterialBooleanControl";
-import { primaryFields } from "../config";
-import { typeIRItoTypeName } from "../content/main/Dashboard";
+import { primaryFields, typeIRItoTypeName } from "../config";
 import NiceModal from "@ebay/nice-modal-react";
 import GenericModal from "./GenericModal";
 import {

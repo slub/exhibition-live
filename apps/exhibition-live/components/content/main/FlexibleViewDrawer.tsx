@@ -11,11 +11,11 @@ import { dateValueToDate } from "./Search";
 import { Box, Tab, Tabs } from "@mui/material";
 import VisTimelineWrapper from "../visTimelineWrapper/VisTimelineWrapper";
 import * as React from "react";
-import { typeIRItoTypeName } from "./Dashboard";
 import { JsonView } from "react-json-view-lite";
 import { Home, Timeline } from "@mui/icons-material";
 import { useDrawerDimensions } from "../../state";
 import { debounce } from "lodash";
+import { typeIRItoTypeName } from "../../config";
 
 type FlexibleViewDrawerProps = {
   data: any;

@@ -4,8 +4,7 @@ import {
   defaultPrefix,
   defaultQueryBuilderOptions,
 } from "../../form/formConfigs";
-import { primaryFields } from "../../config";
-import { typeIRItoTypeName } from "../../content/main/Dashboard";
+import { primaryFields, typeIRItoTypeName } from "../../config";
 
 export const searchEntityByLabel = async (
   label: string,

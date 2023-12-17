@@ -18,7 +18,8 @@ import { useTranslation } from "react-i18next";
 import LobidAllPropTable from "../lobid/LobidAllPropTable";
 import { useModifiedRouter } from "../../basic";
 import { encodeIRI } from "../../utils/core";
-import { typeIRItoTypeName } from "../../content/main/Dashboard";
+
+import { typeIRItoTypeName } from "../../config";
 
 interface OwnProps {
   typeIRI: string;

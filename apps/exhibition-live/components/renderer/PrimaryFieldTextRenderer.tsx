@@ -25,11 +25,10 @@ import {
   scopeEndIs,
 } from "@jsonforms/core";
 import { withJsonFormsControlProps } from "@jsonforms/react";
-import { primaryFields } from "../config";
+import { primaryFields, typeIRItoTypeName } from "../config";
 import { useGlobalSearch, useGlobalSearchWithHelper } from "../state";
 import { JSONSchema7 } from "json-schema";
 import { makeFormsPath } from "../utils/core";
-import { typeIRItoTypeName } from "../content/main/Dashboard";
 
 interface MuiTextInputProps {
   muiInputProps?: InputProps["inputProps"];

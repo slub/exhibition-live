@@ -21,7 +21,7 @@ export const primaryFields: Partial<ExhibitionPrimaryFieldDeclaration> = {
   Exhibition: defaultMappingWithImg,
   Tag: defaultMapping,
   Person: {
-    ...defaultMapping,
+    ...defaultMappingWithImg,
     label: "name",
   },
   Corporation: {

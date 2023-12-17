@@ -11,7 +11,7 @@ import {
 import { useCallback, useState } from "react";
 
 import { DeclarativeSimpleMapping } from "../utils/mapping/mappingStrategies";
-import { MappingConiguration } from "./MappingConiguration";
+import { MappingConfiguration } from "./MappingConfiguration";
 
 type MappingConfigurationDialogProps = {
   open?: boolean;
@@ -44,7 +44,7 @@ export const MappingConfigurationDialog = ({
         <CloseIcon />
       </IconButton>
       <DialogContent dividers>
-        <MappingConiguration />
+        <MappingConfiguration />
       </DialogContent>
       <DialogActions>
         <Button autoFocus onClick={handleClose}>

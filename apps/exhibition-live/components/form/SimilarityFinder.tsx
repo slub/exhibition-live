@@ -77,12 +77,21 @@ export const makeDefaultMappingStrategyContext: (
     authorityIRI: string,
     typeIRI?: string | undefined,
   ) => {
-    console.warn("using stub method");
     const ids = await findEntityByAuthorityIRI(secondaryIRI, typeIRI, doQuery);
     if (ids.length > 0) {
-      console.warn("found entity more then one entity");
+      console.warn("found more then one entity");
     }
-    return ids[0] || null; //'http://example.com/1231231'
+    return ids[0] || null;
+  },
+  searchEntityByLabel: async (
+    label: string,
+    typeIRI: string,
+  ): Promise<string> => {
+    const ids = await searchEntityByLabel(label, typeIRI, doQuery);
+    if (ids.length > 0) {
+      console.warn("found more then one entity");
+    }
+    return ids[0] || null;
   },
   authorityIRI: "http://d-nb.info/gnd",
   newIRI: (typeIRI: string) => {

@@ -18,8 +18,8 @@
                 },
                 {
                   "type": "Control",
-                  "label": "Namensvarianten",
-                  "scope": "#/properties/nameVariant"
+                  "label": "Bild",
+                  "scope": "#/properties/image"
                 }
               ]
             },
@@ -116,6 +116,11 @@
           }
         }
       ]
+    },
+    {
+      "type": "Control",
+      "label": "Namensvarianten",
+      "scope": "#/properties/nameVariant"
     },
     {
       "type": "Control",

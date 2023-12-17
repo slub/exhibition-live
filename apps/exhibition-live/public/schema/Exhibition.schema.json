@@ -210,6 +210,10 @@
           "items": {
             "$ref": "#/$defs/Corporation"
           }
+        },
+        "image": {
+          "type": "string",
+          "format": "uri"
         }
       }
     },
@@ -289,6 +293,10 @@
         },
         "parent": {
           "$ref": "#/$defs/Place"
+        },
+        "image": {
+          "type": "string",
+          "format": "uri"
         }
       }
     },
@@ -331,6 +339,10 @@
         },
         "location": {
           "$ref": "#/$defs/Location"
+        },
+        "image": {
+          "type": "string",
+          "format": "uri"
         }
       }
     },
@@ -373,6 +385,10 @@
         "signature": {
           "type": "string",
           "maxLength": 200
+        },
+        "image": {
+          "type": "string",
+          "format": "uri"
         }
       }
     },

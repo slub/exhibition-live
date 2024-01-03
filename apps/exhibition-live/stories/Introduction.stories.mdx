@@ -116,95 +116,372 @@ import StackAlt from './assets/stackalt.svg';
 
 # Welcome to the Exhibition Frontend Stories
 
-These Storybook show all isolated components in action and help during the development process of the Exhibition catalogue frontend.
-It is highly recommended to isolate components further to it's own repository to allow it's usage within further catalogue projects. 
+## Exhibition Database Components Library
+
+This documentation outlines the architecture of a semantic-enabled Next.js frontend framework for json schema-based semantic databases. The framework is adaptable for domain-specific knowledge bases, particularly those used in national or academic library metadata projects.
+
+## Overview
+
+The framework is designed to facilitate the management and display of complex metadata in an exhibition database context. It integrates various functionalities like data visualization, form management, data mapping, and external API integration, leveraging JSON Schema and SPARQL for semantic data processing.
+
+### Components Structure
+
+#### Basic
+- `Link.tsx`: A basic link component.
+- `useModifiedRouter.ts`: Custom hook for routing.
+
+#### Config
+- `LobidMaping.stories.tsx`, `lobidMappings.ts`, `lobidMappings.test.ts`: Configuration and testing for Lobid API mappings.
+- `permissions.ts`: Permissions configuration.
+- `primaryFields.ts`: Configuration for primary fields in data schemas.
+- `spreadSheetMapping.ts`: Configuration for mapping spreadsheet data.
+- `typeIRIToTypeName.ts`: Utility to map type IRIs to type names.
+
+#### Content
+Includes UI components for main content areas, settings, charts, and timelines.
+- `charts`: Bar charts and chart configurations.
+- `drawer`: UI components for resizable drawers.
+- `main`: Dashboard, search components, forms, and lists.
+- `settings`: Forms and modals for various settings.
+- `visTimelineWrapper`: Wrapper for timeline visualization.
+
+#### Exhibition
+- `prefixes.ts`: Prefix definitions for the exhibition domain.
+
+#### Form
+Contains components and utilities for form management.
+- `discover`, `gnd`, `jsonforms`, `k10plus`, `lobid`, `result`, `show`, `uischema`, `wikidata`, `wizard`: Various subcomponents and utilities related to form functionality.
+
+
+TODO: separate into subfolders
+
+### Forms Subpackage
+
+The `Forms` subpackage is a comprehensive module within the framework, designed to handle various aspects of form management in the context of semantic data. It provides components, utilities, and configurations for creating, editing, and displaying forms based on JSON Schema and linked data principles. Below is a detailed breakdown of its contents:
+
+#### DebouncedAutoComplete.tsx
+- A component that provides an autocomplete feature with debouncing, useful for fields requiring suggestions from a large dataset.
+
+#### DeepGraphToJSONShowcase.stories.tsx and DeepGraphToJSONShowcase.tsx
+- Storybook stories and the main component for showcasing the conversion of deep graph data structures to JSON format.
+
+#### Discover
+- `DiscoverAutocompleteInput.tsx`: Autocomplete input for discovery features.
+- `DiscoverSearchTable.stories.tsx` and `DiscoverSearchTable.tsx`: Components for rendering searchable tables with storybook integration.
+
+#### EditExhibitionJSONForm.stories.tsx
+- Storybook stories for the JSON form used in editing exhibition data.
+
+#### formConfigs.ts
+- Configuration file for various form-related settings.
+
+#### FormDebuggingTools.tsx
+- A utility component for debugging forms during development.
+
+#### Form.stories.tsx
+- Storybook stories for generic form components.
+
+#### GenericModal.tsx
+- A generic modal component used across different forms.
+
+#### genSlubJSONLDSemanticProperties.ts
+- A utility for generating semantic properties in JSON-LD format specific to SLUB (Saxon State and University Library Dresden).
+
+#### gnd
+- Components related to the GND (Integrated Authority File) integration.
+- `GNDAutocompleteInput.stories.tsx` and `GNDAutocompleteInput.tsx`: Autocomplete input component for GND data.
+
+#### jsonforms
+- `index.ts`: Entry point for JSON Forms integration.
+
+#### k10plus
+- Components and utilities for integration with the K10plus library network.
+- `examples.json`: Example data for the K10plus network.
+- `K10PlusSearchTable.tsx`: Component for K10plus data search.
+- `mapping-types.ts`, `marc2rdfMappingDeclaration.ts`, `marcxml2rdf.ts`: Utilities for mapping and converting MARC data to RDF format.
+
+#### lobid
+- Components for integrating with the Lobid API.
+- Various table and search components specifically for Lobid data.
+
+#### result
+- Components for displaying search results.
+- `ClassicResultListItem.tsx` and `ClassicResultListWrapper.tsx`: Standard components for listing search results.
+
+#### SemanticJsonFormNoOps.stories.tsx and SemanticJsonFormNoOps.tsx
+- Storybook stories and the main component for JSON forms without additional operations.
+
+#### SemanticJsonFormToolbar.tsx
+- A toolbar component for semantic JSON forms, providing user interface elements for form operations.
+
+#### SemanticJsonForm.tsx
+- The main component for creating semantic JSON forms.
+
+#### show
+- Components for displaying detailed views of entities.
+- `EntityDetailCard.tsx`, `EntityDetailModal.tsx`, `LoadedEntityDetailModal.tsx`: Components for showing detailed information about specific entities.
+
+#### SimilarityFinder.tsx
+- A component designed to find similarities between entities, useful in data linking and matching scenarios.
+
+#### TextField.tsx
+- A standard text field component used in various forms.
+
+#### uischema
+- Contains JSON schema files for various UI components.
+- Examples include schemas for corporation roles, events, exhibitions, and other domain-specific entities.
+
+#### uischemaForType.ts and uischemas.ts
+- Utilities for managing and resolving UI schemas.
+
+#### wikidata
+- Components for integration with Wikidata.
+- Includes autocomplete inputs, card displays for human and generic 'thing' entities, and storybook stories.
+
+#### wizard
+- `HorizontalNonLinearStepper.tsx`: A wizard-like component for managing multi-step forms.
+
+This subpackage demonstrates a deep integration of semantic web principles with modern web UI practices. It supports a wide range of functionalities from basic form inputs to complex data discovery and entity relationship management, making it a versatile tool for projects dealing with complex metadata structures like those in library and academic databases.
+
+#### Google
+- Integration with Google services like Drive and OAuth.
+
+#### GraphQL
+- `queries.graphql.ts`: GraphQL queries.
+- `useFetchData.ts`: Custom hook to fetch data using GraphQL.
+
+#### Helper
+- `optionallyCreatePortal.tsx`: Helper for creating React portals.
+
+#### i18n
+- Internationalization utilities.
+
+#### ImportExport
+- `ImportPage.tsx`: Page for data import functionality.
+
+#### Layout
+- `main-layout`: Main layout components like headers, footers, navigation, and sidebar.
+
+#### Lists
+- `datagrid`: Components for data grid display.
+- Other list-related components.
+
+#### Mapping
+- Components for data mapping configuration.
+
+#### Provider
+- Context providers for forms and Oxigraph.
+
+#### Renderer
+- Custom renderers for various UI components.
+
+#### State
+- State management hooks and utilities.
+
+#### Theme
+- Theme configuration and custom components.
+
+#### Types
+- GraphQL related types.
+
+#### Utils
+Utility functions and components for various functionalities like AI integration, CRUD operations, data discovery, mapping, SPARQL queries, and more.
+
+### Pages Structure
+
+- `_app.tsx`: Custom App component.
+- `_document.tsx`: Custom Document component.
+- `index.tsx`: Homepage.
+- `[locale]`: Locale-specific pages for creating, importing, listing, and infinite listing of various types.
+
+This architecture provides a comprehensive framework for building semantic data-driven applications, particularly suited for library metadata management systems. The modular design allows for flexibility and adaptability to different domains and data schemas.
+
+### Updated Documentation for `jsonSchemaBasedDeepGraph2JsonDocumentExtractor.ts`
+
+#### Overview
+`jsonSchemaBasedDeepGraph2JsonDocumentExtractor.ts` is a core utility in the framework, designed to transform RDF graph data into structured JSON documents. This transformation is based on a JSON Schema, making it highly adaptable to various data models. The utility implements a recursive algorithm that navigates through RDF data, constructing a comprehensive JSON document which can be directly utilized in front-end components like forms, generic tables, and detail views.
+
+#### Functionality
+- **Recursive Document Construction**: The utility employs a recursive algorithm to traverse RDF graph data. This process is controlled by multiple depth options which can be configured based on predicate type, class type, and a general maximum recursion depth.
+
+- **Depth Control**: The depth of recursion is customizable, allowing for detailed control over how deep the algorithm should navigate into relationships like parent-child hierarchies. This feature is essential for tailoring the JSON document structure to specific front-end requirements.
+
+- **Parameter Customization**: Users can set various parameters to control the extraction process, such as specifying different max-depth values for different types of relationships or data classes. This flexibility ensures that the resulting JSON document aligns with the intended use case.
+
+#### Use Cases
+- **Parent-Child Relationships**: Efficiently handles recursive relationships, like parent-child links, within a specified depth, making it ideal for representing hierarchical data structures.
+
+- **Semantic-Driven Views**: The JSON documents produced are well-suited for semantic-driven views in the front-end. This includes:
+    - **Forms**: Populating and managing complex forms with nested or related data.
+    - **Generic Tables**: Displaying data in table formats where relationships and nested information are crucial.
+    - **Detail Views**: Creating detailed views of specific entities or objects, where comprehensive and nested information is presented.
+
+#### Integration
+- This utility is integral for front-end components that rely on rich, structured data. By providing a JSON Schema, the extractor can tailor the JSON document to fit the exact needs of these components, ensuring a seamless integration of complex RDF data into user-friendly interfaces.
+
+#### Configuration
+- The utility is highly configurable, allowing developers to specify the depth and nature of the data extraction process. This is critical for balancing the need for detailed data and performance considerations.
+
+#### Example Usage
+```typescript
+import { jsonSchemaBasedDeepGraph2JsonDocumentExtractor } from 'utils/graph';
+
+// Example JSON Schema
+const schema: JsonSchema7 = {...};
+
+//Load dataset or get it from a SPARQL endpoint
+const ds: Dataset = await getDataset();
+
+// Configuration for extraction
+const config: Partial<WalkerOptions> = {
+  omitEmptyArrays: true,
+  omitEmptyObjects: true,
+  maxRecursionEachRef: 2,
+  maxRecursion: 3,
+  skipAtLevel: 3,
+  doNotRecurseNamedNodes: true,
+};
+
+const defaultPrefix = 'http://example.com/';
+const entityIRI = 'http://example.com/Entity';
+
+const jsonDocument = jsonSchemaBasedDeepGraph2JsonDocumentExtractor(
+      defaultPrefix,
+      entityIRI,
+      ds as Dataset,
+      schema,
+      config,
+    );
+// Use the jsonDocument in various front-end components
+```
+
+#### Notes
+- This utility is intended to bridge the gap between complex RDF data structures and the requirements of semantic web applications.
+- Proper configuration of depth parameters are crucial for optimal performance and relevant data extraction.
+- interface might change quickly currently as it still in heavy development, will be specified within a separate implementation
+- It's recommended to test and iterate the depth settings based on the specific data models and front-end components in use.
+
+This documentation provides a clear and specific overview of the `jsonSchemaBasedDeepGraph2JsonDocumentExtractor.ts` utility, focusing on its functionality, use cases, and integration into semantic web applications.
+?
+
+### The Comical Yet Crucial Role of `jsonSchemaBasedDeepGraph2JsonDocumentExtractor`
+
+disclaimer: this is a comical description of the functionality of the `jsonSchemaBasedDeepGraph2JsonDocumentExtractor` crafted with the help of an artificial intelligence tool and may unintentionally contain some humor and slight inaccuracies.
+
+Imagine you're at a grand buffet of information – a smorgasbord of semantic data from all corners of the knowledge world. You've got delicacies from Wikidata, a side of GND, a helping of Open Street Map, and even some special dishes prepared by various library institutions and MARC-based data catalogues. But here's the catch: all these dishes are served in their unique, sometimes "exotic" formats – spreadsheets, CSVs, SQL databases, XML files... you name it!
+
+Now, enter the `jsonSchemaBasedDeepGraph2JsonDocumentExtractor`. This helper function is like your ultimate buffet plate, designed to help you sample everything without getting overwhelmed. Think of it as a magical plate that automatically reshapes itself to hold sushi rolls, soup, salad, or a slice of cake, depending on what you're scooping up.
+
+In the world of semantic data management tools, this function is a lifesaver. It understands that while you, the user, love the variety of data sources available, you don't necessarily want to juggle the complex utensils (read: graph operations) required to enjoy them. Instead, you prefer to have a simple, document-centric way to map your data feast onto your plate.
+
+Here’s how it humorously yet effectively handles the chaos:
+
+1. **Assisted Manual Form Data Input**: It's like having a knowledgeable waiter who suggests the best pairing for your data appetizers. Whether it's GND, Wikidata, or something more niche, this function helps you map these rich sources onto your forms, without you needing to understand the intricacies of their preparation.
+
+2. **Bulk Import from Exotic Formats**: Got a treasure trove of data in a forgotten Excel dungeon or a CSV cave? No problem! The `jsonSchemaBasedDeepGraph2JsonDocumentExtractor` is like an experienced treasure hunter, adept at extracting valuable insights from these ancient relics and translating them into a more palatable format.
+
+3. **Mapping Models**: The tool acknowledges a universal truth in the data world – the ever-recurring pattern of trying to fit square pegs (one data model) into round holes (another model). It doesn’t just force them to fit; it expertly carves out a square hole or rounds off the peg, making the integration seamless.
+
+4. **Dealing with Distributed Knowledge Sources**: Like a masterful conductor of an orchestra, it harmonizes the different instruments (data sources) into a symphony (unified data model). It ensures that the violins (wikidata), cellos (GND), and flutes (library catalogs) all play in unison, creating a melodious data experience.
+
+In summary, the `jsonSchemaBasedDeepGraph2JsonDocumentExtractor` may have a name that's a mouthful, but it's the hero we need in the complex world of semantic data management. It's the bridge between the vast ocean of distributed knowledge sources and the tranquil island of user-friendly data models. A toast to this unsung hero, making the lives of implementers and domain experts a whole lot easier – and more delightful! 🍷🌉📚
+
+### Overview of Interface Abstraction for Search, List, and Detail Observation
+
+The framework provides a layered architecture to abstract interfaces for search, list, full-text search, and entity detail observation. These interfaces are designed to interact with a storage backend, which can be either a SPARQL 1.1 compliant Triple/Quad store or a standardized GraphQL API. The design caters to the specific features and subtle differences of various databases and APIs by introducing SPARQL middlewares and specific implementations.
+
+### Interface Abstraction Layers
+
+1. **Generic Interface Layer**: At the highest level, this layer offers generic interfaces for search, list, and entity observation functionalities. These interfaces are agnostic of the underlying storage mechanism, providing a unified API for front-end components.
+
+2. **Mapping Layer**: This layer maps the requirements of the generic interface to specific storage backend functionalities. It translates high-level operations into queries and requests suitable for the storage backend, taking into account the data schema and query capabilities.
+
+3. **Storage Backend Layer**: The actual data storage layer, currently supporting:
+    - **SPARQL 1.1 Compliant Triple/Quad Stores**: For RDF data management, adhering to the SPARQL 1.1 standards.
+    - **Standardized GraphQL APIs**: For more generalized data access, utilizing GraphQL as an interface.
+
+4. **SPARQL Middleware/Implementation Layer**:
+    - Designed to handle the specificities and unique features of different SPARQL backends.
+    - Each middleware or implementation is tailored to a specific SPARQL-compliant database, addressing its unique query optimization strategies, extensions, or limitations.
+    - This layer ensures optimal interaction with the database, leveraging its full capabilities while abstracting these complexities from the higher layers.
+
+### Key Features
+
+- **Flexibility**: The architecture is designed to be flexible, accommodating various types of data stores and their unique features.
+
+- **Scalability**: The abstraction layers allow for scalability, as new types of databases or APIs can be integrated by developing corresponding middlewares or mappings.
+
+- **Optimization**: Specific implementations for each database or API ensure that the framework can optimize queries and operations according to the capabilities of the backend.
+
+- **Uniformity**: Despite the backend diversity, the generic interface layer provides a consistent API for the front-end, simplifying development and maintenance.
+
+### Usage Scenarios
+
+- **Search and Listing**: Enables complex search and listing operations, including full-text search, across diverse data models and storage backends.
+
+- **Entity Detail Observation**: Facilitates the retrieval and observation of detailed entity information, crucial for applications requiring in-depth data exploration and visualization.
+
+- **Adaptability to Backend Changes**: Easily adaptable to changes or upgrades in the storage backend, requiring minimal changes in the higher-level interfaces and front-end components.
+
+### Examples of Storage Backends
+
+The described framework can integrate with various storage backends, each offering unique features and capabilities. Below are examples of possible storage backends, including the in-memory SPARQL quad store and those utilizing the Solid protocol.
+
+#### 1. In-Memory SPARQL Quad Store (Web-Worker Based)
+- **Description**: An in-memory, web-worker based quad store, compliant with SPARQL 1.1, implemented in Rust and executed as WebAssembly. It operates within the client's browser, enabling decentralized data management.
+- **Features**:
+  - Fast and efficient RDF data handling.
+  - Suitable for offline usage and decentralized applications.
+  - Initial data loading at runtime with dynamic expansion capabilities.
+  - Data synchronization options to various cloud services and version control platforms.
+  - other options for data persistence: Changeset(s) and Data is downloadable or can be stored within the browsers local storage
+
+#### 2. Solid Protocol-Based Storage
+- **Description**: Solid (Social Linked Data) is an open standard for decentralized data storage and management, proposed by Tim Berners-Lee. It allows users to store their data securely in decentralized data stores called "Pods" (Personal Online Datastores).
+- **Features**:
+  - User-controlled data storage, enabling data sovereignty.
+  - Data is stored in a federated manner across various Pods.
+  - Supports WebID for user authentication and access control, ensuring data privacy and security.
+  - Compatible with RDF and SPARQL, making it suitable for semantic web applications.
+  - Provides RESTful APIs for data access, manipulation, and interoperability.
+
+#### 3. Cloud-Based Triple/Quad Stores
+- **Description**: Cloud-based services offering SPARQL 1.1 compliant Triple or Quad stores, such as Amazon Neptune, Stardog Cloud, or GraphDB.
+- **Features**:
+  - Scalable and managed RDF storage solutions.
+  - Support for SPARQL query language for complex querying.
+  - High availability and reliability.
+  - Integrated backup and disaster recovery options.
+  - Suitable for applications requiring robust, scalable, and managed RDF data management.
+
+#### 4. Local File-Based RDF Stores
+- **Description**: RDF data stored in local files, which can be queried using SPARQL. This is a simpler approach but useful for lightweight or prototype applications.
+- **Features**:
+  - Easy to set up and use for small-scale applications.
+  - No dependency on network connectivity.
+  - Limited by local storage capacity and lack of advanced query optimizations.
+  - Suitable for testing, development, or small standalone applications.
+
+#### 5. Custom SPARQL-Compliant Databases
+- **Description**: Custom implementations of SPARQL-compliant databases tailored to specific application needs.
+- **Features**:
+  - Customizable to specific performance, security, or data model requirements.
+  - Potential for optimization based on specific use cases.
+  - Requires more development and maintenance efforts compared to off-the-shelf solutions.
+
+### Conclusion
+
+The choice of a storage backend depends on several factors, including data sovereignty, scalability, offline capabilities, and specific application requirements. The framework's flexible architecture allows for seamless integration with a variety of storage solutions, from decentralized, user-controlled Pods in Solid to scalable cloud-based RDF stores, catering to a wide range of use cases in modern web applications.
+
+This layered architecture effectively bridges the gap between the versatile front-end requirements and the complex, varied back-end storage systems. It provides a robust, scalable, and flexible solution for managing and retrieving data in semantic web applications, particularly suited for environments with diverse and evolving data storage needs.
+
+These Storybook show all isolated components in action and helps during the development process of the Exhibition catalogue frontend.
+It is highly recommended to isolate components further to it's own repository to allow it's usage within further catalogue projects.
 
 Browse all stories now by navigating to them in the sidebar.
 View their code in the `stories` directory to learn how they work.
 
 We want to commit to building UIs with a [**component-driven**](https://componentdriven.org) process starting with atomic components and ending with pages.
-
-<div className="subheading">Configure</div>
-
-<div className="link-list">
-  <a
-    className="link-item"
-    href="https://storybook.js.org/docs/react/addons/addon-types"
-    target="_blank"
-  >
-    <img src={Plugin} alt="plugin" />
-    <span>
-      <strong>Presets for popular tools</strong>
-      Easy setup for TypeScript, SCSS and more.
-    </span>
-  </a>
-  <a
-    className="link-item"
-    href="https://storybook.js.org/docs/react/configure/webpack"
-    target="_blank"
-  >
-    <img src={StackAlt} alt="Build" />
-    <span>
-      <strong>Build configuration</strong>
-      How to customize webpack and Babel
-    </span>
-  </a>
-  <a
-    className="link-item"
-    href="https://storybook.js.org/docs/react/configure/styling-and-css"
-    target="_blank"
-  >
-    <img src={Colors} alt="colors" />
-    <span>
-      <strong>Styling</strong>
-      How to load and configure CSS libraries
-    </span>
-  </a>
-  <a
-    className="link-item"
-    href="https://storybook.js.org/docs/react/get-started/setup#configure-storybook-for-your-stack"
-    target="_blank"
-  >
-    <img src={Flow} alt="flow" />
-    <span>
-      <strong>Data</strong>
-      Providers and mocking for data libraries
-    </span>
-  </a>
-</div>
-
-<div className="subheading">Learn</div>
-
-<div className="link-list">
-  <a className="link-item" href="https://storybook.js.org/docs" target="_blank">
-    <img src={Repo} alt="repo" />
-    <span>
-      <strong>Storybook documentation</strong>
-      Configure, customize, and extend
-    </span>
-  </a>
-  <a className="link-item" href="https://storybook.js.org/tutorials/" target="_blank">
-    <img src={Direction} alt="direction" />
-    <span>
-      <strong>In-depth guides</strong>
-      Best practices from leading teams
-    </span>
-  </a>
-  <a className="link-item" href="https://github.com/storybookjs/storybook" target="_blank">
-    <img src={Code} alt="code" />
-    <span>
-      <strong>GitHub project</strong>
-      View the source and add issues
-    </span>
-  </a>
-  <a className="link-item" href="https://discord.gg/storybook" target="_blank">
-    <img src={Comments} alt="comments" />
-    <span>
-      <strong>Discord chat</strong>
-      Chat with maintainers and the community
-    </span>
-  </a>
-</div>
 
 <div className="tip-wrapper">
   <span className="tip">Tip</span>Edit the Markdown in{' '}

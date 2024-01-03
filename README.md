@@ -1,5 +1,22 @@
 The adb-next project is an exhibition-catalog, that uses [Next.js](https://nextjs.org/).
 
+# Documentation
+
+## Exhibition Catalog Live
+
+A live demo of the exhibition catalog is available here: [https://slub.github.io/exhibition-live/](https://slub.github.io/exhibition-live/)
+
+You might want to set your own storage backend(s) within the settings modal.
+
+## Storybook stories
+
+The pure frontend specific component based framework, that sets the base of the exhibition catalog is documented within the Storybook.
+
+You can get a live preview of the current `develop` branch here: [https://slub.github.io/exhibition-live/storybook/](https://slub.github.io/exhibition-live/storybook/?path=/docs/example-introduction--docs)
+
+
+# Development
+
 ## Getting Started
 
 First, run the development server:
@@ -91,5 +108,5 @@ The JSON Schema ist the basis for:
 Alongside the core Exhibition Schema, there are complementary declaration files referring to elements from the core schema,
 that provide additional information for the frontend, like:
 
-- the UI-Schemate for form layout and style hints
-- data mapping declarations for data conversion from and to norm data repositiories
+- the UI-Schemata for form layout and style hints
+- data mapping declarations for data conversion from and to norm data repositories

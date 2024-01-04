@@ -24,23 +24,26 @@ import {
 } from "../../utils/mapping/simpleFieldExtractor";
 import { PrimaryFieldResults } from "../../utils/types";
 import { EntityDetailCard } from "./EntityDetailCard";
+import { useTypeIRIFromEntity } from "../../state";
 
 type EntityDetailModalProps = {
-  typeIRI: string;
+  typeIRI: string | undefined;
   entityIRI: string;
 };
 
 export const EntityDetailModal = NiceModal.create(
   ({ typeIRI, entityIRI }: EntityDetailModalProps) => {
     const modal = useModal();
-    const typeName = useMemo(() => typeIRItoTypeName(typeIRI), [typeIRI]);
-    const loadedSchema = useExtendedSchema({ typeName, classIRI: typeIRI });
+    const typeIRIs = typeIRI ? [typeIRI] : useTypeIRIFromEntity(entityIRI);
+    const classIRI: string | undefined = typeIRIs?.[0];
+    const typeName = useMemo(() => typeIRItoTypeName(classIRI), [classIRI]);
+    const loadedSchema = useExtendedSchema({ typeName, classIRI });
     const { crudOptions } = useGlobalCRUDOptions();
     const {
       loadQuery: { data: rawData },
     } = useCRUDWithQueryClient(
       entityIRI,
-      typeIRI,
+      classIRI,
       loadedSchema,
       defaultPrefix,
       crudOptions,

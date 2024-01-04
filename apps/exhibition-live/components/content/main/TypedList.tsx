@@ -184,8 +184,8 @@ const computeColumns: (
                       parseMarkdownLinks(group).map(({ label, url }) => {
                         return (
                           <Grid item key={url} sx={{ m: 0.5 }}>
-                            <Link href={`/show/${encodeIRI(url)}`}>
-                              <OverflowChip label={label} />
+                            <Link>
+                              <OverflowChip entityIRI={url} label={label} />
                             </Link>
                           </Grid>
                         );

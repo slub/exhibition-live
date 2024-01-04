@@ -27,6 +27,7 @@ import { useGlobalCRUDOptions } from "../state/useGlobalCRUDOptions";
 import { defaultJsonldContext, defaultPrefix } from "../form/formConfigs";
 import get from "lodash/get";
 import { TabIcon } from "../theme/icons";
+import {useModifiedRouter} from "../basic";
 
 type SimpleExpandPanelRendererProps = {
   data: any;
@@ -126,6 +127,8 @@ export const SimpleExpandPanelRenderer = (
     if (!saveMutation) return;
     saveMutation.mutate(data);
   }, [saveMutation, data]);
+  const router = useModifiedRouter();
+  const locale = router.query.locale || "";
 
   return (
     <ListItem
@@ -151,7 +154,7 @@ export const SimpleExpandPanelRenderer = (
                   ({ children, ...props }, ref) => (
                     <span {...props} ref={ref}>
                       <a
-                        href={`/de/create/${typeName}?encID=${encodeIRI(
+                        href={`/${locale}/create/${typeName}?encID=${encodeIRI(
                           entityIRI,
                         )}`}
                         target="_blank"

@@ -11,12 +11,15 @@ import {
   Typography,
   useMediaQuery,
 } from "@mui/material";
+import { v4 as uuidv4 } from "uuid";
 import { useTheme } from "@mui/material/styles";
 import { useModifiedRouter } from "../../../basic";
 import { useEffect, useCallback } from "react";
 
 import { useThemeSettings } from "../../../state";
 import { MenuItem } from "./types";
+import { encodeIRI } from "../../../utils/core";
+import { slent } from "../../../form/formConfigs";
 
 type NavItemProps = {
   item: MenuItem;
@@ -37,8 +40,9 @@ export const NavItem = ({
   const matchesSM = useMediaQuery(theme.breakpoints.down("lg"));
 
   const create = useCallback(
-    (typeName: any) => {
-      router.push(`/create/${typeName}`);
+    (typeName: string) => {
+      const newEncodedURI = encodeIRI(slent(`${typeName}-${uuidv4()}`).value);
+      router.push(`/create/${typeName}?encID=${newEncodedURI}`);
     },
     [router],
   );

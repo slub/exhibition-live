@@ -12,8 +12,7 @@ You might want to set your own storage backend(s) within the settings modal.
 
 The pure frontend specific component based framework, that sets the base of the exhibition catalog is documented within the Storybook.
 
-You can get a live preview of the current `develop` branch here: [https://slub.github.io/exhibition-live/storybook/](https://slub.github.io/exhibition-live/storybook/?path=/docs/example-introduction--docs)
-
+You can get a live preview of the current `develop` branch here: [https://slub.github.io/exhibition-live/storybook/](https://slub.github.io/exhibition-live/storybook/)
 
 # Development
 

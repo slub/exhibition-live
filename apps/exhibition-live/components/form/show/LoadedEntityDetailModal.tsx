@@ -19,17 +19,39 @@ import {
 } from "../../utils/mapping/simpleFieldExtractor";
 import { PrimaryFieldResults } from "../../utils/types";
 import { EntityDetailCard } from "./EntityDetailCard";
+import { useTypeIRIFromEntity } from "../../state";
+import useExtendedSchema from "../../state/useExtendedSchema";
+import { useGlobalCRUDOptions } from "../../state/useGlobalCRUDOptions";
+import { useCRUDWithQueryClient } from "../../state/useCRUDWithQueryClient";
+import { defaultJsonldContext, defaultPrefix } from "../formConfigs";
 
 type LoadedEntityDetailModalProps = {
-  typeIRI: string;
+  typeIRI?: string;
   entityIRI: string;
   data: any;
 };
 
 export const LoadedEntityDetailModal = NiceModal.create(
-  ({ typeIRI, entityIRI, data }: LoadedEntityDetailModalProps) => {
+  ({ typeIRI, entityIRI, data: defaultData }: LoadedEntityDetailModalProps) => {
     const modal = useModal();
-    const typeName = useMemo(() => typeIRItoTypeName(typeIRI), [typeIRI]);
+    const typeIRIs = typeIRI ? [typeIRI] : useTypeIRIFromEntity(entityIRI);
+    const classIRI: string | undefined = typeIRIs?.[0];
+    const typeName = useMemo(() => typeIRItoTypeName(classIRI), [classIRI]);
+    const loadedSchema = useExtendedSchema({ typeName, classIRI });
+    const { crudOptions } = useGlobalCRUDOptions();
+    const {
+      loadQuery: { data: rawData },
+    } = useCRUDWithQueryClient(
+      entityIRI,
+      classIRI,
+      loadedSchema,
+      defaultPrefix,
+      crudOptions,
+      defaultJsonldContext,
+      { enabled: true, refetchOnWindowFocus: true },
+      "show",
+    );
+    const data = rawData?.document || defaultData;
     const cardInfo = useMemo<PrimaryFieldResults<string>>(() => {
       const fieldDecl = primaryFields[typeName];
       console.log("fieldDecl", fieldDecl, "data", data, "typeName", typeName);
@@ -70,7 +92,7 @@ export const LoadedEntityDetailModal = NiceModal.create(
         </AppBar>
         <DialogContent>
           <EntityDetailCard
-            typeIRI={typeIRI}
+            typeIRI={classIRI}
             entityIRI={entityIRI}
             data={data}
             cardInfo={cardInfo}

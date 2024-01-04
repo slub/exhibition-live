@@ -88,7 +88,7 @@ const TypedForm = ({ typeName, entityIRI, classIRI }: MainFormProps) => {
         return;
       }
       const typeName = typeIRI.substring(BASE_IRI.length, typeIRI.length);
-      router.push(`/create/${typeName}/${encodeIRI(entityIRI)}`);
+      router.push(`/create/${typeName}?encID=${encodeIRI(entityIRI)}`);
     },
     [router],
   );

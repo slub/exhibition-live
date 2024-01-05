@@ -37,5 +37,7 @@
   "EventType_plural": "event types",
   "edit entry": "edit entry",
   "line chart": "line chart",
-  "timeline": "timeline"
+  "timeline": "timeline",
+  "delete selected entries": "delete selected {{count}} entries",
+  "successfully removed entries": "successfully removed {{count}} entries"
 }

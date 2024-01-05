@@ -27,7 +27,7 @@ import { useGlobalCRUDOptions } from "../state/useGlobalCRUDOptions";
 import { defaultJsonldContext, defaultPrefix } from "../form/formConfigs";
 import get from "lodash/get";
 import { TabIcon } from "../theme/icons";
-import {useModifiedRouter} from "../basic";
+import { useModifiedRouter } from "../basic";
 
 type SimpleExpandPanelRendererProps = {
   data: any;

@@ -19,6 +19,7 @@ import {
 } from "../utils/crud";
 import { useQueryKeyResolver } from "./useQueryKeyResolver";
 import { JsonLdContext } from "jsonld-context-parser";
+import { filterUndefOrNull } from "../utils/core";
 
 export const useCRUDWithQueryClient = (
   entityIRI: string | undefined,
@@ -66,7 +67,11 @@ export const useCRUDWithQueryClient = (
     },
     {
       onSuccess: async () => {
+        console.log("invalidateQueries");
         queryClient.invalidateQueries(["list"]);
+        queryClient.invalidateQueries(
+          filterUndefOrNull(["allEntries", typeIRI || undefined]),
+        );
       },
     },
   );

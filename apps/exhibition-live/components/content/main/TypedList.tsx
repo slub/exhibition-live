@@ -4,6 +4,7 @@ import {
   sladb,
   slent,
 } from "../../form/formConfigs";
+import * as React from "react";
 import { useCallback, useMemo, useRef, useState } from "react";
 import schema from "../../../public/schema/Exhibition.schema.json";
 import { v4 as uuidv4 } from "uuid";
@@ -13,17 +14,17 @@ import {
   SPARQLFlavour,
 } from "../../utils/sparql/jsonSchema2Select";
 import {
-  Box,
-  Link,
-  Skeleton,
-  MenuItem,
-  ListItemIcon,
-  Tooltip,
-  IconButton,
   Backdrop,
+  Box,
   CircularProgress,
-  Typography,
   Grid,
+  IconButton,
+  Link,
+  ListItemIcon,
+  MenuItem,
+  Skeleton,
+  Tooltip,
+  Typography,
 } from "@mui/material";
 import {
   MaterialReactTable,
@@ -38,9 +39,10 @@ import {
   useMaterialReactTable,
 } from "material-react-table";
 import {
-  filterForPrimitiveProperties,
-  filterForArrayProperties,
   encodeIRI,
+  filterForArrayProperties,
+  filterForPrimitiveProperties,
+  filterUndefOrNull,
   isJSONSchema,
 } from "../../utils/core";
 import { JSONSchema7 } from "json-schema";
@@ -54,7 +56,7 @@ import {
 } from "@mui/icons-material";
 import { primaryFields } from "../../config";
 import { parseMarkdownLinks } from "../../utils/core/parseMarkdownLink";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { SemanticFormsModal } from "../../renderer/SemanticFormsModal";
 import NiceModal from "@ebay/nice-modal-react";
 import GenericModal from "../../form/GenericModal";
@@ -67,13 +69,13 @@ import { withDefaultPrefix } from "../../utils/crud/makeSPARQLWherePart";
 import get from "lodash/get";
 import { download, generateCsv, mkConfig } from "export-to-csv";
 import { useDrawerDimensions } from "../../state";
-import * as React from "react";
 import { useModifiedRouter } from "../../basic";
 import { OverflowContainer } from "../../lists";
 import isNil from "lodash/isNil";
 import { OverflowChip } from "../../lists/OverflowChip";
 import { SparqlEndpoint, useSettings } from "../../state/useLocalSettings";
 import { EntityDetailModal } from "../../form/show";
+import { useTranslation } from "react-i18next";
 
 type Props = {
   typeName: string;
@@ -302,7 +304,8 @@ export const TypedList = ({ typeName }: Props) => {
     [classIRI],
   );
   const extendedSchema = useExtendedSchema({ typeName, classIRI });
-  const { mutate: removeEntity } = useMutation(
+  const queryClient = useQueryClient();
+  const { mutateAsync: removeEntity } = useMutation(
     ["remove", (id: string) => id],
     async (id: string) => {
       if (!id || !crudOptions.updateFetch)
@@ -312,14 +315,23 @@ export const TypedList = ({ typeName }: Props) => {
         queryBuildOptions: defaultQueryBuilderOptions,
       });
     },
+    {
+      onSuccess: async () => {
+        console.log("invalidateQueries");
+        queryClient.invalidateQueries(["list"]);
+        queryClient.invalidateQueries(
+          filterUndefOrNull(["allEntries", classIRI || undefined]),
+        );
+      },
+    },
   );
   const { enqueueSnackbar } = useSnackbar();
   const handleRemove = useCallback(
     async (id: string) => {
       NiceModal.show(GenericModal, {
         type: "delete",
-      }).then(() => {
-        removeEntity(id);
+      }).then(async () => {
+        return await removeEntity(id);
         enqueueSnackbar("Removed", { variant: "success" });
       });
     },
@@ -367,14 +379,41 @@ export const TypedList = ({ typeName }: Props) => {
   );
   const handleColumnFilterChange = useCallback(
     (s) => {
-      console.log("filter", s);
       setColumnFilters((old) => {
-        const newFilter = s(old);
-        console.log("new", newFilter);
-        return newFilter;
+        return s(old);
       });
     },
     [setColumnFilters],
+  );
+
+  const { t } = useTranslation("translation");
+
+  const handleRemoveSelected = useCallback(
+    (table_: MRT_TableInstance<any>) => {
+      const selectedRows = table_.getSelectedRowModel().rows;
+      const c = selectedRows.length;
+
+      NiceModal.show(GenericModal, {
+        type: "delete",
+        extraMessage: t("delete selected entries", { count: c }),
+      })
+        .then(() => {
+          return Promise.all(
+            selectedRows.map(async (row) => {
+              const id = (row.original.entity as any)?.value;
+              if (id) {
+                return await removeEntity(id);
+              }
+            }),
+          );
+        })
+        .then(() => {
+          enqueueSnackbar(t("successfully removed entries", { count: c }), {
+            variant: "success",
+          });
+        });
+    },
+    [removeEntity, enqueueSnackbar],
   );
 
   const table = useMaterialReactTable({
@@ -458,6 +497,15 @@ export const TypedList = ({ typeName }: Props) => {
         >
           Nur ausgewählte Zeilen exportieren
         </Button>
+        {table.getIsSomeRowsSelected() && (
+          <IconButton
+            onClick={() => handleRemoveSelected(table)}
+            color="error"
+            aria-label="delete"
+          >
+            <Delete />
+          </IconButton>
+        )}
       </Box>
     ),
     getRowId: (row) => (row as any)?.entity?.value || uuidv4(),

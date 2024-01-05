@@ -36,5 +36,7 @@
   "EventType_plural": "Ereignisarten",
   "edit entry": "Eintrag bearbeiten",
   "line chart": "Liniendiagramm",
-  "timeline": "Zeitstrahl"
+  "timeline": "Zeitstrahl",
+  "delete selected entries": "ausgewählte {{count}} Einträge löschen",
+  "successfully removed entries": "{{count}} Einträge erfolgreich gelöscht"
 }

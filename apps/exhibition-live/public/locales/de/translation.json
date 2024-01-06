@@ -38,5 +38,7 @@
   "line chart": "Liniendiagramm",
   "timeline": "Zeitstrahl",
   "delete selected entries": "ausgewählte {{count}} Einträge löschen",
-  "successfully removed entries": "{{count}} Einträge erfolgreich gelöscht"
+  "successfully removed entries": "{{count}} Einträge erfolgreich gelöscht",
+  "will remove entries": "{{count}} Einträge werden gelöscht",
+  "actions": "Aktionen"
 }

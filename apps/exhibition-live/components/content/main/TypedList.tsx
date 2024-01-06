@@ -5,7 +5,7 @@ import {
   slent,
 } from "../../form/formConfigs";
 import * as React from "react";
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import schema from "../../../public/schema/Exhibition.schema.json";
 import { v4 as uuidv4 } from "uuid";
 import { useGlobalCRUDOptions } from "../../state/useGlobalCRUDOptions";
@@ -36,6 +36,7 @@ import {
   MRT_SortingState,
   MRT_TableInstance,
   MRT_Virtualizer,
+  MRT_VisibilityState,
   useMaterialReactTable,
 } from "material-react-table";
 import {
@@ -53,6 +54,7 @@ import {
   Edit,
   FileDownload,
   OpenInNew,
+  Visibility,
 } from "@mui/icons-material";
 import { primaryFields } from "../../config";
 import { parseMarkdownLinks } from "../../utils/core/parseMarkdownLink";
@@ -107,6 +109,13 @@ type PathKeyMap = {
     defaultValue?: any;
   };
 };
+
+const urlSuffix = (uri: string) => {
+  return uri.substring(
+    (uri.includes("#") ? uri.lastIndexOf("#") : uri.lastIndexOf("/")) + 1 ?? 0,
+    uri.length,
+  );
+};
 const mkMultiAccessor = (pathKeysMap: PathKeyMap) => (row: any) => {
   return Object.fromEntries(
     Object.entries(pathKeysMap).map(([key, { path, defaultValue }]) => [
@@ -125,7 +134,12 @@ const computeColumns: (
         {
           id: p([...path, "id"]),
           header: p([...path, "id"]),
-          accessorKey: `${p([...path, "entry"])}.value`,
+          accessorKey: `${p([...path, "entity"])}.value`,
+          Cell: ({ cell }) => (
+            <OverflowContainer tooltip={cell.getValue()}>
+              {urlSuffix(cell.getValue() ?? "")}
+            </OverflowContainer>
+          ),
         },
         ...Object.keys(filterForPrimitiveProperties(schema.properties)).map(
           (key) => ({
@@ -183,9 +197,9 @@ const computeColumns: (
                     </Grid>
                     {!isNil(count) &&
                       count > 0 &&
-                      parseMarkdownLinks(group).map(({ label, url }) => {
+                      parseMarkdownLinks(group).map(({ label, url }, index) => {
                         return (
-                          <Grid item key={url} sx={{ m: 0.5 }}>
+                          <Grid item key={url + index} sx={{ m: 0.5 }}>
                             <Link>
                               <OverflowChip entityIRI={url} label={label} />
                             </Link>
@@ -199,6 +213,8 @@ const computeColumns: (
           ],
         ),
       ]) as any as MRT_ColumnDef<any>[];
+
+const alwaysDisplayColumns = ["mrt-row-actions", "id"];
 
 const csvConfig = mkConfig({
   fieldSeparator: ",",
@@ -224,7 +240,7 @@ export const TypedList = ({ typeName }: Props) => {
   const { activeEndpoint } = useSettings();
 
   const [sorting, setSorting] = useState<MRT_SortingState>([
-    { id: "entity", desc: false },
+    { id: "id", desc: false },
   ]);
 
   const handleColumnOrderChange = useCallback(
@@ -282,10 +298,10 @@ export const TypedList = ({ typeName }: Props) => {
     [loadedSchema],
   );
 
-  const displayColumns = useMemo<MRT_ColumnDef<any>[]>(
-    () => columns.filter((col) => !headerVars || headerVars.includes(col.id)),
+  const displayColumns = columns; /*useMemo<MRT_ColumnDef<any>[]>(
+    () => columns.filter((col) => !headerVars || headerVars.includes(col.id) || alwaysDisplayColumns.includes(col.id)),
     [columns, headerVars],
-  );
+  );*/
 
   const router = useModifiedRouter();
   const editEntry = useCallback(
@@ -305,7 +321,7 @@ export const TypedList = ({ typeName }: Props) => {
   );
   const extendedSchema = useExtendedSchema({ typeName, classIRI });
   const queryClient = useQueryClient();
-  const { mutateAsync: removeEntity } = useMutation(
+  const { mutateAsync: removeEntity, isLoading: aboutToRemove } = useMutation(
     ["remove", (id: string) => id],
     async (id: string) => {
       if (!id || !crudOptions.updateFetch)
@@ -331,6 +347,7 @@ export const TypedList = ({ typeName }: Props) => {
       NiceModal.show(GenericModal, {
         type: "delete",
       }).then(async () => {
+        enqueueSnackbar("About to remove", { variant: "info" });
         return await removeEntity(id);
         enqueueSnackbar("Removed", { variant: "success" });
       });
@@ -388,6 +405,38 @@ export const TypedList = ({ typeName }: Props) => {
 
   const { t } = useTranslation("translation");
 
+  const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>(
+    {
+      id: true,
+      externalId_single: false,
+    },
+  );
+
+  const handleChangeColumnVisibility = useCallback(
+    (s: any) => {
+      console.log("handleChangeColumnVisibility", s);
+      setColumnVisibility(s);
+    },
+    [setColumnVisibility],
+  );
+  useEffect(() => {
+    const disableList = Object.fromEntries(
+      columns
+        .filter(
+          (col) =>
+            !(
+              !headerVars ||
+              headerVars.includes(col.id) ||
+              alwaysDisplayColumns.includes(col.id)
+            ),
+        )
+        .map((col) => [col.id, false]),
+    );
+    setColumnVisibility({
+      ...disableList,
+    });
+  }, [columnVisibility, headerVars, columns, setColumnVisibility]);
+
   const handleRemoveSelected = useCallback(
     (table_: MRT_TableInstance<any>) => {
       const selectedRows = table_.getSelectedRowModel().rows;
@@ -398,6 +447,9 @@ export const TypedList = ({ typeName }: Props) => {
         extraMessage: t("delete selected entries", { count: c }),
       })
         .then(() => {
+          enqueueSnackbar(t("will remove entries", { count: c }), {
+            variant: "info",
+          });
           return Promise.all(
             selectedRows.map(async (row) => {
               const id = (row.original.entity as any)?.value;
@@ -446,9 +498,10 @@ export const TypedList = ({ typeName }: Props) => {
     manualPagination: false,
     manualSorting: true,
     onSortingChange: handleColumnOrderChange,
+    onColumnVisibilityChange: handleChangeColumnVisibility,
     initialState: {
-      columnVisibility: { id: false, externalId_single: false },
-      pagination: { pageIndex: 0, pageSize: 100 },
+      columnVisibility: { id: true, externalId_single: false },
+      pagination: { pageIndex: 0, pageSize: 20 },
     },
     rowCount: resultList.length,
     enableRowActions: true,
@@ -508,7 +561,13 @@ export const TypedList = ({ typeName }: Props) => {
         )}
       </Box>
     ),
-    getRowId: (row) => (row as any)?.entity?.value || uuidv4(),
+    getRowId: (row) => (row as any)?.originalValue?.entity?.value || uuidv4(),
+    displayColumnDefOptions: {
+      "mrt-row-actions": {
+        header: t("actions"),
+        minSize: 150,
+      },
+    },
     renderRowActions: ({ row, table }) => (
       <Box sx={{ display: "flex" }}>
         <Tooltip title="Show">
@@ -564,6 +623,7 @@ export const TypedList = ({ typeName }: Props) => {
       sorting,
       rowSelection,
       columnFilters,
+      columnVisibility,
     },
   });
 
@@ -575,7 +635,7 @@ export const TypedList = ({ typeName }: Props) => {
         <>
           <Backdrop
             sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-            open={isLoading}
+            open={isLoading || aboutToRemove}
           >
             <CircularProgress color="inherit" />
           </Backdrop>

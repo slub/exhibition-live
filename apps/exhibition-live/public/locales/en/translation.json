@@ -39,5 +39,7 @@
   "line chart": "line chart",
   "timeline": "timeline",
   "delete selected entries": "delete selected {{count}} entries",
-  "successfully removed entries": "successfully removed {{count}} entries"
+  "successfully removed entries": "successfully removed {{count}} entries",
+  "will remove entries": "{{count}} entries will be removed",
+  "actions": "actions"
 }

@@ -22,6 +22,7 @@ import AuthorityConfigForm from "./AuthorityConfigForm";
 import EndpointChooser from "./EndpointChooser";
 import FeatureForm from "./FeatureForm";
 import OpenAISettingsForm from "./OpenAISettingsForm";
+import GoogleDriveSettingsForm from "./GoogleDriveSettingsForm";
 
 interface OwnProps {}
 
@@ -87,6 +88,9 @@ const SettingsModal: FunctionComponent<Props> = (props) => {
           </Grid>
           <Grid item>
             <OpenAISettingsForm />
+          </Grid>
+          <Grid item>
+            <GoogleDriveSettingsForm />
           </Grid>
         </Grid>
       </DialogContent>

@@ -34,7 +34,7 @@ const lists: (
   children: [
     {
       id: "list_default",
-      title: "Austellungen",
+      title: "Ausstellungen",
       type: "item",
       icon: IconPaint as any,
       typeName: "Exhibition",

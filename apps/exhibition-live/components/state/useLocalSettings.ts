@@ -30,6 +30,10 @@ type OpenAIConfig = {
   apiKey?: string;
 };
 
+type GoogleDriveConfig = {
+  apiKey?: string;
+};
+
 type ExternalAuthorityConfig = {
   kxp?: {
     endpoint?: string;
@@ -43,6 +47,7 @@ export type Settings = {
 
   features: Features;
   openai: OpenAIConfig;
+  googleDrive: GoogleDriveConfig;
   externalAuthority: ExternalAuthorityConfig;
 };
 
@@ -99,12 +104,14 @@ type UseSettings = Settings & {
   setFeatures: (features: Features) => void;
   setOpenAIConfig: (config: OpenAIConfig) => void;
   setAuthorityConfig: (config: ExternalAuthorityConfig) => void;
+  setGoogleDriveConfig: (config: GoogleDriveConfig) => void;
 };
 
 export const useSettings: () => UseSettings = () => {
   const [settings, setSettings] = useLocalState<Settings>("settings", {
     sparqlEndpoints: [],
     openai: {},
+    googleDrive: {},
     externalAuthority: {
       kxp: {
         endpoint: "https://sru.bsz-bw.de/swbtest",
@@ -140,6 +147,16 @@ export const useSettings: () => UseSettings = () => {
     [setSettings],
   );
 
+  const setGoogleDriveConfig = useCallback(
+    (googleDriveConfig: GoogleDriveConfig) => {
+      setSettings((settings_) => ({
+        ...settings_,
+        googleDrive: googleDriveConfig,
+      }));
+    },
+    [setSettings],
+  );
+
   const setAuthorityConfig = useCallback(
     (authorityConfig: ExternalAuthorityConfig) => {
       setSettings((settings_) => ({
@@ -170,5 +187,6 @@ export const useSettings: () => UseSettings = () => {
     activeEndpoint,
     setOpenAIConfig,
     setAuthorityConfig,
+    setGoogleDriveConfig,
   };
 };

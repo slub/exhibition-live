@@ -18,6 +18,7 @@ import { useGoogleToken } from "./useGoogleToken";
 import { GenericListItem } from "../content/main/GenericVirtualizedList";
 import NiceModal, { useModal } from "@ebay/nice-modal-react";
 import { Close as CloseIcon } from "@mui/icons-material";
+import { useSettings } from "../state/useLocalSettings";
 
 const googleApiURL = "https://content.googleapis.com/drive/v3/files";
 const mimeIconsBase =
@@ -49,9 +50,16 @@ export const GoogleDrivePicker: FC<GoogleDrivePickerProps> = ({
   supportedMimeTypes,
 }) => {
   const { credentials } = useGoogleToken();
+  const { googleDrive } = useSettings();
   const { data: files } = useQuery(
     ["files"],
     async () => {
+      const key =
+        googleDrive.apiKey ||
+        (process.env.NEXT_PUBLIC_GAPI_API_KEY as string | undefined);
+      if (!key) {
+        throw new Error("No API Key provided");
+      }
       const queryParameters = {
         corpus: "user",
         includeItemsFromAllDrives: true,
@@ -59,7 +67,7 @@ export const GoogleDrivePicker: FC<GoogleDrivePickerProps> = ({
         pageSize: 100,
         supportsAllDrives: true,
         supportsTeamDrives: true,
-        key: process.env.NEXT_PUBLIC_GAPI_API_KEY as string,
+        key,
       };
 
       const url = new URL(googleApiURL);

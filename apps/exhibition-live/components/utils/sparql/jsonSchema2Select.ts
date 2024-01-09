@@ -141,13 +141,15 @@ type SPARQLSelectOptions = {
 
 const sparqlPartFromOptions = (options: SPARQLSelectOptions) => {
   let sparqlParts = [];
+  //always order by entity
+  sparqlParts.push(` ORDER BY `);
   if (typeof options.orderBy === "string") {
     sparqlParts.push(
-      `ORDER BY ${options?.descending ? "DESC" : "ASC"}(${options.orderBy})`,
+      ` ${options?.descending ? "DESC" : "ASC"}(${options.orderBy})`,
     );
   } else if (Array.isArray(options.orderBy) && options.orderBy.length > 0) {
     sparqlParts.push(
-      `ORDER BY ${options.orderBy
+      ` ${options.orderBy
         .map(
           ({ orderBy, descending }) =>
             `${descending ? "DESC" : "ASC"}(?${orderBy})`,
@@ -155,6 +157,7 @@ const sparqlPartFromOptions = (options: SPARQLSelectOptions) => {
         .join(" ")}`,
     );
   }
+  sparqlParts.push(` ASC(?entity) `);
   if (options.limit) {
     sparqlParts.push(`LIMIT ${options.limit}`);
   }

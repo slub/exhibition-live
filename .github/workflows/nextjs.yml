@@ -54,6 +54,7 @@ jobs:
         run: pnpm install --no-frozen-lockfile
       - name: Build with Next.js
         env:
+          NEXT_PUBLIC_GAPI_OAUTH_CLIENT_ID: ${{ secrets.NEXT_PUBLIC_GAPI_OAUTH_CLIENT_ID }}
           NEXT_PUBLIC_BASE_PATH:  /${{ github.event.repository.name }}
         run: pnpm build
       - name: Static HTML export with Next.js

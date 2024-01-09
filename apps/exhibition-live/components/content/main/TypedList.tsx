@@ -50,6 +50,7 @@ import { JSONSchema7 } from "json-schema";
 import {
   Add,
   Delete,
+  DeleteForever,
   Details,
   Edit,
   FileDownload,
@@ -63,7 +64,7 @@ import { SemanticFormsModal } from "../../renderer/SemanticFormsModal";
 import NiceModal from "@ebay/nice-modal-react";
 import GenericModal from "../../form/GenericModal";
 import { useSnackbar } from "notistack";
-import { remove } from "../../utils/crud";
+import { remove, moveToTrash } from "../../utils/crud";
 import { JsonSchema } from "@jsonforms/core";
 import useExtendedSchema from "../../state/useExtendedSchema";
 import Button from "@mui/material/Button";
@@ -132,8 +133,8 @@ const computeColumns: (
     ? []
     : [
         {
-          id: p([...path, "id"]),
-          header: p([...path, "id"]),
+          id: p([...path, "IRI"]),
+          header: p([...path, "IRI"]),
           accessorKey: `${p([...path, "entity"])}.value`,
           Cell: ({ cell }) => (
             <OverflowContainer tooltip={cell.getValue()}>
@@ -214,7 +215,7 @@ const computeColumns: (
         ),
       ]) as any as MRT_ColumnDef<any>[];
 
-const alwaysDisplayColumns = ["mrt-row-actions", "id"];
+const alwaysDisplayColumns = ["mrt-row-actions", "IRI"];
 
 const csvConfig = mkConfig({
   fieldSeparator: ",",
@@ -240,7 +241,7 @@ export const TypedList = ({ typeName }: Props) => {
   const { activeEndpoint } = useSettings();
 
   const [sorting, setSorting] = useState<MRT_SortingState>([
-    { id: "id", desc: false },
+    { id: "IRI", desc: false },
   ]);
 
   const handleColumnOrderChange = useCallback(
@@ -321,6 +322,33 @@ export const TypedList = ({ typeName }: Props) => {
   );
   const extendedSchema = useExtendedSchema({ typeName, classIRI });
   const queryClient = useQueryClient();
+  const { mutateAsync: moveToTrashAsync, isLoading: aboutToMoveToTrash } =
+    useMutation(
+      ["moveToTrash", (id: string | string[]) => id],
+      async (id: string | string[]) => {
+        if (!id || !crudOptions.updateFetch)
+          throw new Error("entityIRI or updateFetch is not defined");
+        return moveToTrash(
+          id,
+          classIRI,
+          loadedSchema,
+          crudOptions.updateFetch,
+          {
+            defaultPrefix,
+            queryBuildOptions: defaultQueryBuilderOptions,
+          },
+        );
+      },
+      {
+        onSuccess: async () => {
+          console.log("invalidateQueries");
+          queryClient.invalidateQueries(["list"]);
+          queryClient.invalidateQueries(
+            filterUndefOrNull(["allEntries", classIRI || undefined]),
+          );
+        },
+      },
+    );
   const { mutateAsync: removeEntity, isLoading: aboutToRemove } = useMutation(
     ["remove", (id: string) => id],
     async (id: string) => {
@@ -353,6 +381,18 @@ export const TypedList = ({ typeName }: Props) => {
       });
     },
     [removeEntity, enqueueSnackbar],
+  );
+  const handleMoveToTrash = useCallback(
+    async (id: string) => {
+      NiceModal.show(GenericModal, {
+        type: "moveToTrash",
+      }).then(async () => {
+        enqueueSnackbar("About to move to trash", { variant: "info" });
+        return await moveToTrashAsync(id);
+        enqueueSnackbar("Moved to trash", { variant: "success" });
+      });
+    },
+    [moveToTrashAsync, enqueueSnackbar],
   );
 
   const tableContainerRef = useRef<HTMLDivElement>(null); //we can get access to the underlying TableContainer element and react to its scroll events
@@ -407,7 +447,6 @@ export const TypedList = ({ typeName }: Props) => {
 
   const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>(
     {
-      id: true,
       externalId_single: false,
     },
   );
@@ -419,7 +458,7 @@ export const TypedList = ({ typeName }: Props) => {
     },
     [setColumnVisibility],
   );
-  useEffect(() => {
+  /*useEffect(() => {
     const disableList = Object.fromEntries(
       columns
         .filter(
@@ -436,7 +475,7 @@ export const TypedList = ({ typeName }: Props) => {
       ...disableList,
     });
   }, [columnVisibility, headerVars, columns, setColumnVisibility]);
-
+*/
   const handleRemoveSelected = useCallback(
     (table_: MRT_TableInstance<any>) => {
       const selectedRows = table_.getSelectedRowModel().rows;
@@ -466,6 +505,38 @@ export const TypedList = ({ typeName }: Props) => {
         });
     },
     [removeEntity, enqueueSnackbar],
+  );
+  const handleMoveToTrashSelected = useCallback(
+    (table_: MRT_TableInstance<any>) => {
+      const selectedRows = table_.getSelectedRowModel().rows;
+      const c = selectedRows.length;
+
+      NiceModal.show(GenericModal, {
+        type: "moveToTrash",
+        extraMessage: t("move selected entries to trash", { count: c }),
+      })
+        .then(async () => {
+          enqueueSnackbar(t("will move entries to trash", { count: c }), {
+            variant: "info",
+          });
+          return await moveToTrashAsync(
+            filterUndefOrNull(
+              selectedRows.map((row) => {
+                return (row.original.entity as any)?.value;
+              }),
+            ),
+          );
+        })
+        .then(() => {
+          enqueueSnackbar(
+            t("successfully moved entries to trash", { count: c }),
+            {
+              variant: "success",
+            },
+          );
+        });
+    },
+    [moveToTrashAsync, enqueueSnackbar],
   );
 
   const table = useMaterialReactTable({
@@ -551,17 +622,29 @@ export const TypedList = ({ typeName }: Props) => {
           Nur ausgewählte Zeilen exportieren
         </Button>
         {table.getIsSomeRowsSelected() && (
-          <IconButton
-            onClick={() => handleRemoveSelected(table)}
-            color="error"
-            aria-label="delete"
-          >
-            <Delete />
-          </IconButton>
+          <>
+            <IconButton
+              onClick={() => handleMoveToTrashSelected(table)}
+              color="error"
+              aria-label="move to trash"
+            >
+              <Delete />
+            </IconButton>
+            <IconButton
+              onClick={() => handleRemoveSelected(table)}
+              color="error"
+              aria-label="delete forever"
+            >
+              <DeleteForever />
+            </IconButton>
+          </>
         )}
       </Box>
     ),
-    getRowId: (row) => (row as any)?.originalValue?.entity?.value || uuidv4(),
+    getRowId: (row) =>
+      (row as any)?.entity?.value ||
+      (row as any)?.originalValue?.entity?.value ||
+      slent(uuidv4()).value,
     displayColumnDefOptions: {
       "mrt-row-actions": {
         header: t("actions"),
@@ -580,9 +663,14 @@ export const TypedList = ({ typeName }: Props) => {
             <Edit />
           </IconButton>
         </Tooltip>
-        <Tooltip title="Delete">
-          <IconButton color="error" onClick={() => handleRemove(row.id)}>
+        <Tooltip title="Move to trash">
+          <IconButton color="error" onClick={() => handleMoveToTrash(row.id)}>
             <Delete />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="Delete forever">
+          <IconButton color="error" onClick={() => handleRemove(row.id)}>
+            <DeleteForever />
           </IconButton>
         </Tooltip>
       </Box>
@@ -626,6 +714,13 @@ export const TypedList = ({ typeName }: Props) => {
       columnVisibility,
     },
   });
+
+  useEffect(() => {
+    if (typeName) {
+      enqueueSnackbar(`Loading ${typeName}`, { variant: "info" });
+      table.reset();
+    }
+  }, [typeName, enqueueSnackbar]);
 
   return (
     <Box sx={{ width: "100%" }}>

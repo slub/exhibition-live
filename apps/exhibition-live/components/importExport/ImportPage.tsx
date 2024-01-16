@@ -10,7 +10,7 @@ import NiceModal from "@ebay/nice-modal-react";
 import { GoogleDrivePickerModal } from "../google/GoogleDrivePicker";
 import { GoogleSpeadSheetView } from "../google/SpreadSheetView";
 
-const scopes: string[] = [
+const scopes: [string, string, string] = [
   "https://www.googleapis.com/auth/drive.readonly.metadata",
   "https://www.googleapis.com/auth/drive.file",
   "https://www.googleapis.com/auth/spreadsheets",

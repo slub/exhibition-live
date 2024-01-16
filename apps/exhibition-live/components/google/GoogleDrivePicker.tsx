@@ -55,7 +55,7 @@ export const GoogleDrivePicker: FC<GoogleDrivePickerProps> = ({
     ["files"],
     async () => {
       const key =
-        googleDrive.apiKey ||
+        googleDrive?.apiKey ||
         (process.env.NEXT_PUBLIC_GAPI_API_KEY as string | undefined);
       if (!key) {
         throw new Error("No API Key provided");

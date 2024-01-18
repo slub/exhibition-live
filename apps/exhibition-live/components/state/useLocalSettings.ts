@@ -65,16 +65,13 @@ const defaultSparqlEndpoints: SparqlEndpoint[] = [
     label: "Production",
     endpoint: "https://sdv-ahn-adbtest.slub-dresden.de/query",
     active: true,
-  },
-  {
-    label: "Test",
-    endpoint: "http://sdvahndmgtest.slub-dresden.de:7878/query",
-    active: false,
+    provider: "oxigraph",
   },
   {
     label: "Local",
     endpoint: "http://localhost:7878/query",
     active: false,
+    provider: "oxigraph",
   },
   {
     label: "QLever local",

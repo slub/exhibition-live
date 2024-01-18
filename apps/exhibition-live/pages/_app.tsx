@@ -18,6 +18,7 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { appWithTranslation, UserConfig } from "next-i18next";
 import nextI18NextConfig from "../next-i18next.config";
 import { GoogleOAuthProvider } from "@react-oauth/google";
+import { AdbProvider } from "../components/provider/adbContext";
 
 export const queryClient = new QueryClient();
 const QueryClientProviderWrapper = ({
@@ -39,7 +40,7 @@ function App({ Component, pageProps }: AppProps) {
               <GoogleOAuthProvider
                 clientId={process.env.NEXT_PUBLIC_GAPI_OAUTH_CLIENT_ID}
               >
-                {<Component {...pageProps} />}
+                <AdbProvider>{<Component {...pageProps} />}</AdbProvider>
               </GoogleOAuthProvider>
             </NiceModal.Provider>
           </SnackbarProvider>

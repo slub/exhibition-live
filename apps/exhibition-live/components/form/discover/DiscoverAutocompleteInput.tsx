@@ -1,12 +1,6 @@
 import { TextFieldProps, useControlled } from "@mui/material";
 import parse from "html-react-parser";
-import React, {
-  FunctionComponent,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import React, { FunctionComponent, useCallback } from "react";
 
 import { useGlobalCRUDOptions } from "../../state/useGlobalCRUDOptions";
 import { findEntityByClass } from "../../utils/discover";
@@ -14,6 +8,9 @@ import {
   AutocompleteSuggestion,
   DebouncedAutocomplete,
 } from "../DebouncedAutoComplete";
+import { loadEntityBasics } from "../../utils/crud/loadEntityBasics";
+import { defaultPrefix, sladb } from "../formConfigs";
+import { useQuery } from "@tanstack/react-query";
 
 interface OwnProps {
   selected?: AutocompleteSuggestion | null;
@@ -36,14 +33,14 @@ interface OwnProps {
 type Props = OwnProps;
 
 const DiscoverAutocompleteInput: FunctionComponent<Props> = ({
-  title = "etwas",
+  title = "",
   typeName,
   readonly,
   defaultSelected,
   selected,
   onEnterSearch,
   onSelectionChange,
-  typeIRI: classType,
+  typeIRI,
   loadOnStart,
   limit,
   onDebouncedSearchChange,
@@ -53,14 +50,15 @@ const DiscoverAutocompleteInput: FunctionComponent<Props> = ({
   searchString: searchStringProp,
 }) => {
   const { crudOptions } = useGlobalCRUDOptions();
-  const [selectedValue, setSelectedUncontrolled] = useControlled({
-    name: "DiscoverAutocompleteInput",
-    controlled: selected,
-    default: defaultSelected || null,
-  });
+  const [selectedValue, setSelectedUncontrolled] =
+    useControlled<AutocompleteSuggestion | null>({
+      name: "DiscoverAutocompleteInput-selected",
+      controlled: selected,
+      default: defaultSelected || null,
+    });
 
   const [searchString, setSearchString] = useControlled<string | undefined>({
-    name: "DiscoverAutocompleteInput",
+    name: "DiscoverAutocompleteInput-searchString",
     controlled: searchStringProp,
     default: "",
   });
@@ -83,11 +81,11 @@ const DiscoverAutocompleteInput: FunctionComponent<Props> = ({
 
   const load = useCallback(
     async (searchString?: string) =>
-      classType && crudOptions
+      typeIRI && crudOptions
         ? (
             await findEntityByClass(
               searchString || null,
-              classType,
+              typeIRI,
               crudOptions.selectFetch,
               limit,
             )
@@ -98,7 +96,28 @@ const DiscoverAutocompleteInput: FunctionComponent<Props> = ({
             };
           })
         : [],
-    [classType, crudOptions, limit],
+    [typeIRI, crudOptions, limit],
+  );
+
+  const { data: basicFields } = useQuery(
+    ["loadEntity", selected?.value, typeName],
+    async () => {
+      const value = selected?.value;
+      if (value && crudOptions && crudOptions.selectFetch) {
+        const typeIRI = sladb(typeName).value;
+        return await loadEntityBasics(value, typeIRI, crudOptions.selectFetch, {
+          defaultPrefix: defaultPrefix,
+        });
+      }
+      return null;
+    },
+    {
+      enabled: Boolean(
+        crudOptions?.selectFetch &&
+          typeof selected?.value === "string" &&
+          (!selected?.label || selected?.label?.length === 0),
+      ),
+    },
   );
 
   const handleEnter = useCallback(
@@ -118,33 +137,40 @@ const DiscoverAutocompleteInput: FunctionComponent<Props> = ({
     [onSearchValueChange, setSearchString],
   );
 
+  const handleGetOptionLabel = useCallback(
+    (option: AutocompleteSuggestion) => {
+      return option.label || basicFields?.label || option.value || "";
+    },
+    [basicFields],
+  );
+
   return (
-    <>
-      <DebouncedAutocomplete
-        title={title}
-        readOnly={readonly}
-        loadOnStart={true}
-        ready={Boolean(classType && crudOptions)}
-        // @ts-ignore
-        load={load}
-        value={selectedValue || null}
-        placeholder={`Suche nach ${typeName} in der aktuellen Datenbank`}
-        renderOption={(props, option: any) => (
-          <li {...props} key={option.value}>
-            {parse(
-              `<span class="debounced_autocomplete_option_label">${option.label}</span>`,
-            )}
-          </li>
-        )}
-        // @ts-ignore
-        onChange={handleChange}
-        onDebouncedSearchChange={onDebouncedSearchChange}
-        condensed={condensed}
-        onKeyUp={handleEnter}
-        onSearchValueChange={handleSearchValueChange}
-        inputProps={inputProps}
-      />
-    </>
+    <DebouncedAutocomplete
+      title={title}
+      readOnly={readonly}
+      loadOnStart={true}
+      ready={Boolean(typeIRI && crudOptions)}
+      // @ts-ignore
+      load={load}
+      initialQueryKey={typeIRI}
+      value={selectedValue || { label: "", value: null }}
+      getOptionLabel={handleGetOptionLabel}
+      placeholder={`Suche nach ${typeName} in der aktuellen Datenbank`}
+      renderOption={(props, option: any) => (
+        <li {...props} key={option.value}>
+          {parse(
+            `<span class="debounced_autocomplete_option_label">${option.label}</span>`,
+          )}
+        </li>
+      )}
+      // @ts-ignore
+      onChange={handleChange}
+      onDebouncedSearchChange={onDebouncedSearchChange}
+      condensed={condensed}
+      onKeyUp={handleEnter}
+      onSearchValueChange={handleSearchValueChange}
+      inputProps={inputProps}
+    />
   );
 };
 

@@ -67,14 +67,6 @@ const MaterialArrayLayoutComponent = (props: ArrayLayoutProps & {}) => {
     () => createDefaultValue(props.schema),
     [props.schema],
   );
-  const handleChange = useCallback(
-    (panel: string) => (_event: any, expandedPanel: boolean) => {
-      setExpanded(expandedPanel ? panel : false);
-    },
-    [],
-  );
-  const isExpanded = (pathOrID: string) => expanded === pathOrID;
-
   const {
     data,
     path,

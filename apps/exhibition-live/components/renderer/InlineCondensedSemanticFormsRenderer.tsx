@@ -58,7 +58,10 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
     [config?.formsPath, path],
   );
   const selected = useMemo(
-    () => ({ value: data || null, label: realLabel }),
+    () =>
+      data
+        ? { value: data || null, label: realLabel }
+        : { value: null, label: null },
     [data, realLabel],
   );
   const { $ref, typeIRI } = uischema.options?.context || {};
@@ -104,12 +107,11 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
         path.substring(0, path.length - ("@id".length + 1)),
       );
       const fieldDecl = primaryFields[typeName] as PrimaryField | undefined;
-      let label = data;
+      let label = "";
       if (fieldDecl?.label)
         label = extractFieldIfString(parentData, fieldDecl.label);
       if (typeof label === "object") {
-        console.warn("label is object", label);
-        return JSON.stringify(label);
+        return "";
       }
       return label;
     });
@@ -256,7 +258,7 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
             selected={selected}
             onSelectionChange={handleSelectedChange}
             onSearchValueChange={handleSearchStringChange}
-            searchString={searchString}
+            searchString={searchString || ""}
             inputProps={{
               onFocus: handleFocus,
             }}

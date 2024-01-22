@@ -11,6 +11,7 @@ import React, {
 } from "react";
 
 import { TextField } from "./TextField";
+import { useQuery } from "@tanstack/react-query";
 
 export type AutocompleteSuggestion = {
   label: string;
@@ -19,6 +20,7 @@ export type AutocompleteSuggestion = {
 
 export type DebouncedAutocompleteProps = {
   load: (value?: string) => Promise<AutocompleteSuggestion[]>;
+  initialQueryKey?: string;
   placeholder: string;
   minSearchLength?: number;
   loadOnStart?: boolean;
@@ -33,7 +35,7 @@ export type DebouncedAutocompleteProps = {
   "renderInput" | "size" | "options"
 >;
 
-const emptySuggetions: AutocompleteSuggestion[] = [
+const emptySuggestions: AutocompleteSuggestion[] = [
   {
     label: "",
     value: null,
@@ -43,6 +45,7 @@ export const DebouncedAutocomplete: FunctionComponent<
   DebouncedAutocompleteProps
 > = ({
   load,
+  initialQueryKey,
   title,
   minSearchLength = 1,
   loadOnStart,
@@ -52,14 +55,13 @@ export const DebouncedAutocomplete: FunctionComponent<
   onDebouncedSearchChange,
   condensed,
   inputProps,
+  value,
   ...props
 }) => {
   const [suggestions, setSuggestions] = useState<
     AutocompleteSuggestion[] | undefined
-  >(emptySuggetions);
+  >(emptySuggestions);
   const [loading, setLoading] = useState<boolean>(false);
-
-  const [initiallyLoaded, setInitiallyLoaded] = useState(false);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedRequest = useCallback(
@@ -67,9 +69,9 @@ export const DebouncedAutocomplete: FunctionComponent<
       const data = await load(value);
       onDebouncedSearchChange && onDebouncedSearchChange(value);
       if (data.length > 0) {
-        setSuggestions([...data, ...emptySuggetions]);
+        setSuggestions([...data, ...emptySuggestions]);
       } else {
-        setSuggestions(emptySuggetions);
+        setSuggestions(emptySuggestions);
       }
       setLoading(false);
     }, 500),
@@ -87,63 +89,55 @@ export const DebouncedAutocomplete: FunctionComponent<
     },
     [setLoading, debouncedRequest, minSearchLength, onSearchValueChange],
   );
+  const { data: initialData, isLoading } = useQuery(
+    ["initiallyLoadSuggestions", initialQueryKey],
+    () => load(),
+    {
+      enabled: Boolean(initialQueryKey && loadOnStart && ready),
+    },
+  );
 
   useEffect(() => {
-    if (loadOnStart && ready && !initiallyLoaded) {
-      setLoading(true);
-      load().then((data) => {
-        if (data?.length > 0) {
-          setSuggestions([...data, ...emptySuggetions]);
-        }
-        setLoading(false);
-        setInitiallyLoaded(true);
-      });
+    if (initialData?.length > 0) {
+      setSuggestions([...initialData, ...emptySuggestions]);
     }
-  }, [
-    setLoading,
-    setSuggestions,
-    load,
-    initiallyLoaded,
-    setInitiallyLoaded,
-    loadOnStart,
-    ready,
-  ]);
+  }, [initialData, setSuggestions]);
 
   return (
-    <>
-      <Autocomplete
-        noOptionsText="No results"
-        readOnly={readOnly}
-        {...props}
-        renderInput={(params) => (
-          // @ts-ignore
-          <TextField
-            {...params}
-            label={condensed ? undefined : title}
-            variant={"standard"}
-            placeholder={condensed ? title : props.placeholder}
-            onChange={handleOnChange}
-            InputProps={{
-              ...params.InputProps,
-              disabled: readOnly,
-              startAdornment: (
-                <>
-                  {loading ? (
-                    <CircularProgress color="inherit" size={16} />
-                  ) : readOnly ? (
-                    <Link fontSize="small" />
-                  ) : (
-                    <Search fontSize="small" />
-                  )}
-                  {params.InputProps.startAdornment}
-                </>
-              ),
-            }}
-            {...inputProps}
-          />
-        )}
-        options={suggestions}
-      />
-    </>
+    <Autocomplete
+      noOptionsText="No results"
+      readOnly={readOnly}
+      isOptionEqualToValue={(option, value) => option.value === value.value}
+      value={value}
+      {...props}
+      renderInput={(params) => (
+        // @ts-ignore
+        <TextField
+          {...params}
+          label={condensed ? undefined : title}
+          variant={"standard"}
+          placeholder={condensed ? title : props.placeholder}
+          onChange={handleOnChange}
+          InputProps={{
+            ...params.InputProps,
+            disabled: readOnly,
+            startAdornment: (
+              <>
+                {isLoading || loading ? (
+                  <CircularProgress color="inherit" size={16} />
+                ) : readOnly ? (
+                  <Link fontSize="small" />
+                ) : (
+                  <Search fontSize="small" />
+                )}
+                {params.InputProps.startAdornment}
+              </>
+            ),
+          }}
+          {...inputProps}
+        />
+      )}
+      options={suggestions}
+    />
   );
 };

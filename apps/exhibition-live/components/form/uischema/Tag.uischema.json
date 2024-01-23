@@ -23,6 +23,10 @@
       "options": {
         "multi": true
       }
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/image"
     }
   ]
 }

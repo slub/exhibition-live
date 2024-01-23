@@ -11,6 +11,10 @@
         "description": {
           "type": "string"
         },
+        "image": {
+          "type": "string",
+          "format": "uri"
+        },
         "parent": {
           "$ref": "#/$defs/Tag"
         }

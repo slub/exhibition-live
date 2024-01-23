@@ -19,7 +19,7 @@ const defaultMappingWithImg: PrimaryField = {
 
 export const primaryFields: Partial<ExhibitionPrimaryFieldDeclaration> = {
   Exhibition: defaultMappingWithImg,
-  Tag: defaultMapping,
+  Tag: defaultMappingWithImg,
   Person: {
     ...defaultMappingWithImg,
     label: "name",

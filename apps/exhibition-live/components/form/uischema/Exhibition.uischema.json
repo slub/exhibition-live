@@ -65,8 +65,11 @@
         },
         {
           "type": "Control",
-          "label": "Schlagwörter",
-          "scope": "#/properties/tags"
+          "label": "Schlagworte",
+          "scope": "#/properties/tags",
+          "options": {
+            "chips": true
+          }
         },
         {
           "type": "Control",

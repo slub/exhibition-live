@@ -49,6 +49,9 @@ import {
   PrimaryTextFieldRenderer,
 } from "../renderer/PrimaryFieldTextRenderer";
 import { useGlobalSearch } from "../state";
+import MaterialArrayOfLinkedItemChipsRenderer, {
+  materialArrayLayoutChipsTester,
+} from "../renderer/MaterialArrayOfLinkedItemChipsRenderer";
 
 export type CRUDOpsType = {
   load: () => Promise<void>;
@@ -116,6 +119,10 @@ const renderers = [
       ),
     ),
     renderer: MaterialArrayOfLinkedItemRenderer,
+  },
+  {
+    tester: materialArrayLayoutChipsTester,
+    renderer: MaterialArrayOfLinkedItemChipsRenderer,
   },
   {
     tester: rankWith(14, (uischema: UISchemaElement, schema, ctx): boolean => {

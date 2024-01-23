@@ -123,9 +123,9 @@ const SimilarityFinder: FunctionComponent<Props> = ({
   const { t } = useTranslation("translation");
   const searchString = useMemo<string | null>(
     () =>
+      (searchOnDataPath && Resolve.data(data, searchOnDataPath)) ||
       globalSearch ||
       search ||
-      (searchOnDataPath && Resolve.data(data, searchOnDataPath)) ||
       null,
     [data, searchOnDataPath, search, globalSearch],
   );

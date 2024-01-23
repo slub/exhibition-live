@@ -75,7 +75,8 @@ export const useGlobalSearchWithHelper = (
   const handleFocus = useCallback(() => {
     setTypeName(typeName);
     setPath(formsPath);
-  }, [setTypeName, typeName, setPath, formsPath]);
+    setSearch(searchString);
+  }, [searchString, setSearch, setTypeName, typeName, setPath, formsPath]);
 
   return {
     ...globalSearch,

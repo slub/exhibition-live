@@ -3,14 +3,9 @@ import { Storage as KnowledgebaseIcon } from "@mui/icons-material";
 import {
   Badge,
   Box,
-  Chip,
   Divider,
   Grid,
-  MenuItem,
-  Select,
-  Typography,
-  ToggleButton,
-  ToggleButtonGroup,
+  TextField,
 } from "@mui/material";
 import ClassicResultListWrapper from "./result/ClassicResultListWrapper";
 import { dcterms } from "@tpluscode/rdf-ns-builders";
@@ -119,15 +114,22 @@ const SimilarityFinder: FunctionComponent<Props> = ({
     search: globalSearch,
     typeName: globalTypeName,
     path: globalPath,
+    setSearch,
   } = useGlobalSearch();
   const { t } = useTranslation("translation");
-  const searchString = useMemo<string | null>(
-    () =>
-      (searchOnDataPath && Resolve.data(data, searchOnDataPath)) ||
-      globalSearch ||
-      search ||
-      null,
-    [data, searchOnDataPath, search, globalSearch],
+  const handleSearchStringChange = useCallback(
+    (value: string) => {
+      setSearch(value);
+    },
+    [setSearch],
+  );
+  const dataPathSearch = useMemo<string | undefined>(
+    () => searchOnDataPath && Resolve.data(data, searchOnDataPath),
+    [data, searchOnDataPath],
+  );
+  const searchString: string | undefined = useMemo<string | null>(
+    () => dataPathSearch || globalSearch || search || null,
+    [data, dataPathSearch, search, globalSearch],
   );
 
   const [typeName, setTypeName] = useState(
@@ -286,13 +288,18 @@ const SimilarityFinder: FunctionComponent<Props> = ({
             }}
           >
             <Box sx={{ flexGrow: 1 }}>
-              <Typography gutterBottom variant="caption" component="div">
-                Suche in {selectedKnowledgeSources.join(",")} nach {t(typeName)}{" "}
-                ({globalPath})
-              </Typography>
-              <Typography variant="body2" gutterBottom>
-                {searchString}
-              </Typography>
+              <TextField
+                variant={"standard"}
+                disabled={Boolean(dataPathSearch)}
+                fullWidth={true}
+                value={searchString || ""}
+                onChange={(e) =>
+                  handleSearchStringChange(e.currentTarget.value)
+                }
+                label={`Suche in ${selectedKnowledgeSources.join(",")} nach ${t(
+                  typeName,
+                )} `}
+              />
             </Box>
             <Box
               sx={{

@@ -153,7 +153,7 @@ const DiscoverAutocompleteInput: FunctionComponent<Props> = ({
       // @ts-ignore
       load={load}
       initialQueryKey={typeIRI}
-      value={selectedValue || { label: "", value: null }}
+      value={selectedValue || { label: searchString, value: null }}
       getOptionLabel={handleGetOptionLabel}
       placeholder={`Suche nach ${typeName} in der aktuellen Datenbank`}
       renderOption={(props, option: any) => (

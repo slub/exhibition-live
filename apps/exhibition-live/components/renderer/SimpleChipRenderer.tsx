@@ -1,9 +1,5 @@
 import { JsonSchema, update } from "@jsonforms/core";
-import {
-  Avatar,
-  Chip,
-  Tooltip,
-} from "@mui/material";
+import { Avatar, Chip, Tooltip } from "@mui/material";
 import React, {
   MouseEvent,
   useCallback,

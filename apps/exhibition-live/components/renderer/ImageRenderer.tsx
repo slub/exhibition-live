@@ -1,6 +1,6 @@
 import { ControlProps } from "@jsonforms/core";
 import { withJsonFormsControlProps } from "@jsonforms/react";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { ImageNotSupported, Image as ImageIcon } from "@mui/icons-material";
 import {
   FormControl,
   Grid,
@@ -48,10 +48,11 @@ const ImageRenderer = (props: ControlProps) => {
           {
             <Grid item>
               <IconButton onClick={() => setEditMode((prev) => !prev)}>
-                {editMode ? <VisibilityOff /> : <Visibility />}
+                {editMode ? <ImageNotSupported /> : <ImageIcon />}
               </IconButton>
               {editMode && (
                 <TextField
+                  label={schema.title || "image url"}
                   variant={"standard"}
                   onChange={(e) => handleChange_(e.target.value)}
                   value={data}

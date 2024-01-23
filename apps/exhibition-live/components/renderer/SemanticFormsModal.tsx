@@ -148,17 +148,6 @@ export const SemanticFormsModal = (props: SemanticFormsModalProps) => {
       onEdit={handleEditToggle}
       editMode={editMode}
       actions={children}
-      search={
-        <DiscoverAutocompleteInput
-          typeIRI={typeIRI}
-          title={label || ""}
-          typeName={typeName || ""}
-          onDebouncedSearchChange={handleSearchTextChange}
-          onSelectionChange={(selection) =>
-            onChange && onChange(selection?.value)
-          }
-        />
-      }
       onRemove={handleRemove}
     >
       <>

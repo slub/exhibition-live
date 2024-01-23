@@ -22,7 +22,7 @@ import { SemanticJsonFormNoOps } from "./SemanticJsonFormNoOps";
 import { SemanticJsonFormToolbar } from "./SemanticJsonFormToolbar";
 import { useSettings } from "../state/useLocalSettings";
 import { useQueryKeyResolver } from "../state";
-import { Box } from "@mui/material";
+import { Backdrop, Box, CircularProgress } from "@mui/material";
 import { EntityDetailModal } from "./show";
 
 export type CRUDOpsType = {
@@ -93,6 +93,12 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> = ({
     );
 
   const { updateSourceToTargets, removeSource } = useQueryKeyResolver();
+  const [grandOperationIsLoading, setGrandOperationLoading] = useState(false);
+  const isLoading = useMemo(
+    () =>
+      loadQuery.isLoading || saveMutation.isLoading || grandOperationIsLoading,
+    [loadQuery.isLoading, saveMutation.isLoading, grandOperationIsLoading],
+  );
   useEffect(() => {
     if (loadQuery.data) {
       const data = loadQuery.data.document;
@@ -122,13 +128,17 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> = ({
   }, [setData]);
 
   const handleSave = useCallback(async () => {
+    setGrandOperationLoading(true);
     saveMutation
       .mutateAsync(data)
       .then(async () => {
         setData({});
+        loadQuery.remove();
         setTimeout(() => {
           enqueueSnackbar("Saved", { variant: "success" });
-          loadQuery.refetch();
+          loadQuery.refetch().finally(() => {
+            setGrandOperationLoading(false);
+          });
         }, 10);
       })
       .catch((e) => {
@@ -136,7 +146,14 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> = ({
           variant: "error",
         });
       });
-  }, [enqueueSnackbar, saveMutation, loadQuery, data, setData]);
+  }, [
+    setGrandOperationLoading,
+    enqueueSnackbar,
+    saveMutation,
+    loadQuery,
+    data,
+    setData,
+  ]);
 
   const handleRemove = useCallback(async () => {
     NiceModal.show(GenericModal, {
@@ -150,9 +167,14 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> = ({
     NiceModal.show(GenericModal, {
       type: "reload",
     }).then(() => {
-      loadQuery.refetch();
+      setGrandOperationLoading(true);
+      loadQuery.remove();
+      setData({});
+      loadQuery.refetch().finally(() => {
+        setGrandOperationLoading(false);
+      });
     });
-  }, [loadQuery]);
+  }, [loadQuery, setData, setGrandOperationLoading]);
 
   const handleToggleEditMode = useCallback(() => {
     setEditMode((prev) => !prev);
@@ -195,6 +217,12 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> = ({
           cleanedData,
         }}
       />
+      <Backdrop
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={isLoading}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
       <SemanticJsonFormNoOps
         typeIRI={typeIRI}
         data={data}

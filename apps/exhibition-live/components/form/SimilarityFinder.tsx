@@ -1,12 +1,6 @@
 import { Resolve } from "@jsonforms/core";
 import { Storage as KnowledgebaseIcon } from "@mui/icons-material";
-import {
-  Badge,
-  Box,
-  Divider,
-  Grid,
-  TextField,
-} from "@mui/material";
+import { Badge, Box, Divider, Grid, TextField } from "@mui/material";
 import ClassicResultListWrapper from "./result/ClassicResultListWrapper";
 import { dcterms } from "@tpluscode/rdf-ns-builders";
 import { JSONSchema7 } from "json-schema";

@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { CellProps, scopeEndsWith, WithClassname } from "@jsonforms/core";
 import {
   IconButton,
@@ -13,7 +13,6 @@ import Close from "@mui/icons-material/Close";
 import {
   JsonFormsTheme,
   MaterialInputControl,
-  MuiInputText,
   useDebouncedChange,
 } from "@jsonforms/material-renderers";
 import {
@@ -22,13 +21,10 @@ import {
   RankedTester,
   rankWith,
   and,
-  scopeEndIs,
 } from "@jsonforms/core";
 import { withJsonFormsControlProps } from "@jsonforms/react";
 import { primaryFields, typeIRItoTypeName } from "../config";
-import { useGlobalSearch, useGlobalSearchWithHelper } from "../state";
-import { JSONSchema7 } from "json-schema";
-import { makeFormsPath } from "../utils/core";
+import { useGlobalSearch } from "../state";
 
 interface MuiTextInputProps {
   muiInputProps?: InputProps["inputProps"];

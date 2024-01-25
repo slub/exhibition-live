@@ -1,6 +1,16 @@
-import React, { ComponentType, useState } from "react";
+import React, { ComponentType, useCallback, useState } from "react";
 import merge from "lodash/merge";
-import { Button, Grid, Hidden, Step, StepButton, Stepper } from "@mui/material";
+import {
+  Box,
+  Button,
+  Grid,
+  Hidden,
+  MobileStepper,
+  Step,
+  StepButton,
+  Stepper,
+  Typography,
+} from "@mui/material";
 import {
   and,
   Categorization,
@@ -21,6 +31,8 @@ import {
   MaterialLayoutRendererProps,
 } from "@jsonforms/material-renderers";
 import { optionallyCreatePortal } from "../helper/optionallyCreatePortal";
+import { KeyboardArrowLeft, KeyboardArrowRight } from "@mui/icons-material";
+import { useTranslation } from "react-i18next";
 
 export const materialCategorizationStepperTester: RankedTester = rankWith(
   4,
@@ -77,6 +89,7 @@ export const MaterialCategorizationStepperLayout = (
   const categories = categorization.elements.filter((category: Category) =>
     isVisible(category, data, undefined, ajv),
   );
+  const { t } = useTranslation();
   const childProps: MaterialLayoutRendererProps = {
     elements: categories[activeCategory].elements,
     schema,
@@ -86,38 +99,92 @@ export const MaterialCategorizationStepperLayout = (
     renderers,
     cells,
   };
+  const handleNext = useCallback(
+    () => handleStep(activeCategory + 1),
+    [activeCategory],
+  );
+  const handleBack = useCallback(
+    () => handleStep(activeCategory - 1),
+    [activeCategory],
+  );
   return (
     <Hidden xsUp={!visible}>
-      <Grid container spacing={4} direction={"row"}>
-        <Grid item xs={2}>
-          <Stepper
-            activeStep={activeCategory}
-            nonLinear
-            orientation={"vertical"}
-            sx={{ paddingTop: (theme) => theme.spacing(2) }}
-          >
-            {categories.map((e: Category, idx: number) => (
-              <Step key={e.label}>
-                <StepButton onClick={() => handleStep(idx)}>
-                  {e.label}
-                </StepButton>
-              </Step>
-            ))}
-          </Stepper>
+      <Box>
+        <Grid
+          container
+          spacing={4}
+          wrap={"nowrap"}
+          direction={{ md: "row", xs: "column" }}
+        >
+          <Grid item xs={2}>
+            <Hidden mdDown>
+              <Stepper
+                activeStep={activeCategory}
+                nonLinear
+                orientation={"vertical"}
+                sx={{ paddingTop: (theme) => theme.spacing(2) }}
+              >
+                {categories.map((e: Category, idx: number) => (
+                  <Step key={e.label}>
+                    <StepButton onClick={() => handleStep(idx)}>
+                      {e.label}
+                    </StepButton>
+                  </Step>
+                ))}
+              </Stepper>
+            </Hidden>
+            <Hidden mdUp>
+              <MobileStepper
+                variant="text"
+                steps={categories.length}
+                position="static"
+                activeStep={activeCategory}
+                nextButton={
+                  <Button
+                    size="small"
+                    onClick={handleNext}
+                    disabled={activeCategory >= categories.length - 1}
+                  >
+                    weiter
+                    <KeyboardArrowRight />
+                  </Button>
+                }
+                backButton={
+                  <Button
+                    size="small"
+                    onClick={handleBack}
+                    disabled={activeCategory <= 0}
+                  >
+                    <KeyboardArrowLeft />
+                    zurück
+                  </Button>
+                }
+              />
+              <Typography variant="h3">
+                {categories[activeCategory].label}
+              </Typography>
+            </Hidden>
+          </Grid>
+          <Grid item xs={10}>
+            <div>
+              <MaterialLayoutRenderer {...childProps} />
+            </div>
+          </Grid>
         </Grid>
-        <Grid item xs={10}>
-          <div>
-            <MaterialLayoutRenderer {...childProps} />
-          </div>
-          {!!appliedUiSchemaOptions.showNavButtons
-            ? optionallyCreatePortal(
-                <>
+        {!!appliedUiSchemaOptions.showNavButtons
+          ? optionallyCreatePortal(
+              <Hidden mdDown>
+                <Box
+                  sx={{ width: "100%" }}
+                  display={"flex"}
+                  justifyContent={"space-between"}
+                >
                   <Button
                     style={buttonStyle}
                     color="secondary"
                     variant="contained"
                     disabled={activeCategory <= 0}
-                    onClick={() => handleStep(activeCategory - 1)}
+                    onClick={handleBack}
                   >
                     zurück
                   </Button>
@@ -126,16 +193,16 @@ export const MaterialCategorizationStepperLayout = (
                     variant="contained"
                     color="primary"
                     disabled={activeCategory >= categories.length - 1}
-                    onClick={() => handleStep(activeCategory + 1)}
+                    onClick={handleNext}
                   >
                     weiter
                   </Button>
-                </>,
-                actionContainer,
-              )
-            : null}
-        </Grid>
-      </Grid>
+                </Box>
+              </Hidden>,
+              actionContainer,
+            )
+          : null}
+      </Box>
     </Hidden>
   );
 };

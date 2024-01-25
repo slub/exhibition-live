@@ -20,6 +20,7 @@ import { useModifiedRouter } from "../../basic";
 import { encodeIRI } from "../../utils/core";
 
 import { typeIRItoTypeName } from "../../config";
+import { useSettings } from "../../state/useLocalSettings";
 
 interface OwnProps {
   typeIRI: string;
@@ -42,6 +43,10 @@ export const EntityDetailCard: FunctionComponent<Props> = ({
     const typeName = typeIRItoTypeName(typeIRI);
     router.push(`/create/${typeName}?encID=${encodeIRI(entityIRI)}`);
   }, [router, typeIRI, entityIRI]);
+  const {
+    features: { enableDebug },
+  } = useSettings();
+
   return (
     <>
       <Card>
@@ -70,8 +75,12 @@ export const EntityDetailCard: FunctionComponent<Props> = ({
         </CardActions>
       </Card>
       <LobidAllPropTable allProps={data} />
-      <JsonView data={cardInfo} shouldInitiallyExpand={(lvl) => lvl < 3} />
-      <JsonView data={data} shouldInitiallyExpand={(lvl) => lvl < 3} />
+      {enableDebug && (
+        <>
+          <JsonView data={cardInfo} shouldInitiallyExpand={(lvl) => lvl < 3} />
+          <JsonView data={data} shouldInitiallyExpand={(lvl) => lvl < 3} />
+        </>
+      )}
     </>
   );
 };

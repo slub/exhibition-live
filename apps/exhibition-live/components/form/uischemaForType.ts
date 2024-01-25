@@ -18,6 +18,8 @@ import CorporationRoleUISchema from "./uischema/CorporationRole.uischema.json";
 import EventTypeUISchema from "./uischema/EventType.uischema.json";
 import CorporationUISchema from "./uischema/Corporation.uischema.json";
 import InvolvedCoporationUISchema from "./uischema/InvolvedCorporation.uischema.json";
+import ExponatsAndPersonsUISchema from "./uischema/ExponatsAndPersons.uischema.json";
+import ExponatsAndCorporationsUISchema from "./uischema/ExponatsAndCorporations.uischema.json";
 
 export const uischemata = {
   Exhibition: ExhibitionUISchema,
@@ -35,6 +37,8 @@ export const uischemata = {
   CorporationRole: CorporationRoleUISchema,
   EventType: EventTypeUISchema,
   Corporation: CorporationUISchema,
+  ExponatsAndPersons: ExponatsAndPersonsUISchema,
+  ExponatsAndCorporations: ExponatsAndCorporationsUISchema,
 };
 export const useUISchemaForType = (
   typeIRI: string,

@@ -51,7 +51,10 @@
         {
           "type": "Control",
           "label": "Genre",
-          "scope": "#/properties/exhibitionGenre"
+          "scope": "#/properties/exhibitionGenre",
+          "options": {
+            "chips": true
+          }
         },
         {
           "type": "Control",
@@ -123,27 +126,40 @@
       "label": "Zeitlicher Rahmen",
       "elements": [
         {
-          "type": "HorizontalLayout",
+          "type": "VerticalLayout",
           "elements": [
             {
-              "type": "Group",
+              "type": "HorizontalLayout",
               "elements": [
                 {
-                  "type": "Control",
-                  "label": "Beginn",
-                  "scope": "#/properties/startDate"
+                  "type": "Group",
+                  "elements": [
+                    {
+                      "type": "Control",
+                      "label": "Beginn",
+                      "scope": "#/properties/startDate"
+                    }
+                  ]
+                },
+                {
+                  "type": "Group",
+                  "elements": [
+                    {
+                      "type": "Control",
+                      "label": "Ende",
+                      "scope": "#/properties/endDate"
+                    }
+                  ]
                 }
               ]
             },
             {
-              "type": "Group",
-              "elements": [
-                {
-                  "type": "Control",
-                  "label": "Ende",
-                  "scope": "#/properties/endDate"
-                }
-              ]
+              "type": "Control",
+              "scope": "#/properties/subEvent",
+              "label": "Unterereignisse",
+              "options": {
+                "detail": "GENERATED"
+              }
             }
           ]
         }

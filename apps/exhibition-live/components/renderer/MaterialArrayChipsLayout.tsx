@@ -36,7 +36,6 @@ type OwnProps = {
   removeItems(path: string, toDelete: number[]): () => void;
 };
 const MaterialArrayChipsLayoutComponent = (props: ArrayLayoutProps & {}) => {
-  const [expanded, setExpanded] = useState<string | boolean>(false);
   const innerCreateDefaultValue = useCallback(
     () => createDefaultValue(props.schema),
     [props.schema],
@@ -47,8 +46,6 @@ const MaterialArrayChipsLayoutComponent = (props: ArrayLayoutProps & {}) => {
     schema,
     errors,
     addItem,
-    renderers,
-    cells,
     label,
     required,
     rootSchema,

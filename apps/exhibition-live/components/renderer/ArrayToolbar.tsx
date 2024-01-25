@@ -28,8 +28,11 @@ export interface ArrayLayoutToolbarProps {
   label: string;
   errors: string;
   path: string;
+
   addItem(path: string, data: any): () => void;
+
   createDefault(): any;
+
   readonly?: boolean;
   typeIRI?: string;
   onCreate?: () => void;
@@ -108,6 +111,7 @@ export const ArrayLayoutToolbar = memo(
       handleSearchStringChange,
       handleMappedData,
       handleFocus,
+      isActive,
     } = useGlobalSearchWithHelper(
       typeName,
       typeIRI,
@@ -133,7 +137,25 @@ export const ArrayLayoutToolbar = memo(
                 container
                 sx={{ visibility: readonly ? "hidden" : "visible" }}
               >
-                <Grid item flex={1} sx={{ minWidth: "25em" }}>
+                <Grid
+                  item
+                  flex={1}
+                  sx={{
+                    minWidth: "25em",
+                    transition: "all 0.3s ease-in-out",
+                    "&": (theme) =>
+                      isActive
+                        ? {
+                            backgroundColor: theme.palette.grey[200],
+                            borderRadius: "4px",
+                            boxShadow: "0 0 0 1px #000",
+                          }
+                        : {
+                            backgroundColor: "transparent",
+                            boxShadow: "none",
+                          },
+                  }}
+                >
                   <DiscoverAutocompleteInput
                     typeIRI={typeIRI}
                     typeName={typeName}

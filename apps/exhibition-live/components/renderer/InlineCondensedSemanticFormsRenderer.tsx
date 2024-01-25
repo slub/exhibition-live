@@ -197,6 +197,7 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
     handleSearchStringChange,
     handleMappedData,
     handleFocus,
+    isActive,
   } = useGlobalSearchWithHelper(
     typeName,
     typeIRI,
@@ -248,7 +249,24 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
   return (
     <Hidden xsUp={!visible}>
       <Grid container alignItems="baseline">
-        <Grid item flex={"auto"}>
+        <Grid
+          sx={{
+            transition: "all 0.3s ease-in-out",
+            "&": (theme) =>
+              isActive
+                ? {
+                    backgroundColor: theme.palette.grey[200],
+                    borderRadius: "4px",
+                    boxShadow: "0 0 0 1px #000",
+                  }
+                : {
+                    backgroundColor: "transparent",
+                    boxShadow: "none",
+                  },
+          }}
+          item
+          flex={"auto"}
+        >
           <DiscoverAutocompleteInput
             loadOnStart={editMode}
             readonly={Boolean(ctx.readonly)}

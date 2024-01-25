@@ -22,8 +22,9 @@ export const useGlobalSearchWithHelper = (
   onDataAccepted?: (data: any) => void,
 ) => {
   const globalSearch = useGlobalSearch();
-  const { setTypeName, setPath, setSearch } = globalSearch;
+  const { setTypeName, setPath, setSearch, path } = globalSearch;
 
+  const isActive = path === formsPath;
   const [searchString, setSearchString] = useState<string | undefined>();
   const handleSearchStringChange = useCallback(
     (value: string | undefined) => {
@@ -84,5 +85,6 @@ export const useGlobalSearchWithHelper = (
     handleMappedData,
     handleFocus,
     searchString,
+    isActive,
   };
 };

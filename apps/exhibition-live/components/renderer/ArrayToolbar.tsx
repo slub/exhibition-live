@@ -18,7 +18,7 @@ import { JsonSchema7 } from "@jsonforms/core";
 import { sladb, slent } from "../form/formConfigs";
 import { BASE_IRI } from "../config";
 import { memo } from "./config";
-import { useGlobalSearchWithHelper } from "../state";
+import {useGlobalSearchWithHelper, useRightDrawerState} from "../state";
 import { SearchbarWithFloatingButton } from "../layout/main-layout/Searchbar";
 import SimilarityFinder from "../form/SimilarityFinder";
 import { JSONSchema7 } from "json-schema";
@@ -105,6 +105,8 @@ export const ArrayLayoutToolbar = memo(
       [addItem, path],
     );
 
+    const { open: sidebarOpen} = useRightDrawerState();
+
     const {
       path: globalPath,
       searchString,
@@ -122,10 +124,7 @@ export const ArrayLayoutToolbar = memo(
 
     return (
       <Toolbar disableGutters={true} sx={{ padding: 0 }}>
-        <Grid container alignItems="center" justifyContent="space-between">
-          <Grid item>
-            <Typography variant={"h4"}>{label}</Typography>
-          </Grid>
+        <Grid container direction={"column"}>
           <Hidden xsUp={errors.length === 0}>
             <Grid item>
               <ValidationIcon id="tooltip-validation" errorMessages={errors} />
@@ -153,6 +152,7 @@ export const ArrayLayoutToolbar = memo(
                     searchString={searchString || ""}
                     onSearchValueChange={handleSearchStringChange}
                     onSelectionChange={handleSelectedChange}
+                    autocompleteDisabled={sidebarOpen}
                     inputProps={{
                       onFocus: handleFocus,
                     }}

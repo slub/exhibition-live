@@ -1,6 +1,6 @@
 import { TextFieldProps, useControlled } from "@mui/material";
 import parse from "html-react-parser";
-import React, { FunctionComponent, useCallback } from "react";
+import React, { FunctionComponent, useCallback, useId } from "react";
 
 import { useGlobalCRUDOptions } from "../../state/useGlobalCRUDOptions";
 import { findEntityByClass } from "../../utils/discover";
@@ -63,7 +63,7 @@ const DiscoverAutocompleteInput: FunctionComponent<Props> = ({
     default: "",
   });
   const handleChange = useCallback(
-    (e: Event, item: AutocompleteSuggestion | null) => {
+    (e: React.SyntheticEvent, item: AutocompleteSuggestion | null) => {
       e.stopPropagation();
       e.preventDefault();
       onSelectionChange && onSelectionChange(item);

@@ -54,7 +54,6 @@ export const LoadedEntityDetailModal = NiceModal.create(
     const data = rawData?.document || defaultData;
     const cardInfo = useMemo<PrimaryFieldResults<string>>(() => {
       const fieldDecl = primaryFields[typeName];
-      console.log("fieldDecl", fieldDecl, "data", data, "typeName", typeName);
       if (data && fieldDecl)
         return applyToEachField(data, fieldDecl, extractFieldIfString);
       return {

@@ -1,7 +1,7 @@
 import datasetFactory from "@rdfjs/dataset";
 import { WorkerResult } from "async-oxigraph";
 import N3 from "n3";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useMemo } from "react";
 
 import { oxigraphCrudOptions } from "../utils/sparql/remoteOxigraph";
 import { allegroCrudOptions } from "../utils/sparql/remoteAllegro";
@@ -64,7 +64,6 @@ const getProviderOrDefault = (endpoint: SparqlEndpoint) =>
 
 export const useGlobalCRUDOptions: UseGlobalCRUDOptions = () => {
   const { activeEndpoint } = useSettings();
-  const [crudOptions, setCrudOptions] = useState<CRUDFunctions | undefined>();
   const { oxigraph, init } = useOxigraph();
   const doQuery = useCallback(
     async (query: string, mimeType?: string) => {
@@ -77,15 +76,15 @@ export const useGlobalCRUDOptions: UseGlobalCRUDOptions = () => {
     [oxigraph, init],
   );
 
-  useEffect(() => {
-    setCrudOptions(
+  const crudOptions = useMemo<CRUDFunctions | undefined>(() => {
+    return (
       activeEndpoint &&
-        getProviderOrDefault(activeEndpoint)(
-          activeEndpoint,
-          activeEndpoint.provider === "worker" ? { doQuery } : undefined,
-        ),
+      getProviderOrDefault(activeEndpoint)(
+        activeEndpoint,
+        activeEndpoint.provider === "worker" ? { doQuery } : undefined,
+      )
     );
-  }, [doQuery, activeEndpoint, activeEndpoint?.auth, setCrudOptions]);
+  }, [doQuery, activeEndpoint, activeEndpoint?.auth]);
   return {
     crudOptions,
     doLocalQuery: doQuery,

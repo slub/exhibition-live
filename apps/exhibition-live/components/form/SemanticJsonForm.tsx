@@ -18,12 +18,13 @@ import GenericModal from "./GenericModal";
 import { cleanJSONLD } from "../utils/crud";
 import { useCRUDWithQueryClient } from "../state/useCRUDWithQueryClient";
 import { useSnackbar } from "notistack";
-import { SemanticJsonFormNoOps } from "./SemanticJsonFormNoOps";
+import { ChangeCause, SemanticJsonFormNoOps } from "./SemanticJsonFormNoOps";
 import { SemanticJsonFormToolbar } from "./SemanticJsonFormToolbar";
 import { useSettings } from "../state/useLocalSettings";
 import { useQueryKeyResolver } from "../state";
 import { Backdrop, Box, CircularProgress } from "@mui/material";
 import { EntityDetailModal } from "./show";
+import { create } from "zustand";
 
 export type CRUDOpsType = {
   load: () => Promise<void>;
@@ -34,7 +35,7 @@ export type CRUDOpsType = {
 export interface SemanticJsonFormsProps {
   entityIRI?: string | undefined;
   data: any;
-  setData: (data: any) => void;
+  onChange: (data: any) => void;
   shouldLoadInitially?: boolean;
   typeIRI: string;
   schema: JSONSchema7;
@@ -55,10 +56,37 @@ export interface SemanticJsonFormsProps {
   wrapWithinCard?: boolean;
 }
 
+type SemanticJsonFormStateType = {
+  isSaving: boolean;
+  isLoading: boolean;
+  isEditing: boolean;
+  setData: (data: any, cause: ChangeCause) => void;
+  data: any;
+};
+
+const useSemanticJsonFormState = create<SemanticJsonFormStateType>(
+  (set, get) => ({
+    isSaving: false,
+    isEditing: false,
+    isLoading: false,
+    data: {},
+    setData: (data: any, cause: ChangeCause) => {
+      if (cause === "user" && !get().isSaving) {
+        set({ data });
+      }
+      if (cause === "mapping") {
+        set({ data });
+      }
+      if (cause === "reload" && !get().isLoading && !get().isEditing) {
+        set({ data });
+      }
+    },
+  }),
+);
 const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> = ({
   entityIRI,
   data,
-  setData,
+  onChange,
   shouldLoadInitially,
   typeIRI,
   schema,
@@ -93,20 +121,21 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> = ({
     );
 
   const { updateSourceToTargets, removeSource } = useQueryKeyResolver();
-  const [grandOperationIsLoading, setGrandOperationLoading] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [isReloading, setIsReloading] = useState(false);
   const isLoading = useMemo(
     () =>
-      loadQuery.isLoading || saveMutation.isLoading || grandOperationIsLoading,
-    [loadQuery.isLoading, saveMutation.isLoading, grandOperationIsLoading],
+      loadQuery.isLoading || saveMutation.isLoading || isSaving || isReloading,
+    [loadQuery.isLoading, saveMutation.isLoading, isSaving, isReloading],
   );
   useEffect(() => {
     if (loadQuery.data) {
       const data = loadQuery.data.document;
       updateSourceToTargets(entityIRI, loadQuery.data.subjects);
       if (!data["@id"] || !data["@type"]) return;
-      setData(data);
+      onChange(data);
     }
-  }, [loadQuery.data, entityIRI, setData, updateSourceToTargets]);
+  }, [loadQuery.data, entityIRI, onChange, updateSourceToTargets]);
 
   useEffect(() => {
     return () => {
@@ -116,44 +145,43 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> = ({
 
   useEffect(() => {
     if (!entityIRI) return;
-    loadQuery.refetch();
-  }, [entityIRI, loadQuery]);
+    loadQuery.refetch().finally(() => {
+      console.log("initially loaded", entityIRI);
+    });
+  }, [entityIRI, loadQuery.refetch]);
 
   const handleReset = useCallback(() => {
     NiceModal.show(GenericModal, {
       type: "reset",
     }).then(() => {
-      setData({});
+      onChange({});
     });
-  }, [setData]);
+  }, [onChange]);
 
   const handleSave = useCallback(async () => {
-    setGrandOperationLoading(true);
+    setIsSaving(true);
     saveMutation
       .mutateAsync(data)
       .then(async () => {
-        setData({});
+        //TODO should we clear and refetch? or just refetch?
+        onChange({});
         loadQuery.remove();
         setTimeout(() => {
-          enqueueSnackbar("Saved", { variant: "success" });
           loadQuery.refetch().finally(() => {
-            setGrandOperationLoading(false);
+            setTimeout(() => {
+              enqueueSnackbar("Saved", { variant: "success" });
+              setIsSaving(false);
+            }, 10);
           });
         }, 10);
       })
       .catch((e) => {
+        setIsSaving(false);
         enqueueSnackbar("Error while saving " + e.message, {
           variant: "error",
         });
       });
-  }, [
-    setGrandOperationLoading,
-    enqueueSnackbar,
-    saveMutation,
-    loadQuery,
-    data,
-    setData,
-  ]);
+  }, [setIsSaving, enqueueSnackbar, saveMutation, loadQuery, data, onChange]);
 
   const handleRemove = useCallback(async () => {
     NiceModal.show(GenericModal, {
@@ -167,19 +195,23 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> = ({
     NiceModal.show(GenericModal, {
       type: "reload",
     }).then(() => {
-      setGrandOperationLoading(true);
+      setIsReloading(true);
       loadQuery.remove();
-      setData({});
+      onChange({});
       loadQuery.refetch().finally(() => {
-        setGrandOperationLoading(false);
+        setTimeout(() => {
+          enqueueSnackbar("Reloaded", { variant: "success" });
+          setIsReloading(false);
+        }, 1000);
       });
     });
-  }, [loadQuery, setData, setGrandOperationLoading]);
+  }, [loadQuery, onChange, setIsReloading]);
 
   const handleToggleEditMode = useCallback(() => {
     setEditMode((prev) => !prev);
   }, [setEditMode]);
 
+  //the cleaned data is the form data ran through the json schema based parser and the json to JSONLD converter
   const [cleanedData, setCleanedData] = useState({});
   const {
     features: { enableDebug },
@@ -209,6 +241,19 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> = ({
     });
   }, [typeIRI, entityIRI]);
 
+  const handleOnChange = useCallback(
+    (data: any, reason: ChangeCause) => {
+      if (reason === "user" && editMode && !isLoading) {
+        onChange(data);
+      } else if (reason === "mapping" && !isLoading) {
+        onChange(data);
+      } else if (reason === "reload" && isReloading) {
+        onChange(data);
+      }
+    },
+    [onChange, editMode, isLoading, isReloading],
+  );
+
   return (
     <Box sx={{ minHeight: "100%", width: "100%" }}>
       <FormDebuggingTools
@@ -226,7 +271,7 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> = ({
       <SemanticJsonFormNoOps
         typeIRI={typeIRI}
         data={data}
-        onChange={setData}
+        onChange={handleOnChange}
         schema={schema}
         formsPath="root"
         jsonFormsProps={{

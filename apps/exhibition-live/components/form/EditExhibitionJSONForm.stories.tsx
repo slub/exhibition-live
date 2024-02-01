@@ -42,7 +42,7 @@ const SemanticJsonFormOneShot = () => {
   return (
     <NewSemanticJsonForm
       data={data}
-      setData={setData}
+      onChange={setData}
       entityIRI={data["@id"]}
       typeIRI={classIRI}
       crudOptions={crudOptions}

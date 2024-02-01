@@ -3,11 +3,11 @@
   "elements": [
     {
       "type": "Control",
-      "scope": "#/properties/role"
+      "scope": "#/properties/corporation"
     },
     {
       "type": "Control",
-      "scope": "#/properties/corporation"
+      "scope": "#/properties/role"
     }
   ]
 }

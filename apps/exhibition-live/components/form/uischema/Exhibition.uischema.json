@@ -63,11 +63,6 @@
         },
         {
           "type": "Control",
-          "label": "übergeordnete Ausstellung",
-          "scope": "#/properties/parent"
-        },
-        {
-          "type": "Control",
           "label": "Schlagworte",
           "scope": "#/properties/tags",
           "options": {
@@ -76,7 +71,7 @@
         },
         {
           "type": "Control",
-          "label": "Weblinks",
+          "label": "Link zur virtuellen Ausstellung",
           "scope": "#/properties/exhibitionweblink"
         },
         {

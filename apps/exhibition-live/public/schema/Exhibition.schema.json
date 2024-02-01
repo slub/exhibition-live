@@ -443,44 +443,58 @@
           "maxLength": 200
         },
         "fromDate": {
-          "type": "integer"
-        },
-        "fromType": {
-          "type": "integer",
-          "oneOf": [
-            {
-              "const": 1,
-              "title": "nach"
+          "type": "object",
+          "properties": {
+            "dateValue": {
+              "type": "integer",
+              "title": "Datumswert",
+              "maxLength": 8
             },
-            {
-              "const": 2,
-              "title": "vor"
-            },
-            {
-              "const": 3,
-              "title": "ca."
+            "dateModifier": {
+              "type": "integer",
+              "oneOf": [
+                {
+                  "const": 1,
+                  "title": "ca."
+                },
+                {
+                  "const": 2,
+                  "title": "vor"
+                },
+                {
+                  "const": 3,
+                  "title": "nach"
+                }
+              ]
             }
-          ]
+          }
         },
         "toDate": {
-          "type": "integer"
-        },
-        "toType": {
-          "type": "integer",
-          "oneOf": [
-            {
-              "const": 1,
-              "title": "nach"
+          "type": "object",
+          "properties": {
+            "dateValue": {
+              "type": "integer",
+              "title": "Datumswert",
+              "maxLength": 8
             },
-            {
-              "const": 2,
-              "title": "vor"
-            },
-            {
-              "const": 3,
-              "title": "ca."
+            "dateModifier": {
+              "type": "integer",
+              "oneOf": [
+                {
+                  "const": 1,
+                  "title": "ca."
+                },
+                {
+                  "const": 2,
+                  "title": "vor"
+                },
+                {
+                  "const": 3,
+                  "title": "nach"
+                }
+              ]
             }
-          ]
+          }
         },
         "url": {
           "type": "string",
@@ -763,9 +777,6 @@
         "image": {
           "type": "string",
           "format": "uri"
-        },
-        "parent": {
-          "$ref": "#/$defs/Exhibition"
         }
       }
     }

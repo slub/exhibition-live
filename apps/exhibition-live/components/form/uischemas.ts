@@ -12,6 +12,21 @@ const labels: Record<string, string> = {
   GeographicLocation: "Geografischer Ort",
   ExhibitionSeries: "Ausstellungsreihe",
 };
+
+const additionalOptions: Record<string, any> = {
+  EventType: {
+    dropdown: true,
+  },
+  PersonRole: {
+    dropdown: true,
+  },
+  CorporationRole: {
+    dropdown: true,
+  },
+  ExhibitionCategory: {
+    dropdown: true,
+  },
+};
 const createStubLayout = (defs: string, baseIRI: string, label?: string) => ({
   type: "VerticalLayout",
   elements: [
@@ -25,6 +40,7 @@ const createStubLayout = (defs: string, baseIRI: string, label?: string) => ({
           typeIRI: `${baseIRI}${defs}`,
           useModal: false,
         },
+        ...(additionalOptions[defs] || {}),
       },
       scope: "#/properties/@id",
     },

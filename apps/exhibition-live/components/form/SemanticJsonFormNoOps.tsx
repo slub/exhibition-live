@@ -36,7 +36,6 @@ import MaterialLinkedObjectRenderer, {
 } from "../renderer/MaterialLinkedObjectRenderer";
 import TypeOfRenderer from "../renderer/TypeOfRenderer";
 import SimilarityFinder from "./SimilarityFinder";
-import { FormDebuggingTools } from "./FormDebuggingTools";
 import { SearchbarWithFloatingButton } from "../layout/main-layout/Searchbar";
 import MaterialBooleanControl, {
   materialBooleanControlTester,
@@ -52,6 +51,7 @@ import { useGlobalSearch } from "../state";
 import MaterialArrayOfLinkedItemChipsRenderer, {
   materialArrayLayoutChipsTester,
 } from "../renderer/MaterialArrayOfLinkedItemChipsRenderer";
+import InlineDropdownRenderer from "../renderer/InlineDropdownRenderer";
 
 export type CRUDOpsType = {
   load: () => Promise<void>;
@@ -135,12 +135,22 @@ const renderers = [
     renderer: InlineCondensedSemanticFormsRenderer,
   },
   {
-    tester: adbSpecialDateControlTester,
-    renderer: AdbSpecialDateRenderer,
+    tester: rankWith(15, (uischema: UISchemaElement, schema, ctx): boolean => {
+      if (isEmpty(uischema) || isObjectArrayControl(uischema, schema, ctx)) {
+        return false;
+      }
+      const options = uischema.options;
+      return !isEmpty(options) && options["dropdown"] === true;
+    }),
+    renderer: InlineDropdownRenderer,
   },
   {
     tester: materialLinkedObjectControlTester,
     renderer: MaterialLinkedObjectRenderer,
+  },
+  {
+    tester: adbSpecialDateControlTester,
+    renderer: AdbSpecialDateRenderer,
   },
   {
     tester: materialBooleanControlTester,

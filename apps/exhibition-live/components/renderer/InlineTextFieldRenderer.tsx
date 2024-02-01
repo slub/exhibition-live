@@ -5,36 +5,33 @@ import {
   resolveSchema,
 } from "@jsonforms/core";
 import { useJsonForms, withJsonFormsControlProps } from "@jsonforms/react";
-import { Backdrop, FormControl, Grid, Hidden, IconButton } from "@mui/material";
+import {
+  FormControl,
+  Grid,
+  Hidden,
+  IconButton,
+  TextField,
+} from "@mui/material";
 import merge from "lodash/merge";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 
 import { slent } from "../form/formConfigs";
-import {
-  Add,
-  HandshakeRounded,
-  OpenInNew,
-  OpenInNewOff,
-} from "@mui/icons-material";
-import DiscoverAutocompleteInput from "../form/discover/DiscoverAutocompleteInput";
+import { Add, OpenInNew, OpenInNewOff } from "@mui/icons-material";
 import { primaryFields, typeIRItoTypeName } from "../config";
 import { AutocompleteSuggestion } from "../form/DebouncedAutoComplete";
 import { SemanticFormsModal } from "./SemanticFormsModal";
 import { extractFieldIfString } from "../utils/mapping/simpleFieldExtractor";
 import { PrimaryField } from "../utils/types";
-import { useGlobalSearchWithHelper, useRightDrawerState } from "../state";
-import { TabIcon } from "../theme/icons";
+import { useGlobalSearchWithHelper } from "../state";
 import { encodeIRI, makeFormsPath } from "../utils/core";
 import { SearchbarWithFloatingButton } from "../layout/main-layout/Searchbar";
 import SimilarityFinder from "../form/SimilarityFinder";
 import { JSONSchema7 } from "json-schema";
-import { useParams } from "next/navigation";
 import { useRouter } from "next/router";
 import { useTranslation } from "react-i18next";
-import { useLocalSettings, useSettings } from "../state/useLocalSettings";
 
-const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
+const InlineTextFieldRenderer = (props: ControlProps) => {
   const {
     id,
     errors,
@@ -198,10 +195,6 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
     [handleSelectedChange],
   );
   const {
-    features: { enableBackdrop },
-  } = useSettings();
-  const { open: sidebarOpen } = useRightDrawerState();
-  const {
     path: globalPath,
     searchString,
     handleSearchStringChange,
@@ -256,61 +249,28 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
     [setModalIsOpen, newURI, typeName, locale],
   );
 
-  const showBackdrop = useMemo(
-    () => enableBackdrop && isActive && sidebarOpen,
-    [isActive, sidebarOpen, enableBackdrop],
-  );
-
   return (
     <Hidden xsUp={!visible}>
-      <Backdrop
-        slotProps={{
-          root: {
-            style: { pointerEvents: "none" },
-          },
-        }}
-        open={showBackdrop}
-        sx={{
-          backgroundColor: "rgba(0, 0, 0, 0.1)",
-          zIndex: (theme) => theme.zIndex.drawer - 1,
-        }}
-      />
-      <Grid
-        container
-        alignItems="baseline"
-        sx={{
-          ...(showBackdrop
-            ? {
-                position: "relative",
-                marginBottom: (theme) => theme.spacing(2),
-                backgroundColor: (theme) => theme.palette.background.paper,
-                borderRadius: (theme) => theme.shape.borderRadius,
-                zIndex: (theme) => theme.zIndex.drawer + 10,
-              }
-            : {}),
-        }}
-      >
-        <Grid item flex={"auto"}>
-          <FormControl
-            fullWidth={!appliedUiSchemaOptions.trim}
-            id={id}
-            variant={"standard"}
-          >
-            <DiscoverAutocompleteInput
-              loadOnStart={editMode}
-              readonly={Boolean(ctx.readonly)}
-              typeIRI={typeIRI}
-              title={label || ""}
-              typeName={typeName || ""}
-              selected={selected}
-              onSelectionChange={handleSelectedChange}
-              onSearchValueChange={handleSearchStringChange}
-              searchString={searchString || ""}
-              inputProps={{
-                onFocus: handleFocus,
-              }}
-            />
-          </FormControl>
+      <Grid container alignItems="baseline">
+        <Grid
+          sx={{
+            transition: "all 0.3s ease-in-out",
+          }}
+          item
+          flex={"auto"}
+        >
+          <TextField
+            fullWidth
+            disabled={Boolean(ctx.readonly)}
+            label={label}
+            variant="standard"
+            error={!isValid}
+            onChange={(ev) => handleSearchStringChange(ev.target.value)}
+            value={searchString || ""}
+            inputProps={{
+              onFocus: handleFocus,
+            }}
+          />
         </Grid>
         {!ctx.readonly && (
           <Grid item>
@@ -367,8 +327,16 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
           </Grid>
         )}
       </Grid>
+
+      <FormControl
+        fullWidth={!appliedUiSchemaOptions.trim}
+        id={id}
+        variant={"standard"}
+        sx={(theme) => ({ marginBottom: theme.spacing(2) })}
+        className={"inline_object_card"}
+      ></FormControl>
     </Hidden>
   );
 };
 
-export default withJsonFormsControlProps(InlineCondensedSemanticFormsRenderer);
+export default withJsonFormsControlProps(InlineTextFieldRenderer);

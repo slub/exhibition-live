@@ -1,5 +1,5 @@
 import useLocalState from "@phntms/use-local-state";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { create } from "zustand";
 
 export type SparqlEndpoint = {
@@ -23,6 +23,7 @@ export type SparqlEndpoint = {
 type Features = {
   enablePreview?: boolean;
   enableDebug?: boolean;
+  enableBackdrop?: boolean;
 };
 
 type OpenAIConfig = {
@@ -114,11 +115,12 @@ export const useSettings: () => UseSettings = () => {
         endpoint: "https://sru.bsz-bw.de/swbtest",
       },
     },
-    features: { enableDebug: false, enablePreview: false },
+    features: {
+      enableDebug: false,
+      enablePreview: false,
+      enableBackdrop: false,
+    },
   });
-  const [activeEndpoint, setActiveEndpoint] = useState<
-    SparqlEndpoint | undefined
-  >(settings.sparqlEndpoints?.find((e) => e.active));
 
   const setSparqlEndpoints = useCallback(
     (endpoints: SparqlEndpoint[]) => {
@@ -173,9 +175,10 @@ export const useSettings: () => UseSettings = () => {
     }
   }, [settings.sparqlEndpoints, setSettings, setSparqlEndpoints]);
 
-  useEffect(() => {
-    setActiveEndpoint(settings.sparqlEndpoints.find((e) => e.active));
-  }, [settings.sparqlEndpoints]);
+  const activeEndpoint = useMemo(
+    () => settings.sparqlEndpoints.find((e) => e.active),
+    [settings.sparqlEndpoints],
+  );
 
   return {
     ...settings,

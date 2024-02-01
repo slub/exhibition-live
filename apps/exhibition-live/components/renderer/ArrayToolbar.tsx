@@ -143,17 +143,6 @@ export const ArrayLayoutToolbar = memo(
                   sx={{
                     minWidth: "25em",
                     transition: "all 0.3s ease-in-out",
-                    "&": (theme) =>
-                      isActive
-                        ? {
-                            backgroundColor: theme.palette.grey[200],
-                            borderRadius: "4px",
-                            boxShadow: "0 0 0 1px #000",
-                          }
-                        : {
-                            backgroundColor: "transparent",
-                            boxShadow: "none",
-                          },
                   }}
                 >
                   <DiscoverAutocompleteInput

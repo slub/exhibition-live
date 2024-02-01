@@ -610,6 +610,7 @@ export const tagMapping: DeclarativeMappings = [
 
 export const lobidTypemap: Record<string, string> = {
   Exhibition: "ConferenceOrEvent",
+  ExhibitionSeries: "ConferenceOrEvent",
   Person: "DifferentiatedPerson",
   Corporation: "CorporateBody",
   Place: "CorporateBody",

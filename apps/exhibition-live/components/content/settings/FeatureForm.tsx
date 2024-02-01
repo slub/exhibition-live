@@ -25,6 +25,9 @@ const schema: JsonSchema = {
     enablePreview: {
       type: "boolean",
     },
+    enableBackdrop: {
+      type: "boolean",
+    },
   },
 };
 

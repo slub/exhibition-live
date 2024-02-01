@@ -128,7 +128,7 @@ const TypedForm = ({ typeName, entityIRI, classIRI }: MainFormProps) => {
             defaultEditMode={true}
             data={data}
             entityIRI={entityIRI}
-            setData={handleChangeData}
+            onChange={handleChangeData}
             searchText={searchText}
             shouldLoadInitially
             typeIRI={classIRI}

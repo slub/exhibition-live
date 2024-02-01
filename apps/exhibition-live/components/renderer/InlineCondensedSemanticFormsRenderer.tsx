@@ -197,9 +197,6 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
     },
     [handleSelectedChange],
   );
-  const {
-    features: { enableBackdrop },
-  } = useSettings();
   const { open: sidebarOpen } = useRightDrawerState();
   const {
     path: globalPath,
@@ -256,39 +253,17 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
     [setModalIsOpen, newURI, typeName, locale],
   );
 
-  const showBackdrop = useMemo(
-    () => enableBackdrop && isActive && sidebarOpen,
-    [isActive, sidebarOpen, enableBackdrop],
+  const showAsFocused = useMemo(
+    () => isActive && sidebarOpen,
+    [isActive, sidebarOpen],
   );
 
   return (
     <Hidden xsUp={!visible}>
-      <Backdrop
-        slotProps={{
-          root: {
-            style: { pointerEvents: "none" },
-          },
-        }}
-        open={showBackdrop}
-        sx={{
-          backgroundColor: "rgba(0, 0, 0, 0.1)",
-          zIndex: (theme) => theme.zIndex.drawer - 1,
-        }}
-      />
       <Grid
         container
         alignItems="baseline"
-        sx={{
-          ...(showBackdrop
-            ? {
-                position: "relative",
-                marginBottom: (theme) => theme.spacing(2),
-                backgroundColor: (theme) => theme.palette.background.paper,
-                borderRadius: (theme) => theme.shape.borderRadius,
-                zIndex: (theme) => theme.zIndex.drawer + 10,
-              }
-            : {}),
-        }}
+        sx={{ marginBottom: (theme) => theme.spacing(2) }}
       >
         <Grid item flex={"auto"}>
           <FormControl
@@ -308,6 +283,7 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
               searchString={searchString || ""}
               inputProps={{
                 onFocus: handleFocus,
+                ...(showAsFocused && { focused: true }),
               }}
             />
           </FormControl>

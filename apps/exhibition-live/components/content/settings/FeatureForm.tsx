@@ -6,7 +6,6 @@ import {
 import { JsonForms } from "@jsonforms/react";
 import { Typography } from "@mui/material";
 import { Box } from "@mui/system";
-import { JSONSchema7 } from "json-schema";
 import React, { FunctionComponent, useCallback } from "react";
 
 import { useSettings } from "../../state/useLocalSettings";

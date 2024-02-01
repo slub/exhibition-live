@@ -28,6 +28,7 @@ interface OwnProps {
   inputProps?: TextFieldProps;
   onSearchValueChange?: (value: string | undefined) => void;
   searchString?: string;
+  autocompleteDisabled?: boolean;
 }
 
 type Props = OwnProps;
@@ -48,6 +49,7 @@ const DiscoverAutocompleteInput: FunctionComponent<Props> = ({
   inputProps,
   onSearchValueChange,
   searchString: searchStringProp,
+  autocompleteDisabled,
 }) => {
   const { crudOptions } = useGlobalCRUDOptions();
   const [selectedValue, setSelectedUncontrolled] =
@@ -170,6 +172,7 @@ const DiscoverAutocompleteInput: FunctionComponent<Props> = ({
       onKeyUp={handleEnter}
       onSearchValueChange={handleSearchValueChange}
       inputProps={inputProps}
+      autocompleteDisabled={autocompleteDisabled}
     />
   );
 };

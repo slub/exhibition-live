@@ -30,6 +30,7 @@ export type DebouncedAutocompleteProps = {
   condensed?: boolean;
   onSearchValueChange?: (value: string | undefined) => void;
   inputProps?: any;
+  autocompleteDisabled?: boolean;
 } & Omit<
   AutocompleteProps<any, any, any, any>,
   "renderInput" | "size" | "options"
@@ -56,6 +57,7 @@ export const DebouncedAutocomplete: FunctionComponent<
   condensed,
   inputProps,
   value,
+  autocompleteDisabled,
   ...props
 }) => {
   const [suggestions, setSuggestions] = useState<
@@ -80,14 +82,14 @@ export const DebouncedAutocomplete: FunctionComponent<
 
   const handleOnChange = useCallback(
     (e: any): void => {
-      setLoading(true);
       const value = e.currentTarget.value;
       onSearchValueChange && onSearchValueChange(value);
-      if (value.length >= minSearchLength) {
+      if (value.length >= minSearchLength &&  !autocompleteDisabled ) {
+        setLoading(true);
         debouncedRequest(value);
       }
     },
-    [setLoading, debouncedRequest, minSearchLength, onSearchValueChange],
+    [setLoading, debouncedRequest, minSearchLength, onSearchValueChange, autocompleteDisabled],
   );
   const { data: initialData, isLoading } = useQuery(
     ["initiallyLoadSuggestions", initialQueryKey],
@@ -107,6 +109,8 @@ export const DebouncedAutocomplete: FunctionComponent<
     <Autocomplete
       noOptionsText="No results"
       readOnly={readOnly}
+      open={autocompleteDisabled ? false : undefined}
+      openOnFocus={!autocompleteDisabled}
       isOptionEqualToValue={(option, value) => option.value === value.value}
       value={value}
       {...props}
@@ -137,7 +141,7 @@ export const DebouncedAutocomplete: FunctionComponent<
           {...inputProps}
         />
       )}
-      options={suggestions}
+      options={autocompleteDisabled ? [] : suggestions}
     />
   );
 };

@@ -60,7 +60,7 @@ export const PreloadedOptionSelect: FunctionComponent<
 
   return (
     <>
-      {isLoading && <CircularProgress />}
+      {isLoading && <CircularProgress size={'1em'} />}
       <InputLabel id={selectID}>{title}</InputLabel>
       <Select
         labelId={selectID}

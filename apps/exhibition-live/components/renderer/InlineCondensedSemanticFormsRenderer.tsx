@@ -51,9 +51,7 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
     label,
     description,
   } = props;
-  const enableDrawer = true;
   const [formData, setFormData] = useState<any>({ "@id": data });
-  const isValid = errors.length === 0;
   const appliedUiSchemaOptions = merge({}, config, uischema.options);
   const [editMode, setEditMode] = useState(false);
   const ctx = useJsonForms();
@@ -262,7 +260,7 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
     <Hidden xsUp={!visible}>
       <Grid
         container
-        alignItems="baseline"
+        alignItems="start"
         sx={{ marginBottom: (theme) => theme.spacing(2) }}
       >
         <Grid item flex={"auto"}>
@@ -281,6 +279,7 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
               onSelectionChange={handleSelectedChange}
               onSearchValueChange={handleSearchStringChange}
               searchString={searchString || ""}
+              autocompleteDisabled={sidebarOpen}
               inputProps={{
                 onFocus: handleFocus,
                 ...(showAsFocused && { focused: true }),

@@ -84,12 +84,18 @@ export const DebouncedAutocomplete: FunctionComponent<
     (e: any): void => {
       const value = e.currentTarget.value;
       onSearchValueChange && onSearchValueChange(value);
-      if (value.length >= minSearchLength &&  !autocompleteDisabled ) {
+      if (value.length >= minSearchLength && !autocompleteDisabled) {
         setLoading(true);
         debouncedRequest(value);
       }
     },
-    [setLoading, debouncedRequest, minSearchLength, onSearchValueChange, autocompleteDisabled],
+    [
+      setLoading,
+      debouncedRequest,
+      minSearchLength,
+      onSearchValueChange,
+      autocompleteDisabled,
+    ],
   );
   const { data: initialData, isLoading } = useQuery(
     ["initiallyLoadSuggestions", initialQueryKey],

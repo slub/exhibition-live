@@ -56,25 +56,19 @@ export const SemanticFormsModal = (props: SemanticFormsModalProps) => {
   });
 
   const [editMode, setEditMode] = useState(true);
-  const [searchText, setSearchText] = useState<string | undefined>();
 
   const uischemaExternal = typeIRI && useUISchemaForType(typeIRI);
-  const typeName = useMemo(
-    () => typeIRI && typeIRI.substring(BASE_IRI.length, typeIRI.length),
-    [typeIRI],
-  );
 
   const { crudOptions } = useGlobalCRUDOptions();
-  const { loadQuery, existsQuery, saveMutation, removeMutation } =
-    useCRUDWithQueryClient(
-      entityIRI,
-      typeIRI,
-      schema as JSONSchema7,
-      defaultPrefix,
-      crudOptions,
-      defaultJsonldContext,
-      { enabled: true },
-    );
+  const { loadQuery, saveMutation, removeMutation } = useCRUDWithQueryClient(
+    entityIRI,
+    typeIRI,
+    schema as JSONSchema7,
+    defaultPrefix,
+    crudOptions,
+    defaultJsonldContext,
+    { enabled: true },
+  );
   const { data: remoteData } = loadQuery;
 
   useEffect(() => {
@@ -120,12 +114,6 @@ export const SemanticFormsModal = (props: SemanticFormsModalProps) => {
     });
   }, [loadQuery]);
 
-  const handleSearchTextChange = useCallback(
-    (searchText: string | undefined) => {
-      setSearchText(searchText);
-    },
-    [setSearchText],
-  );
   const handleDataChange = useCallback(
     (data_: any) => {
       setFormData(data_);
@@ -164,7 +152,6 @@ export const SemanticFormsModal = (props: SemanticFormsModalProps) => {
               uischemas: uischemas,
             }}
             onEntityChange={onChange}
-            searchText={searchText}
             formsPath={formsPath}
           />
         )}

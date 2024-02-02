@@ -24,7 +24,7 @@ import {
   slent,
 } from "../form/formConfigs";
 import { v4 as uuidv4 } from "uuid";
-import {Box, Grid, IconButton, List, Stack} from "@mui/material";
+import { Box, Grid, IconButton, List, Stack } from "@mui/material";
 import { SemanticFormsInline } from "./SemanticFormsInline";
 import AddIcon from "@mui/icons-material/Add";
 import { useGlobalCRUDOptions } from "../state/useGlobalCRUDOptions";
@@ -120,9 +120,11 @@ const MaterialArrayChipsLayoutComponent = (props: ArrayLayoutProps & {}) => {
   const isReifiedStatement = Boolean(appliedUiSchemaOptions.isReifiedStatement);
 
   return (
-    <Box sx={theme => ({
-      marginBottom: theme.spacing(2)
-    })}>
+    <Box
+      sx={(theme) => ({
+        marginBottom: theme.spacing(2),
+      })}
+    >
       <ArrayLayoutToolbar
         label={computeLabel(
           label,

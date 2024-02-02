@@ -18,7 +18,7 @@ import { JsonSchema7 } from "@jsonforms/core";
 import { sladb, slent } from "../form/formConfigs";
 import { BASE_IRI } from "../config";
 import { memo } from "./config";
-import {useGlobalSearchWithHelper, useRightDrawerState} from "../state";
+import { useGlobalSearchWithHelper, useRightDrawerState } from "../state";
 import { SearchbarWithFloatingButton } from "../layout/main-layout/Searchbar";
 import SimilarityFinder from "../form/SimilarityFinder";
 import { JSONSchema7 } from "json-schema";
@@ -105,7 +105,7 @@ export const ArrayLayoutToolbar = memo(
       [addItem, path],
     );
 
-    const { open: sidebarOpen} = useRightDrawerState();
+    const { open: sidebarOpen } = useRightDrawerState();
 
     const {
       path: globalPath,

@@ -38,7 +38,7 @@ export async function getStaticProps(ctx) {
 }
 export default (props: Props) => {
   const router = useRouter();
-  const { t } = useTranslation();
+  const { t } = useTranslation("translation");
   const { typeName } = props;
   const classIRI: string | undefined = useMemo(
     () => (typeof typeName === "string" ? sladb(typeName).value : undefined),

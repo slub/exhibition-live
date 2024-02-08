@@ -18,7 +18,7 @@ type SidebarProps = {
 };
 
 const ImportSection = ({ open }) => {
-  const { t } = useTranslation("translation");
+  const { t } = useTranslation();
   const router = useModifiedRouter();
   const openImport = useCallback(() => {
     router.push("/import");
@@ -43,7 +43,7 @@ const ImportSection = ({ open }) => {
 };
 
 const Options = ({ open }) => {
-  const { t } = useTranslation("translation");
+  const { t } = useTranslation();
   const { openSettings } = useLocalSettings();
 
   return (
@@ -67,7 +67,7 @@ const Options = ({ open }) => {
 };
 
 const Navigation = ({ open }) => {
-  const { t } = useTranslation("translation");
+  const { t } = useTranslation();
   const { getPermission } = useGlobalAuth();
   const menuGroup = useMemo<MenuGroup | null>(() => {
     return loadedSchema

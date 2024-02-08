@@ -12,7 +12,7 @@ import {
   ListItemText,
 } from "@mui/material";
 import NiceModal from "@ebay/nice-modal-react";
-import { LoadedEntityDetailModal } from "../../form/show/LoadedEntityDetailModal";
+import { EntityDetailModal } from "../../form/show/EntityDetailModal";
 
 interface OwnProps {
   index: number;
@@ -34,7 +34,7 @@ const TypedListItem: FunctionComponent<Props> = ({ index, data }) => {
   );
 
   const showDetailModal = useCallback(() => {
-    NiceModal.show(LoadedEntityDetailModal, { typeIRI, entityIRI, data });
+    NiceModal.show(EntityDetailModal, { typeIRI, entityIRI, data });
   }, [typeIRI, entityIRI, data]);
 
   return (

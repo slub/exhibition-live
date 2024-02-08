@@ -5,6 +5,7 @@ import {
   ListItem,
   ListItemAvatar,
   ListItemButton,
+  ListItemButtonProps,
   ListItemText,
   Typography,
 } from "@mui/material";
@@ -12,7 +13,7 @@ import { useTheme } from "@mui/material/styles";
 import * as React from "react";
 import { FunctionComponent, useCallback } from "react";
 
-type Props = {
+type OwnProps = {
   id: string;
   onSelected: (id: string) => void;
   avatar?: string;
@@ -21,6 +22,8 @@ type Props = {
   altAvatar?: string;
 };
 
+type Props = OwnProps & ListItemButtonProps;
+
 const ClassicResultListItem: FunctionComponent<Props> = ({
   id,
   onSelected,
@@ -28,6 +31,7 @@ const ClassicResultListItem: FunctionComponent<Props> = ({
   label,
   secondary,
   altAvatar,
+  ...rest
 }) => {
   const theme = useTheme();
 
@@ -44,6 +48,7 @@ const ClassicResultListItem: FunctionComponent<Props> = ({
             "&:hover": { backgroundColor: "transparent" },
           }}
           onClick={handleSelect}
+          {...rest}
         >
           <ListItemAvatar>
             <Avatar

@@ -15,7 +15,7 @@ import {
 } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import { useGoogleToken } from "./useGoogleToken";
-import { GenericListItem } from "../content/main/GenericVirtualizedList";
+import { GenericMaterialListItem } from "../content/main/GenericVirtualizedList";
 import NiceModal, { useModal } from "@ebay/nice-modal-react";
 import { Close as CloseIcon } from "@mui/icons-material";
 import { useSettings } from "../state/useLocalSettings";
@@ -103,7 +103,7 @@ export const GoogleDrivePicker: FC<GoogleDrivePickerProps> = ({
       <List>
         {fileList?.map((file: any, index: number) => (
           <ListItem key={file.id}>
-            <GenericListItem
+            <GenericMaterialListItem
               index={index}
               avatar={file.avatar}
               onClick={

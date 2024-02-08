@@ -32,7 +32,7 @@ import LobidSearchTable from "./lobid/LobidSearchTable";
 import { findEntityByAuthorityIRI } from "../utils/discover";
 import { useGlobalCRUDOptions } from "../state/useGlobalCRUDOptions";
 import { mapAbstractDataUsingAI, mapDataUsingAI } from "../utils/ai";
-import { useGlobalSearch } from "../state";
+import { useGlobalSearch, useSimilarityFinderState } from "../state";
 import { useTranslation } from "react-i18next";
 import { searchEntityByLabel } from "../utils/discover/searchEntityByLabel";
 import { typeIRItoTypeName } from "../config";
@@ -110,7 +110,13 @@ const SimilarityFinder: FunctionComponent<Props> = ({
     path: globalPath,
     setSearch,
   } = useGlobalSearch();
-  const { t } = useTranslation("translation");
+
+  const { resetElementIndex, elementIndex } = useSimilarityFinderState();
+  useEffect(() => {
+    resetElementIndex();
+  }, [resetElementIndex]);
+
+  const { t } = useTranslation();
   const handleSearchStringChange = useCallback(
     (value: string) => {
       setSearch(value);
@@ -264,6 +270,17 @@ const SimilarityFinder: FunctionComponent<Props> = ({
     [handleSelect],
   );
 
+  const { cycleThroughElements } = useSimilarityFinderState();
+  const handleKeyUp = useCallback(
+    (ev: React.KeyboardEvent<HTMLInputElement>) => {
+      if (ev.key === "ArrowUp" || ev.key === "ArrowDown") {
+        cycleThroughElements(ev.key === "ArrowDown" ? 1 : -1);
+        ev.preventDefault();
+      }
+    },
+    [cycleThroughElements],
+  );
+
   return (
     <>
       <Grid container alignItems="center" direction={"column"} spacing={2}>
@@ -293,6 +310,7 @@ const SimilarityFinder: FunctionComponent<Props> = ({
                 label={`Suche in ${selectedKnowledgeSources.join(",")} nach ${t(
                   typeName,
                 )} `}
+                onKeyUp={handleKeyUp}
               />
             </Box>
             <Box
@@ -378,6 +396,7 @@ const SimilarityFinder: FunctionComponent<Props> = ({
                   classIRI={classIRI}
                   onAcceptItem={handleEntityChange}
                   onSelect={handleSelectKB}
+                  selectedIndex={elementIndex}
                 />
               )}
           </ClassicResultListWrapper>

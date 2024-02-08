@@ -504,7 +504,7 @@ export const TypedList = ({ typeName }: Props) => {
           });
         });
     },
-    [removeEntity, enqueueSnackbar],
+    [removeEntity, enqueueSnackbar, t],
   );
   const handleMoveToTrashSelected = useCallback(
     (table_: MRT_TableInstance<any>) => {
@@ -536,7 +536,7 @@ export const TypedList = ({ typeName }: Props) => {
           );
         });
     },
-    [moveToTrashAsync, enqueueSnackbar],
+    [moveToTrashAsync, enqueueSnackbar, t],
   );
 
   const table = useMaterialReactTable({
@@ -717,10 +717,12 @@ export const TypedList = ({ typeName }: Props) => {
 
   useEffect(() => {
     if (typeName) {
-      enqueueSnackbar(`Loading ${typeName}`, { variant: "info" });
+      enqueueSnackbar(t("loading typename", { typeName: t(typeName) }), {
+        variant: "info",
+      });
       table.reset();
     }
-  }, [typeName, enqueueSnackbar]);
+  }, [typeName, enqueueSnackbar, t]);
 
   return (
     <Box sx={{ width: "100%" }}>

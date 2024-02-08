@@ -1,6 +1,14 @@
 import Image, { ImageProps } from "next/image";
+import { PUBLIC_BASE_PATH } from "../../config";
 
-const base = process.env.NEXT_PUBLIC_BASE_PATH || "";
 export const Img = ({ src, alt, ...rest }: ImageProps) => {
-  return <Image src={base + src} alt={alt} {...rest} />;
+  return (
+    <Image
+      src={`${PUBLIC_BASE_PATH}/${
+        typeof src === "string" ? src : "Icons/no-image-placeholder.png"
+      }`}
+      alt={alt}
+      {...rest}
+    />
+  );
 };

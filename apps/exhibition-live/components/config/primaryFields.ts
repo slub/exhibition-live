@@ -29,7 +29,7 @@ export const primaryFields: Partial<ExhibitionPrimaryFieldDeclaration> = {
     label: "name",
   },
   ExhibitionExponat: defaultMappingWithImg,
-  Genre: defaultMapping,
+  Genre: defaultMappingWithImg,
   Place: defaultMappingWithImg,
   Location: defaultMappingWithImg,
   CorporationRole: defaultMapping,

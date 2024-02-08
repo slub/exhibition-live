@@ -30,6 +30,8 @@ import {
   GenericVirtualizedList,
 } from "./GenericVirtualizedList";
 import { useTranslation } from "react-i18next";
+import NiceModal from "@ebay/nice-modal-react";
+import { EntityDetailModal } from "../../form/show";
 
 const makeFilterUNION2 = (searchString: string, length: number) => {
   const filterUNION = [];
@@ -409,6 +411,12 @@ export const SearchBar = ({ relevantTypes }: { relevantTypes: string[] }) => {
     setTabIndex(newTabIndex);
   };
 
+  const showEntry = useCallback((entityIRI: string) => {
+    NiceModal.show(EntityDetailModal, {
+      entityIRI,
+    });
+  }, []);
+
   return (
     <Grid container direction={"row"} spacing={3}>
       <Grid item xs={12}>
@@ -539,6 +547,7 @@ export const SearchBar = ({ relevantTypes }: { relevantTypes: string[] }) => {
                                 items={listItems}
                                 width={width}
                                 height={height}
+                                onItemSelect={showEntry}
                               />
                             ),
                           ]}

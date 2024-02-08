@@ -12,6 +12,7 @@ import React, {
 
 import { TextField } from "./TextField";
 import { useQuery } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 
 export type AutocompleteSuggestion = {
   label: string;
@@ -64,6 +65,7 @@ export const DebouncedAutocomplete: FunctionComponent<
     AutocompleteSuggestion[] | undefined
   >(emptySuggestions);
   const [loading, setLoading] = useState<boolean>(false);
+  const { t } = useTranslation();
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedRequest = useCallback(
@@ -113,7 +115,7 @@ export const DebouncedAutocomplete: FunctionComponent<
 
   return (
     <Autocomplete
-      noOptionsText="No results"
+      noOptionsText={t("no suggestions")}
       readOnly={readOnly}
       open={autocompleteDisabled ? false : undefined}
       openOnFocus={!autocompleteDisabled}

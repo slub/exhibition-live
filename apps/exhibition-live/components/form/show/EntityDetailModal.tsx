@@ -6,7 +6,6 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
-  DialogContentText,
   IconButton,
   Toolbar,
   Typography,
@@ -25,17 +24,19 @@ import {
 import { PrimaryFieldResults } from "../../utils/types";
 import { EntityDetailCard } from "./EntityDetailCard";
 import { useTypeIRIFromEntity } from "../../state";
+import { useTranslation } from "react-i18next";
 
 type EntityDetailModalProps = {
   typeIRI: string | undefined;
   entityIRI: string;
+  data: any;
 };
 
 export const EntityDetailModal = NiceModal.create(
-  ({ typeIRI, entityIRI }: EntityDetailModalProps) => {
+  ({ typeIRI, entityIRI, data: defaultData }: EntityDetailModalProps) => {
     const modal = useModal();
-    const typeIRIs = typeIRI ? [typeIRI] : useTypeIRIFromEntity(entityIRI);
-    const classIRI: string | undefined = typeIRIs?.[0];
+    const typeIRIs = useTypeIRIFromEntity(entityIRI);
+    const classIRI: string | undefined = typeIRI || typeIRIs?.[0];
     const typeName = useMemo(() => typeIRItoTypeName(classIRI), [classIRI]);
     const loadedSchema = useExtendedSchema({ typeName, classIRI });
     const { crudOptions } = useGlobalCRUDOptions();
@@ -48,11 +49,11 @@ export const EntityDetailModal = NiceModal.create(
       defaultPrefix,
       crudOptions,
       defaultJsonldContext,
-      { enabled: true, refetchOnWindowFocus: true },
+      { enabled: true, refetchOnWindowFocus: true, initialData: defaultData },
       "show",
     );
+    const { t } = useTranslation();
     const data = rawData?.document;
-
     const cardInfo = useMemo<PrimaryFieldResults<string>>(() => {
       const fieldDecl = primaryFields[typeName];
       if (data && fieldDecl)
@@ -81,7 +82,7 @@ export const EntityDetailModal = NiceModal.create(
             <Box sx={{ display: "flex" }}>
               <IconButton
                 size="large"
-                aria-label="close without saving"
+                aria-label={t("close")}
                 onClick={() => modal.remove()}
                 color="inherit"
               >
@@ -92,14 +93,14 @@ export const EntityDetailModal = NiceModal.create(
         </AppBar>
         <DialogContent>
           <EntityDetailCard
-            typeIRI={typeIRI}
+            typeIRI={classIRI}
             entityIRI={entityIRI}
             data={data}
             cardInfo={cardInfo}
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => modal.remove()}>Abbrechen</Button>
+          <Button onClick={() => modal.remove()}>{t("cancel")}</Button>
         </DialogActions>
       </Dialog>
     );

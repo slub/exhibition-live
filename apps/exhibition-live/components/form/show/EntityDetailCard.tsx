@@ -36,7 +36,7 @@ export const EntityDetailCard: FunctionComponent<Props> = ({
   cardInfo,
   data,
 }) => {
-  const { t } = useTranslation("translation");
+  const { t } = useTranslation();
 
   const router = useModifiedRouter();
   const editEntry = useCallback(() => {

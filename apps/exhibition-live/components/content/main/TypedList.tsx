@@ -443,7 +443,7 @@ export const TypedList = ({ typeName }: Props) => {
     [setColumnFilters],
   );
 
-  const { t } = useTranslation("translation");
+  const { t } = useTranslation();
 
   const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>(
     {

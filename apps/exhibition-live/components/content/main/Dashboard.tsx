@@ -100,7 +100,7 @@ export const OwnCard = ({
 const relevantTypes = Object.keys(primaryFields).map((key) => sladb(key).value);
 
 export const Dashboard = (props) => {
-  const { t } = useTranslation("translation");
+  const { t } = useTranslation();
   const { crudOptions } = useGlobalCRUDOptions();
   const { selectFetch } = crudOptions || {};
   const { data: typeCountData } = useQuery(

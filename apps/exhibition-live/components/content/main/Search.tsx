@@ -222,7 +222,7 @@ const itemToTimelineItem = (
   return null;
 };
 export const SearchBar = ({ relevantTypes }: { relevantTypes: string[] }) => {
-  const { t } = useTranslation("translation");
+  const { t } = useTranslation();
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [searchText, setSearchText] = useState<string>("");
   const { crudOptions } = useGlobalCRUDOptions();

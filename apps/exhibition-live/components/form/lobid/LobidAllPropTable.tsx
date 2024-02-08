@@ -127,7 +127,11 @@ const PropertyItem = ({
     useMenuState();
   return (
     <TableRow>
-      <TableCell style={{ width: 100 }} component="th" scope="row">
+      <TableCell
+        style={{ width: 100, overflow: "hidden", textOverflow: "ellipsis" }}
+        component="th"
+        scope="row"
+      >
         <Button
           id={"menu-button-" + property}
           sx={{
@@ -154,7 +158,10 @@ const PropertyItem = ({
           <PropertyContextMenu onClose={handleMenuClose} property={property} />
         </Menu>
       </TableCell>
-      <TableCell align="right">
+      <TableCell
+        sx={{ overflow: "hidden", textOverflow: "ellipsis" }}
+        align="right"
+      >
         {Array.isArray(value)
           ? value.map((v, index) => {
               const comma = index < value.length - 1 ? "," : "";
@@ -201,7 +208,10 @@ const LobidAllPropTable: FunctionComponent<Props> = ({
 
   return (
     <TableContainer component={Container}>
-      <Table sx={{ minWidth: "100%" }} aria-label="custom table">
+      <Table
+        sx={{ minWidth: "100%", tableLayout: "fixed" }}
+        aria-label="custom detail table"
+      >
         <TableBody>
           {allProps &&
             Object.entries(allProps)

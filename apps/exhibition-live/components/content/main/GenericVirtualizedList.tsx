@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import { Components, ScrollerProps, Virtuoso } from "react-virtuoso";
 import { withEllipsis } from "../../utils/typography";
-import {
+import React, {
   ComponentType,
   CSSProperties,
   forwardRef,
@@ -52,62 +52,41 @@ export type GenericListItem = {
   avatar?: string;
 };
 
-type GenericListItemProps = GenericListItem & {
+type GenericMaterialListItemProps = GenericListItem & {
   index: number;
-  onClick?: (entry: any) => void;
+  onClick?: (entry: GenericListItem) => void;
 };
 
-export const GenericListItem = ({
+export const GenericMaterialListItem = ({
   index,
-  primary,
-  secondary,
-  description,
-  avatar,
   onClick,
-}: GenericListItemProps) => {
+  ...item
+}: GenericMaterialListItemProps) => {
+  const { primary, secondary, description, avatar } = item;
   return (
-    <>
-      <ListItemIcon>
-        <Img alt={primary} width={48} height={48} src={avatar}></Img>
-      </ListItemIcon>
-      {onClick ? (
-        <ListItemButton onClick={onClick}>
-          <ListItemText
-            primary={primary}
-            secondary={
-              <>
-                <Typography
-                  sx={{ display: "inline" }}
-                  component="span"
-                  variant="body2"
-                  color="text.primary"
-                >
-                  {withEllipsis(secondary, 50)}
-                </Typography>
-                {withEllipsis(description, 100)}
-              </>
-            }
-          />
-        </ListItemButton>
-      ) : (
-        <ListItemText
-          primary={primary}
-          secondary={
-            <>
-              <Typography
-                sx={{ display: "inline" }}
-                component="span"
-                variant="body2"
-                color="text.primary"
-              >
-                {withEllipsis(secondary, 50)}
-              </Typography>
-              {withEllipsis(description, 100)}
-            </>
-          }
-        />
-      )}
-    </>
+    <ListItemButton onClick={() => onClick && onClick(item)}>
+      <ListItemAvatar>
+        <Avatar variant={"rounded"} aria-label="Index" src={avatar}>
+          {index + 1}
+        </Avatar>
+      </ListItemAvatar>
+      <ListItemText
+        primary={primary}
+        secondary={
+          <>
+            <Typography
+              sx={{ display: "inline" }}
+              component="span"
+              variant="body2"
+              color="text.primary"
+            >
+              {withEllipsis(secondary, 50)}
+            </Typography>
+            {withEllipsis(description, 100)}
+          </>
+        }
+      />
+    </ListItemButton>
   );
 };
 
@@ -135,18 +114,28 @@ type GenericVirtualizedListProps = {
   items: GenericListItem[];
   width: number;
   height: number;
+  onItemSelect?: (entityIRI: string) => void;
 };
 
 export const GenericVirtualizedList = ({
   items,
   width,
   height,
+  onItemSelect,
 }: GenericVirtualizedListProps) => (
   <Virtuoso
     height={height}
     width={width}
     totalCount={items.length}
     components={MUIComponents as Components<GenericListItem>}
-    itemContent={(index) => <GenericListItem index={index} {...items[index]} />}
+    itemContent={(index) => (
+      <GenericMaterialListItem
+        index={index}
+        onClick={(item: GenericListItem) =>
+          onItemSelect && onItemSelect(item.id)
+        }
+        {...items[index]}
+      />
+    )}
   />
 );

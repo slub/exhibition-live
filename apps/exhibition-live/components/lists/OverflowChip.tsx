@@ -1,7 +1,7 @@
 import { useState, MouseEvent, useMemo, useCallback } from "react";
 import { Chip, Tooltip, Typography } from "@mui/material";
 import NiceModal from "@ebay/nice-modal-react";
-import { LoadedEntityDetailModal } from "../form/show/LoadedEntityDetailModal";
+import { EntityDetailModal } from "../form/show/EntityDetailModal";
 
 type OverflowContainerProps = {
   label: string;
@@ -17,7 +17,7 @@ export const OverflowChip = ({ label, entityIRI }: OverflowContainerProps) => {
   const showDetailModal = useCallback(
     (e: MouseEvent) => {
       e.preventDefault();
-      NiceModal.show(LoadedEntityDetailModal, { entityIRI, data: {} });
+      NiceModal.show(EntityDetailModal, { entityIRI, data: {} });
     },
     [entityIRI],
   );

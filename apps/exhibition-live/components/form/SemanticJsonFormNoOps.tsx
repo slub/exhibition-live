@@ -52,6 +52,7 @@ import MaterialArrayOfLinkedItemChipsRenderer, {
   materialArrayLayoutChipsTester,
 } from "../renderer/MaterialArrayOfLinkedItemChipsRenderer";
 import InlineDropdownRenderer from "../renderer/InlineDropdownRenderer";
+import { ErrorObject } from "ajv";
 
 export type CRUDOpsType = {
   load: () => Promise<void>;
@@ -65,7 +66,7 @@ export interface SemanticJsonFormsNoOpsProps {
   typeIRI: string;
   data: any;
   onChange?: (data: any, reason: ChangeCause) => void;
-  onError?: (error: Pick<JsonFormsCore, "errors">) => void;
+  onError?: (errors: ErrorObject[]) => void;
   schema: JSONSchema7;
   jsonFormsProps?: Partial<JsonFormsInitStateProps>;
   onEntityChange?: (entityIRI: string | undefined) => void;
@@ -195,7 +196,7 @@ export const SemanticJsonFormNoOps: FunctionComponent<
   const handleFormChange = useCallback(
     (state: Pick<JsonFormsCore, "data" | "errors">) => {
       onChange && onChange(state.data, "user");
-      if (state.errors && state.errors.length > 0 && onError) onError(state);
+      if (state.errors && state.errors.length > 0 && onError) onError(state.errors);
     },
     [onChange, onError],
   );
@@ -259,7 +260,9 @@ export const SemanticJsonFormNoOps: FunctionComponent<
 
   return (
     <Grid container spacing={0}>
-      <Grid item flex={1}>
+      <Grid
+        item
+        flex={1}>
         <Grid container spacing={0}>
           <Grid
             item

@@ -11,3 +11,4 @@ export * from "./useGlobalAuth";
 export * from "./useDrawerDimensions";
 export * from "./useRightDrawerState";
 export * from "./useTypeIRIFromEntity";
+export * from "./useSimilarityFinderState";

@@ -25,6 +25,7 @@ import { useQueryKeyResolver } from "../state";
 import { Backdrop, Box, CircularProgress } from "@mui/material";
 import { EntityDetailModal } from "./show";
 import { create } from "zustand";
+import { useTranslation } from "react-i18next";
 
 export type CRUDOpsType = {
   load: () => Promise<void>;
@@ -100,6 +101,7 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> = ({
   crudOptions,
   ...rest
 }) => {
+  const { t } = useTranslation();
   const [managedEditMode, setEditMode] = useState(defaultEditMode || false);
   const editMode = useMemo(
     () =>
@@ -200,12 +202,12 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> = ({
       onChange({});
       loadQuery.refetch().finally(() => {
         setTimeout(() => {
-          enqueueSnackbar("Reloaded", { variant: "success" });
+          enqueueSnackbar(t("reloaded"), { variant: "success" });
           setIsReloading(false);
         }, 1000);
       });
     });
-  }, [loadQuery, onChange, setIsReloading]);
+  }, [loadQuery, onChange, setIsReloading, enqueueSnackbar, t]);
 
   const handleToggleEditMode = useCallback(() => {
     setEditMode((prev) => !prev);

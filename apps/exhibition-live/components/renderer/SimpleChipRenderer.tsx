@@ -23,7 +23,7 @@ import { defaultJsonldContext, defaultPrefix } from "../form/formConfigs";
 import get from "lodash/get";
 import { useModifiedRouter } from "../basic";
 import NiceModal from "@ebay/nice-modal-react";
-import { LoadedEntityDetailModal } from "../form/show/LoadedEntityDetailModal";
+import { EntityDetailModal } from "../form/show/EntityDetailModal";
 
 type SimpleChipRendererProps = {
   data: any;
@@ -120,7 +120,7 @@ export const SimpleChipRenderer = (props: SimpleChipRendererProps) => {
   const showDetailModal = useCallback(
     (e: MouseEvent) => {
       e.preventDefault();
-      NiceModal.show(LoadedEntityDetailModal, { entityIRI, data: {} });
+      NiceModal.show(EntityDetailModal, { entityIRI, data: {} });
     },
     [entityIRI],
   );

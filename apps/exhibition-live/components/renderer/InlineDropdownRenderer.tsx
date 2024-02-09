@@ -5,26 +5,15 @@ import {
   resolveSchema,
 } from "@jsonforms/core";
 import { useJsonForms, withJsonFormsControlProps } from "@jsonforms/react";
-import { FormControl, Grid, Hidden, IconButton } from "@mui/material";
+import { FormControl, Hidden } from "@mui/material";
 import merge from "lodash/merge";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { v4 as uuidv4 } from "uuid";
 
-import { slent } from "../form/formConfigs";
-import {
-  Add,
-  Edit,
-  EditOff,
-  OpenInNew,
-  OpenInNewOff,
-} from "@mui/icons-material";
 import { primaryFields, typeIRItoTypeName } from "../config";
 import { AutocompleteSuggestion } from "../form/DebouncedAutoComplete";
-import { SemanticFormsModal } from "./SemanticFormsModal";
 import { extractFieldIfString } from "../utils/mapping/simpleFieldExtractor";
 import { PrimaryField } from "../utils/types";
-import { encodeIRI, makeFormsPath } from "../utils/core";
-import { useRouter } from "next/router";
+import { makeFormsPath } from "../utils/core";
 import { useTranslation } from "react-i18next";
 import { PreloadedOptionSelect } from "../form/PreloadedOptionSelect";
 import { findEntityByClass } from "../utils/discover";
@@ -156,7 +145,10 @@ const InlineDropdownRenderer = (props: ControlProps) => {
         fullWidth={!appliedUiSchemaOptions.trim}
         id={id}
         variant={"standard"}
-        sx={(theme) => ({ marginBottom: theme.spacing(2) })}
+        sx={{
+          marginTop: (theme) => theme.spacing(1),
+          marginBottom: (theme) => theme.spacing(1),
+        }}
       >
         <PreloadedOptionSelect
           title={label}

@@ -11,14 +11,17 @@ import {
 } from "@mui/material";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 
-import { OpenInNew, OpenInNewOff, Save } from "@mui/icons-material";
+import {
+  Clear,
+  Save,
+} from "@mui/icons-material";
 import { BASE_IRI, primaryFields } from "../config";
 import {
   applyToEachField,
   extractFieldIfString,
 } from "../utils/mapping/simpleFieldExtractor";
 import { SemanticFormsModal } from "./SemanticFormsModal";
-import { bringDefinitionToTop, encodeIRI } from "../utils/core";
+import { bringDefinitionToTop } from "../utils/core";
 import { JSONSchema7 } from "json-schema";
 import { useJsonForms } from "@jsonforms/react";
 import dot from "dot";
@@ -134,48 +137,17 @@ export const SimpleExpandPanelRenderer = (
     <ListItem
       secondaryAction={
         <Stack direction="row" spacing={1}>
-          {draft ? (
+          {draft && (
             <IconButton onClick={handleSave} aria-label={"Save"} size="large">
               <Save />
             </IconButton>
-          ) : (
-            <>
-              <IconButton
-                sx={{ padding: 0 }}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleToggle();
-                }}
-              >
-                {modalIsOpen ? <OpenInNewOff /> : <OpenInNew />}
-              </IconButton>
-              <IconButton
-                component={React.forwardRef<HTMLSpanElement, any>(
-                  ({ children, ...props }, ref) => (
-                    <span {...props} ref={ref}>
-                      <a
-                        href={`/${locale}/create/${typeName}?encID=${encodeIRI(
-                          entityIRI,
-                        )}`}
-                        target="_blank"
-                        rel="noopener"
-                      >
-                        {children}
-                      </a>
-                    </span>
-                  ),
-                )}
-              >
-                <TabIcon />
-              </IconButton>
-            </>
           )}
           <IconButton
             aria-label={"Delete"}
             size="large"
             onClick={() => onRemove && onRemove(entityIRI)}
           >
-            <DeleteIcon />
+            <Clear />
           </IconButton>
         </Stack>
       }
@@ -186,7 +158,7 @@ export const SimpleExpandPanelRenderer = (
             {count + 1}
           </Avatar>
         </ListItemAvatar>
-        <ListItemText primary={realLabel} />
+        <ListItemText primary={realLabel} secondary={description} />
       </ListItemButton>
       {!draft && (
         <SemanticFormsModal

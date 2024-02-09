@@ -44,23 +44,25 @@ const ImageRenderer = (props: ControlProps) => {
         variant={"standard"}
         sx={(theme) => ({ marginBottom: theme.spacing(2) })}
       >
-        <Grid container direction={"column"} alignItems="baseline">
+        <Grid container direction={"row"} alignItems="flex-end">
           {
             <Grid item>
               <IconButton onClick={() => setEditMode((prev) => !prev)}>
                 {editMode ? <ImageNotSupported /> : <ImageIcon />}
               </IconButton>
-              {editMode && (
-                <TextField
-                  label={schema.title || "image url"}
-                  variant={"standard"}
-                  onChange={(e) => handleChange_(e.target.value)}
-                  value={data}
-                  fullWidth={true}
-                />
-              )}
             </Grid>
           }
+          {editMode && (
+            <Grid item>
+              <TextField
+                label={schema.title || "image url"}
+                variant={"standard"}
+                onChange={(e) => handleChange_(e.target.value)}
+                value={data}
+                fullWidth={true}
+              />
+            </Grid>
+          )}
           {data && (
             <Grid item>
               <Image src={data} alt={data} style={{ width: "100%" }} />

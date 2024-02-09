@@ -11,6 +11,7 @@ import {
 import merge from "lodash/merge";
 import React, { useCallback, useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
+import { useSettings } from "../state/useLocalSettings";
 
 const AutoIdentifierRenderer = (props: ControlProps) => {
   const {
@@ -43,8 +44,12 @@ const AutoIdentifierRenderer = (props: ControlProps) => {
     }
   }, [schema, data, handleChange_]);
 
+  const {
+    features: { enableDebug },
+  } = useSettings();
+
   return (
-    <Hidden xsUp={false}>
+    <Hidden xsUp={!enableDebug}>
       <FormControl
         fullWidth={!appliedUiSchemaOptions.trim}
         id={id}

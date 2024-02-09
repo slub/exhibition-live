@@ -1,12 +1,13 @@
-import { JsonSchema } from "@jsonforms/core";
+import { JsonFormsCore, JsonSchema } from "@jsonforms/core";
 import { JSONSchema7 } from "json-schema";
 import React, { useCallback, useState } from "react";
 
 import { useUISchemaForType } from "../form/uischemaForType";
 import { uischemas } from "../form/uischemas";
-import { useControlled } from "@mui/material";
+import {Typography, useControlled} from "@mui/material";
 import { SemanticJsonFormNoOps } from "../form/SemanticJsonFormNoOps";
 import { SemanticJsonFormsProps } from "../form/SemanticJsonForm";
+import { ErrorObject } from "ajv";
 
 type SemanticFormsInlineProps = {
   label?: string;
@@ -15,6 +16,7 @@ type SemanticFormsInlineProps = {
   entityIRI?: string;
   typeIRI: string;
   onChange?: (data: string | undefined) => void;
+  onError?: (error: ErrorObject[]) => void;
   formData?: any;
   onFormDataChange?: (data: any) => void;
   formsPath?: string;
@@ -24,6 +26,7 @@ export const SemanticFormsInline = (props: SemanticFormsInlineProps) => {
     schema,
     entityIRI,
     onChange,
+    onError,
     typeIRI,
     label,
     semanticJsonFormsProps,
@@ -49,12 +52,14 @@ export const SemanticFormsInline = (props: SemanticFormsInlineProps) => {
 
   return (
     <>
+      <Typography variant="h6">{typeIRI}</Typography>
       {schema && (
         <SemanticJsonFormNoOps
           {...semanticJsonFormsProps}
           data={formData}
           forceEditMode={true}
           onChange={handleDataChange}
+          onError={onError}
           typeIRI={typeIRI}
           schema={schema as JSONSchema7}
           jsonFormsProps={{

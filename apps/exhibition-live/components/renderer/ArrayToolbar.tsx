@@ -1,9 +1,10 @@
 import AddIcon from "@mui/icons-material/Add";
 import {
+  Box,
   Grid,
   Hidden,
   IconButton,
-  Toolbar,
+  TextField,
   Tooltip,
   Typography,
 } from "@mui/material";
@@ -18,11 +19,16 @@ import { JsonSchema7 } from "@jsonforms/core";
 import { sladb, slent } from "../form/formConfigs";
 import { BASE_IRI } from "../config";
 import { memo } from "./config";
-import { useGlobalSearchWithHelper, useRightDrawerState } from "../state";
+import {
+  useGlobalSearchWithHelper,
+  useRightDrawerState,
+  useSimilarityFinderState,
+} from "../state";
 import { SearchbarWithFloatingButton } from "../layout/main-layout/Searchbar";
 import SimilarityFinder from "../form/SimilarityFinder";
 import { JSONSchema7 } from "json-schema";
 import { AutocompleteSuggestion } from "../form/DebouncedAutoComplete";
+import { NoteAdd } from "@mui/icons-material";
 
 export interface ArrayLayoutToolbarProps {
   label: string;
@@ -51,7 +57,6 @@ export const ArrayLayoutToolbar = memo(
     addItem,
     path,
     schema,
-    createDefault,
     readonly,
     onCreate,
     isReifiedStatement,
@@ -98,6 +103,14 @@ export const ArrayLayoutToolbar = memo(
       [handleSelectedChange],
     );
 
+    const handleExistingEntityAccepted = useCallback(
+      (iri: string, data: any) => {
+        const label = data[getDefaultKey(typeIRI)] || data.label || iri;
+        handleSelectedChange({ value: iri, label });
+      },
+      [handleSelectedChange, typeIRI],
+    );
+
     const handleMappedDataAccepted = useCallback(
       (newData: any) => {
         addItem(path, newData)();
@@ -106,6 +119,7 @@ export const ArrayLayoutToolbar = memo(
     );
 
     const { open: sidebarOpen } = useRightDrawerState();
+    const { cycleThroughElements } = useSimilarityFinderState();
 
     const {
       path: globalPath,
@@ -122,74 +136,116 @@ export const ArrayLayoutToolbar = memo(
       handleMappedDataAccepted,
     );
 
+    const handleKeyUp = useCallback(
+      (ev: React.KeyboardEvent<HTMLInputElement>) => {
+        if (ev.key === "ArrowUp" || ev.key === "ArrowDown") {
+          cycleThroughElements(ev.key === "ArrowDown" ? 1 : -1);
+          ev.preventDefault();
+        }
+      },
+      [cycleThroughElements],
+    );
+
     return (
-      <Toolbar disableGutters={true} sx={{ padding: 0 }}>
-        <Grid container direction={"column"}>
-          <Hidden xsUp={errors.length === 0}>
-            <Grid item>
-              <ValidationIcon id="tooltip-validation" errorMessages={errors} />
-            </Grid>
-          </Hidden>
-          {!isReifiedStatement && (
-            <Grid item>
-              <Grid
-                container
-                sx={{ visibility: readonly ? "hidden" : "visible" }}
-              >
-                <Grid
-                  item
-                  flex={1}
-                  sx={{
-                    minWidth: "25em",
-                    transition: "all 0.3s ease-in-out",
-                  }}
-                >
-                  <DiscoverAutocompleteInput
-                    typeIRI={typeIRI}
-                    typeName={typeName}
-                    title={label || ""}
-                    onEnterSearch={handleCreateNewFromSearch}
-                    searchString={searchString || ""}
-                    onSearchValueChange={handleSearchStringChange}
-                    onSelectionChange={handleSelectedChange}
-                    autocompleteDisabled={sidebarOpen}
-                    inputProps={{
-                      onFocus: handleFocus,
-                    }}
+      <Box>
+        {isReifiedStatement && (
+          <Box>
+            <Typography variant={"h4"}>{label}</Typography>
+          </Box>
+        )}
+        <Box>
+          {sidebarOpen && !isReifiedStatement ? (
+            <TextField
+              fullWidth
+              disabled={Boolean(readonly)}
+              label={label}
+              variant="standard"
+              onChange={(ev) => handleSearchStringChange(ev.target.value)}
+              value={searchString || ""}
+              sx={(theme) => ({
+                marginTop: theme.spacing(1),
+                marginBottom: theme.spacing(1),
+              })}
+              inputProps={{
+                onFocus: handleFocus,
+                onKeyUp: handleKeyUp,
+              }}
+            />
+          ) : (
+            <Grid container direction={"column"}>
+              <Hidden xsUp={errors.length === 0}>
+                <Grid item>
+                  <ValidationIcon
+                    id="tooltip-validation"
+                    errorMessages={errors}
                   />
                 </Grid>
+              </Hidden>
+              {!isReifiedStatement && (
                 <Grid item>
-                  <Tooltip
-                    id="tooltip-add"
-                    title={t("add_another", { item: label }) || ""}
-                    placement="bottom"
+                  <Grid
+                    container
+                    sx={{
+                      alignItems: "center",
+                      visibility: readonly ? "hidden" : "visible",
+                    }}
                   >
-                    <IconButton
-                      aria-label={t("add_another", { item: label })}
-                      onClick={onCreate}
-                      size="large"
+                    <Grid
+                      item
+                      flex={1}
+                      sx={{
+                        minWidth: "25em",
+                        transition: "all 0.3s ease-in-out",
+                      }}
                     >
-                      <AddIcon />
-                    </IconButton>
-                  </Tooltip>
+                      <DiscoverAutocompleteInput
+                        typeIRI={typeIRI}
+                        typeName={typeName}
+                        title={label || ""}
+                        onEnterSearch={handleCreateNewFromSearch}
+                        searchString={searchString || ""}
+                        onSearchValueChange={handleSearchStringChange}
+                        onSelectionChange={handleSelectedChange}
+                        autocompleteDisabled={sidebarOpen}
+                        inputProps={{
+                          onFocus: handleFocus,
+                        }}
+                      />
+                    </Grid>
+                    <Grid item>
+                      <Tooltip
+                        id="tooltip-add"
+                        title={t("create new", { item: label }) || ""}
+                        placement="bottom"
+                      >
+                        <IconButton
+                          aria-label={t("create new", { item: label })}
+                          onClick={onCreate}
+                          size="large"
+                        >
+                          <NoteAdd />
+                        </IconButton>
+                      </Tooltip>
+                    </Grid>
+                  </Grid>
                 </Grid>
-              </Grid>
+              )}
             </Grid>
           )}
-        </Grid>
-        {globalPath === formsPath && (
-          <SearchbarWithFloatingButton>
-            <SimilarityFinder
-              search={searchString}
-              data={{}}
-              classIRI={typeIRI}
-              jsonSchema={schema as JSONSchema7}
-              onEntityIRIChange={handleEntityIRIChange}
-              onMappedDataAccepted={handleMappedData}
-            />
-          </SearchbarWithFloatingButton>
-        )}
-      </Toolbar>
+          {globalPath === formsPath && (
+            <SearchbarWithFloatingButton>
+              <SimilarityFinder
+                search={searchString}
+                data={{}}
+                classIRI={typeIRI}
+                jsonSchema={schema as JSONSchema7}
+                onExistingEntityAccepted={handleExistingEntityAccepted}
+                onMappedDataAccepted={handleMappedData}
+              />
+            </SearchbarWithFloatingButton>
+          )}
+        </Box>
+      </Box>
     );
   },
 );

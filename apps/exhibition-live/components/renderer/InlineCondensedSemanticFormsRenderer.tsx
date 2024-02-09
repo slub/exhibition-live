@@ -5,34 +5,37 @@ import {
   resolveSchema,
 } from "@jsonforms/core";
 import { useJsonForms, withJsonFormsControlProps } from "@jsonforms/react";
-import { Backdrop, FormControl, Grid, Hidden, IconButton } from "@mui/material";
+import {
+  Box,
+  FormControl,
+  Hidden,
+  List,
+  TextField,
+  Theme,
+  Typography,
+} from "@mui/material";
 import merge from "lodash/merge";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 
 import { slent } from "../form/formConfigs";
-import {
-  Add,
-  HandshakeRounded,
-  OpenInNew,
-  OpenInNewOff,
-} from "@mui/icons-material";
 import DiscoverAutocompleteInput from "../form/discover/DiscoverAutocompleteInput";
-import { primaryFields, typeIRItoTypeName } from "../config";
+import { primaryFields, PUBLIC_BASE_PATH, typeIRItoTypeName } from "../config";
 import { AutocompleteSuggestion } from "../form/DebouncedAutoComplete";
-import { SemanticFormsModal } from "./SemanticFormsModal";
 import { extractFieldIfString } from "../utils/mapping/simpleFieldExtractor";
 import { PrimaryField } from "../utils/types";
-import { useGlobalSearchWithHelper, useRightDrawerState } from "../state";
-import { TabIcon } from "../theme/icons";
+import {
+  useGlobalSearchWithHelper,
+  useRightDrawerState,
+  useSimilarityFinderState,
+} from "../state";
 import { encodeIRI, makeFormsPath } from "../utils/core";
 import { SearchbarWithFloatingButton } from "../layout/main-layout/Searchbar";
 import SimilarityFinder from "../form/SimilarityFinder";
 import { JSONSchema7 } from "json-schema";
-import { useParams } from "next/navigation";
 import { useRouter } from "next/router";
 import { useTranslation } from "react-i18next";
-import { useLocalSettings, useSettings } from "../state/useLocalSettings";
+import { EntityDetailListItem } from "../form/show";
 
 const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
   const {
@@ -244,7 +247,9 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
         )})`,
       });
       window.open(
-        `/${locale}/create/${typeName}?encID=${encodeIRI(newIRI)}`,
+        `${PUBLIC_BASE_PATH}/${locale}/create/${typeName}?encID=${encodeIRI(
+          newIRI,
+        )}`,
         "_blank",
       );
     },
@@ -255,93 +260,112 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
     () => isActive && sidebarOpen,
     [isActive, sidebarOpen],
   );
+  const isValid = errors.length === 0;
 
+  const { cycleThroughElements } = useSimilarityFinderState();
+
+  const handleKeyUp = useCallback(
+    (ev: React.KeyboardEvent<HTMLInputElement>) => {
+      if (ev.key === "ArrowUp" || ev.key === "ArrowDown") {
+        cycleThroughElements(ev.key === "ArrowDown" ? 1 : -1);
+        ev.preventDefault();
+      }
+    },
+    [cycleThroughElements],
+  );
+
+  const handleClear = useCallback(() => {
+    handleSelectedChange(null);
+  }, [handleSelectedChange]);
+
+  const hasValue = useMemo(
+    () => typeof selected.value === "string",
+    [selected],
+  );
   return (
     <Hidden xsUp={!visible}>
-      <Grid
-        container
-        alignItems="start"
-        sx={{ marginBottom: (theme) => theme.spacing(2) }}
+      <Typography
+        variant={"h5"}
+        sx={{
+          transform: !hasValue ? "translateY(2.9em)" : "translateY(0)",
+          position: "absolute",
+          opacity: hasValue ? 1.0 : 0.0,
+          transition: "transform 0.2s ease-out, opacity 0.2s ease-out",
+          color: (theme: Theme) => theme.palette.grey[500],
+        }}
       >
-        <Grid item flex={"auto"}>
+        {label}
+      </Typography>
+      <Box
+        sx={{
+          height: "4em",
+        }}
+      >
+        {!hasValue ? (
           <FormControl
             fullWidth={!appliedUiSchemaOptions.trim}
             id={id}
             variant={"standard"}
           >
-            <DiscoverAutocompleteInput
-              loadOnStart={editMode}
-              readonly={Boolean(ctx.readonly)}
-              typeIRI={typeIRI}
-              title={label || ""}
-              typeName={typeName || ""}
-              selected={selected}
-              onSelectionChange={handleSelectedChange}
-              onSearchValueChange={handleSearchStringChange}
-              searchString={searchString || ""}
-              autocompleteDisabled={sidebarOpen}
-              inputProps={{
-                onFocus: handleFocus,
-                ...(showAsFocused && { focused: true }),
-              }}
-            />
-          </FormControl>
-        </Grid>
-        {!ctx.readonly && (
-          <Grid item>
-            <Grid container direction="column" spacing={0}>
-              {typeof data == "string" && data.length > 0 && (
-                <Grid item>
-                  <IconButton
-                    sx={{ padding: 0 }}
-                    onClick={handleToggle}
-                    onAuxClick={handleToggle}
-                  >
-                    {modalIsOpen ? <OpenInNewOff /> : <OpenInNew />}
-                  </IconButton>
-                </Grid>
-              )}
-              <Grid item>
-                <IconButton
-                  sx={{ padding: 0 }}
-                  onClick={handleAddNew}
-                  onAuxClick={handleAddNewWithinNewTab}
-                >
-                  {<Add />}
-                </IconButton>
-              </Grid>
-            </Grid>
-            {
-              <SemanticFormsModal
-                key={selected.value}
-                schema={subSchema as JsonSchema}
-                formData={formData}
-                entityIRI={formData["@id"]}
+            {!sidebarOpen ? (
+              <DiscoverAutocompleteInput
+                loadOnStart={editMode}
+                readonly={Boolean(ctx.readonly)}
                 typeIRI={typeIRI}
-                label={label}
-                open={modalIsOpen}
-                askClose={handleSaveAndClose}
-                askCancel={handleClose}
-                onFormDataChange={handleFormDataChange}
-                formsPath={formsPath}
+                typeName={typeName || ""}
+                selected={selected}
+                title={label || ""}
+                onSelectionChange={handleSelectedChange}
+                onSearchValueChange={handleSearchStringChange}
+                searchString={searchString || ""}
+                inputProps={{
+                  onFocus: handleFocus,
+                  ...(showAsFocused && { focused: true }),
+                }}
               />
-            }
-            {globalPath === formsPath && (
-              <SearchbarWithFloatingButton>
-                <SimilarityFinder
-                  search={searchString}
-                  data={data}
-                  classIRI={typeIRI}
-                  jsonSchema={schema as JSONSchema7}
-                  onExistingEntityAccepted={handleExistingEntityAccepted}
-                  searchOnDataPath={searchOnDataPath}
-                  onMappedDataAccepted={handleMappedData}
-                />
-              </SearchbarWithFloatingButton>
+            ) : (
+              <TextField
+                fullWidth
+                disabled={Boolean(ctx.readonly)}
+                variant="standard"
+                error={!isValid}
+                onChange={(ev) => handleSearchStringChange(ev.target.value)}
+                value={searchString || ""}
+                label={label}
+                sx={(theme) => ({
+                  marginTop: theme.spacing(1),
+                  marginBottom: theme.spacing(1),
+                })}
+                inputProps={{
+                  onFocus: handleFocus,
+                  onKeyUp: handleKeyUp,
+                }}
+              />
             )}
-          </Grid>
+          </FormControl>
+        ) : (
+          <List sx={{ marginTop: "1em" }}>
+            <EntityDetailListItem
+              entityIRI={selected.value}
+              typeIRI={typeIRI}
+              onClear={!ctx.readOnly && handleClear}
+            />
+          </List>
         )}
-      </Grid>
+        {!ctx.readonly && globalPath === formsPath && (
+          <SearchbarWithFloatingButton>
+            <SimilarityFinder
+              search={searchString}
+              data={data}
+              classIRI={typeIRI}
+              jsonSchema={schema as JSONSchema7}
+              onExistingEntityAccepted={handleExistingEntityAccepted}
+              searchOnDataPath={searchOnDataPath}
+              onMappedDataAccepted={handleMappedData}
+            />
+          </SearchbarWithFloatingButton>
+        )}
+      </Box>
     </Hidden>
   );
 };

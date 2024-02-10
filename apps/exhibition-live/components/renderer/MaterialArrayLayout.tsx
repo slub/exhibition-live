@@ -31,9 +31,7 @@ import {
   JsonSchema7,
   Resolve,
 } from "@jsonforms/core";
-import map from "lodash/map";
 import merge from "lodash/merge";
-import range from "lodash/range";
 import React, { useCallback, useMemo, useState } from "react";
 
 import { ArrayLayoutToolbar, getDefaultKey } from "./ArrayToolbar";
@@ -57,6 +55,7 @@ import AddIcon from "@mui/icons-material/Add";
 import { useGlobalCRUDOptions } from "../state/useGlobalCRUDOptions";
 import { useCRUDWithQueryClient } from "../state/useCRUDWithQueryClient";
 import { useSnackbar } from "notistack";
+import { ErrorObject } from "ajv";
 
 type OwnProps = {
   removeItems(path: string, toDelete: number[]): () => void;
@@ -88,6 +87,16 @@ const MaterialArrayLayoutComponent = (props: ArrayLayoutProps & {}) => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [formData, setFormData] = useState<any>(
     irisToData(slent(uuidv4()).value, typeIRI),
+  );
+
+  const handleInlineFormDataChange = useCallback(
+    (data: any) => {
+      console.log("data", data);
+      setFormData({
+        data,
+      });
+    },
+    [setFormData],
   );
 
   const handleCreateNew = useCallback(() => {
@@ -147,6 +156,16 @@ const MaterialArrayLayoutComponent = (props: ArrayLayoutProps & {}) => {
   }, [setModalIsOpen, addItem, formData, setFormData, typeIRI]);
 
   const isReifiedStatement = Boolean(appliedUiSchemaOptions.isReifiedStatement);
+  const [inlineErrors, setInlineErrors] = useState<ErrorObject[]>([]);
+  const handleErrors = useCallback(
+    (err: ErrorObject[]) => {
+      console.log("errors", err);
+      setInlineErrors(err);
+    },
+    [setInlineErrors],
+  );
+
+  const formsPath = useMemo(() => makeFormsPath(config?.formsPath, path), [config?.formsPath, path]);
 
   return (
     <div>
@@ -195,16 +214,20 @@ const MaterialArrayLayoutComponent = (props: ArrayLayoutProps & {}) => {
               schema={subSchema}
               entityIRI={formData["@id"]}
               typeIRI={typeIRI}
+              onError={handleErrors}
               formData={formData}
-              onFormDataChange={(data) => setFormData(data)}
+              onFormDataChange={handleInlineFormDataChange}
               semanticJsonFormsProps={{
                 disableSimilarityFinder: true,
               }}
-              formsPath={makeFormsPath(config?.formsPath, path)}
+              formsPath={formsPath}
             />
           </Grid>
           <Grid item>
-            <IconButton onClick={handleSaveAndAdd}>
+            <IconButton
+              disabled={inlineErrors?.length > 0}
+              onClick={handleSaveAndAdd}
+            >
               <AddIcon style={{ fontSize: 40 }} />
             </IconButton>
           </Grid>

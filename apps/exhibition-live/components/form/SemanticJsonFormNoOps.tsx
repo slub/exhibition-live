@@ -196,7 +196,7 @@ export const SemanticJsonFormNoOps: FunctionComponent<
   const handleFormChange = useCallback(
     (state: Pick<JsonFormsCore, "data" | "errors">) => {
       onChange && onChange(state.data, "user");
-      if (state.errors && state.errors.length > 0 && onError) onError(state.errors);
+      if (onError) onError(state.errors || []);
     },
     [onChange, onError],
   );
@@ -260,9 +260,7 @@ export const SemanticJsonFormNoOps: FunctionComponent<
 
   return (
     <Grid container spacing={0}>
-      <Grid
-        item
-        flex={1}>
+      <Grid item flex={1}>
         <Grid container spacing={0}>
           <Grid
             item

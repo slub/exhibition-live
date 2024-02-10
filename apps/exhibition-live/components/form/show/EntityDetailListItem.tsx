@@ -23,6 +23,7 @@ import {
 import NiceModal from "@ebay/nice-modal-react";
 import { EntityDetailModal } from "./EntityDetailModal";
 import { Clear, HideImage } from "@mui/icons-material";
+import { ellipsis } from "../../utils/core";
 
 type EntityDetailListItemProps = {
   entityIRI: string;
@@ -55,8 +56,18 @@ export const EntityDetailListItem = ({
   const data = rawData?.document;
   const cardInfo = useMemo<PrimaryFieldResults<string>>(() => {
     const fieldDecl = primaryFields[typeName];
-    if (data && fieldDecl)
-      return applyToEachField(data, fieldDecl, extractFieldIfString);
+    if (data && fieldDecl) {
+      const { label, image, description } = applyToEachField(
+        data,
+        fieldDecl,
+        extractFieldIfString,
+      );
+      return {
+        label: ellipsis(label, 50),
+        description: ellipsis(description, 50),
+        image,
+      };
+    }
     return {
       label: null,
       description: null,
@@ -93,7 +104,12 @@ export const EntityDetailListItem = ({
             <HideImage />
           </Avatar>
         </ListItemAvatar>
-        <ListItemText primary={label} secondary={description} />
+        <ListItemText
+          primaryTypographyProps={{ style: { whiteSpace: "normal" } }}
+          secondaryTypographyProps={{ style: { whiteSpace: "normal" } }}
+          primary={label}
+          secondary={description}
+        />
       </ListItemButton>
     </ListItem>
   );

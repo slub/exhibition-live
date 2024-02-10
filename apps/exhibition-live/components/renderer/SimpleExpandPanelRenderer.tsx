@@ -11,10 +11,7 @@ import {
 } from "@mui/material";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 
-import {
-  Clear,
-  Save,
-} from "@mui/icons-material";
+import { Clear, Save } from "@mui/icons-material";
 import { BASE_IRI, primaryFields } from "../config";
 import {
   applyToEachField,
@@ -158,7 +155,12 @@ export const SimpleExpandPanelRenderer = (
             {count + 1}
           </Avatar>
         </ListItemAvatar>
-        <ListItemText primary={realLabel} secondary={description} />
+        <ListItemText
+          primaryTypographyProps={{ style: { whiteSpace: "normal" } }}
+          secondaryTypographyProps={{ style: { whiteSpace: "normal" } }}
+          primary={realLabel}
+          secondary={description}
+        />
       </ListItemButton>
       {!draft && (
         <SemanticFormsModal

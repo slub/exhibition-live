@@ -284,18 +284,20 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
   );
   return (
     <Hidden xsUp={!visible}>
-      <Typography
-        variant={"h5"}
-        sx={{
-          transform: !hasValue ? "translateY(2.9em)" : "translateY(0)",
-          position: "absolute",
-          opacity: hasValue ? 1.0 : 0.0,
-          transition: "transform 0.2s ease-out, opacity 0.2s ease-out",
-          color: (theme: Theme) => theme.palette.grey[500],
-        }}
-      >
-        {label}
-      </Typography>
+      <Box sx={{ position: "relative" }}>
+        <Typography
+          variant={"h5"}
+          sx={{
+            transform: !hasValue ? "translateY(2.9em)" : "translateY(0)",
+            position: "absolute",
+            opacity: hasValue ? 1.0 : 0.0,
+            transition: "transform 0.2s ease-out, opacity 0.2s ease-out",
+            color: (theme: Theme) => theme.palette.grey[500],
+          }}
+        >
+          {label}
+        </Typography>
+      </Box>
       <Box
         sx={{
           height: "4em",

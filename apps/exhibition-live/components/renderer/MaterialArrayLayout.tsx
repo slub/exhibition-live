@@ -32,12 +32,12 @@ import {
   Resolve,
 } from "@jsonforms/core";
 import merge from "lodash/merge";
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 
 import { ArrayLayoutToolbar, getDefaultKey } from "./ArrayToolbar";
 import { useJsonForms } from "@jsonforms/react";
 import { memo } from "./config";
-import { uniqBy, orderBy, isArray } from "lodash";
+import { uniqBy, orderBy, isArray, isEqual } from "lodash";
 import { SimpleExpandPanelRenderer } from "./SimpleExpandPanelRenderer";
 import { SemanticFormsModal } from "./SemanticFormsModal";
 import { BASE_IRI } from "../config";
@@ -91,10 +91,7 @@ const MaterialArrayLayoutComponent = (props: ArrayLayoutProps & {}) => {
 
   const handleInlineFormDataChange = useCallback(
     (data: any) => {
-      console.log("data", data);
-      setFormData({
-        data,
-      });
+      setFormData(data);
     },
     [setFormData],
   );
@@ -159,13 +156,15 @@ const MaterialArrayLayoutComponent = (props: ArrayLayoutProps & {}) => {
   const [inlineErrors, setInlineErrors] = useState<ErrorObject[]>([]);
   const handleErrors = useCallback(
     (err: ErrorObject[]) => {
-      console.log("errors", err);
       setInlineErrors(err);
     },
     [setInlineErrors],
   );
 
-  const formsPath = useMemo(() => makeFormsPath(config?.formsPath, path), [config?.formsPath, path]);
+  const formsPath = useMemo(
+    () => makeFormsPath(config?.formsPath, path),
+    [config?.formsPath, path],
+  );
 
   return (
     <div>
@@ -265,7 +264,7 @@ const MaterialArrayLayoutComponent = (props: ArrayLayoutProps & {}) => {
                   elementLabelProp={
                     appliedUiSchemaOptions.elementLabelProp || "label"
                   }
-                  formsPath={makeFormsPath(config?.formsPath, childPath)}
+                  formsPath={formsPath}
                 />
               );
             })

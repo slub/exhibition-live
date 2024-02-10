@@ -4,7 +4,7 @@ import React, { useCallback, useState } from "react";
 
 import { useUISchemaForType } from "../form/uischemaForType";
 import { uischemas } from "../form/uischemas";
-import {Typography, useControlled} from "@mui/material";
+import { useControlled } from "@mui/material";
 import { SemanticJsonFormNoOps } from "../form/SemanticJsonFormNoOps";
 import { SemanticJsonFormsProps } from "../form/SemanticJsonForm";
 import { ErrorObject } from "ajv";
@@ -52,7 +52,6 @@ export const SemanticFormsInline = (props: SemanticFormsInlineProps) => {
 
   return (
     <>
-      <Typography variant="h6">{typeIRI}</Typography>
       {schema && (
         <SemanticJsonFormNoOps
           {...semanticJsonFormsProps}

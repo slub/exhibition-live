@@ -1,5 +1,5 @@
-import { GenJSONLDSemanticPropertiesFunction } from "@graviola/crud-jsonforms";
 import namespace from "@rdfjs/namespace";
+import {GenJSONLDSemanticPropertiesFunction} from "../state/stubHelper";
 
 export const sladb = namespace("http://ontologies.slub-dresden.de/exhibition#");
 export const slent = namespace(

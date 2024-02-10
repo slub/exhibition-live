@@ -1,4 +1,7 @@
-import { GenJSONLDSemanticPropertiesFunction } from "@graviola/crud-jsonforms";
+import {
+  GenJSONLDSemanticPropertiesFunction,
+  GenRequiredPropertiesFunction,
+} from "@graviola/crud-jsonforms";
 import { JSONSchema7, JSONSchema7Definition } from "json-schema";
 import isObject from "lodash/isObject";
 
@@ -136,6 +139,7 @@ export const definitionsToStubDefinitions = (
 export const prepareStubbedSchema = (
   schema: JSONSchema7,
   genJSONLDSemanticProperties?: GenJSONLDSemanticPropertiesFunction,
+  requiredProperties?: GenRequiredPropertiesFunction,
   options?: RefAppendOptions,
 ) => {
   const definitionsKey = "$defs" in schema ? "$defs" : "definitions";
@@ -152,6 +156,7 @@ export const prepareStubbedSchema = (
           ? genJSONLDSemanticProperties(name)
           : {}),
       },
+      required: requiredProperties ? requiredProperties(name) : undefined,
     }) as JSONSchema7;
 
   const stubDefinitions = definitionsToStubDefinitions(defs(schema), options);

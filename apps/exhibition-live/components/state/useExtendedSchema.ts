@@ -10,12 +10,17 @@ type UseExtendedSchemaProps = {
   classIRI: string;
 };
 
+const genSlubRequiredProperties = (_modelName: string) => {
+  return ["@type", "@id"];
+};
+
 const useExtendedSchema = ({ typeName, classIRI }: UseExtendedSchemaProps) => {
   //const {data: loadedSchema} = useQuery(['schema', typeName], () => fetch(`/schema/${typeName}.schema.json`).then(async res => {
   return useMemo(() => {
     const prepared = prepareStubbedSchema(
       schema as JSONSchema7,
       genSlubJSONLDSemanticProperties,
+      genSlubRequiredProperties,
       {
         excludeType: [
           "InvolvedPerson",

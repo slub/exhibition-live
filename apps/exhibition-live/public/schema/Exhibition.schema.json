@@ -578,7 +578,8 @@
         "role": {
           "$ref": "#/$defs/PersonRole"
         }
-      }
+      },
+      "required": ["person", "role"]
     },
     "InvolvedCorporation": {
       "type": "object",
@@ -589,7 +590,8 @@
         "role": {
           "$ref": "#/$defs/CorporationRole"
         }
-      }
+      },
+      "required": ["corporation", "role"]
     },
     "Genre": {
       "type": "object",
@@ -745,15 +747,37 @@
           }
         },
         "exhibitionweblink": {
-          "type": "array",
-          "items": {
-            "type": "string"
+          "type": "string",
+          "format": "uri"
+        },
+        "finissage": {
+          "type": "object",
+          "properties": {
+            "dateValue": {
+              "type": "integer",
+              "title": "Datumswert",
+              "maxLength": 8
+            }
           }
         },
-        "subEvent": {
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/OtherDate"
+        "midissage": {
+          "type": "object",
+          "properties": {
+            "dateValue": {
+              "type": "integer",
+              "title": "Datumswert",
+              "maxLength": 8
+            }
+          }
+        },
+        "vernissage": {
+          "type": "object",
+          "properties": {
+            "dateValue": {
+              "type": "integer",
+              "title": "Datumswert",
+              "maxLength": 8
+            }
           }
         },
         "exponatsAndPersons": {

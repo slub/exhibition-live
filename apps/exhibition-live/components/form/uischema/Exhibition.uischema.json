@@ -149,12 +149,24 @@
               ]
             },
             {
-              "type": "Control",
-              "scope": "#/properties/subEvent",
-              "label": "Unterereignisse",
-              "options": {
-                "detail": "GENERATED"
-              }
+              "type": "HorizontalLayout",
+              "elements": [
+                {
+                  "type": "Control",
+                  "scope": "#/properties/vernissage",
+                  "label": "Vernissage"
+                },
+                {
+                  "type": "Control",
+                  "scope": "#/properties/midissage",
+                  "label": "Midissage"
+                },
+                {
+                  "type": "Control",
+                  "scope": "#/properties/finissage",
+                  "label": "Finissage"
+                }
+              ]
             }
           ]
         }
@@ -200,7 +212,7 @@
           "label": "Ausgestellte Werke nach Personen",
           "scope": "#/properties/exponatsAndPersons",
           "options": {
-            "elementLabelTemplate": "{{=it.person?.name || ''}} - {{=it.exponat?.title || ''}})",
+            "elementLabelTemplate": "{{=it.role?.title || ''}}:{{=it.person?.name || ''}} - {{=it.exponat?.title || ''}}",
             "detail": "GENERATED",
             "isReifiedStatement": true
           }
@@ -210,7 +222,7 @@
           "label": "Ausgestellte Werke nach Institutionen",
           "scope": "#/properties/exponatsAndCorporations",
           "options": {
-            "elementLabelTemplate": "{{=it.corporation?.name || ''}} - {{=it.exponat?.title || ''}})",
+            "elementLabelTemplate": "{{=it.role?.title || ''}}:{{=it.corporation?.name || ''}} - {{=it.exponat?.title || ''}}",
             "detail": "GENERATED",
             "isReifiedStatement": true
           }

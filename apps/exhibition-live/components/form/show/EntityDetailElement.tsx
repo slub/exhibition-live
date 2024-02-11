@@ -64,7 +64,7 @@ export const EntityDetailElement = ({
   }, [typeName, data]);
 
   return (
-    <Box sx={{ m: 2 }}>
+    <Box sx={{ p: 2 }}>
       <EntityDetailCard
         typeIRI={classIRI}
         entityIRI={entityIRI}

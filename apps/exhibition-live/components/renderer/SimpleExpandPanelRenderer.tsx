@@ -28,6 +28,8 @@ import { defaultJsonldContext, defaultPrefix } from "../form/formConfigs";
 import get from "lodash/get";
 import { TabIcon } from "../theme/icons";
 import { useModifiedRouter } from "../basic";
+import NiceModal from "@ebay/nice-modal-react";
+import { EntityDetailModal } from "../form/show";
 
 type SimpleExpandPanelRendererProps = {
   data: any;
@@ -77,9 +79,7 @@ export const SimpleExpandPanelRenderer = (
     return {};
   }, [data, typeName, entityIRI]);
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  const handleToggle = useCallback(() => {
-    setModalIsOpen(!modalIsOpen);
-  }, [setModalIsOpen, modalIsOpen]);
+
   const subSchema = useMemo(
     () =>
       bringDefinitionToTop(rootSchema as JSONSchema7, typeName) as JSONSchema7,
@@ -130,6 +130,10 @@ export const SimpleExpandPanelRenderer = (
   const router = useModifiedRouter();
   const locale = router.query.locale || "";
 
+  const showDetailModal = useCallback(() => {
+    NiceModal.show(EntityDetailModal, { typeIRI, entityIRI, data });
+  }, [typeIRI, entityIRI, data]);
+
   return (
     <ListItem
       secondaryAction={
@@ -149,7 +153,7 @@ export const SimpleExpandPanelRenderer = (
         </Stack>
       }
     >
-      <ListItemButton onClick={!draft ? handleToggle : undefined}>
+      <ListItemButton onClick={!draft ? showDetailModal : undefined}>
         <ListItemAvatar>
           <Avatar aria-label="Index" src={image}>
             {count + 1}
@@ -162,18 +166,6 @@ export const SimpleExpandPanelRenderer = (
           secondary={description}
         />
       </ListItemButton>
-      {!draft && (
-        <SemanticFormsModal
-          schema={subSchema as JsonSchema}
-          entityIRI={entityIRI}
-          typeIRI={typeIRI}
-          label={realLabel}
-          open={modalIsOpen}
-          askClose={() => setModalIsOpen(false)}
-          askCancel={() => setModalIsOpen(false)}
-          onChange={onChange}
-        />
-      )}
     </ListItem>
   );
 };

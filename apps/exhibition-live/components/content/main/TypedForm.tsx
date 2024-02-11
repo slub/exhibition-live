@@ -39,47 +39,42 @@ const WithPreviewForm = ({ classIRI, entityIRI, data, children }: Props) => {
     [rightDrawerOpen, rightDrawerWidth],
   );
 
-  return features?.enablePreview ? (
+  return (
     <>
-      {previewEnabled ? (
-        <Grid
-          container
-          direction={isLandscape ? "column" : "row"}
-          wrap="nowrap"
-          sx={{ height: "100%" }}
-        >
-          <Grid item flex={1}>
-            {children}
-          </Grid>
-          <Grid item flex={1}>
-            {
-              <EntityDetailElement
-                typeIRI={classIRI}
-                entityIRI={entityIRI}
-                data={data}
-              />
-            }
-          </Grid>
-          <Grid
-            item
-            sx={{
-              width: rightBoxWidth,
-              flexShrink: 0,
-              "& .MuiDrawer-paper": {
-                width: rightBoxWidth,
-                // boxSizing: 'border-box',
-              },
-            }}
-          />
+      <Grid
+        container
+        direction={isLandscape ? "column" : "row"}
+        wrap="nowrap"
+        sx={{ height: "100%" }}
+      >
+        <Grid item flex={1}>
+          {children}
         </Grid>
-      ) : (
-        children
-      )}
+        {features?.enablePreview && previewEnabled && (
+          <Grid item flex={1}>
+            <EntityDetailElement
+              typeIRI={classIRI}
+              entityIRI={entityIRI}
+              data={data}
+            />
+          </Grid>
+        )}
+        <Grid
+          item
+          sx={{
+            width: rightBoxWidth,
+            flexShrink: 0,
+            "& .MuiDrawer-paper": {
+              width: rightBoxWidth,
+              // boxSizing: 'border-box',
+            },
+          }}
+        />
+      </Grid>
     </>
-  ) : (
-    <>{children}</>
   );
 };
+
 export type MainFormProps = {
   typeName: string;
   entityIRI?: string;
@@ -135,7 +130,7 @@ const TypedForm = ({ typeName, entityIRI, classIRI }: MainFormProps) => {
   return (
     <WithPreviewForm data={data} classIRI={classIRI} entityIRI={entityIRI}>
       {loadedSchema && (
-        <Box sx={{ p: 2.5, display: "flex" }}>
+        <Box sx={{ p: 2, display: "flex" }}>
           <NewSemanticJsonForm
             defaultEditMode={true}
             data={data}

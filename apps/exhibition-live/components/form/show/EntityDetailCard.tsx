@@ -1,4 +1,9 @@
-import React, { FunctionComponent, useCallback } from "react";
+import React, {
+  FunctionComponent,
+  useCallback,
+  useMemo,
+  useState,
+} from "react";
 import useExtendedSchema from "../../state/useExtendedSchema";
 import { useCRUDWithQueryClient } from "../../state/useCRUDWithQueryClient";
 import { useGlobalCRUDOptions } from "../../state/useGlobalCRUDOptions";
@@ -21,6 +26,10 @@ import { encodeIRI } from "../../utils/core";
 
 import { typeIRItoTypeName } from "../../config";
 import { useSettings } from "../../state/useLocalSettings";
+import NewSemanticJsonForm from "../SemanticJsonForm";
+import { JSONSchema7 } from "json-schema";
+import { uischemas } from "../uischemas";
+import { uischemata } from "../uischemaForType";
 
 interface OwnProps {
   typeIRI: string;
@@ -39,6 +48,7 @@ export const EntityDetailCard: FunctionComponent<Props> = ({
   const { t } = useTranslation();
 
   const router = useModifiedRouter();
+  const [editMode, setEditMode] = useState(false);
   const editEntry = useCallback(() => {
     const typeName = typeIRItoTypeName(typeIRI);
     router.push(`/create/${typeName}?encID=${encodeIRI(entityIRI)}`);
@@ -47,38 +57,80 @@ export const EntityDetailCard: FunctionComponent<Props> = ({
     features: { enableDebug },
   } = useSettings();
 
+  const editInlineEntry = useCallback(() => {
+    setEditMode(true);
+  }, []);
+  const [formData, setFormData] = useState<any>(data);
+  const typeName = typeIRItoTypeName(typeIRI);
+  const loadedSchema = useExtendedSchema({ typeName, classIRI: typeIRI });
+  const { crudOptions } = useGlobalCRUDOptions();
+  const uischema = useMemo(
+    () => uischemata[typeName] || (uischemas as any)[typeName],
+    [typeName],
+  );
+
   return (
     <>
-      <Card>
-        <CardActionArea>
-          {cardInfo.image && (
-            <CardMedia
-              component="img"
-              sx={{ maxHeight: "24em", objectFit: "contain" }}
-              image={cardInfo.image}
-              alt={cardInfo.label}
-            />
-          )}
-          <CardContent>
-            <Typography gutterBottom variant="h5" component="div">
-              {cardInfo.label}
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              {cardInfo.description}
-            </Typography>
-          </CardContent>
-        </CardActionArea>
-        <CardActions>
-          <Button size="small" color="primary" onClick={editEntry}>
-            {t("edit")}
-          </Button>
-        </CardActions>
-      </Card>
-      <LobidAllPropTable allProps={data} />
-      {enableDebug && (
+      {editMode ? (
+        <NewSemanticJsonForm
+          data={formData}
+          onChange={setFormData}
+          entityIRI={data["@id"]}
+          typeIRI={typeIRI}
+          crudOptions={crudOptions}
+          defaultPrefix={defaultPrefix}
+          searchText={""}
+          shouldLoadInitially
+          jsonldContext={defaultJsonldContext}
+          schema={loadedSchema as JSONSchema7}
+          jsonFormsProps={{
+            uischema,
+            uischemas: uischemas,
+          }}
+          enableSidebar={false}
+          disableSimilarityFinder={true}
+          wrapWithinCard={true}
+        />
+      ) : (
         <>
-          <JsonView data={cardInfo} shouldInitiallyExpand={(lvl) => lvl < 3} />
-          <JsonView data={data} shouldInitiallyExpand={(lvl) => lvl < 3} />
+          <Card>
+            <CardActionArea>
+              {cardInfo.image && (
+                <CardMedia
+                  component="img"
+                  sx={{ maxHeight: "24em", objectFit: "contain" }}
+                  image={cardInfo.image}
+                  alt={cardInfo.label}
+                />
+              )}
+              <CardContent>
+                <Typography gutterBottom variant="h5" component="div">
+                  {cardInfo.label}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  {cardInfo.description}
+                </Typography>
+              </CardContent>
+            </CardActionArea>
+            <CardActions>
+              <Button size="small" color="primary" onClick={editEntry}>
+                {t("edit")}
+              </Button>
+              <Button size="small" color="primary" onClick={editInlineEntry}>
+                {t("edit inline")}
+              </Button>
+            </CardActions>
+          </Card>
+          <LobidAllPropTable allProps={data} />
+          {enableDebug && (
+            <>
+              <JsonView
+                data={cardInfo}
+                shouldInitiallyExpand={(lvl) => lvl < 3}
+              />
+              <JsonView data={data} shouldInitiallyExpand={(lvl) => lvl < 3} />
+            </>
+          )}
         </>
       )}
     </>

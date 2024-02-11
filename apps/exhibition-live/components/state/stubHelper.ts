@@ -2,7 +2,9 @@ import { JSONSchema7, JSONSchema7Definition } from "json-schema";
 import isObject from "lodash/isObject";
 
 export type GenRequiredPropertiesFunction = (modelName: string) => string[];
-export type GenJSONLDSemanticPropertiesFunction = (modelName: string) => JSONSchema7["properties"];
+export type GenJSONLDSemanticPropertiesFunction = (
+  modelName: string,
+) => JSONSchema7["properties"];
 const filterForPrimitiveProperties = (properties: JSONSchema7["properties"]) =>
   Object.fromEntries(
     Object.entries(properties || {}).filter(

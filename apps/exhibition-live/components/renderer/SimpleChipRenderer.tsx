@@ -1,5 +1,5 @@
 import { JsonSchema, update } from "@jsonforms/core";
-import { Avatar, Chip, Tooltip } from "@mui/material";
+import { Avatar, Chip, ChipProps, Tooltip } from "@mui/material";
 import React, {
   MouseEvent,
   useCallback,
@@ -39,7 +39,9 @@ type SimpleChipRendererProps = {
   elementLabelProp?: string;
   formsPath?: string;
 };
-export const SimpleChipRenderer = (props: SimpleChipRendererProps) => {
+export const SimpleChipRenderer = (
+  props: SimpleChipRendererProps & ChipProps,
+) => {
   const { dispatch } = useJsonForms();
   const {
     data,
@@ -50,6 +52,7 @@ export const SimpleChipRenderer = (props: SimpleChipRendererProps) => {
     count,
     childLabelTemplate,
     elementLabelProp,
+    ...chipProps
   } = props;
   const typeIRI = schema.properties?.["@type"]?.const;
   const typeName = useMemo(
@@ -137,6 +140,7 @@ export const SimpleChipRenderer = (props: SimpleChipRendererProps) => {
       onClose={() => setTooltipEnabled(false)}
     >
       <Chip
+        {...chipProps}
         avatar={
           image ? (
             <Avatar alt={realLabel} src={image} />

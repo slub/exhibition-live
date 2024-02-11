@@ -1,8 +1,18 @@
 // material-ui
 import MenuIcon from "@mui/icons-material/Menu";
 import ListIcon from "@mui/icons-material/List";
-import { ButtonBase, useTheme, AppBar, Toolbar } from "@mui/material";
+import {
+  ButtonBase,
+  useTheme,
+  AppBar,
+  Toolbar,
+  Button,
+  Hidden,
+  ToggleButton,
+} from "@mui/material";
 import React from "react";
+import { useFormEditor } from "../../state";
+import { useSettings } from "../../state/useLocalSettings";
 
 type AppHeaderProps = {
   toggleDrawer: () => void;
@@ -11,6 +21,8 @@ type AppHeaderProps = {
 
 export const AppHeader = ({ drawerOpen, toggleDrawer }: AppHeaderProps) => {
   const theme = useTheme();
+  const { features } = useSettings();
+  const { previewEnabled, togglePreview, formData } = useFormEditor();
 
   return (
     <AppBar
@@ -22,17 +34,25 @@ export const AppHeader = ({ drawerOpen, toggleDrawer }: AppHeaderProps) => {
       }}
     >
       <Toolbar>
-        {
-          <ButtonBase
-            sx={{
-              borderRadius: "12px",
-              overflow: "hidden",
-            }}
-            onClick={toggleDrawer}
+        <ButtonBase
+          sx={{
+            borderRadius: "12px",
+            overflow: "hidden",
+          }}
+          onClick={toggleDrawer}
+        >
+          {drawerOpen ? <MenuIcon /> : <ListIcon />}
+        </ButtonBase>
+
+        <Hidden xsUp={!features?.enablePreview}>
+          <ToggleButton
+            value="check"
+            selected={previewEnabled}
+            onClick={() => togglePreview()}
           >
-            {drawerOpen ? <MenuIcon /> : <ListIcon />}
-          </ButtonBase>
-        }
+            Vorschau {previewEnabled ? "ausblenden" : "einblenden"}
+          </ToggleButton>
+        </Hidden>
       </Toolbar>
     </AppBar>
   );

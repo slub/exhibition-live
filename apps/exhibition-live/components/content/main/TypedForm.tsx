@@ -1,16 +1,14 @@
-import { Box, Button } from "@mui/material";
+import { Box, Grid } from "@mui/material";
 import { JSONSchema7 } from "json-schema";
 import React, { useCallback, useMemo, useState } from "react";
 import { SplitPane } from "react-collapse-pane";
 
 import { BASE_IRI } from "../../config";
-import ContentMainPreview from "../../content/ContentMainPreview";
 import { defaultJsonldContext, defaultPrefix } from "../../form/formConfigs";
 import { uischemata } from "../../form/uischemaForType";
 import { uischemas } from "../../form/uischemas";
 import { materialCategorizationStepperLayoutWithPortal } from "../../renderer/MaterialCategorizationStepperLayoutWithPortal";
 import {
-  useDrawerDimensions,
   useFormEditor,
   useGlobalSearch,
   useRightDrawerState,
@@ -22,41 +20,58 @@ import { useRouter } from "next/router";
 import { encodeIRI, irisToData } from "../../utils/core";
 import NewSemanticJsonForm from "../../form/SemanticJsonForm";
 import { useModifiedRouter } from "../../basic";
+import { EntityDetailElement } from "../../form/show";
 
 type Props = {
   children: React.ReactChild;
   data: any;
   classIRI: string;
+  entityIRI: string;
 };
-const WithPreviewForm = ({ classIRI, data, children }: Props) => {
+const WithPreviewForm = ({ classIRI, entityIRI, data, children }: Props) => {
   const isLandscape = false;
   const { previewEnabled, togglePreview, formData } = useFormEditor();
   const { features } = useSettings();
+  const { width: rightDrawerWidth, open: rightDrawerOpen } =
+    useRightDrawerState();
+  const rightBoxWidth = useMemo(
+    () => (rightDrawerOpen ? rightDrawerWidth + 10 : 0),
+    [rightDrawerOpen, rightDrawerWidth],
+  );
 
   return features?.enablePreview ? (
     <>
-      <Button
-        onClick={() => togglePreview()}
-        style={{
-          zIndex: 100,
-          position: "absolute",
-          left: "50%",
-        }}
-      >
-        Vorschau {previewEnabled ? "ausblenden" : "einblenden"}
-      </Button>
       {previewEnabled ? (
-        <SplitPane split={isLandscape ? "horizontal" : "vertical"}>
-          <div
-            className={"page-wrapper"}
-            style={{ overflow: "auto", height: "100%" }}
-          >
+        <Grid
+          container
+          direction={isLandscape ? "column" : "row"}
+          wrap="nowrap"
+          sx={{ height: "100%" }}
+        >
+          <Grid item flex={1}>
             {children}
-          </div>
-          <div>
-            {<ContentMainPreview classIRI={classIRI} exhibition={data} />}
-          </div>
-        </SplitPane>
+          </Grid>
+          <Grid item flex={1}>
+            {
+              <EntityDetailElement
+                typeIRI={classIRI}
+                entityIRI={entityIRI}
+                data={data}
+              />
+            }
+          </Grid>
+          <Grid
+            item
+            sx={{
+              width: rightBoxWidth,
+              flexShrink: 0,
+              "& .MuiDrawer-paper": {
+                width: rightBoxWidth,
+                // boxSizing: 'border-box',
+              },
+            }}
+          />
+        </Grid>
       ) : (
         children
       )}
@@ -65,9 +80,6 @@ const WithPreviewForm = ({ classIRI, data, children }: Props) => {
     <>{children}</>
   );
 };
-//const typeName = 'Exhibition'
-//const classIRI = sladb.Exhibition.value
-
 export type MainFormProps = {
   typeName: string;
   entityIRI?: string;
@@ -121,7 +133,7 @@ const TypedForm = ({ typeName, entityIRI, classIRI }: MainFormProps) => {
   );
 
   return (
-    <WithPreviewForm data={data} classIRI={classIRI}>
+    <WithPreviewForm data={data} classIRI={classIRI} entityIRI={entityIRI}>
       {loadedSchema && (
         <Box sx={{ p: 2.5, display: "flex" }}>
           <NewSemanticJsonForm
@@ -145,16 +157,6 @@ const TypedForm = ({ typeName, entityIRI, classIRI }: MainFormProps) => {
             enableSidebar={false}
             disableSimilarityFinder={true}
             wrapWithinCard={true}
-          />
-          <Box
-            sx={{
-              width: rightBoxWidth,
-              flexShrink: 0,
-              "& .MuiDrawer-paper": {
-                width: rightBoxWidth,
-                // boxSizing: 'border-box',
-              },
-            }}
           />
         </Box>
       )}

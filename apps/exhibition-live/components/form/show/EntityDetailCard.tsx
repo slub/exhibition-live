@@ -54,7 +54,7 @@ export const EntityDetailCard: FunctionComponent<Props> = ({
           {cardInfo.image && (
             <CardMedia
               component="img"
-              height="440"
+              sx={{ maxHeight: "24em", objectFit: "contain" }}
               image={cardInfo.image}
               alt={cardInfo.label}
             />

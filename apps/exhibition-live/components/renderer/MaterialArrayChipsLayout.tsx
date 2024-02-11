@@ -185,7 +185,7 @@ const MaterialArrayChipsLayoutComponent = (props: ArrayLayoutProps & {}) => {
           </Grid>
         </Grid>
       )}
-      <Stack spacing={1} direction="row">
+      <Stack spacing={1} direction="row" flexWrap={"wrap"}>
         {data > 0
           ? orderBy(
               uniqBy(
@@ -200,25 +200,29 @@ const MaterialArrayChipsLayoutComponent = (props: ArrayLayoutProps & {}) => {
             ).map(({ id: expandID, childData, index }: any, count) => {
               const childPath = composePaths(path, `${index}`);
               return (
-                <SimpleChipRenderer
-                  onRemove={removeItems(path, [index])}
-                  schema={schema}
-                  onChange={() => {}}
-                  rootSchema={rootSchema}
-                  entityIRI={expandID}
-                  data={childData}
-                  key={expandID}
-                  index={index}
-                  count={count}
-                  path={childPath}
-                  childLabelTemplate={
-                    appliedUiSchemaOptions.elementLabelTemplate
-                  }
-                  elementLabelProp={
-                    appliedUiSchemaOptions.elementLabelProp || "label"
-                  }
-                  formsPath={makeFormsPath(config?.formsPath, childPath)}
-                />
+                <Box key={expandID}>
+                  <SimpleChipRenderer
+                    onRemove={removeItems(path, [index])}
+                    schema={schema}
+                    onChange={() => {}}
+                    rootSchema={rootSchema}
+                    entityIRI={expandID}
+                    data={childData}
+                    index={index}
+                    count={count}
+                    path={childPath}
+                    childLabelTemplate={
+                      appliedUiSchemaOptions.elementLabelTemplate
+                    }
+                    elementLabelProp={
+                      appliedUiSchemaOptions.elementLabelProp || "label"
+                    }
+                    formsPath={makeFormsPath(config?.formsPath, childPath)}
+                    sx={{
+                      margin: 0.5,
+                    }}
+                  />
+                </Box>
               );
             })
           : null}

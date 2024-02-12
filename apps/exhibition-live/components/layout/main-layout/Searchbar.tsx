@@ -38,7 +38,7 @@ export const SearchbarWithFloatingButton = ({
         drawerWidth={rightDrawerWidth}
         handleClose={toggleRightDrawer}
       >
-        {children}
+        {rightDrawerOpened && children}
       </Searchbar>
     </>
   );

@@ -193,6 +193,7 @@ const LobidSearchTable: FunctionComponent<Props> = ({
                     entityIRI={id}
                     typeIRI={typeIRI}
                     data={undefined}
+                    cardActionChildren={null}
                   />
                 }
               />

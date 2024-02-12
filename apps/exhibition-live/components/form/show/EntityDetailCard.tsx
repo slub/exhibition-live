@@ -35,6 +35,7 @@ interface OwnProps {
   typeIRI: string;
   entityIRI: string;
   cardInfo: PrimaryFieldResults<string>;
+  cardActionChildren?: React.ReactNode;
   data: any;
 }
 
@@ -44,6 +45,7 @@ export const EntityDetailCard: FunctionComponent<Props> = ({
   entityIRI,
   cardInfo,
   data,
+  cardActionChildren,
 }) => {
   const { t } = useTranslation();
 
@@ -112,14 +114,17 @@ export const EntityDetailCard: FunctionComponent<Props> = ({
                 </Typography>
               </CardContent>
             </CardActionArea>
-            <CardActions>
-              <Button size="small" color="primary" onClick={editEntry}>
-                {t("edit")}
-              </Button>
-              <Button size="small" color="primary" onClick={editInlineEntry}>
-                {t("edit inline")}
-              </Button>
-            </CardActions>
+            {cardActionChildren !== null && <CardActions>{
+              typeof cardActionChildren !== 'undefined' ? cardActionChildren : <>
+                <Button size="small" color="primary" onClick={editEntry}>
+                  {t("edit")}
+                </Button>
+                <Button size="small" color="primary" onClick={editInlineEntry}>
+                  {t("edit inline")}
+                </Button>
+              </>
+            }
+            </CardActions>}
           </Card>
           <LobidAllPropTable allProps={data} />
           {enableDebug && (

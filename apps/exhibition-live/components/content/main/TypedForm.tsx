@@ -56,6 +56,7 @@ const WithPreviewForm = ({ classIRI, entityIRI, data, children }: Props) => {
               typeIRI={classIRI}
               entityIRI={entityIRI}
               data={data}
+              cardActionChildren={null}
             />
           </Grid>
         )}

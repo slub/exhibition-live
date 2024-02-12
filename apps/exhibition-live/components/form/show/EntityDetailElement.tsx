@@ -18,12 +18,14 @@ type EntityDetailElementProps = {
   typeIRI: string | undefined;
   entityIRI: string;
   data: any;
+  cardActionChildren?: React.ReactNode;
 };
 
 export const EntityDetailElement = ({
   typeIRI,
   entityIRI,
   data: liveData,
+  cardActionChildren,
   ...rest
 }: EntityDetailElementProps & Partial<BoxProps>) => {
   const boxProps = rest || {};
@@ -64,6 +66,7 @@ export const EntityDetailElement = ({
         entityIRI={entityIRI}
         data={data}
         cardInfo={cardInfo}
+        cardActionChildren={cardActionChildren}
       />
     </Box>
   );

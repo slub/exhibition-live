@@ -24,10 +24,13 @@ import {
   extractFieldIfString,
 } from "../../utils/mapping/simpleFieldExtractor";
 import { useQuery } from "@tanstack/react-query";
+import { EntityDetailElement } from "../show";
+import { sladb } from "../formConfigs";
+import {typeIRItoTypeName} from "../../config";
 
 type Props = {
   searchString: string;
-  typeName?: string;
+  typeIRI: string;
   selectedId?: string | null;
   onSelect?: (id: string | undefined) => void;
   onAcceptItem?: (id: string | undefined, data: any) => void;
@@ -99,7 +102,7 @@ export const gndEntryWithMainInfo = (allProps: any) => {
 
 const LobidSearchTable: FunctionComponent<Props> = ({
   searchString,
-  typeName = "Person",
+  typeIRI,
   onSelect,
   onAcceptItem,
   selectedId: selectedIdProp,
@@ -115,11 +118,11 @@ const LobidSearchTable: FunctionComponent<Props> = ({
   const fetchData = useCallback(async () => {
     if (!searchString || searchString.length < 1) return;
     setResultTable(
-      (await findEntityWithinLobid(searchString, typeName, 10))?.member?.map(
+      (await findEntityWithinLobid(searchString, typeIRItoTypeName(typeIRI), 10))?.member?.map(
         (allProps: any) => gndEntryWithMainInfo(allProps),
       ),
     );
-  }, [searchString, typeName]);
+  }, [searchString, typeIRI]);
 
   const { data: rawEntry } = useQuery(
     ["lobid", selectedId],
@@ -144,7 +147,7 @@ const LobidSearchTable: FunctionComponent<Props> = ({
 
   useEffect(() => {
     fetchData();
-  }, [searchString, typeName, fetchData]);
+  }, [searchString, typeIRI, fetchData]);
 
   return (
     <>
@@ -185,6 +188,13 @@ const LobidSearchTable: FunctionComponent<Props> = ({
                 secondary={secondary}
                 avatar={avatar}
                 altAvatar={String(idx + 1)}
+                popperChildren={
+                  <EntityDetailElement
+                    entityIRI={id}
+                    typeIRI={typeIRI}
+                    data={undefined}
+                  />
+                }
               />
             );
           })}

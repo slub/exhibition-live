@@ -1,12 +1,4 @@
-import {
-  AppBar,
-  Box,
-  Grid,
-  IconButton,
-  Toolbar,
-  Typography,
-} from "@mui/material";
-import { Close as CloseIcon } from "@mui/icons-material";
+import { Box, BoxProps } from "@mui/material";
 import useExtendedSchema from "../../state/useExtendedSchema";
 import { useGlobalCRUDOptions } from "../../state/useGlobalCRUDOptions";
 import { useCRUDWithQueryClient } from "../../state/useCRUDWithQueryClient";
@@ -32,7 +24,9 @@ export const EntityDetailElement = ({
   typeIRI,
   entityIRI,
   data: liveData,
-}: EntityDetailElementProps) => {
+  ...rest
+}: EntityDetailElementProps & Partial<BoxProps>) => {
+  const boxProps = rest || {};
   const typeIRIs = useTypeIRIFromEntity(entityIRI);
   const classIRI: string | undefined = typeIRI || typeIRIs?.[0];
   const typeName = useMemo(() => typeIRItoTypeName(classIRI), [classIRI]);
@@ -64,7 +58,7 @@ export const EntityDetailElement = ({
   }, [typeName, data]);
 
   return (
-    <Box sx={{ p: 2 }}>
+    <Box sx={{ p: 2, ...(rest.sx || {}) }} {...rest}>
       <EntityDetailCard
         typeIRI={classIRI}
         entityIRI={entityIRI}

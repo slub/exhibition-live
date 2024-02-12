@@ -412,7 +412,7 @@ const SimilarityFinder: FunctionComponent<Props> = ({
                   <LobidSearchTable
                     onAcceptItem={handleAccept}
                     searchString={searchString}
-                    typeName={typeName}
+                    typeIRI={classIRI}
                     onSelect={handleSelectGND}
                   />
                   <Divider />

@@ -2,6 +2,7 @@ import { ComponentMeta } from "@storybook/react";
 import React from "react";
 
 import LobidSearchTable from "./LobidSearchTable";
+import {sladb} from "../formConfigs";
 
 export default {
   title: "form/lobid/LobidSearchTable",
@@ -9,5 +10,5 @@ export default {
 } as ComponentMeta<typeof LobidSearchTable>;
 
 export const LobidSearchTableDefault = () => (
-  <LobidSearchTable searchString={"Ada Love"} />
+  <LobidSearchTable typeIRI={sladb["Person"].value} searchString={"Ada Love"} />
 );

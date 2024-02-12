@@ -11,7 +11,8 @@ import {
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import * as React from "react";
-import { FunctionComponent, useCallback } from "react";
+import { FunctionComponent, useCallback, useEffect, useState } from "react";
+import { ClassicResultPopperItem } from "./ClassicResultPopperItem";
 
 type OwnProps = {
   id: string;
@@ -20,6 +21,7 @@ type OwnProps = {
   label: string;
   secondary?: string;
   altAvatar?: string;
+  popperChildren?: React.ReactNode;
 };
 
 type Props = OwnProps & ListItemButtonProps;
@@ -31,9 +33,22 @@ const ClassicResultListItem: FunctionComponent<Props> = ({
   label,
   secondary,
   altAvatar,
+  selected,
+  popperChildren,
   ...rest
 }) => {
   const theme = useTheme();
+  const anchorRef = React.useRef(null);
+  const [afterTimeout, setAfterTimeout] = useState(false);
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setAfterTimeout(true);
+    }, 200);
+    return () => {
+      clearTimeout(timeout)
+      setAfterTimeout(false)
+    };
+  }, []);
 
   const handleSelect = useCallback(() => {
     onSelected(id);
@@ -48,6 +63,8 @@ const ClassicResultListItem: FunctionComponent<Props> = ({
             "&:hover": { backgroundColor: "transparent" },
           }}
           onClick={handleSelect}
+          ref={anchorRef}
+          selected={selected}
           {...rest}
         >
           <ListItemAvatar>
@@ -76,6 +93,12 @@ const ClassicResultListItem: FunctionComponent<Props> = ({
           />
         </ListItemButton>
       </ListItem>
+      <ClassicResultPopperItem
+        anchorEl={anchorRef.current}
+        open={selected && afterTimeout}
+      >
+        {popperChildren}
+      </ClassicResultPopperItem>
       <Divider variant="inset" component="li" />
     </>
   );

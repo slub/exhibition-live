@@ -12,6 +12,7 @@ import { sladb } from "../formConfigs";
 import ClassicEntityCard from "../lobid/ClassicEntityCard";
 import LobidAllPropTable from "../lobid/LobidAllPropTable";
 import ClassicResultListItem from "../result/ClassicResultListItem";
+import { EntityDetailElement } from "../show";
 
 type Props = {
   searchString: string;
@@ -34,6 +35,7 @@ const DiscoverSearchTable: FunctionComponent<Props> = ({
   const [selectedId, setSelectedId] = useState<string | undefined>();
   const [selectedEntry, setSelectedEntry] = useState<any | undefined>();
   const { crudOptions } = useGlobalCRUDOptions();
+  const typeIRI = sladb[typeName].value;
 
   const fetchData = useCallback(async () => {
     if (!searchString || searchString.length < 1 || !crudOptions) return;
@@ -94,6 +96,18 @@ const DiscoverSearchTable: FunctionComponent<Props> = ({
                 avatar={avatar}
                 altAvatar={idx + 1}
                 selected={selectedIndex === idx}
+                popperChildren={
+                  <EntityDetailElement
+                    sx={{
+                      maxWidth: "30em",
+                      maxHeight: "80vh",
+                      overflow: "auto",
+                    }}
+                    entityIRI={id}
+                    typeIRI={typeIRI}
+                    data={undefined}
+                  />
+                }
               />
             );
           })}

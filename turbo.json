@@ -12,6 +12,7 @@
     },
     "lint": {},
     "lint:fix": {},
+    "docs": {},
     "dev": {
       "cache": false,
       "persistent": true

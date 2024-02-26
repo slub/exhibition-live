@@ -31,14 +31,22 @@
     "lint": "turbo run lint",
     "lint:fix": "turbo run lint:fix",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "precommit": "pnpm run lint:fix && pnpm run format"
+    "precommit": "pnpm run lint:fix && pnpm run format",
+    "docs": "typedoc",
+    "docs-all": "turbo run docs"
   },
   "devDependencies": {
     "@turbo/gen": "^1.10.16",
-    "eslint": "^8.52.0",
-    "prettier": "^3.0.3",
-    "turbo": "^1.10.16",
     "@types/node": "^20.8.8",
+    "eslint": "^8.52.0",
+    "eslint-config-edb": "workspace:*",
+    "jest": "^29.3.1",
+    "prettier": "^3.0.3",
+    "tbbt-ld": "^1.1.0",
+    "ts-jest": "^29.0.5",
+    "tsup": "^8.0.2",
+    "turbo": "^1.10.16",
+    "typedoc": "^0.25.9",
     "typescript": "^5.2.2"
   },
   "packageManager": "pnpm@7.15.0"

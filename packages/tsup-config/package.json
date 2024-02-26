@@ -1,0 +1,7 @@
+{
+  "name": "@slub/edb-tsup-config",
+  "version": "1.0.0",
+  "description": "Tsup configuration for EDB",
+  "type": "module",
+  "private": true
+}

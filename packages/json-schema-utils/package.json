@@ -1,0 +1,29 @@
+{
+  "name": "@slub/json-schema-utils_src",
+  "version": "1.0.0",
+  "description": "JsonSchema utility functions for EDB",
+  "type": "module",
+  "main": "src/index.ts",
+  "scripts": {
+    "build:package.json": "make-package-json",
+    "build": "tsup && pnpm run build:package.json",
+    "lint": "eslint \"**/*.ts*\"",
+    "lint-fix": "eslint --fix \"**/*.ts*\"",
+    "test": "jest",
+    "test:watch": "jest --watch --color",
+    "test:coverage": "jest --coverage"
+  },
+  "devDependencies": {
+    "@slub/edb-build-helper": "workspace:*",
+    "@slub/edb-tsconfig": "workspace:*",
+    "@slub/edb-tsup-config": "workspace:*",
+    "@types/jest": "^29.5.12",
+    "@types/json-schema": "^7.0.14",
+    "eslint-config-edb": "workspace:*"
+  },
+  "dependencies": {
+    "jest": "^29.3.1",
+    "json-schema": "^0.4.0",
+    "ts-jest": "^29.0.5"
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "entryPoints": ["packages/*"],
+  "name": "SLUB Ereignisdatenbank",
+  "entryPointStrategy": "packages",
+  "includeVersion": false,
+  "logLevel": "Verbose"
+}

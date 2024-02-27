@@ -39,26 +39,15 @@ yarn-error.log*
 next-env.d.ts
 
 /docker/data/
-/docker/meili
-/docker/solr
 /jsonldtest.mjs
-dist
+dist/*
 !dist/package.json
 _site
-storybook-static
-
-docs
-
-.yalc
-
-# Ignore docker-compose.yml
-docker-compose.yml
 
 # Ignore lock files
 package-lock.json
 yarn.lock
 pnpm-lock.yaml
-yalc.lock
 
 
 coverage

@@ -1,0 +1,17 @@
+{
+  "name": "@slub/edb-core-utils",
+  "description": "Core utils for EDB",
+  "version": "1.0.0",
+  "main": "./index.cjs",
+  "type": "module",
+  "module": "./index.js",
+  "types": "./index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./index.js",
+      "require": "./index.cjs",
+      "default": "./index.js",
+      "types": "./index.d.ts"
+    }
+  }
+}

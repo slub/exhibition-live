@@ -10,6 +10,13 @@ const originalPackageJson = require(`${currentDirectory}/package.json`);
 // Define the fields to keep for the distribution package.json
 const fieldsToKeep = [
   'name',
+  'description',
+  'keywords',
+  'author',
+  'license',
+  'repository',
+  'bugs',
+  'homepage',
   'version',
   'main',
   'module',
@@ -32,6 +39,7 @@ const name = distPackageJson.name;
 distPackageJson = {
   ...distPackageJson,
   name: name.replace('_src', ''),
+  "type": "module", // Enable ESM
   "main": "./index.cjs",
   "module": "./index.js",
   "types": "./index.d.ts", // Fallback TypeScript declaration file

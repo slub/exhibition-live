@@ -1,14 +1,14 @@
-import { describe, expect, test } from "@jest/globals";
+import {describe, expect, test} from "@jest/globals";
 import datasetFactory from "@rdfjs/dataset";
 import N3Parser from "@rdfjs/parser-n3";
-import { Dataset } from "@rdfjs/types";
+import {Dataset} from "@rdfjs/types";
 import fs from "fs";
-import { JSONSchema7 } from "json-schema";
-import path, { dirname } from "path";
+import {JSONSchema7} from "json-schema";
+import path, {dirname} from "path";
 import dsExt from "rdf-dataset-ext";
-import { fileURLToPath } from "url";
+import {fileURLToPath} from "url";
 
-import { jsonSchemaGraphInfuser } from "./jsonSchemaGraphInfuser";
+import {jsonSchemaGraphInfuser} from "./jsonSchemaGraphInfuser";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -79,7 +79,7 @@ describe("can get data via json schema", () => {
 
   const baseIRI = "http://schema.org/";
   test("get from test schema", async () => {
-    const schema = { ...schemaStub, ...schemaStub.$defs.Person };
+    const schema = {...schemaStub, ...schemaStub.$defs.Person};
     const ds = await sampleDataset();
     const data = jsonSchemaGraphInfuser(
       baseIRI,
@@ -95,47 +95,79 @@ describe("can get data via json schema", () => {
     );
     //console.log(JSON.stringify(data, null, 2))
     expect(data).toStrictEqual({
+      "@id": "http://localhost:8080/data/person/leonard-hofstadter",
+      "@type": "http://schema.org/Person",
+      "address": {
+        "addressCountry": "US",
+        "addressRegion": "CA",
+        "postalCode": "91104",
+        "streetAddress": "2311 North Los Robles Avenue, Aparment 4A",
+      },
       familyName: "Hofstadter",
       givenName: "Leonard",
       knows: [
         {
+          "@id": "http://localhost:8080/data/person/amy-farrah-fowler",
+          "@type": "http://schema.org/Person",
           familyName: "Fowler",
           givenName: "Amy",
-          knows: [],
         },
         {
+          "@id": "http://localhost:8080/data/person/bernadette-rostenkowski",
+          "@type": "http://schema.org/Person",
           familyName: "Rostenkowski-Wolowitz",
           givenName: "Bernadette",
-          knows: [],
         },
         {
+          "@id": "http://localhost:8080/data/person/howard-wolowitz",
+          "@type": "http://schema.org/Person",
           familyName: "Wolowitz",
           givenName: "Howard",
-          knows: [],
         },
         {
+          "@id": "http://localhost:8080/data/person/penny",
+          "@type": "http://schema.org/Person",
+          "address": {
+            "addressCountry": "US",
+            "addressRegion": "CA",
+            "postalCode": "91104",
+            "streetAddress": "2311 North Los Robles Avenue, Aparment 4B",
+          },
           givenName: "Penny",
-          knows: [],
         },
         {
+          "@id": "http://localhost:8080/data/person/rajesh-koothrappali",
+          "@type": "http://schema.org/Person",
           familyName: "Koothrappali",
           givenName: "Rajesh",
-          knows: [],
         },
         {
+          "@id": "http://localhost:8080/data/person/sheldon-cooper",
+          "@type": "http://schema.org/Person",
+          "address": {
+            "addressCountry": "US",
+            "addressRegion": "CA",
+            "postalCode": "91104",
+            "streetAddress": "2311 North Los Robles Avenue, Aparment 4A",
+          },
           familyName: "Cooper",
           givenName: "Sheldon",
-          knows: [],
         },
         {
+          "@id": "http://localhost:8080/data/person/stuart-bloom",
+          "@type": "http://schema.org/Person",
           familyName: "Bloom",
           givenName: "Stuart",
-          knows: [],
         },
         {
+          "@id": "http://localhost:8080/data/person/mary-cooper",
+          "@type": "http://schema.org/Person",
+          "address": {
+            "addressCountry": "US",
+            "addressRegion": "TX",
+          },
           familyName: "Cooper",
           givenName: "Mary",
-          knows: [],
         },
       ],
     });

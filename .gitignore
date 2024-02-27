@@ -40,7 +40,8 @@ next-env.d.ts
 
 /docker/data/
 /jsonldtest.mjs
-dist
+dist/*
+!dist/package.json
 _site
 
 # Ignore docker-compose.yml

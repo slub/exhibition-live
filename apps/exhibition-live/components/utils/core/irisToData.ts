@@ -1,5 +1,10 @@
-import { NamedAndTypedEntity } from "../crud";
-
+export type NamedEntityData = {
+  "@id": string;
+  [key: string]: any;
+};
+export type NamedAndTypedEntity = NamedEntityData & {
+  "@type": string;
+};
 export const irisToData = (
   entityIRI?: string,
   typeIRI?: string,

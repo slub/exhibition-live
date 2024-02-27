@@ -11,13 +11,15 @@
     "lint-fix": "eslint --fix \"**/*.ts*\"",
     "test": "jest",
     "test:watch": "jest --watch --color",
-    "test:coverage": "jest --coverage"
+    "test:coverage": "jest --coverage",
+    "doc": "typedoc"
   },
   "devDependencies": {
     "@slub/edb-build-helper": "workspace:*",
     "@slub/edb-tsconfig": "workspace:*",
     "@slub/edb-tsup-config": "workspace:*",
     "@types/jest": "^29.5.12",
-    "eslint-config-edb": "workspace:*"
+    "eslint-config-edb": "workspace:*",
+    "typescript": "~5"
   }
 }

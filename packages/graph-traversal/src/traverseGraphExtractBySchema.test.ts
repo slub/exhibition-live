@@ -1,17 +1,16 @@
 import {describe, expect, test} from "@jest/globals";
-import datasetFactory from "@rdfjs/dataset";
-import N3Parser from "@rdfjs/parser-n3";
-import {Dataset} from "@rdfjs/types";
 import fs from "fs";
 import {JSONSchema7} from "json-schema";
 import path, {dirname} from "path";
 import dsExt from "rdf-dataset-ext";
 
 import {jsonSchemaGraphInfuser} from "./traverseGraphExtractBySchema";
-import {fileURLToPath} from "url";
+import datasetFactory from "@rdfjs/dataset";
+import N3Parser from "@rdfjs/parser-n3";
+import {Dataset} from "@rdfjs/types";
 
 // @ts-ignore
-const __dirname = dirname(fileURLToPath(import.meta.url));
+//const __dirname = dirname(fileURLToPath(import.meta.url));
 
 function sampleDataset() {
   const filename = path.join(

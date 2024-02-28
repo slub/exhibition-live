@@ -20,6 +20,6 @@
     "@slub/edb-tsup-config": "workspace:*",
     "@types/jest": "^29.5.12",
     "eslint-config-edb": "workspace:*",
-    "typescript": "~5"
+    "typescript": "^5"
   }
 }

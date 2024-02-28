@@ -15,12 +15,13 @@ describe('JSON Schema Utility Functions', () => {
     });
   });
 
-  /*describe('filterForPrimitiveProperties', () => {
+  describe('filterForPrimitiveProperties', () => {
     const properties = {
       name: { type: 'string' },
       age: { type: 'number' },
       address: { type: 'object' },
       tags: { type: 'array', items: { type: 'string' } },
+      knows: { type: 'array', items: { type: 'object', properties: {} } },
     } as JSONSchema7['properties'];
 
     test('should filter out non-primitive properties', () => {
@@ -28,7 +29,8 @@ describe('JSON Schema Utility Functions', () => {
       expect(filteredProperties).toEqual({
         name: { type: 'string' },
         age: { type: 'number' },
+        tags: { type: 'array', items: { type: 'string' } },
       });
     });
-  });*/
+  });
 });

@@ -20,7 +20,8 @@
     "@slub/edb-tsup-config": "workspace:*",
     "@types/jest": "^29.5.12",
     "@types/json-schema": "^7.0.14",
-    "eslint-config-edb": "workspace:*"
+    "eslint-config-edb": "workspace:*",
+    "typescript": "^5.3.3"
   },
   "dependencies": {
     "json-schema": "^0.4.0"

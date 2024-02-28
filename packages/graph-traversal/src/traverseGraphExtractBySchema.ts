@@ -1,13 +1,15 @@
-import { JsonSchema, resolveSchema } from "@jsonforms/core";
 import ds from "@rdfjs/data-model";
 import namespace from "@rdfjs/namespace";
 import { Dataset } from "@rdfjs/types";
 import { rdf } from "@tpluscode/rdf-ns-builders";
 import clownface from "clownface";
 import { JSONSchema7, JSONSchema7Definition } from "json-schema";
-import { isJSONSchema, isJSONSchemaDefinition } from "@slub/json-schema-utils_src/src";
+import { isJSONSchema, isJSONSchemaDefinition } from "@slub/json-schema-utils";
 import isNil from "lodash/isNil";
-import {filterUndefOrNull} from "@slub/edb-core-utils_src/src";
+import {filterUndefOrNull} from "@slub/edb-core-utils";
+import {resolveSchema} from "./resolver";
+import { JsonSchema } from "./types";
+
 
 export type WalkerOptions = {
   omitEmptyArrays: boolean;

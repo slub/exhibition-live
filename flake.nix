@@ -2,7 +2,7 @@
   description = "Flake for dev shell each default system";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-22.11";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-23.11";
     flake-utils.url = "github:numtide/flake-utils";
   };
   outputs = { self, nixpkgs, flake-utils }:
@@ -14,6 +14,7 @@
             nodejs_latest
             nodePackages_latest.yarn
             nodePackages_latest.pnpm
+            bun
           ];
         };
       }

@@ -1,6 +1,5 @@
 import React, { FunctionComponent, useCallback } from "react";
 import { Box, Button } from "@mui/material";
-import { useTranslation } from "react-i18next";
 import Grid2 from "@mui/material/Unstable_Grid2";
 import { Login } from "../google/GoogleOAuth";
 import { useModifiedRouter } from "../basic";

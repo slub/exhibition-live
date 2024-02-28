@@ -12,7 +12,7 @@ import React, {
 
 import { TextField } from "./TextField";
 import { useQuery } from "@tanstack/react-query";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "next-i18next";
 
 export type AutocompleteSuggestion = {
   label: string;

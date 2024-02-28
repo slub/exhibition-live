@@ -24,7 +24,7 @@ import {
 import { PrimaryFieldResults } from "../../utils/types";
 import { EntityDetailCard } from "./EntityDetailCard";
 import { useTypeIRIFromEntity } from "../../state";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "next-i18next";
 
 type EntityDetailModalProps = {
   typeIRI: string | undefined;

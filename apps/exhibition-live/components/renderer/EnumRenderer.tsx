@@ -7,7 +7,7 @@ import Hidden from "@mui/material/Hidden";
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import React from "react";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "next-i18next";
 import { memo } from "./config";
 
 type EnumRendererProps = {

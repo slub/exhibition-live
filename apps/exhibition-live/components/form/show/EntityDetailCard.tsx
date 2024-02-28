@@ -19,7 +19,7 @@ import {
   CardMedia,
   Typography,
 } from "@mui/material";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "next-i18next";
 import LobidAllPropTable from "../lobid/LobidAllPropTable";
 import { useModifiedRouter } from "../../basic";
 import { encodeIRI } from "../../utils/core";

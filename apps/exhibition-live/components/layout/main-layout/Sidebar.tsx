@@ -9,7 +9,7 @@ import { useLocalSettings } from "../../state/useLocalSettings";
 import { MenuGroup, NavGroup, NavItem, Drawer } from "./menu";
 import menuLists from "./menu/menuLists";
 import { useGlobalAuth } from "../../state";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "next-i18next";
 import { useModifiedRouter } from "../../basic";
 
 type SidebarProps = {

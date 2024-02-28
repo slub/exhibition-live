@@ -14,7 +14,7 @@ import useExtendedSchema from "../../state/useExtendedSchema";
 import { useGlobalCRUDOptions } from "../../state/useGlobalCRUDOptions";
 import { useCRUDWithQueryClient } from "../../state/useCRUDWithQueryClient";
 import { defaultJsonldContext, defaultPrefix } from "../formConfigs";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "next-i18next";
 import { PrimaryFieldResults } from "../../utils/types";
 import {
   applyToEachField,

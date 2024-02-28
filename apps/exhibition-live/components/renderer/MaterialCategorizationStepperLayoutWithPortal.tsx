@@ -32,7 +32,7 @@ import {
 } from "@jsonforms/material-renderers";
 import { optionallyCreatePortal } from "../helper/optionallyCreatePortal";
 import { KeyboardArrowLeft, KeyboardArrowRight } from "@mui/icons-material";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "next-i18next";
 
 export const materialCategorizationStepperTester: RankedTester = rankWith(
   4,

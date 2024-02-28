@@ -10,7 +10,7 @@ import schema from "../../../public/schema/Exhibition.schema.json";
 import { BASE_IRI } from "../../../components/config";
 import { v4 as uuidv4 } from "uuid";
 import { decodeIRI } from "../../../components/utils/core";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "next-i18next";
 import { getI18nProps, mixinStaticPathsParams } from "../../../components/i18n";
 
 type Props = {
@@ -53,10 +53,12 @@ export default (props: Props) => {
     setEntityIRI(newURI);
   }, [setEntityIRI, typeName, searchParam]);
 
+  const title = `Neue {t(typeName)} anlegen - Ausstellungserfassung`
+
   return (
     <>
       <Head>
-        <title>Neue {t(typeName)} anlegen - Ausstellungserfassung</title>
+        <title>${title}</title>
         <meta name="description" content="a knowledge base about exhibitions" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />

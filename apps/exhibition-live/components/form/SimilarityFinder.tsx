@@ -33,7 +33,7 @@ import { findEntityByAuthorityIRI } from "../utils/discover";
 import { useGlobalCRUDOptions } from "../state/useGlobalCRUDOptions";
 import { mapAbstractDataUsingAI, mapDataUsingAI } from "../utils/ai";
 import { useGlobalSearch, useSimilarityFinderState } from "../state";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "next-i18next";
 import { searchEntityByLabel } from "../utils/discover/searchEntityByLabel";
 import { typeIRItoTypeName } from "../config";
 

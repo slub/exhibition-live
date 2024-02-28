@@ -9,7 +9,7 @@ import {
   Typography,
 } from "@mui/material";
 import * as React from "react";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "next-i18next";
 import { v4 as uuidv4 } from "uuid";
 
 import ValidationIcon from "./ValidationIcon";

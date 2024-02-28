@@ -1,4 +1,5 @@
 {
+  "database_name": "Exhibitions",
   "edit": "edit",
   "edit inline": "edit inline",
   "cancel": "cancel",
@@ -19,6 +20,8 @@
   "Work_plural": "Works",
   "Organization": "Organisation",
   "Organization_plural": "Organisations",
+  "InvolvedPerson": "involved person",
+  "InvolvedCorporation": "involved corporation",
   "Location": "Location",
   "Location_plural": "Locations",
   "Place": "Place",

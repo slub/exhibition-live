@@ -34,7 +34,7 @@ import { SearchbarWithFloatingButton } from "../layout/main-layout/Searchbar";
 import SimilarityFinder from "../form/SimilarityFinder";
 import { JSONSchema7 } from "json-schema";
 import { useRouter } from "next/router";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "next-i18next";
 import { EntityDetailListItem } from "../form/show";
 
 const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {

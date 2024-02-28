@@ -1,28 +1,19 @@
-import { Add as NewIcon } from "@mui/icons-material";
 import {
   Avatar,
-  Box,
-  Button,
-  ButtonBase,
-  Card,
-  Grid,
-  InputAdornment,
   OutlinedInput,
   Popper,
 } from "@mui/material";
 // material-ui
-import { styled, useTheme } from "@mui/material/styles";
+import { styled } from "@mui/material/styles";
 import { shouldForwardProp } from "@mui/system";
 // assets
-import { useRouter } from "next/router";
-import React, { useCallback, useState } from "react";
-import { useTranslation } from "react-i18next";
-import { v4 as uuidv4 } from "uuid";
+import React, { useCallback } from "react";
+import { useTranslation } from "next-i18next";
 
 // third-party
 // project imports
 import DiscoverAutocompleteInput from "../../form/discover/DiscoverAutocompleteInput";
-import { sladb, slent } from "../../form/formConfigs";
+import { sladb } from "../../form/formConfigs";
 import { useGlobalSearch } from "../../state";
 import { encodeIRI } from "../../utils/core";
 import { useModifiedRouter } from "../../basic";

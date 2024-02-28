@@ -16,7 +16,7 @@ import AdapterDayjs from "@mui/lab/AdapterDayjs";
 import { FormHelperText, Hidden, TextField } from "@mui/material";
 import merge from "lodash/merge";
 import React, { useMemo } from "react";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "next-i18next";
 
 export const MaterialDateControl = (props: ControlProps) => {
   const [focused, onFocus, onBlur] = useFocus();

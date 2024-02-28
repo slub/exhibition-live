@@ -14,7 +14,7 @@ import { AutocompleteSuggestion } from "../form/DebouncedAutoComplete";
 import { extractFieldIfString } from "../utils/mapping/simpleFieldExtractor";
 import { PrimaryField } from "../utils/types";
 import { makeFormsPath } from "../utils/core";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "next-i18next";
 import { PreloadedOptionSelect } from "../form/PreloadedOptionSelect";
 import { findEntityByClass } from "../utils/discover";
 import { useGlobalCRUDOptions } from "../state/useGlobalCRUDOptions";

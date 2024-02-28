@@ -78,7 +78,7 @@ import isNil from "lodash/isNil";
 import { OverflowChip } from "../../lists/OverflowChip";
 import { SparqlEndpoint, useSettings } from "../../state/useLocalSettings";
 import { EntityDetailModal } from "../../form/show";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "next-i18next";
 
 type Props = {
   typeName: string;

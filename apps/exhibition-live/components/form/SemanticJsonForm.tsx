@@ -25,7 +25,7 @@ import { useQueryKeyResolver } from "../state";
 import { Backdrop, Box, CircularProgress } from "@mui/material";
 import { EntityDetailModal } from "./show";
 import { create } from "zustand";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "next-i18next";
 
 export type CRUDOpsType = {
   load: () => Promise<void>;

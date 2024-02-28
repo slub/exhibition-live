@@ -4,7 +4,7 @@ import React from "react";
 import { MainLayout } from "../../components/layout/main-layout";
 import { Dashboard } from "../../components/content/main/Dashboard";
 import { mixinStaticPathsParams, getI18nProps } from "../../components/i18n";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "next-i18next";
 
 export async function getStaticPaths() {
   const paths = mixinStaticPathsParams([

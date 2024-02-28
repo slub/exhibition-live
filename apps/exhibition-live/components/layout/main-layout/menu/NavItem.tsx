@@ -1,4 +1,3 @@
-import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import AddIcon from "@mui/icons-material/Add";
 import {
   Avatar,
@@ -56,17 +55,7 @@ export const NavItem = ({
   const Icon = item.icon as React.FC<{ stroke: number; size: string }>;
   const itemIcon = item?.icon ? (
     <Icon stroke={1.5} size="1.3rem" />
-  ) : (
-    <FiberManualRecordIcon
-      sx={{
-        width:
-          customization.isOpen.findIndex((id) => id === item?.id) > -1 ? 8 : 6,
-        height:
-          customization.isOpen.findIndex((id) => id === item?.id) > -1 ? 8 : 6,
-      }}
-      fontSize={level > 0 ? "inherit" : "medium"}
-    />
-  );
+  ) : null;
 
   let itemTarget = "_self";
   if (item.target) {

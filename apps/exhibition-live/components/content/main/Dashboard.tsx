@@ -21,7 +21,7 @@ import { SearchBar } from "./Search";
 import { ParentSize } from "@visx/responsive";
 import { fixSparqlOrder } from "../../utils/discover";
 import { variable } from "@rdfjs/data-model";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "next-i18next";
 
 export const HeaderTitle = styled(Typography)(({ theme }) => ({
   fontFamily: "'Play', sans-serif",
@@ -144,7 +144,7 @@ export const Dashboard = (props) => {
       }}
     >
       <Box sx={{ marginBottom: "4rem", marginTop: "1em" }}>
-        <HeaderTitle>Ausstellungsdatenbank</HeaderTitle>
+        <HeaderTitle>{t('database_name')}</HeaderTitle>
       </Box>
       <Grid2
         container

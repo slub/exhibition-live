@@ -31,7 +31,7 @@
     "lint": "turbo run lint",
     "lint:fix": "turbo run lint:fix",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "precommit": "pnpm run lint:fix && pnpm run format"
+    "precommit": "bun run lint:fix && bun run format"
   },
   "workspaces": [
     "apps/*",

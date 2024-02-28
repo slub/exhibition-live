@@ -21,7 +21,7 @@ You can get a live preview of the current `develop` branch here: [https://slub.g
 First, run the development server:
 
 ```bash
-pnpm i && pnpm run dev
+bun i && bun run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
@@ -53,7 +53,7 @@ all of their props and options. It also gives an overview over the frontend comp
 
 ```bash
 cd app/exhibition-live
-pnpm i && pnpm run storybook
+bun i && bun run storybook
 ```
 
 Open [http://localhost:6006](http://localhost:6006) with your browser to see the storybook.

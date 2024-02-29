@@ -58,7 +58,7 @@ export default (props: Props) => {
   return (
     <>
       <Head>
-        <title>${title}</title>
+        <title>{title}</title>
         <meta name="description" content="a knowledge base about exhibitions" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />

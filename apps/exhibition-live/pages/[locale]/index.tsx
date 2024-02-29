@@ -26,10 +26,11 @@ export async function getStaticProps(ctx) {
 
 export default () => {
   const { t } = useTranslation("translation");
+  const title = `${t("exhibition database")}`;
   return (
     <>
       <Head>
-        <title>{t("exhibition database")}</title>
+        <title>{title}</title>
         <meta name="description" content="a knowledge base about exhibitions" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />

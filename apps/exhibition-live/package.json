@@ -136,15 +136,14 @@
     "@graphql-codegen/typescript-react-query": "^4.1.0",
     "@graphql-codegen/typescript-resolvers": "^3.0.0",
     "@jest/globals": "^29.3.1",
-    "@storybook/addon-actions": "^7.4.5",
-    "@storybook/addon-essentials": "^7.4.5",
-    "@storybook/addon-interactions": "^7.4.5",
+    "@storybook/addon-actions": "^7.6.17",
+    "@storybook/addon-essentials": "^7.6.17",
+    "@storybook/addon-interactions": "^7.6.17",
     "@storybook/addon-knobs": "^7.0.2",
-    "@storybook/addon-links": "^7.4.5",
-    "@storybook/nextjs": "^7.4.5",
-    "@storybook/react": "^7.4.5",
+    "@storybook/addon-links": "^7.6.17",
+    "@storybook/nextjs": "^7.6.17",
+    "@storybook/react": "^7.6.17",
     "@storybook/storybook-deployer": "^2.8.16",
-    "@storybook/testing-library": "^0.0.13",
     "@types/d3": "^7.4.3",
     "@types/dot": "^1.1.6",
     "@types/gapi": "^0.0.47",
@@ -174,7 +173,7 @@
     "process": "^0.11.10",
     "safe-identifier": "^0.4.2",
     "sass": "^1.68.0",
-    "storybook": "^7.4.5",
+    "storybook": "^7.6.17",
     "stream-browserify": "^3.0.0",
     "tbbt-ld": "^1.1.0",
     "ts-jest": "^29.0.5",
@@ -182,5 +181,10 @@
     "ts-node": "^10.9.1",
     "typescript": "5.1.6",
     "webpack": "^5.75.0"
+  },
+  "overrides": {
+    "@storybook/nextjs": {
+      "sharp": "npm:dry-uninstall"
+    }
   }
 }

@@ -17,7 +17,7 @@ import {
   FormControl,
   Grid,
   IconButton,
-  List,
+  List, MenuItem, Select,
   Skeleton,
   Tab,
   Tabs,
@@ -33,7 +33,7 @@ import {
   useMaterialReactTable,
 } from "material-react-table";
 import { mapByConfigFlat } from "../utils/mapping/mapByConfig";
-import { spreadSheetMapping } from "../config/spreadSheetMapping";
+import { spreadSheetMappings } from "../config/spreadSheetMappings";
 import { declarativeMappings } from "../config";
 import { makeDefaultMappingStrategyContext } from "../form/SimilarityFinder";
 import { useGlobalCRUDOptions } from "../state/useGlobalCRUDOptions";
@@ -53,6 +53,7 @@ import useExtendedSchema from "../state/useExtendedSchema";
 import { JSONSchema7 } from "json-schema";
 import { useRouter } from "next/router";
 import FormControlLabel from "@mui/material/FormControlLabel";
+import {DeclarativeMapping} from "../utils/mapping/mappingStrategies";
 
 export const index2letter = (index: number): string => {
   const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -148,6 +149,17 @@ export const GoogleSpeadSheetWorkSheetView: FC<
   );
   const [rawMappedData, setRawMappedData] = useState<any[]>([]);
   const locale = useRouter().locale ?? "de";
+  const mappingsAvailable = Object.keys(spreadSheetMappings)
+  const [selectedMapping, setSelectedMapping] = useState<string>(mappingsAvailable[0]);
+  const spreadSheetMapping = useMemo(() => {
+    let final = []
+    try {
+      final = columnDesc.length <= 0 ? [] : spreadSheetMappings[selectedMapping](columnDesc)
+    } catch (e) {
+      console.error("failed to apply declarative mapping to column description", e)
+    }
+    return final as DeclarativeMapping[]
+  }, [columnDesc, selectedMapping])
   const handleMapAndImport = useCallback(async () => {
     const rows = [...Array(pagination.pageSize)].map((_, index) => index + 2);
     setRawMappedData([]);
@@ -164,7 +176,7 @@ export const GoogleSpeadSheetWorkSheetView: FC<
             return cell.value as string;
           },
           targetData,
-          spreadSheetMapping(columnDesc),
+          spreadSheetMapping,
           makeDefaultMappingStrategyContext(
             crudOptions?.selectFetch,
             declarativeMappings,
@@ -216,10 +228,10 @@ export const GoogleSpeadSheetWorkSheetView: FC<
     workSheet,
     crudOptions,
     pagination.pageSize,
-    columnDesc,
     setRawMappedData,
     setRawMappedData,
     locale,
+    spreadSheetMapping,
   ]);
 
   const handleMapping = useCallback(async () => {
@@ -236,12 +248,15 @@ export const GoogleSpeadSheetWorkSheetView: FC<
           return cell.value as string;
         },
         targetData,
-        spreadSheetMapping(columnDesc),
+        spreadSheetMapping,
         makeDefaultMappingStrategyContext(
           crudOptions?.selectFetch,
           declarativeMappings,
         ),
       );
+      console.log({
+        mappedData
+      })
       allMappedData.push(mappedData);
     }
     setRawMappedData(allMappedData);
@@ -251,7 +266,9 @@ export const GoogleSpeadSheetWorkSheetView: FC<
     pagination.pageSize,
     columnDesc,
     setRawMappedData,
+    spreadSheetMapping,
   ]);
+
 
   return loaded ? (
     <Box sx={{ flex: 1 }}>
@@ -268,7 +285,17 @@ export const GoogleSpeadSheetWorkSheetView: FC<
           />
         </Grid>
         <Grid item>
-          {/*make a label for the checkboxes*/}
+          <FormControl>
+            <Select
+              label={'Select Mapping'}
+              value={selectedMapping}
+              onChange={(e) => setSelectedMapping(e.target.value)}
+            >
+              {mappingsAvailable.map((mapping) => {
+                return <MenuItem key={mapping} value={mapping}>{mapping}</MenuItem>
+              })}
+            </Select>
+          </FormControl>
           <FormControl>
             <FormControlLabel
               control={
@@ -309,6 +336,7 @@ export const GoogleSpeadSheetWorkSheetView: FC<
                 key={mappedData["@id"] ?? index}
                 index={index}
                 data={mappedData}
+                disableLoad={true}
               />
             );
           })}

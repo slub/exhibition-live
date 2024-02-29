@@ -321,6 +321,14 @@ export const locationDeclarativeMapping: DeclarativeMappings = [
       path: "image",
     },
   },
+  {
+    source: {
+      path: "id",
+    },
+    target: {
+      path: "idAuthority.@id",
+    }
+  }
 ];
 
 export const occupationDeclarativeMapping: DeclarativeMappings = [
@@ -481,6 +489,14 @@ export const personDeclarativeMapping: DeclarativeMappings = [
       path: "image",
     },
   },
+  {
+    source: {
+      path: "id",
+    },
+    target: {
+      path: "idAuthority.@id",
+    }
+  }
 ];
 
 export const corporateBody2PlaceDeclarativeMapping: DeclarativeMappings = [
@@ -495,6 +511,14 @@ export const corporateBody2PlaceDeclarativeMapping: DeclarativeMappings = [
       path: "title",
     },
   },
+  {
+    source: {
+      path: "id",
+    },
+    target: {
+      path: "idAuthority.@id",
+    }
+  }
 ];
 export const corporateBodyDeclarativeMapping: DeclarativeMappings = [
   {
@@ -618,6 +642,7 @@ export const lobidTypemap: Record<string, string> = {
   ExhibitionExponat: "Work",
   Location: "TerritorialCorporateBodyOrAdministrativeUnit",
   Tag: "SubjectHeading",
+  Genre: "SubjectHeading",
 };
 export const declarativeMappings: DeclarativeMapping = {
   Exhibition: exhibitionDeclarativeMapping,
@@ -628,4 +653,5 @@ export const declarativeMappings: DeclarativeMapping = {
   ExhibitionExponat: workDeclarativeMapping,
   Location: locationDeclarativeMapping,
   Tag: tagMapping,
+  Genre: tagMapping,
 };

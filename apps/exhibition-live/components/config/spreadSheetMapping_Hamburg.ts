@@ -24,7 +24,7 @@ export const indexFromTitle = (
   return index;
 };
 
-export const spreadSheetMapping: (
+export const spreadSheetMapping_Hamburg: (
   fields: OwnColumnDesc[],
 ) => DeclarativeFlatMappings = (fields) => [
   {

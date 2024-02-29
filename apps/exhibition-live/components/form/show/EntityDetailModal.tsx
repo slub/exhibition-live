@@ -30,10 +30,11 @@ type EntityDetailModalProps = {
   typeIRI: string | undefined;
   entityIRI: string;
   data: any;
+  disableLoad?: boolean;
 };
 
 export const EntityDetailModal = NiceModal.create(
-  ({ typeIRI, entityIRI, data: defaultData }: EntityDetailModalProps) => {
+  ({ typeIRI, entityIRI, data: defaultData, disableLoad }: EntityDetailModalProps) => {
     const modal = useModal();
     const typeIRIs = useTypeIRIFromEntity(entityIRI);
     const classIRI: string | undefined = typeIRI || typeIRIs?.[0];
@@ -49,11 +50,11 @@ export const EntityDetailModal = NiceModal.create(
       defaultPrefix,
       crudOptions,
       defaultJsonldContext,
-      { enabled: true, refetchOnWindowFocus: true, initialData: defaultData },
+      { enabled: !disableLoad, refetchOnWindowFocus: true, initialData: defaultData },
       "show",
     );
     const { t } = useTranslation();
-    const data = rawData?.document;
+    const data = rawData?.document || defaultData;
     const cardInfo = useMemo<PrimaryFieldResults<string>>(() => {
       const fieldDecl = primaryFields[typeName];
       if (data && fieldDecl)

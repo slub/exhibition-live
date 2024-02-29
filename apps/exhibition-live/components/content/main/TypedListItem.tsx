@@ -17,11 +17,12 @@ import { EntityDetailModal } from "../../form/show/EntityDetailModal";
 interface OwnProps {
   index: number;
   data: any;
+  disableLoad?: boolean;
 }
 
 type Props = OwnProps;
 
-const TypedListItem: FunctionComponent<Props> = ({ index, data }) => {
+const TypedListItem: FunctionComponent<Props> = ({ index, data, disableLoad }) => {
   const typeIRI = data["@type"] as string;
   const entityIRI = data["@id"] as string;
   const typeName = typeIRItoTypeName(typeIRI);
@@ -34,8 +35,8 @@ const TypedListItem: FunctionComponent<Props> = ({ index, data }) => {
   );
 
   const showDetailModal = useCallback(() => {
-    NiceModal.show(EntityDetailModal, { typeIRI, entityIRI, data });
-  }, [typeIRI, entityIRI, data]);
+    NiceModal.show(EntityDetailModal, { typeIRI, entityIRI, data, disableLoad });
+  }, [typeIRI, entityIRI, data, disableLoad]);
 
   return (
     <ListItem>

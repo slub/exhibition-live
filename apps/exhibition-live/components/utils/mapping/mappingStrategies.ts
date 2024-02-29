@@ -6,7 +6,7 @@ import { getPaddedDate } from "../core/specialDate";
 import { mapByConfig } from "./mapByConfig";
 import isNil from "lodash/isNil";
 import { findEntityWithinLobidByIRI } from "../lobid/findEntityWithinLobid";
-import { primaryFields, typeIRItoTypeName } from "../../config";
+import {declarativeMappings, primaryFields, typeIRItoTypeName} from "../../config";
 import set from "lodash/set";
 import get from "lodash/get";
 
@@ -93,6 +93,132 @@ type StatementProperty = {
     strategy: AnyStrategy;
   };
 };
+
+type AuthorityFieldInformation = {
+  offset: number,
+  authorityIRI?: string
+  authorityLinkPrefix?: string
+}
+
+type CreateEntityWithAuthoritativeLink = Strategy & {
+  id: "createEntityWithAuthoritativeLink";
+  options?: {
+    typeIRI?: string;
+    typeName?: string;
+    mainProperty: {
+      offset?: number;
+    };
+    authorityFields: AuthorityFieldInformation[]
+  }
+}
+
+export const createEntityWithAuthoritativeLink = async (
+  sourceData: any,
+  _targetData: any,
+  options?: CreateEntityWithAuthoritativeLink["options"],
+  context?: StrategyContext
+): Promise<any> => {
+  if (!context) throw new Error("No context provided");
+  const { typeIRI, mainProperty, authorityFields } = options || {};
+  if (!Array.isArray(sourceData))
+    throw new Error("Source data is not an array");
+
+
+  const amount =  authorityFields.length + 1
+  if (sourceData.length % amount !== 0)
+    throw new Error(
+      `Source data length ${sourceData.length} is not a multiple of ${amount}`,
+    );
+  const groupedSourceData = [];
+  for (let i = 0; i < sourceData.length; i += amount) {
+    groupedSourceData.push(sourceData.slice(i, i + amount));
+  }
+
+  console.log(groupedSourceData)
+
+  const { searchEntityByLabel, getPrimaryIRIBySecondaryIRI, authorityIRI,newIRI } = context;
+  const sourceDataArray =  sourceData
+  const newDataElements = [];
+  for (const sourceDataGroupElement of groupedSourceData) {
+    const sourceDataElement = sourceDataGroupElement[0]
+    if (authorityFields.length > 1) {
+      console.warn('only one authority field is supported at the moment. Will use the first one.')
+    }
+    const authorityOptions = authorityFields[0]
+    const authIRI = authorityOptions.authorityIRI || authorityIRI
+    const authLinkPrefix = authorityOptions.authorityLinkPrefix || ''
+    const sourceDataAuthority = sourceDataGroupElement[1]
+    const secondaryIRI = typeof sourceDataAuthority === 'string' && sourceDataAuthority.trim().length > 0 ? `${authLinkPrefix}${sourceDataAuthority}` : null
+    const sourceDataLabel = sourceDataElement?.trim();
+
+    let primaryIRI: string | null = null
+    if (secondaryIRI) {
+      console.log(`will look for ${secondaryIRI} within own database`)
+      primaryIRI = await getPrimaryIRIBySecondaryIRI(
+        secondaryIRI,
+        authIRI,
+        typeIRI
+      )
+      if (primaryIRI) {
+        console.log(`found ${secondaryIRI} as ${primaryIRI} within own database`)
+      }
+    } else if (sourceDataLabel) {
+      primaryIRI = await searchEntityByLabel(
+        sourceDataLabel,
+        typeIRI,
+      );
+    }
+
+    const typeName = typeIRItoTypeName(typeIRI);
+    const primaryField = primaryFields[typeName];
+    const labelField = primaryField?.label || "label";
+    let targetData: any = {}
+    if (!primaryIRI && secondaryIRI) {
+      console.log('not yet implemented look form id within external database')
+      //TODO: we will hardcode lobid search here but this should be taken out of the context and linked with properties from options
+      const lobidData = await findEntityWithinLobidByIRI(secondaryIRI);
+      if (lobidData) {
+        const mappingConfig = declarativeMappings[typeName];
+        if (!mappingConfig) {
+          console.warn(`no mapping config for ${typeName}`);
+
+        } else {
+
+          try {
+            const dataFromGND = await mapByConfig(
+              lobidData,
+              {},
+              mappingConfig,
+              context,
+            );
+            const inject = {
+              "@id": newIRI(typeIRI || ""),
+              "@type": typeIRI,
+              lastNormUpdate: new Date().toISOString(),
+            };
+            targetData = {...dataFromGND, ...inject}
+          } catch (e) {
+            console.error(e);
+          }
+        }
+        if (!targetData) {
+          targetData = {
+            "@id": newIRI(typeIRI || ""),
+            "@type": typeIRI,
+            [labelField]: sourceDataLabel,
+            __draft: true,
+          };
+        }
+        newDataElements.push(targetData);
+      } else {
+        newDataElements.push({
+          "@id": primaryIRI,
+        });
+      }
+    }
+  }
+  return  newDataElements
+}
 
 type CreateEntityWithReificationFromString = Strategy & {
   id: "createEntityWithReificationFromString";
@@ -472,6 +598,7 @@ type AnyFlatStrategy =
   | ExistsStrategy
   | CreateEntityFromStringStrategy
   | CreateEntityWithReificationFromString
+  | CreateEntityWithAuthoritativeLink
   | DateArrayToSpecialInt
   | SplitStrategy;
 
@@ -522,6 +649,7 @@ export const strategyFunctionMap: { [strategyId: string]: StrategyFunction } = {
   createEntity,
   createEntityFromString,
   createEntityWithReificationFromString,
+  createEntityWithAuthoritativeLink,
   dateStringToSpecialInt,
   dateRangeStringToSpecialInt,
   exists: existsStrategy,

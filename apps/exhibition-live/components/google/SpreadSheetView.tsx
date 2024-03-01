@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useEffect, useMemo, useState } from "react";
+import React, {FC, useCallback, useEffect, useMemo, useRef, useState} from "react";
 import {
   GoogleSpreadsheet,
   GoogleSpreadsheetWorksheet,
@@ -13,11 +13,11 @@ import {
   Chip,
   Dialog,
   DialogActions,
-  DialogContent,
+  DialogContent, Divider,
   FormControl,
   Grid,
   IconButton,
-  List, MenuItem, Select,
+  List, Menu, MenuItem, Select,
   Skeleton,
   Tab,
   Tabs,
@@ -53,7 +53,83 @@ import useExtendedSchema from "../state/useExtendedSchema";
 import { JSONSchema7 } from "json-schema";
 import { useRouter } from "next/router";
 import FormControlLabel from "@mui/material/FormControlLabel";
-import {DeclarativeMapping} from "../utils/mapping/mappingStrategies";
+import {DeclarativeFlatMapping, DeclarativeFlatMappings, DeclarativeMapping} from "../utils/mapping/mappingStrategies";
+import {useTranslation} from "next-i18next";
+import {NiceMappingConfigurationDialog} from "../mapping/NiceMappingConfigurationDialog";
+
+
+type ColumnChipProps = {
+  columnIndex: number
+  columnLetter: string
+  value: any
+  label: string
+  spreadSheetMapping?: DeclarativeFlatMappings
+}
+const ColumnChip = ({label, columnIndex,  columnLetter, spreadSheetMapping}: ColumnChipProps) => {
+  const { t } = useTranslation()
+
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+  const columnMapping = useMemo(() =>
+    spreadSheetMapping?.filter(mapping =>
+      //@ts-ignore
+      Boolean(mapping.source.columns.find((col) =>
+        typeof col === 'string' ? col === columnLetter : col === columnIndex
+  ))) || [], [spreadSheetMapping, columnIndex,  columnLetter]);
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleAssignMapping = useCallback(() => {
+
+  }, []);
+  const handleOpenMapping = useCallback((mappingDecl: DeclarativeFlatMapping) => {
+    NiceModal.show(NiceMappingConfigurationDialog, {
+      mapping: mappingDecl,
+      sourcePath: columnIndex
+    })
+  }, [columnIndex]);
+
+
+  return <>
+    <Chip
+      label={label}
+      color={columnMapping.length > 0 ? "primary" : undefined }
+      sx={{ margin: "0.2rem" }}
+      onClick={handleClick}
+    />
+    <Menu
+      id="lock-menu"
+      anchorEl={anchorEl}
+      open={open}
+      onClose={handleClose}
+      MenuListProps={{
+        'aria-labelledby': 'lock-button',
+        role: 'listbox',
+      }}
+    >
+        <MenuItem
+          key={'option1'}
+          onClick={handleAssignMapping}
+        >
+          {t("assign mapping")}
+        </MenuItem>
+        <Divider />
+      {columnMapping.map((mapping, index) => {
+        return <MenuItem
+          key={index}
+          onClick={() => handleOpenMapping(mapping)}
+        >
+          {t("open Mapping", {index: index + 1})}
+        </MenuItem>
+      })
+      }
+    </Menu>
+  </>
+}
 
 export const index2letter = (index: number): string => {
   const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -158,7 +234,7 @@ export const GoogleSpeadSheetWorkSheetView: FC<
     } catch (e) {
       console.error("failed to apply declarative mapping to column description", e)
     }
-    return final as DeclarativeMapping[]
+    return final as DeclarativeFlatMappings
   }, [columnDesc, selectedMapping])
   const handleMapAndImport = useCallback(async () => {
     const rows = [...Array(pagination.pageSize)].map((_, index) => index + 2);
@@ -232,6 +308,9 @@ export const GoogleSpeadSheetWorkSheetView: FC<
     setRawMappedData,
     locale,
     spreadSheetMapping,
+    columnDesc,
+    saveMutation,
+    writeToSpreadSheet,
   ]);
 
   const handleMapping = useCallback(async () => {
@@ -264,7 +343,6 @@ export const GoogleSpeadSheetWorkSheetView: FC<
     workSheet,
     crudOptions,
     pagination.pageSize,
-    columnDesc,
     setRawMappedData,
     spreadSheetMapping,
   ]);
@@ -345,10 +423,13 @@ export const GoogleSpeadSheetWorkSheetView: FC<
           <Box sx={{ display: "flex", flexWrap: "wrap" }}>
             {columnDesc.map(({ index, value, letter }) => {
               return (
-                <Chip
+                <ColumnChip
                   key={index}
+                  value={value}
+                  columnIndex={index}
+                  columnLetter={letter}
                   label={filterUndefOrNull([letter, value]).join(":")}
-                  sx={{ margin: "0.2rem" }}
+                  spreadSheetMapping={spreadSheetMapping}
                 />
               );
             })}

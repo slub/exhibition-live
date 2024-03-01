@@ -1,29 +1,8 @@
-import { DeclarativeFlatMappings } from "../utils/mapping/mappingStrategies";
-import { sladb } from "../form/formConfigs";
-import { OwnColumnDesc } from "../google/types";
+import {DeclarativeFlatMappings} from "../utils/mapping/mappingStrategies";
+import {sladb} from "../form/formConfigs";
+import {OwnColumnDesc} from "../google/types";
 import {gndBaseIRI} from "../utils/gnd/prefixes";
-
-export const indexFromLetter = (
-  letter: string,
-  fields: OwnColumnDesc[],
-): number => {
-  const index = fields.findIndex((m) => m.letter === letter);
-  if (index === -1) {
-    throw new Error(`No index for letter ${letter}`);
-  }
-  return index;
-};
-
-export const indexFromTitle = (
-  title: string,
-  fields: OwnColumnDesc[],
-): number => {
-  const index = fields.findIndex((m) => m.value === title);
-  if (index === -1) {
-    throw new Error(`No index for title ${title}`);
-  }
-  return index;
-};
+import {DeclarativeMatchBasedFlatMappings, indexFromTitle} from "../utils/mapping/mapMatchBasedByConfig";
 
 /*
 B:Name Kiste
@@ -230,6 +209,108 @@ HT:Weblink/URL
 HU:Ressource
 
  */
+
+
+const matchBasedSpreadsheetMapping_NewYork = [
+  {
+    source: {
+      columns: {
+        title: ["Ausstellungstitel"]
+      }
+    },
+    target: {
+      path: "title"
+    }
+  },
+  {
+    source: {
+      columns: {
+        titlePattern: "Genre {{i}}",
+        amount: 5,
+        includeRightNeighbours: 1
+      }
+    },
+    target: {
+      path: "genre"
+    },
+    mapping: {
+      strategy: {
+        id: "createEntityWithAuthoritativeLink",
+        options: {
+          typeIRI: sladb("Genre").value,
+          typeName: "Genre",
+          mainProperty: {
+            offset: 0
+          },
+          authorityFields: [
+            {
+              offset: 1,
+              authorityLinkPrefix: gndBaseIRI
+            }
+          ]
+        },
+      },
+    },
+  },
+  {
+    source: {
+      columns: {
+        title: ["Ort der Ausstellung (geografisch) 1"]
+      }
+    },
+    target: {
+      path: "location"
+    },
+    mapping: {
+      strategy: {
+        id: "createEntityWithAuthoritativeLink",
+        options: {
+          typeIRI: sladb("Location").value,
+          typeName: "Location",
+          mainProperty: {
+            offset: 0
+          },
+          authorityFields: [
+            {
+              offset: 1,
+              authorityLinkPrefix: gndBaseIRI
+            }
+          ]
+        },
+      },
+    },
+  },
+  {
+    source: {
+      columns: {
+        title: ["Ort der Ausstellung (Institution) 1"]
+      }
+    },
+    target: {
+      path: "place"
+    },
+    mapping: {
+      strategy: {
+        id: "createEntityWithAuthoritativeLink",
+        options: {
+          typeIRI: sladb("Place").value,
+          typeName: "Place",
+          mainProperty: {
+            offset: 0
+          },
+          authorityFields: [
+            {
+              offset: 1,
+              authorityLinkPrefix: gndBaseIRI
+            }
+          ]
+        },
+      },
+    },
+  }
+] as DeclarativeMatchBasedFlatMappings;
+
+
 export const spreadSheetMappin_NewYork: (
   fields: OwnColumnDesc[],
 ) => DeclarativeFlatMappings = (fields) => [

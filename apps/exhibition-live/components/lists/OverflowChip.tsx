@@ -26,7 +26,7 @@ export const OverflowChip = ({ label, entityIRI }: OverflowContainerProps) => {
     (e: MouseEvent<Element>) => {
       setTooltipEnabled(true);
     },
-    [setTooltipEnabled, showDetailModal],
+    [setTooltipEnabled],
   );
 
   return (

@@ -722,7 +722,7 @@ export const TypedList = ({ typeName }: Props) => {
       });
       table.reset();
     }
-  }, [typeName, enqueueSnackbar, t]);
+  }, [typeName, enqueueSnackbar, t, table]);
 
   return (
     <Box sx={{ width: "100%" }}>

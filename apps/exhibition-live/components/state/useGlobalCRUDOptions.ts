@@ -84,7 +84,7 @@ export const useGlobalCRUDOptions: UseGlobalCRUDOptions = () => {
         activeEndpoint.provider === "worker" ? { doQuery } : undefined,
       )
     );
-  }, [doQuery, activeEndpoint, activeEndpoint?.auth]);
+  }, [doQuery, activeEndpoint]);
   return {
     crudOptions,
     doLocalQuery: doQuery,

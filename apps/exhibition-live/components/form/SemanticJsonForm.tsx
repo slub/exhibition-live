@@ -150,7 +150,7 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> = ({
     loadQuery.refetch().finally(() => {
       console.log("initially loaded", entityIRI);
     });
-  }, [entityIRI, loadQuery.refetch]);
+  }, [entityIRI, loadQuery, loadQuery.refetch]);
 
   const handleReset = useCallback(() => {
     NiceModal.show(GenericModal, {

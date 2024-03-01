@@ -129,7 +129,7 @@ const SimilarityFinder: FunctionComponent<Props> = ({
   );
   const searchString: string | undefined = useMemo<string | null>(
     () => dataPathSearch || globalSearch || search || null,
-    [data, dataPathSearch, search, globalSearch],
+    [dataPathSearch, search, globalSearch],
   );
 
   const [typeName, setTypeName] = useState(

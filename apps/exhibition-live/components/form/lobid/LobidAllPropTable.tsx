@@ -142,7 +142,6 @@ const PropertyItem = ({
           variant={"text"}
           aria-label={"mapping"}
           onClick={handleMenuClick}
-          startIcon={<MoreVertIcon />}
         >
           {camelCaseToTitleCase(property)}
         </Button>

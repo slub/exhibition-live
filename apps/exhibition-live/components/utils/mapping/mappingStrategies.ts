@@ -579,7 +579,7 @@ export const dateRangeStringToSpecialInt = (
   );
 };
 
-type AnyStrategy =
+export type AnyStrategy =
   | ConcatenateStrategy
   | TakeFirstStrategy
   | AppendStrategy
@@ -592,7 +592,7 @@ type AnyStrategy =
   | ConstantStrategy
   | SplitStrategy;
 
-type AnyFlatStrategy =
+export type AnyFlatStrategy =
   | ConcatenateStrategy
   | TakeFirstStrategy
   | ExistsStrategy

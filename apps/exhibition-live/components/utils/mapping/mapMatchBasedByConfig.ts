@@ -1,6 +1,7 @@
 import {OwnColumnDesc} from "../../google/types";
 import {AnyFlatStrategy, DeclarativeFlatMapping} from "./mappingStrategies";
-import {flatten} from "lodash";
+import flatten from "lodash/flatten";
+import uniq from "lodash/uniq";
 import {JsonSchema} from "@jsonforms/core";
 import dot from "dot";
 
@@ -40,13 +41,8 @@ const resolveTitlePattern = (pattern: string, data: any): string => {
   const template = dot.template(pattern);
   return template(data);
 }
-/**
- * Returns the indices of the columns that match the given definition
- * @param fields The column description fields
- * @param definition  The definition of the columns to match (either by title or by title pattern)
- * @returns {number[]}   The indices of the columns that match the given definition
- */
-const columnMatcher = (fields: OwnColumnDesc[], definition: FlexibleColumnMatchingDefinition): number[] => {
+
+const columnMatcherImplementation = (fields: OwnColumnDesc[], definition: FlexibleColumnMatchingDefinition): number[] => {
   if (isTitlePattern(definition)) {
     return flatten([...Array(definition.amount)].map((_, i) => {
       const title = resolveTitlePattern(definition.titlePattern, {i});
@@ -56,7 +52,7 @@ const columnMatcher = (fields: OwnColumnDesc[], definition: FlexibleColumnMatchi
         if (definition.includeRightNeighbours <= 0) {
           throw new Error("includeRightNeighbours must be greater than 0");
         }
-        return [...Array(definition.amount)].map((_, i) => firstIndex + i);
+        return [...Array(definition.includeRightNeighbours + 1)].map((_, i) => firstIndex + i);
       } else {
         return [firstIndex];
       }
@@ -65,11 +61,21 @@ const columnMatcher = (fields: OwnColumnDesc[], definition: FlexibleColumnMatchi
     return definition.title.map((title) => indexFromTitle(title, fields));
   }
 }
+/**
+ * Returns the indices of the columns that match the given definition
+ * @param fields The column description fields
+ * @param definition  The definition of the columns to match (either by title or by title pattern)
+ * @returns {number[]}   The indices of the columns that match the given definition
+ */
+const columnMatcher = (fields: OwnColumnDesc[], definition: FlexibleColumnMatchingDefinition): number[] =>
+  uniq(columnMatcherImplementation(fields, definition))
+
 export type FlatSourceMatchBased = {
   columns: FlexibleColumnMatchingDefinition;
   expectedSchema?: JsonSchema;
 }
 export type DeclarativeMatchBasedFlatMapping = {
+  id: string;
   source: FlatSourceMatchBased;
   target: {
     path: string;
@@ -81,11 +87,10 @@ export type DeclarativeMatchBasedFlatMapping = {
 export type DeclarativeMatchBasedFlatMappings = DeclarativeMatchBasedFlatMapping[];
 export const matchBased2DeclarativeFlatMapping = (fields: OwnColumnDesc[], mapping: DeclarativeMatchBasedFlatMapping): DeclarativeFlatMapping => {
   return {
+    ...mapping,
     source: {
       columns: columnMatcher(fields, mapping.source.columns),
       expectedSchema: mapping.source.expectedSchema
     },
-    target: mapping.target,
-    mapping: mapping.mapping
   }
 }

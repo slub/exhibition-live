@@ -102,8 +102,10 @@ export const GoogleSpreadSheetTable: FC<GoogleSpreadSheetTableProps> = ({workShe
             id: (cell.value ?? "").toString() + index,
             header: (cell.value ?? "").toString(),
             accessorFn: (originalRow, rowIndex) => {
-              const dataCell = workSheet.getCell(rowIndex + 1, index);
-              return dataCell.value;
+              try {
+                const dataCell = workSheet.getCell( originalRow , index);
+                return dataCell?.value ?? null;
+              } catch (e) { return null }
             },
           };
         });
@@ -115,12 +117,18 @@ export const GoogleSpreadSheetTable: FC<GoogleSpreadSheetTableProps> = ({workShe
     })();
   }, [workSheet, setLoaded, setColumnDesc]);
 
-  const fakeData = [...Array(pagination.pageSize)].map((_, index) => index);
+  const rowCount = useMemo(() => Math.ceil( workSheet.rowCount - 2), [workSheet])
+  // needs to be just the right amount of rows: so full pageSize  but a the end the Rest of the rowCount divided by pageSize
+  const isLastRow = (rowCount - 2) <= (pagination.pageSize * pagination.pageIndex)
+  const amountOfFakeRows = isLastRow ? rowCount % pagination.pageSize : pagination.pageSize
+  const fakeData = [...Array(amountOfFakeRows)].map((_, index) => index + (pagination.pageIndex * pagination.pageSize));
+  console.log({rowCount, fakeData, pagination})
+
   const materialTable = useMaterialReactTable({
     // @ts-ignore
     columns: reducedColumns,
     data: fakeData,
-    pageCount: Math.ceil(workSheet.rowCount),
+    rowCount,
     manualPagination: true,
     // @ts-ignore
     onPaginationChange: setPagination,
@@ -271,7 +279,7 @@ export const GoogleSpeadSheetWorkSheetView: FC<
   }, [columnDesc, selectedMapping])
 
   useEffect(() => {
-    setReducedColumns(columns.slice(0, maxColumns));
+    setReducedColumns(columns?.slice(0, maxColumns) || []);
   }, [columns, maxColumns, setReducedColumns]);
   useEffect(() => {
     (async () => {
@@ -297,14 +305,15 @@ export const GoogleSpeadSheetWorkSheetView: FC<
             id: (cell.value ?? "").toString() + index,
             header: (cell.value ?? "").toString(),
             accessorFn: (originalRow, rowIndex) => {
-              const dataCell = workSheet.getCell(rowIndex + 1, index);
-              return dataCell.value;
+              try {
+                const dataCell = workSheet.getCell( originalRow + 1  , index);
+                return dataCell?.value ?? null;
+              } catch (e) { return null }
             },
           };
         });
         setColumns(cols as MRT_ColumnDef<any>[]);
         const sheetTitle = workSheet.title;
-        console.log({sheetTitle})
         if(mappingsAvailable.includes(sheetTitle)) {
           setSelectedMapping(sheetTitle)
         }
@@ -315,13 +324,17 @@ export const GoogleSpeadSheetWorkSheetView: FC<
     })();
   }, [workSheet, setLoaded, setColumnDesc, setSelectedMapping]);
 
-  const fakeData = [...Array(pagination.pageSize)].map((_, index) => index);
+  const rowCount = useMemo(() => Math.ceil( workSheet.rowCount - 2), [workSheet])
+  // needs to be just the right amount of rows: so full pageSize  but a the end the Rest of the rowCount divided by pageSize
+  const isLastRow = (rowCount - 2) <= (pagination.pageSize * pagination.pageIndex)
+  const amountOfFakeRows = isLastRow ? rowCount % pagination.pageSize : pagination.pageSize
+  const fakeData = [...Array(amountOfFakeRows)].map((_, index) => index + (pagination.pageIndex * pagination.pageSize) );
 
   const materialTable = useMaterialReactTable({
     // @ts-ignore
     columns: reducedColumns,
     data: fakeData,
-    pageCount: Math.ceil(workSheet.rowCount),
+    rowCount: rowCount,
     manualPagination: true,
     // @ts-ignore
     onPaginationChange: setPagination,
@@ -344,7 +357,8 @@ export const GoogleSpeadSheetWorkSheetView: FC<
     true,
   );
   const handleMapAndImport = useCallback(async () => {
-    const rows = [...Array(pagination.pageSize)].map((_, index) => index + 2);
+    const rows = [...Array(pagination.pageSize)].map((_, index) => index + pagination.pageIndex + 2);
+
     setRawMappedData([]);
     for (const row of rows) {
       const targetData = {
@@ -411,6 +425,7 @@ export const GoogleSpeadSheetWorkSheetView: FC<
     workSheet,
     crudOptions,
     pagination.pageSize,
+    pagination.pageIndex,
     setRawMappedData,
     locale,
     spreadSheetMapping,

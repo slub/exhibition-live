@@ -623,6 +623,7 @@ export type FlatSourceElement = {
 };
 
 export type DeclarativeFlatMapping = {
+  id: string;
   source: FlatSourceElement;
   target: {
     path: string;

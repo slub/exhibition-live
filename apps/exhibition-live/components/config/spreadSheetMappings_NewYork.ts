@@ -262,7 +262,9 @@ export const matchBasedSpreadsheetMappings_NewYork = [
     id: "geografischer Ort",
     source: {
       columns: {
-        title: ["Ort der Ausstellung (geografisch) 1"]
+        titlePattern: "Ort der Ausstellung (geografisch) {{=it.i + 1}}",
+        amount: 4,
+        includeRightNeighbours: 1
       }
     },
     target: {
@@ -291,7 +293,8 @@ export const matchBasedSpreadsheetMappings_NewYork = [
     id: "institutioneller Ort",
     source: {
       columns: {
-        title: ["Ort der Ausstellung (Institution) 1"]
+        titlePattern: "Ort der Ausstellung (Institution) {{=it.i + 1}}",
+        amount: 7
       }
     },
     target: {
@@ -315,6 +318,87 @@ export const matchBasedSpreadsheetMappings_NewYork = [
         },
       },
     },
+  },
+  {
+    id: "Beteiligte Person",
+    source: {
+      columns: {
+        titlePattern: "Beteiligte Person {{=it.i + 3}}",
+        amount: 22,
+        includeRightNeighbours: 1
+      }
+    },
+    target: {
+      path: "involvedPersons"
+    },
+    mapping: {
+      strategy: {
+        id: "createEntityWithReificationFromString",
+        options: {
+          typeIRI: sladb("InvolvedPerson").value,
+          typeName: "InvolvedPerson",
+          mainProperty: {
+            property: "person",
+            offset: 0,
+            mapping: {
+              strategy: {
+                id: "createEntityFromString",
+                options: {
+                  typeIRI: sladb("Person").value,
+                  typeName: "Person",
+                },
+              },
+            },
+          },
+          statementProperties: [
+            {
+              property: "role",
+              offset: 1,
+              mapping: {
+                strategy: {
+                  id: "createEntityFromString",
+                  options: {
+                    typeIRI: sladb("PersonRole").value,
+                    typeName: "PersonRole",
+                  },
+                },
+              },
+            },
+          ],
+        },
+      }
+    }
+  },
+  {
+    id: "Beteiligte Person GND",
+    source: {
+      columns: {
+        titlePattern: "Beteiligte Person {{=it.i + 1}} (Name)",
+        amount: 1,
+        includeRightNeighbours: 3
+      }
+    },
+    target: {
+      path: "involvedPersons"
+    },
+    mapping: {
+      strategy: {
+        id: "createEntityWithAuthoritativeLink",
+        options: {
+          typeIRI: sladb("Person").value,
+          typeName: "Person",
+          mainProperty: {
+            offset: 0
+          },
+          authorityFields: [
+            {
+              offset: 1,
+              authorityLinkPrefix: gndBaseIRI
+            }
+          ]
+        }
+      }
+    }
   }
 ] as DeclarativeMatchBasedFlatMappings;
 

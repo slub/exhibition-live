@@ -33,7 +33,7 @@ import {
   useMaterialReactTable,
 } from "material-react-table";
 import { mapByConfigFlat } from "../utils/mapping/mapByConfig";
-import { spreadSheetMappings } from "../config/spreadSheetMappings";
+import {ConcreteSpreadSheetMapping, spreadSheetMappings} from "../config/spreadSheetMappings";
 import { declarativeMappings } from "../config";
 import { makeDefaultMappingStrategyContext } from "../form/SimilarityFinder";
 import { useGlobalCRUDOptions } from "../state/useGlobalCRUDOptions";
@@ -56,117 +56,37 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import {DeclarativeFlatMapping, DeclarativeFlatMappings, DeclarativeMapping} from "../utils/mapping/mappingStrategies";
 import {useTranslation} from "next-i18next";
 import {NiceMappingConfigurationDialog} from "../mapping/NiceMappingConfigurationDialog";
+import {
+  DeclarativeMatchBasedFlatMapping,
+  DeclarativeMatchBasedFlatMappings
+} from "../utils/mapping/mapMatchBasedByConfig";
 
-
-type ColumnChipProps = {
-  columnIndex: number
-  columnLetter: string
-  value: any
-  label: string
-  spreadSheetMapping?: DeclarativeFlatMappings
-}
-const ColumnChip = ({label, columnIndex,  columnLetter, spreadSheetMapping}: ColumnChipProps) => {
-  const { t } = useTranslation()
-
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
-  const columnMapping = useMemo(() =>
-    spreadSheetMapping?.filter(mapping =>
-      //@ts-ignore
-      Boolean(mapping.source.columns.find((col) =>
-        typeof col === 'string' ? col === columnLetter : col === columnIndex
-  ))) || [], [spreadSheetMapping, columnIndex,  columnLetter]);
-  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-
-  const handleAssignMapping = useCallback(() => {
-
-  }, []);
-  const handleOpenMapping = useCallback((mappingDecl: DeclarativeFlatMapping) => {
-    NiceModal.show(NiceMappingConfigurationDialog, {
-      mapping: mappingDecl,
-      sourcePath: columnIndex
-    })
-  }, [columnIndex]);
-
-
-  return <>
-    <Chip
-      label={label}
-      color={columnMapping.length > 0 ? "primary" : undefined }
-      sx={{ margin: "0.2rem" }}
-      onClick={handleClick}
-    />
-    <Menu
-      id="lock-menu"
-      anchorEl={anchorEl}
-      open={open}
-      onClose={handleClose}
-      MenuListProps={{
-        'aria-labelledby': 'lock-button',
-        role: 'listbox',
-      }}
-    >
-        <MenuItem
-          key={'option1'}
-          onClick={handleAssignMapping}
-        >
-          {t("assign mapping")}
-        </MenuItem>
-        <Divider />
-      {columnMapping.map((mapping, index) => {
-        return <MenuItem
-          key={index}
-          onClick={() => handleOpenMapping(mapping)}
-        >
-          {t("open Mapping", {index: index + 1})}
-        </MenuItem>
-      })
-      }
-    </Menu>
-  </>
-}
-
-export const index2letter = (index: number): string => {
-  const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-  const mod = index % alphabet.length;
-  const rest = (index - mod) / alphabet.length;
-  const letter = alphabet[mod];
-  return rest > 0 ? index2letter(rest) + letter : letter;
-};
-
-export type SpreadSheetWorkSheetViewProps = {
+type GoogleSpreadSheetTableProps = {
   workSheet: GoogleSpreadsheetWorksheet;
-};
-const typeName = "Exhibition";
-const classIRI = sladb.Exhibition.value;
-export const GoogleSpeadSheetWorkSheetView: FC<
-  SpreadSheetWorkSheetViewProps
-> = ({ workSheet }) => {
+  columnIndicies: number[];
+}
+
+export const GoogleSpreadSheetTable: FC<GoogleSpreadSheetTableProps> = ({workSheet, columnIndicies}) => {
   const [loaded, setLoaded] = useState<boolean>(false);
   const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: 5,
   });
   const [columns, setColumns] = useState<MRT_ColumnDef<any>[]>([]);
-  const [reducedColumns, setReducedColumns] = useState<MRT_ColumnDef<any>[]>(
-    [],
-  );
-  const [maxColumns, setMaxColumns] = useState(10);
-  const [showTable, setShowTable] = useState(false);
   const [columnDesc, setColumnDesc] = useState<OwnColumnDesc[]>([]);
-  const [writeToSpreadSheet, setWriteToSpreadSheet] = useState(false);
+  const reducedColumns = useMemo(() => {
+    return columns.filter((column, index) => columnIndicies.includes(index))
+  }, [columns, columnIndicies]);
 
   useEffect(() => {
-    setReducedColumns(columns.slice(0, maxColumns));
-  }, [columns, maxColumns, setReducedColumns]);
-  useEffect(() => {
     (async () => {
-      await workSheet.loadCells();
+      /*try {
+        await workSheet.loadCells();
+      } catch (e) {
+        console.error("failed to load cells", e)
+        setLoaded(false)
+        return
+      }*/
       try {
         const cells = [...Array(workSheet.columnCount)].map((_, index) => {
           return workSheet.getCell(0, index);
@@ -196,6 +116,206 @@ export const GoogleSpeadSheetWorkSheetView: FC<
   }, [workSheet, setLoaded, setColumnDesc]);
 
   const fakeData = [...Array(pagination.pageSize)].map((_, index) => index);
+  const materialTable = useMaterialReactTable({
+    // @ts-ignore
+    columns: reducedColumns,
+    data: fakeData,
+    pageCount: Math.ceil(workSheet.rowCount),
+    manualPagination: true,
+    // @ts-ignore
+    onPaginationChange: setPagination,
+    state: {
+      pagination,
+    },
+  });
+
+  return loaded ? (
+    <Box>
+      <MaterialReactTable table={materialTable} />
+    </Box>
+  ) : (
+    <Skeleton height={"300px"} width={"100%"} />
+  );
+
+}
+
+
+type ColumnChipProps = {
+  columnIndex: number
+  columnLetter: string
+  columnDesc: OwnColumnDesc[]
+  value: any
+  label: string
+  spreadSheetMapping?: DeclarativeFlatMappings
+  rawMapping?: DeclarativeMatchBasedFlatMappings
+  workSheet: GoogleSpreadsheetWorksheet
+}
+const ColumnChip = ({label, columnIndex,  columnLetter, columnDesc, spreadSheetMapping, rawMapping, workSheet}: ColumnChipProps) => {
+  const { t } = useTranslation()
+
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+  const columnMapping = useMemo(() =>
+    spreadSheetMapping?.filter(mapping =>
+      //@ts-ignore
+      Boolean(mapping.source.columns.find((col) =>
+        typeof col === 'string' ? col === columnLetter : col === columnIndex
+  ))) || [], [spreadSheetMapping, columnIndex,  columnLetter]);
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleAssignMapping = useCallback(() => {
+
+  }, []);
+  const handleOpenMapping = useCallback((mappingDecl: DeclarativeFlatMapping, rawMapping?: DeclarativeMatchBasedFlatMapping) => {
+    NiceModal.show(NiceMappingConfigurationDialog, {
+      mapping: mappingDecl,
+      rawMapping,
+      sourcePath: columnIndex,
+      fields: columnDesc,
+      tablePreview: (mapping: DeclarativeFlatMapping) => {
+        return <GoogleSpreadSheetTable workSheet={workSheet} columnIndicies={mapping.source.columns as number[]} />
+      }
+    })
+  }, [columnIndex, workSheet, columnDesc]);
+
+
+  return <>
+    <Chip
+      label={label}
+      color={columnMapping.length > 0 ? "primary" : undefined }
+      sx={{ margin: "0.2rem" }}
+      onClick={handleClick}
+    />
+    <Menu
+      id="lock-menu"
+      anchorEl={anchorEl}
+      open={open}
+      onClose={handleClose}
+      MenuListProps={{
+        'aria-labelledby': 'lock-button',
+        role: 'listbox',
+      }}
+    >
+        <MenuItem
+          key={'option1'}
+          onClick={handleAssignMapping}
+        >
+          {t("assign mapping")}
+        </MenuItem>
+        <Divider />
+      {columnMapping.map((mapping, index) => {
+        const raw = rawMapping?.find(rawMappingDecl => rawMappingDecl.id === mapping.id )
+        return <MenuItem
+          key={index}
+          onClick={() => handleOpenMapping(mapping, raw)}
+        >
+          {t("open Mapping", {index: index + 1})}
+        </MenuItem>
+      })
+      }
+    </Menu>
+  </>
+}
+
+export const index2letter = (index: number): string => {
+  const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  const mod = index % alphabet.length;
+  const rest = (index - mod) / alphabet.length;
+  const letter = alphabet[mod];
+  return rest > 0 ? index2letter(rest) + letter : letter;
+};
+
+export type SpreadSheetWorkSheetViewProps = {
+  workSheet: GoogleSpreadsheetWorksheet;
+  selectedSheet: number;
+};
+const typeName = "Exhibition";
+const classIRI = sladb.Exhibition.value;
+const mappingsAvailable = Object.keys(spreadSheetMappings)
+export const GoogleSpeadSheetWorkSheetView: FC<
+  SpreadSheetWorkSheetViewProps
+> = ({ workSheet, selectedSheet }) => {
+  const [loaded, setLoaded] = useState<boolean>(false);
+  const [pagination, setPagination] = useState({
+    pageIndex: 0,
+    pageSize: 5,
+  });
+  const [columns, setColumns] = useState<MRT_ColumnDef<any>[]>([]);
+  const [reducedColumns, setReducedColumns] = useState<MRT_ColumnDef<any>[]>(
+    [],
+  );
+  const [maxColumns, setMaxColumns] = useState(10);
+  const [showTable, setShowTable] = useState(false);
+  const [columnDesc, setColumnDesc] = useState<OwnColumnDesc[]>([]);
+  const [writeToSpreadSheet, setWriteToSpreadSheet] = useState(false);
+
+  const [rawMappedData, setRawMappedData] = useState<any[]>([]);
+  const locale = useRouter().locale ?? "de";
+  const [selectedMapping, setSelectedMapping] = useState<string>(mappingsAvailable[0]);
+  const spreadSheetMapping = useMemo(() => {
+    let final: {raw?: DeclarativeMatchBasedFlatMappings , mapping: DeclarativeFlatMappings} = {
+      mapping: []
+    }
+    try {
+      const cSpreashsheetMapping =spreadSheetMappings[selectedMapping]
+      final = columnDesc.length <= 0 || !cSpreashsheetMapping  ? final : {raw: cSpreashsheetMapping.raw, mapping: cSpreashsheetMapping.fieldMapping(columnDesc)}
+    } catch (e) {
+      console.error("failed to apply declarative mapping to column description", e)
+    }
+    return final
+  }, [columnDesc, selectedMapping])
+
+  useEffect(() => {
+    setReducedColumns(columns.slice(0, maxColumns));
+  }, [columns, maxColumns, setReducedColumns]);
+  useEffect(() => {
+    (async () => {
+      try {
+        await workSheet.loadCells();
+      } catch (e) {
+        console.error("failed to load cells", e);
+        setLoaded(false);
+        return;
+      }
+      try {
+        const cells = [...Array(workSheet.columnCount)].map((_, index) => {
+          return workSheet.getCell(0, index);
+        });
+        const columnDesc_ = cells.map((cell, index) => ({
+          index,
+          value: cell.value,
+          letter: index2letter(index),
+        }));
+        setColumnDesc(columnDesc_);
+        const cols = cells.map((cell, index) => {
+          return {
+            id: (cell.value ?? "").toString() + index,
+            header: (cell.value ?? "").toString(),
+            accessorFn: (originalRow, rowIndex) => {
+              const dataCell = workSheet.getCell(rowIndex + 1, index);
+              return dataCell.value;
+            },
+          };
+        });
+        setColumns(cols as MRT_ColumnDef<any>[]);
+        const sheetTitle = workSheet.title;
+        console.log({sheetTitle})
+        if(mappingsAvailable.includes(sheetTitle)) {
+          setSelectedMapping(sheetTitle)
+        }
+      } catch (e) {
+        console.log(e);
+      }
+      setLoaded(true);
+    })();
+  }, [workSheet, setLoaded, setColumnDesc, setSelectedMapping]);
+
+  const fakeData = [...Array(pagination.pageSize)].map((_, index) => index);
 
   const materialTable = useMaterialReactTable({
     // @ts-ignore
@@ -223,19 +343,6 @@ export const GoogleSpeadSheetWorkSheetView: FC<
     "importsave",
     true,
   );
-  const [rawMappedData, setRawMappedData] = useState<any[]>([]);
-  const locale = useRouter().locale ?? "de";
-  const mappingsAvailable = Object.keys(spreadSheetMappings)
-  const [selectedMapping, setSelectedMapping] = useState<string>(mappingsAvailable[0]);
-  const spreadSheetMapping = useMemo(() => {
-    let final = []
-    try {
-      final = columnDesc.length <= 0 ? [] : spreadSheetMappings[selectedMapping](columnDesc)
-    } catch (e) {
-      console.error("failed to apply declarative mapping to column description", e)
-    }
-    return final as DeclarativeFlatMappings
-  }, [columnDesc, selectedMapping])
   const handleMapAndImport = useCallback(async () => {
     const rows = [...Array(pagination.pageSize)].map((_, index) => index + 2);
     setRawMappedData([]);
@@ -244,7 +351,7 @@ export const GoogleSpeadSheetWorkSheetView: FC<
         "@id": `${slent().value}${uuidv4()}`,
         "@type": classIRI,
       };
-      let mappedData;
+      let mappedData: any;
       try {
         mappedData = await mapByConfigFlat(
           (col: number | string) => {
@@ -252,7 +359,7 @@ export const GoogleSpeadSheetWorkSheetView: FC<
             return cell.value as string;
           },
           targetData,
-          spreadSheetMapping,
+          spreadSheetMapping.mapping,
           makeDefaultMappingStrategyContext(
             crudOptions?.selectFetch,
             declarativeMappings,
@@ -305,7 +412,6 @@ export const GoogleSpeadSheetWorkSheetView: FC<
     crudOptions,
     pagination.pageSize,
     setRawMappedData,
-    setRawMappedData,
     locale,
     spreadSheetMapping,
     columnDesc,
@@ -327,7 +433,7 @@ export const GoogleSpeadSheetWorkSheetView: FC<
           return cell.value as string;
         },
         targetData,
-        spreadSheetMapping,
+        spreadSheetMapping.mapping,
         makeDefaultMappingStrategyContext(
           crudOptions?.selectFetch,
           declarativeMappings,
@@ -428,8 +534,11 @@ export const GoogleSpeadSheetWorkSheetView: FC<
                   value={value}
                   columnIndex={index}
                   columnLetter={letter}
+                  columnDesc={columnDesc}
                   label={filterUndefOrNull([letter, value]).join(":")}
-                  spreadSheetMapping={spreadSheetMapping}
+                  spreadSheetMapping={spreadSheetMapping.mapping}
+                  rawMapping={spreadSheetMapping.raw}
+                  workSheet={workSheet}
                 />
               );
             })}
@@ -487,6 +596,7 @@ export const SpreadSheetView: FC<SpreadSheetViewProps> = ({ spreadSheet }) => {
                     <GoogleSpeadSheetWorkSheetView
                       key={selectedSheet}
                       workSheet={sheetsByIndex[selectedSheet]}
+                      selectedSheet={selectedSheet}
                     />
                   )}
                 </Grid>
@@ -571,7 +681,13 @@ export const useSpreadSheet = (sheetId: string) => {
   const [loaded, setLoaded] = useState<boolean>(false);
   useEffect(() => {
     (async () => {
-      await spreadSheet.loadInfo();
+      try {
+        await spreadSheet.loadInfo();
+      } catch (e) {
+        console.error("failed to load spreadSheet", e);
+        setLoaded(false);
+        return;
+      }
       setLoaded(true);
     })();
   }, [spreadSheet, setLoaded]);

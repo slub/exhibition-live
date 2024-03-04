@@ -142,30 +142,10 @@
         "deathDate": {
           "type": "integer"
         },
-        "occupation": {
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/Occupation"
-          }
-        },
         "profession": {
           "type": "array",
           "items": {
-            "type": "string"
-          }
-        },
-        "professionWithGND": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "id": {
-                "type": "string"
-              },
-              "label": {
-                "type": "string"
-              }
-            }
+            "$ref": "#/$defs/Occupation"
           }
         },
         "nameVariant": {

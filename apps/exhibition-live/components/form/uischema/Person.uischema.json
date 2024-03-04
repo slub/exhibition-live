@@ -36,17 +36,7 @@
             {
               "type": "Control",
               "label": "Berufe",
-              "scope": "#/properties/profession"
-            },
-            {
-              "type": "Control",
-              "label": "Berufe",
-              "scope": "#/properties/professionWithGND"
-            },
-            {
-              "type": "Control",
-              "label": "Berufe",
-              "scope": "#/properties/occupation",
+              "scope": "#/properties/profession",
               "options": {
                 "elementLabelProp": "title"
               }

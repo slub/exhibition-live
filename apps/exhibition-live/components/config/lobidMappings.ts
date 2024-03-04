@@ -451,7 +451,7 @@ export const personDeclarativeMapping: DeclarativeMappings = [
       path: "professionOrOccupation",
     },
     target: {
-      path: "occupation",
+      path: "profession",
     },
     mapping: {
       strategy: {
@@ -463,22 +463,6 @@ export const personDeclarativeMapping: DeclarativeMappings = [
           },
         },
       },
-    },
-  },
-  {
-    source: {
-      path: "professionOrOccupation",
-    },
-    target: {
-      path: "professionWithGND",
-    },
-  },
-  {
-    source: {
-      path: "$.professionOrOccupation[*].label",
-    },
-    target: {
-      path: "profession",
     },
   },
   {

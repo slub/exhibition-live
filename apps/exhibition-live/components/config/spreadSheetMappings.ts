@@ -14,10 +14,10 @@ export type SpreadSheetMappingCollection = {
   [key: string]: ConcreteSpreadSheetMapping;
 }
 export const spreadSheetMappings: SpreadSheetMappingCollection = {
-  '[Kovolut Hamburg]': {
+  '[Konvolut Hamburg]': {
     fieldMapping: spreadSheetMapping_Hamburg
   },
-  '[Kovolut K1 New York]': {
+  '[Konvolut K1 New York]': {
     raw: matchBasedSpreadsheetMappings_NewYork,
     fieldMapping: spreadSheetMappings_NewYork
   }

@@ -126,9 +126,13 @@ export const createEntityWithAuthoritativeLink = async (
 
   const amount =  authorityFields.length + 1
   if (sourceData.length % amount !== 0)
-    throw new Error(
+    console.warn(
       `Source data length ${sourceData.length} is not a multiple of ${amount}`,
     );
+  /*
+    throw new Error(
+      `Source data length ${sourceData.length} is not a multiple of ${amount}`,
+    );*/
   const groupedSourceData = [];
   for (let i = 0; i < sourceData.length; i += amount) {
     groupedSourceData.push(sourceData.slice(i, i + amount));
@@ -262,7 +266,7 @@ export const createEntityWithReificationFromString = async (
   for (const sourceDataElements of groupedSourceData) {
     const newData = {};
 
-    const mainSourceDataElement = sourceDataElements[mainProperty.offset || 0];
+    const mainSourceDataElement = typeof mainProperty.offset === "number" ? sourceDataElements[mainProperty.offset] : sourceDataElements;
     if (
       typeof mainSourceDataElement !== "string" ||
       mainSourceDataElement.length === 0
@@ -291,15 +295,14 @@ export const createEntityWithReificationFromString = async (
     }
 
     for (const statementProperty of statementProperties) {
-      const sourceDataElement =
-        sourceDataElements[statementProperty.offset || 0];
+      const sourceDataElement = typeof mainProperty.offset === "number" ? sourceDataElements[mainProperty.offset] : sourceDataElements;
       if (
         typeof sourceDataElement !== "string" ||
         sourceDataElement.length === 0
       ) {
         continue;
       }
-      const trimmedSourceDataElement = sourceDataElement.trim();
+      const trimmedSourceDataElement = typeof sourceDataElement === "string" ? sourceDataElement.trim() : sourceDataElement
       const strategy = statementProperty.mapping?.strategy;
       if (!strategy) {
         set(newData, statementProperty.property, trimmedSourceDataElement);

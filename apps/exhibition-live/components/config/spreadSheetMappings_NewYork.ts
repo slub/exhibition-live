@@ -383,21 +383,87 @@ export const matchBasedSpreadsheetMappings_NewYork = [
     },
     mapping: {
       strategy: {
-        id: "createEntityWithAuthoritativeLink",
+        id: "createEntityWithReificationFromString",
         options: {
-          typeIRI: sladb("Person").value,
-          typeName: "Person",
+          typeIRI: sladb("InvolvedPerson").value,
+          typeName: "InvolvedPerson",
           mainProperty: {
-            offset: 0
+            property: "person",
+            mapping: {
+              strategy: {
+                id: "createEntityWithAuthoritativeLink",
+                options: {
+                  typeIRI: sladb("Person").value,
+                  typeName: "Person",
+                  mainProperty: {
+                    offset: 0
+                  },
+                  authorityFields: [
+                    {
+                      offset: 1,
+                      authorityLinkPrefix: gndBaseIRI
+                    }
+                  ]
+                }
+              },
+            },
           },
-          authorityFields: [
+          statementProperties: [
             {
-              offset: 1,
-              authorityLinkPrefix: gndBaseIRI
-            }
-          ]
-        }
+              property: "role",
+              offset: 2,
+              mapping: {
+                strategy: {
+                  id: "createEntityFromString",
+                  options: {
+                    typeIRI: sladb("PersonRole").value,
+                    typeName: "PersonRole",
+                  },
+                },
+              },
+            },
+          ],
+        },
       }
+    }
+  },
+  {
+    id: "Beteiligte Körperschaft",
+    source: {
+        columns: {
+            titlePattern: "Beteiligte Körperschaft {{=it.i + 3}}",
+              amount: 6,
+          includeRightNeighbours: 1
+        }
+    },
+    target: {
+        path: "involvedCorporations"
+    },
+    mapping: {
+        strategy: {
+            id: "createEntityWithReificationFromString",
+            options: {
+                typeIRI: sladb("InvolvedCorporation").value,
+                typeName: "InvolvedCorporation",
+                mainProperty: {
+                    property: "corporation",
+                },
+                statementProperties: [
+                    {
+                        property: "role",
+                        mapping: {
+                            strategy: {
+                                id: "createEntityFromString",
+                                options: {
+                                    typeIRI: sladb("CorporationRole").value,
+                                    typeName: "CorporationRole",
+                                },
+                            }
+                        }
+                    }
+                    ]
+            }
+        }
     }
   }
 ] as DeclarativeMatchBasedFlatMappings;

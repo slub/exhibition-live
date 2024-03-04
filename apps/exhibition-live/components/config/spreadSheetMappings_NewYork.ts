@@ -2,7 +2,11 @@ import {DeclarativeFlatMappings} from "../utils/mapping/mappingStrategies";
 import {sladb} from "../form/formConfigs";
 import {OwnColumnDesc} from "../google/types";
 import {gndBaseIRI} from "../utils/gnd/prefixes";
-import {DeclarativeMatchBasedFlatMappings, indexFromTitle} from "../utils/mapping/mapMatchBasedByConfig";
+import {
+  DeclarativeMatchBasedFlatMappings,
+  indexFromTitle,
+  matchBased2DeclarativeFlatMapping
+} from "../utils/mapping/mapMatchBasedByConfig";
 
 /*
 B:Name Kiste
@@ -211,8 +215,9 @@ HU:Ressource
  */
 
 
-const matchBasedSpreadsheetMapping_NewYork = [
+export const matchBasedSpreadsheetMappings_NewYork = [
   {
+    id: "Ausstellungstitel",
     source: {
       columns: {
         title: ["Ausstellungstitel"]
@@ -223,9 +228,10 @@ const matchBasedSpreadsheetMapping_NewYork = [
     }
   },
   {
+    id: "Genre",
     source: {
       columns: {
-        titlePattern: "Genre {{i}}",
+        titlePattern: "Genre {{=it.i + 1}}",
         amount: 5,
         includeRightNeighbours: 1
       }
@@ -253,6 +259,7 @@ const matchBasedSpreadsheetMapping_NewYork = [
     },
   },
   {
+    id: "geografischer Ort",
     source: {
       columns: {
         title: ["Ort der Ausstellung (geografisch) 1"]
@@ -281,6 +288,7 @@ const matchBasedSpreadsheetMapping_NewYork = [
     },
   },
   {
+    id: "institutioneller Ort",
     source: {
       columns: {
         title: ["Ort der Ausstellung (Institution) 1"]
@@ -311,112 +319,6 @@ const matchBasedSpreadsheetMapping_NewYork = [
 ] as DeclarativeMatchBasedFlatMappings;
 
 
-export const spreadSheetMappin_NewYork: (
+export const spreadSheetMappings_NewYork: (
   fields: OwnColumnDesc[],
-) => DeclarativeFlatMappings = (fields) => [
-  {
-    source: {
-      columns: [indexFromTitle("Ausstellungstitel", fields)],
-    },
-    target: {
-      path: "title",
-    },
-  },
-  {
-    source: {
-      columns: [indexFromTitle("Untertitel", fields)],
-    },
-    target: {
-      path: "subtitle",
-    },
-  },
-  {
-    source: {
-      columns: [...Array(5)].flatMap((_, i) => {
-        const firstIndex = indexFromTitle(`Genre ${i + 1}`, fields)
-        return [firstIndex, firstIndex + 1]
-          }
-      ),
-    },
-    target: {
-      path: "genre",
-    },
-    mapping: {
-      strategy: {
-        id: "createEntityWithAuthoritativeLink",
-        options: {
-          typeIRI: sladb("Genre").value,
-          typeName: "Genre",
-          mainProperty: {
-            offset: 0
-          },
-          authorityFields: [
-            {
-              offset: 1,
-              authorityLinkPrefix: gndBaseIRI
-            }
-          ]
-        },
-      },
-    },
-  },
-  {
-    source: {
-      columns: [...Array(4)].flatMap((_, i) => {
-          const firstIndex = indexFromTitle(`Ort der Ausstellung (geografisch) ${i + 1}`, fields)
-          return [firstIndex, firstIndex + 1]
-        }
-      ),
-    },
-    target: {
-      path: "location",
-    },
-    mapping: {
-      strategy: {
-        id: "createEntityWithAuthoritativeLink",
-        options: {
-          typeIRI: sladb("Location").value,
-          typeName: "Location",
-          mainProperty: {
-            offset: 0
-          },
-          authorityFields: [
-            {
-              offset: 1,
-              authorityLinkPrefix: gndBaseIRI
-            }
-          ]
-        },
-      },
-    },
-  },{
-    source: {
-      columns: [...Array(1)].flatMap((_, i) => {
-          const firstIndex = indexFromTitle(`Ort der Ausstellung (Institution) ${i + 1}`, fields)
-          return [firstIndex, firstIndex + 1]
-        }
-      ),
-    },
-    target: {
-      path: "place",
-    },
-    mapping: {
-      strategy: {
-        id: "createEntityWithAuthoritativeLink",
-        options: {
-          typeIRI: sladb("Place").value,
-          typeName: "Place",
-          mainProperty: {
-            offset: 0
-          },
-          authorityFields: [
-            {
-              offset: 1,
-              authorityLinkPrefix: gndBaseIRI
-            }
-          ]
-        },
-      },
-    },
-  },
-];
+) => DeclarativeFlatMappings = (fields) =>  matchBasedSpreadsheetMappings_NewYork.map(mapping =>  matchBased2DeclarativeFlatMapping(fields, mapping));

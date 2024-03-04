@@ -28,6 +28,7 @@ export const spreadSheetMapping_Hamburg: (
   fields: OwnColumnDesc[],
 ) => DeclarativeFlatMappings = (fields) => [
   {
+    id: "Ausstellungstitel 1",
     source: {
       columns: [indexFromTitle("Ausstellungstitel 1", fields)],
     },
@@ -36,6 +37,7 @@ export const spreadSheetMapping_Hamburg: (
     },
   },
   {
+    id: "Ausstellungstitel 2",
     source: {
       columns: [indexFromTitle("Ausstellungstitel 2", fields)],
     },
@@ -44,6 +46,7 @@ export const spreadSheetMapping_Hamburg: (
     },
   },
   {
+    id: "Untertitel",
     source: {
       columns: [indexFromTitle("Untertitel 1", fields)],
     },
@@ -52,6 +55,7 @@ export const spreadSheetMapping_Hamburg: (
     },
   },
   {
+    id: "Originaltitel",
     source: {
       columns: [indexFromTitle("Originaltitel", fields)],
     },
@@ -60,6 +64,7 @@ export const spreadSheetMapping_Hamburg: (
     },
   },
   {
+    id: "Genre",
     source: {
       columns: [...Array(5)].map((_, i) =>
         indexFromTitle(`Genre ${i + 1}`, fields),
@@ -80,6 +85,7 @@ export const spreadSheetMapping_Hamburg: (
   },
 
   {
+    id: "geografischer Ort",
     source: {
       columns: [indexFromTitle("Ort der Ausstellung (geografisch) 1", fields)],
     },
@@ -97,6 +103,7 @@ export const spreadSheetMapping_Hamburg: (
     },
   },
   {
+    id: "institutioneller Ort",
     source: {
       columns: [...Array(7)].map((_, index) =>
         indexFromTitle(
@@ -119,6 +126,7 @@ export const spreadSheetMapping_Hamburg: (
     },
   },
   {
+    id: "beteiligte Person",
     source: {
       columns: [...Array(118)].flatMap((_, index) => {
         const firstIndex = indexFromTitle(
@@ -170,6 +178,7 @@ export const spreadSheetMapping_Hamburg: (
     },
   },
   {
+    id: "beteiligte Körperschaft",
     source: {
       columns: [...Array(7)].flatMap((_, index) => {
         const firstIndex = indexFromTitle(
@@ -221,6 +230,7 @@ export const spreadSheetMapping_Hamburg: (
     },
   },
   {
+    id: "Schlagwort",
     source: {
       columns: [indexFromTitle("Schlagwörter", fields)],
     },
@@ -246,6 +256,7 @@ export const spreadSheetMapping_Hamburg: (
     },
   },
   {
+    id: "Ausstellungsdatum von",
     source: {
       columns: [...Array(3)].map(
         (_, index) =>
@@ -262,6 +273,7 @@ export const spreadSheetMapping_Hamburg: (
     },
   },
   {
+    id: "Ausstellungsdatum bis",
     source: {
       columns: [...Array(3)].map(
         (_, index) =>

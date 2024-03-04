@@ -1,7 +1,24 @@
-import {spreadSheetMappin_NewYork} from "./spreadSheetMappings_NewYork";
+import {matchBasedSpreadsheetMappings_NewYork, spreadSheetMappings_NewYork} from "./spreadSheetMappings_NewYork";
 import {spreadSheetMapping_Hamburg} from "./spreadSheetMapping_Hamburg";
+import {DeclarativeMatchBasedFlatMappings} from "../utils/mapping/mapMatchBasedByConfig";
+import {OwnColumnDesc} from "../google/types";
+import {DeclarativeFlatMappings} from "../utils/mapping/mappingStrategies";
 
-export const spreadSheetMappings = {
-  '[Kovolut Hamburg]': spreadSheetMapping_Hamburg,
-  '[Kovolut K1 New York]': spreadSheetMappin_NewYork
+
+export type ConcreteSpreadSheetMapping = {
+  raw?: DeclarativeMatchBasedFlatMappings;
+  fieldMapping: (fields: OwnColumnDesc[]) => DeclarativeFlatMappings;
+}
+
+export type SpreadSheetMappingCollection = {
+  [key: string]: ConcreteSpreadSheetMapping;
+}
+export const spreadSheetMappings: SpreadSheetMappingCollection = {
+  '[Kovolut Hamburg]': {
+    fieldMapping: spreadSheetMapping_Hamburg
+  },
+  '[Kovolut K1 New York]': {
+    raw: matchBasedSpreadsheetMappings_NewYork,
+    fieldMapping: spreadSheetMappings_NewYork
+  }
 } as const;

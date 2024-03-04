@@ -20,7 +20,6 @@ import {
 import {OwnColumnDesc} from "../google/types";
 import {parseJSONObject} from "../utils/core";
 import {JsonView} from "react-json-view-lite";
-import {GoogleSpreadSheetTable} from "../google/SpreadSheetView";
 import {DeclarativeFlatMapping} from "../utils/mapping/mappingStrategies";
 
 type NiceMappingConfigurationDialogProps = {

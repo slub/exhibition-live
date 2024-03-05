@@ -63,6 +63,12 @@ const modalContent = [
     text: "Der Type des gemappten Eintrags stimmt nicht mit dem Typ des Formulars überein. Eintrag aus Mapping dennoch in Datenbank Speichern? Es wird nichts in das Formular übernommen.",
     action: "Übernehmen",
   },
+  {
+    modalType: "save before proceed",
+    title: "Daten vorher speichern",
+    text: "Es wurden nicht gespeicherte Änderungen vorgenommen. Möchten Sie die Änderungen speichern?",
+    action: "Speichern",
+  }
 ];
 
 const GenericModal = NiceModal.create(

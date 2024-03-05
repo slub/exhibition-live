@@ -14,8 +14,6 @@ import { useCallback, useState } from "react";
 
 import { AppHeader } from "./AppHeader";
 import { Sidebar } from "./Sidebar";
-import { Searchbar } from "./Searchbar";
-import { FloatingButton } from "./menu";
 import { useDrawerDimensions } from "../../state";
 
 export const gridSpacing = 3;

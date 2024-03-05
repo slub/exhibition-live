@@ -40,5 +40,5 @@ export const primaryFields: Partial<ExhibitionPrimaryFieldDeclaration> = {
   ExhibitionCategory: {
     ...defaultMapping,
     label: "name",
-  },
+  }
 };

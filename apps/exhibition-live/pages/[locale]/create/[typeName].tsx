@@ -53,7 +53,7 @@ export default (props: Props) => {
     setEntityIRI(newURI);
   }, [setEntityIRI, typeName, searchParam]);
 
-  const title = `Neue {t(typeName)} anlegen - Ausstellungserfassung`
+  const title = `Neue ${t(typeName)} anlegen - Ausstellungserfassung`
 
   return (
     <>

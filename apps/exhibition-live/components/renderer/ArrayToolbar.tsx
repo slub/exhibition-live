@@ -17,7 +17,7 @@ import DiscoverAutocompleteInput from "../form/discover/DiscoverAutocompleteInpu
 import { useCallback, useMemo } from "react";
 import { JsonSchema7 } from "@jsonforms/core";
 import { sladb, slent } from "../form/formConfigs";
-import { BASE_IRI } from "../config";
+import {BASE_IRI, primaryFields, typeIRItoTypeName} from "../config";
 import { memo } from "./config";
 import {
   useGlobalSearchWithHelper,
@@ -29,6 +29,7 @@ import SimilarityFinder from "../form/SimilarityFinder";
 import { JSONSchema7 } from "json-schema";
 import { AutocompleteSuggestion } from "../form/DebouncedAutoComplete";
 import { NoteAdd } from "@mui/icons-material";
+import {PrimaryField} from "../utils/types";
 
 export interface ArrayLayoutToolbarProps {
   label: string;
@@ -45,10 +46,10 @@ export interface ArrayLayoutToolbarProps {
   isReifiedStatement?: boolean;
 }
 
-export const getDefaultKey = (typeIRI?: string) => {
-  if (!typeIRI) return "title";
-  if (typeIRI === sladb.ExhibitionWebLink.value) return "weblink";
-  return "title";
+const getDefaultLabelKey = (typeIRI?: string) => {
+  const typeName = typeIRItoTypeName(typeIRI)
+  const fieldDefinitions = primaryFields[typeName] as PrimaryField | undefined;
+  return fieldDefinitions?.label || "title";
 };
 export const ArrayLayoutToolbar = memo(
   ({
@@ -87,7 +88,7 @@ export const ArrayLayoutToolbar = memo(
           "@id": slent(uuidv4()).value,
           "@type": typeIRI,
           __draft: true,
-          [getDefaultKey(typeIRI)]: value,
+          [getDefaultLabelKey(typeIRI)]: value,
         })();
       },
       [addItem, path, typeIRI],
@@ -105,7 +106,7 @@ export const ArrayLayoutToolbar = memo(
 
     const handleExistingEntityAccepted = useCallback(
       (iri: string, data: any) => {
-        const label = data[getDefaultKey(typeIRI)] || data.label || iri;
+        const label = data[getDefaultLabelKey(typeIRI)] || data.label || iri;
         handleSelectedChange({ value: iri, label });
       },
       [handleSelectedChange, typeIRI],

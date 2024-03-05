@@ -92,7 +92,6 @@ export default function MuiEditDialog({
       maxWidth={"lg"}
       scroll={"paper"}
       disableScrollLock={false}
-      aria-labelledby="responsive-dialog-title"
       onClick={(e) => e.stopPropagation()}
       closeAfterTransition
       slots={{ backdrop: Backdrop }}
@@ -138,14 +137,14 @@ export default function MuiEditDialog({
                 )}
               </>
             )}
-            <IconButton
+            {onEdit && <IconButton
               size="large"
               aria-label="toggle edit mode"
               onClick={onEdit}
               color="inherit"
             >
               {editMode ? <EditOffIcon /> : <EditIcon />}
-            </IconButton>
+            </IconButton>}
             {onReload && (
               <IconButton
                 size="large"
@@ -191,17 +190,18 @@ export default function MuiEditDialog({
       <DialogContent>{children}</DialogContent>
       <Hidden mdDown={true}>
         <DialogActions>
-          {actions || null}
-          {onCancel && (
-            <Button autoFocus onClick={onCancel}>
-              abbrechen
-            </Button>
-          )}
-          {onSave && (
-            <Button onClick={onSave} autoFocus>
-              speichern
-            </Button>
-          )}
+          {actions || <>
+            {onCancel && (
+                <Button autoFocus onClick={onCancel}>
+                  abbrechen
+                </Button>
+            )}
+            {onSave && (
+                <Button onClick={onSave} autoFocus>
+                  speichern
+                </Button>
+            )}
+          </>}
         </DialogActions>
       </Hidden>
     </Dialog>

@@ -3,7 +3,7 @@ import { sladb } from "./formConfigs";
 
 export default {
   title: "forms/Form",
-  component: () => null,
+  component: TypedForm,
 };
 
 export const TagForm = () => (

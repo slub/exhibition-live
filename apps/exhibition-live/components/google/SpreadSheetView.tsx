@@ -1,4 +1,4 @@
-import React, {FC, useCallback, useEffect, useMemo, useRef, useState} from "react";
+import React, {FC, useCallback, useEffect, useMemo, useState} from "react";
 import {
   GoogleSpreadsheet, GoogleSpreadsheetCell,
   GoogleSpreadsheetWorksheet,
@@ -33,7 +33,7 @@ import {
   useMaterialReactTable,
 } from "material-react-table";
 import { mapByConfigFlat } from "../utils/mapping/mapByConfig";
-import {ConcreteSpreadSheetMapping, spreadSheetMappings} from "../config/spreadSheetMappings";
+import {spreadSheetMappings} from "../config/spreadSheetMappings";
 import { declarativeMappings } from "../config";
 import { makeDefaultMappingStrategyContext } from "../form/SimilarityFinder";
 import { useGlobalCRUDOptions } from "../state/useGlobalCRUDOptions";
@@ -53,14 +53,14 @@ import useExtendedSchema from "../state/useExtendedSchema";
 import { JSONSchema7 } from "json-schema";
 import { useRouter } from "next/router";
 import FormControlLabel from "@mui/material/FormControlLabel";
-import {DeclarativeFlatMapping, DeclarativeFlatMappings, DeclarativeMapping} from "../utils/mapping/mappingStrategies";
+import {DeclarativeFlatMapping, DeclarativeFlatMappings} from "../utils/mapping/mappingStrategies";
 import {useTranslation} from "next-i18next";
 import {NiceMappingConfigurationDialog} from "../mapping/NiceMappingConfigurationDialog";
 import {
   DeclarativeMatchBasedFlatMapping,
   DeclarativeMatchBasedFlatMappings
 } from "../utils/mapping/mapMatchBasedByConfig";
-import {CRUDFunctions, CRUDOptions} from "../state/useSPARQL_CRUD";
+import {CRUDFunctions} from "../state/useSPARQL_CRUD";
 
 //we will create a cashed worksheet, were selectively rows are preloaded and once loaded use for a certain stale time
 type CachedWorkSheet = {
@@ -339,7 +339,7 @@ const MappedItem = ({ path, index, spreadSheetMapping, workSheet, crudOptions}: 
       console.warn("failed to map row", index, e);
     }
     return null
-  }, [workSheet, crudOptions,  spreadSheetMapping])
+  }, [workSheet, crudOptions,  spreadSheetMapping, index])
 
   const { data, isLoading } = useQuery(["mappedData", path], mapData,
     {

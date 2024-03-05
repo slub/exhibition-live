@@ -1,4 +1,3 @@
-import { button } from "@storybook/addon-knobs";
 import { ComponentMeta } from "@storybook/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { JSONSchema7 } from "json-schema";
@@ -32,10 +31,6 @@ const SemanticJsonFormOneShot = () => {
   const [data, setData] = useState<any>(exampleData);
   const { activeEndpoint } = useSettings();
   const crudOptions = activeEndpoint && oxigraphCrudOptions(activeEndpoint);
-  button("generate random entry", () => {
-    // @ts-ignore
-    setData(JSONSchemaFaker.generate(exhibitionSchema));
-  });
   const typeName = "Exhibition";
   const loadedSchema = useExtendedSchema({ typeName, classIRI });
 
@@ -57,11 +52,12 @@ const SemanticJsonFormOneShot = () => {
 };
 export const SemanticJsonFormExhibition = () => {
   const [data, setData] = useState<any>(exampleData);
+  /*
   button("generate random entry", () => {
     // @ts-ignore
     setData(JSONSchemaFaker.generate(exhibitionSchema));
   });
-
+*/
   return (
     <QueryClientProvider client={queryClient}>
       <SemanticJsonFormOneShot />

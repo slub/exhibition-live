@@ -1,4 +1,3 @@
-import { boolean, number } from "@storybook/addon-knobs";
 import { ComponentMeta } from "@storybook/react";
 
 import DeepGraphToJSONShowcase from "./DeepGraphToJSONShowcase";
@@ -9,24 +8,13 @@ export default {
 } as ComponentMeta<typeof DeepGraphToJSONShowcase>;
 
 export const DeepGraphToJSONShowcaseDefault = () => {
-  const omitEmptyArrays = boolean("omit empty arrays", true);
-  const omitEmptyObjects = boolean("omit empty objects", true);
-  const maxRecursion = number("max recursion", 5, { min: 0, max: 20 });
-  const maxRecursionEachRef = number("max rec each $ref", 2, {
-    min: 0,
-    max: 20,
-  });
-  const skipAtLevel = number("max rec each $ref", 2, {
-    min: 0,
-    max: 20,
-  });
   return (
     <DeepGraphToJSONShowcase
-      omitEmptyArrays={omitEmptyArrays}
-      omitEmptyObjects={omitEmptyObjects}
-      maxRecursion={maxRecursion}
-      maxRecursionEachRef={maxRecursionEachRef}
-      skipAtLevel={skipAtLevel}
+      omitEmptyArrays={true}
+      omitEmptyObjects={true}
+      maxRecursion={5}
+      maxRecursionEachRef={2}
+      skipAtLevel={2}
     />
   );
 };

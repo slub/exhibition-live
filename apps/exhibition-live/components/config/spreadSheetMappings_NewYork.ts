@@ -220,7 +220,7 @@ export const matchBasedSpreadsheetMappings_NewYork = [
     id: "Ausstellungstitel",
     source: {
       columns: {
-        title: ["Ausstellungstitel"]
+        title: ["Ausstellungstitel 1"]
       }
     },
     target: {

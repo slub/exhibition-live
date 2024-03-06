@@ -49,12 +49,6 @@ export const useGlobalSearchWithHelper = (
 
   const handleMappedData = useCallback(
     (newData: any) => {
-      NiceModal.show(GenericModal, {
-        type:
-          newData["@type"] !== typeIRI
-            ? "confirm save mapping"
-            : "confirm mapping",
-      }).then(() => {
         const prefix = schema.title || slent[""].value;
         const newIRI = `${prefix}${uuidv4()}`;
         saveMutation.mutate({
@@ -68,7 +62,6 @@ export const useGlobalSearchWithHelper = (
             "@id": newIRI,
             __label: label,
           });
-      });
     },
     [onDataAccepted, saveMutation, schema, typeIRI, typeName],
   );

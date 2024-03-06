@@ -125,6 +125,7 @@ export const LobidSearchForProperty = () => {
             <ClassicResultListItem
               key={id}
               id={id}
+              index={idx}
               onSelected={setSelectedId}
               label={label}
               secondary={secondary}

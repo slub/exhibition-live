@@ -179,6 +179,7 @@ const K10PlusSearchTable: FunctionComponent<Props> = ({
           <ClassicResultListItem
             key={entry.id}
             id={String(entry.id)}
+            index={idx}
             onSelected={handleSelect}
             label={
               entry.properties[dcterms.title.value]?.[0]?.value ||

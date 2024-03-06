@@ -1,21 +1,15 @@
-import {
-  ReactEventHandler,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
-import { TimelineItem, TimelineOptions } from "vis-timeline/types";
-import { filterUndefOrNull } from "../../utils/core";
-import { dateValueToDate } from "./Search";
-import { Box, Tab, Tabs } from "@mui/material";
-import VisTimelineWrapper from "../visTimelineWrapper/VisTimelineWrapper";
 import * as React from "react";
-import { JsonView } from "react-json-view-lite";
-import { Home, Timeline } from "@mui/icons-material";
-import { useDrawerDimensions } from "../../state";
-import { debounce } from "lodash";
-import { typeIRItoTypeName } from "../../config";
+import {useCallback, useEffect, useMemo, useState,} from "react";
+import {TimelineItem, TimelineOptions} from "vis-timeline/types";
+import {filterUndefOrNull} from "../../utils/core";
+import {dateValueToDate} from "./Search";
+import {Box, Tab, Tabs} from "@mui/material";
+import VisTimelineWrapper from "../visTimelineWrapper/VisTimelineWrapper";
+import {JsonView} from "react-json-view-lite";
+import {Home, Timeline} from "@mui/icons-material";
+import {useDrawerDimensions} from "../../state";
+import {typeIRItoTypeName} from "../../config";
+import {useDebounce} from "../../utils/hooks/useDebounce";
 
 type FlexibleViewDrawerProps = {
   data: any;
@@ -147,27 +141,6 @@ const views: SemanticListView[] = [
   },
 ];
 
-export const useDebounce = (
-  fnToDebounce: (...args: any) => any,
-  durationInMs = 200,
-) => {
-  if (isNaN(durationInMs)) {
-    throw new TypeError("durationInMs for debounce should be a number");
-  }
-
-  if (fnToDebounce == null) {
-    throw new TypeError("fnToDebounce cannot be null");
-  }
-
-  if (typeof fnToDebounce !== "function") {
-    throw new TypeError("fnToDebounce should be a function");
-  }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  return useCallback(debounce(fnToDebounce, durationInMs), [
-    fnToDebounce,
-    durationInMs,
-  ]);
-};
 export const FlexibleViewDrawer = ({
   data,
   typeIRI,

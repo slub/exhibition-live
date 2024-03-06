@@ -1,5 +1,7 @@
 import { ArrowBack, ExpandLess, ExpandMore } from "@mui/icons-material";
 import {
+  Box,
+  BoxProps,
   Button,
   Card,
   CardActions,
@@ -30,7 +32,7 @@ type Props = {
   acceptTitle: string;
 };
 
-const ClassicEntityCard: FunctionComponent<Props> = ({
+const ClassicEntityCard: FunctionComponent<Props  & Partial<BoxProps>> = ({
   data,
   id,
   onBack,
@@ -38,6 +40,7 @@ const ClassicEntityCard: FunctionComponent<Props> = ({
   onAcceptItem,
   detailView,
   acceptTitle,
+  ...rest
 }) => {
   const [expanded, setExpanded] = useState(true);
   const _label = data.label || data.title || data.name || id;
@@ -54,7 +57,7 @@ const ClassicEntityCard: FunctionComponent<Props> = ({
   );
 
   return (
-    <>
+    <Box {...rest} >
       {onBack && (
         <IconButton onClick={onBack}>
           <ArrowBack />
@@ -100,7 +103,7 @@ const ClassicEntityCard: FunctionComponent<Props> = ({
         </CardActions>
         {(expanded && detailView) || null}
       </Card>
-    </>
+    </Box>
   );
 };
 export default ClassicEntityCard;

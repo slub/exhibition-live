@@ -99,8 +99,10 @@ const Popper = styled(MuiPopper, {
 });
 
 export const ClassicResultPopperItem: FunctionComponent<
-  { children: React.ReactNode } & PopperProps
-> = ({ children, ...rest }) => {
+  { children: React.ReactNode,
+    popperRef?: React.MutableRefObject<HTMLDivElement | null>
+  } & PopperProps
+> = ({ children, popperRef, ...rest }) => {
   const [arrowRef, setArrowRef] = React.useState<HTMLElement>(null);
 
   return (
@@ -128,7 +130,7 @@ export const ClassicResultPopperItem: FunctionComponent<
           },
         ]}
       >
-        <Box>
+        <Box ref={popperRef}>
           <Arrow ref={setArrowRef} className="MuiPopper-arrow" />
           <Paper sx={{ p: 2, m: 2 }} elevation={2}>
             {children}

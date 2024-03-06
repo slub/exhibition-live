@@ -151,56 +151,54 @@ const LobidSearchTable: FunctionComponent<Props> = ({
 
   return (
     <>
-      {selectedId && selectedEntry ? (
-        <ClassicEntityCard
-          id={selectedId}
-          data={selectedEntry}
-          onBack={() => handleSelect(undefined)}
-          onSelectItem={handleSelect}
-          onAcceptItem={(id) => onAcceptItem && onAcceptItem(id, selectedEntry)}
-          acceptTitle={"Eintrag übernehmen"}
-          detailView={
-            <>
-              <LobidAllPropTable
-                allProps={selectedEntry.allProps}
-                onEntityChange={handleSelect}
-              />
-              {(selectedEntry.allProps?.sameAs || [])
-                .filter(({ id }) =>
-                  id.startsWith("http://www.wikidata.org/entity/"),
-                )
-                .map(({ id }) => (
-                  <WikidataAllPropTable key={id} thingIRI={id} />
-                ))}
-            </>
-          }
-        />
-      ) : (
         <List>
           {// @ts-ignore
-          resultTable?.map(({ id, label, avatar, secondary }, idx) => {
+          resultTable?.map((data, idx) => {
+            const { id, label, avatar, secondary } = data
             return (
               <ClassicResultListItem
                 key={id}
                 id={id}
+                index={idx}
                 onSelected={handleSelect}
                 label={label}
                 secondary={secondary}
                 avatar={avatar}
                 altAvatar={String(idx + 1)}
                 popperChildren={
-                  <EntityDetailElement
-                    entityIRI={id}
-                    typeIRI={typeIRI}
-                    data={undefined}
-                    cardActionChildren={null}
+                  <ClassicEntityCard
+                    sx={{
+                      maxWidth: "30em",
+                      maxHeight: "80vh",
+                      overflow: "auto",
+                    }}
+                    id={id}
+                    data={data}
+                    onBack={() => handleSelect(undefined)}
+                    onSelectItem={handleSelect}
+                    onAcceptItem={(id) => onAcceptItem && onAcceptItem(id, selectedEntry)}
+                    acceptTitle={"Eintrag übernehmen"}
+                    detailView={
+                      <>
+                        <LobidAllPropTable
+                          allProps={data.allProps}
+                          onEntityChange={handleSelect}
+                        />
+                        {(data.allProps?.sameAs || [])
+                          .filter(({ id }) =>
+                            id.startsWith("http://www.wikidata.org/entity/"),
+                          )
+                          .map(({ id }) => (
+                            <WikidataAllPropTable key={id} thingIRI={id} />
+                          ))}
+                      </>
+                    }
                   />
                 }
               />
             );
           })}
         </List>
-      )}
     </>
   );
 };

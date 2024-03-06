@@ -9,13 +9,15 @@ import {
   ListItemText,
   Typography,
 } from "@mui/material";
-import { useTheme } from "@mui/material/styles";
+import {useTheme} from "@mui/material/styles";
 import * as React from "react";
-import { FunctionComponent, useCallback, useEffect, useState } from "react";
-import { ClassicResultPopperItem } from "./ClassicResultPopperItem";
+import {FunctionComponent, useCallback, useEffect, useState} from "react";
+import {ClassicResultPopperItem} from "./ClassicResultPopperItem";
+import {useSimilarityFinderState} from "../../state";
 
 type OwnProps = {
   id: string;
+  index: number;
   onSelected: (id: string) => void;
   avatar?: string;
   label: string;
@@ -27,49 +29,78 @@ type OwnProps = {
 type Props = OwnProps & ListItemButtonProps;
 
 const ClassicResultListItem: FunctionComponent<Props> = ({
-  id,
-  onSelected,
-  avatar,
-  label,
-  secondary,
-  altAvatar,
-  selected,
-  popperChildren,
-  ...rest
-}) => {
+                                                           id,
+                                                           index,
+                                                           onSelected,
+                                                           avatar,
+                                                           label,
+                                                           secondary,
+                                                           altAvatar,
+                                                           selected,
+                                                           popperChildren,
+                                                           ...rest
+                                                         }) => {
   const theme = useTheme();
-  const anchorRef = React.useRef(null);
-  const [afterTimeout, setAfterTimeout] = useState(false);
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      setAfterTimeout(true);
-    }, 200);
-    return () => {
-      clearTimeout(timeout)
-      setAfterTimeout(false)
-    };
-  }, []);
+  const anchorRef = React.useRef<HTMLDivElement | null>(null);
+  const popperRef = React.useRef<HTMLDivElement | null>(null);
 
   const handleSelect = useCallback(() => {
     onSelected(id);
   }, [onSelected, id]);
 
+  const {cycleThroughElements, setElementIndex, resetElementIndex} = useSimilarityFinderState()
+  const [hasFocus, setHasFocus] = useState(false)
+  const handleFocus = useCallback(() => {
+    setHasFocus(true)
+    if(!selected) setElementIndex(index)
+  }, [setHasFocus, setElementIndex, selected, index])
+
+  const handleBlur = useCallback(() => {
+    setHasFocus(false)
+    if(selected) resetElementIndex()
+  }, [setHasFocus, resetElementIndex, selected])
+
+  useEffect(() => {
+    if (selected) {
+      anchorRef.current?.focus()
+    }
+  }, [selected]);
+
+
+
+  const handleKeyUpDown = useCallback((e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+      e.preventDefault()
+      e.stopPropagation()
+      if (e.key === "ArrowDown") {
+        cycleThroughElements(1)
+      } else {
+        cycleThroughElements(-1)
+      }
+    }
+    if (e.key === "Enter") {
+      handleSelect()
+    }
+  }, [cycleThroughElements, handleSelect])
+
   return (
     <>
-      <ListItem sx={{ p: 0 }} alignItems="flex-start">
+      <ListItem sx={{p: 0}} alignItems="flex-start">
         <ListItemButton
           sx={{
             backgroundColor: "transparent",
-            "&:hover": { backgroundColor: "transparent" },
+            "&:hover": {backgroundColor: "transparent"},
           }}
           onClick={handleSelect}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
+          onKeyUp={handleKeyUpDown}
           ref={anchorRef}
-          selected={selected}
           {...rest}
         >
           <ListItemAvatar>
             <Avatar
-              sx={{ width: "32px", height: "32px" }}
+              sx={{width: "32px", height: "32px"}}
               aria-label="Photo"
               src={avatar}
             >
@@ -85,7 +116,7 @@ const ClassicResultListItem: FunctionComponent<Props> = ({
             secondary={
               <Typography
                 variant="caption"
-                sx={{ ...theme.typography.caption }}
+                sx={{...theme.typography.caption}}
               >
                 {secondary}
               </Typography>
@@ -95,11 +126,11 @@ const ClassicResultListItem: FunctionComponent<Props> = ({
       </ListItem>
       <ClassicResultPopperItem
         anchorEl={anchorRef.current}
-        open={selected && afterTimeout}
-      >
+        popperRef={popperRef as any}
+        open={hasFocus || selected}>
         {popperChildren}
       </ClassicResultPopperItem>
-      <Divider variant="inset" component="li" />
+      <Divider variant="inset" component="li"/>
     </>
   );
 };

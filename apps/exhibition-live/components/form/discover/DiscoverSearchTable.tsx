@@ -71,6 +71,7 @@ const DiscoverSearchTable: FunctionComponent<Props> = ({
                         <ClassicResultListItem
                             key={id}
                             id={id}
+                            index={idx}
                             onSelected={handleSelect}
                             label={label}
                             secondary={secondary}

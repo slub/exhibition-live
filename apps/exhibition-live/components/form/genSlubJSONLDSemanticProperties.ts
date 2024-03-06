@@ -24,7 +24,13 @@ const makeGenSlubJSONLDSemanticProperties: (
     },
     idAuthority: {
       title: "Autorität",
-      $ref: "#/$defs/AuthorityEntry",
+      type: "object",
+      properties: {
+        "@id": {
+          title: "IRI",
+          type: "string",
+        }
+      }
     },
   });
 

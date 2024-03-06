@@ -344,6 +344,7 @@ type CreateEntityStrategy = Strategy & {
   options?: {
     typeIRI?: string;
     typeName?: string;
+    single?: boolean;
     subFieldMapping: {
       fromSelf?: DeclarativeMappings;
       fromEntity?: DeclarativeMappings;
@@ -402,7 +403,7 @@ export const createEntity = async (
   context?: StrategyContext,
 ): Promise<any> => {
   if (!context) throw new Error("No context provided");
-  const { typeIRI, subFieldMapping } = options || {};
+  const { typeIRI, subFieldMapping, single } = options || {};
   const isArray = Array.isArray(sourceData);
   const sourceDataArray = isArray ? sourceData : [sourceData];
   const { getPrimaryIRIBySecondaryIRI, newIRI, authorityIRI } = context;
@@ -448,7 +449,7 @@ export const createEntity = async (
       });
     }
   }
-  return isArray ? newDataElements : newDataElements[0];
+  return isArray && !single ? newDataElements : newDataElements[0];
 };
 
 type ConstantStrategy = Strategy & {

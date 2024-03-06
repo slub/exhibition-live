@@ -63,50 +63,6 @@
         "seriesType": {
           "$ref": "#/$defs/SeriesType"
         },
-        "fromDate": {
-          "type": "integer"
-        },
-        "fromType": {
-          "type": "integer",
-          "oneOf": [
-            {
-              "const": 1,
-              "title": "nach"
-            },
-            {
-              "const": 2,
-              "title": "vor"
-            },
-            {
-              "const": 3,
-              "title": "ca."
-            }
-          ]
-        },
-        "toDate": {
-          "type": "integer"
-        },
-        "toType": {
-          "type": "integer",
-          "oneOf": [
-            {
-              "const": 1,
-              "title": "nach"
-            },
-            {
-              "const": 2,
-              "title": "vor"
-            },
-            {
-              "const": 3,
-              "title": "ca."
-            }
-          ]
-        },
-        "openingDate": {
-          "type": "string",
-          "format": "date"
-        },
         "timeSeries": {
           "type": "string",
           "maxLength": 200

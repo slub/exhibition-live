@@ -331,6 +331,78 @@ export const locationDeclarativeMapping: DeclarativeMappings = [
   }
 ];
 
+export const event2exhibitionSeriesDeclarativeMapping: DeclarativeMappings = [
+  {
+    source: {
+      path: "preferredName",
+    },
+    target: {
+      path: "title",
+    }
+  },
+  {
+    source: {
+      path: "id",
+    },
+    target: {
+      path: "idAuthority.@id",
+    }
+  },
+  {
+    source: {
+      path: "biographicalOrHistoricalInformation",
+    },
+    target: {
+      path: "description",
+    },
+    mapping: {
+      strategy: {
+        id: "concatenate",
+        options: {
+          separator: "\n",
+        }
+      }
+    }
+  },
+  {
+    source: {
+      path: "placeOfConferenceOrEvent",
+    },
+    target: {
+      path: "location",
+    },
+    mapping:{
+      strategy: {
+        id: "createEntity",
+        options: {
+          single: true,
+          typeIRI: sladb("Location").value,
+          subFieldMapping: {
+            fromEntity: [
+              {
+                source: {
+                  path: "label",
+                },
+                target: {
+                  path: "title",
+                },
+              },
+              {
+                source: {
+                  path: "id",
+                },
+                target: {
+                  path: "idAuthority.@id",
+                },
+              },
+            ],
+          },
+        },
+      },
+    }
+  }
+]
+
 export const occupationDeclarativeMapping: DeclarativeMappings = [
   {
     source: {
@@ -635,6 +707,7 @@ export const declarativeMappings: DeclarativeMapping = {
   Place: corporateBody2PlaceDeclarativeMapping,
   Organization: corporateBodyDeclarativeMapping,
   ExhibitionExponat: workDeclarativeMapping,
+  ExhibitionSeries: event2exhibitionSeriesDeclarativeMapping,
   Location: locationDeclarativeMapping,
   Tag: tagMapping,
   Genre: tagMapping,

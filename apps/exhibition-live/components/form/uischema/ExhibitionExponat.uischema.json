@@ -58,7 +58,7 @@
     },
     {
       "type": "Group",
-      "label": "Zeitlicher Rahmen",
+      "label": "Datierung",
       "elements": [
         {
           "type": "HorizontalLayout",

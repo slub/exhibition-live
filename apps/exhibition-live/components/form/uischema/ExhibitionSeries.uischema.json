@@ -27,6 +27,24 @@
           "options": {
             "multi": true
           }
+        },
+        {
+          "type": "Control",
+          "label": "Serientyp",
+          "scope": "#/properties/seriesType"
+        },
+        {
+          "type": "Control",
+          "label": "Ort",
+          "scope": "#/properties/location"
+        },
+        {
+          "type": "Control",
+          "label": "Schlagworte",
+          "scope": "#/properties/tags",
+          "options": {
+            "chips": true
+          }
         }
       ]
     }

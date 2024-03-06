@@ -4,7 +4,6 @@ import {
   materialRenderers,
 } from "@jsonforms/material-renderers";
 import { JsonForms } from "@jsonforms/react";
-import { ComponentMeta } from "@storybook/react";
 import { useCallback, useState } from "react";
 
 import MarkdownTextFieldRenderer from "./MarkdownTextFieldRenderer";
@@ -13,7 +12,7 @@ import { materialCustomAnyOfControlTester } from "./MaterialCustomAnyOfRenderer"
 export default {
   title: "form/exhibition/MarkdownTextFieldRenderer",
   component: MarkdownTextFieldRenderer,
-} as ComponentMeta<typeof MarkdownTextFieldRenderer>;
+}
 
 const schema = {
   $schema: "http://json-schema.org/draft-07/schema#",

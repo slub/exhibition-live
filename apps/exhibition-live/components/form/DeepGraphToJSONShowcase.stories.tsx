@@ -1,11 +1,9 @@
-import { ComponentMeta } from "@storybook/react";
-
 import DeepGraphToJSONShowcase from "./DeepGraphToJSONShowcase";
 
 export default {
   title: "form/exhibition/DeepGraphToJSONShowcase",
   component: DeepGraphToJSONShowcase,
-} as ComponentMeta<typeof DeepGraphToJSONShowcase>;
+}
 
 export const DeepGraphToJSONShowcaseDefault = () => {
   return (

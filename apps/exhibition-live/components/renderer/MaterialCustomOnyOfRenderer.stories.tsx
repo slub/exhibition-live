@@ -4,7 +4,6 @@ import {
   materialRenderers,
 } from "@jsonforms/material-renderers";
 import { JsonForms } from "@jsonforms/react";
-import { ComponentMeta } from "@storybook/react";
 import { useCallback, useState } from "react";
 
 import MaterialCustomAnyOfRenderer, {
@@ -14,7 +13,7 @@ import MaterialCustomAnyOfRenderer, {
 export default {
   title: "form/exhibition/MaterialCustomAnyOfRenderer",
   component: MaterialCustomAnyOfRenderer,
-} as ComponentMeta<typeof MaterialCustomAnyOfRenderer>;
+}
 
 const schema = {
   $schema: "http://json-schema.org/draft-07/schema#",

@@ -34,7 +34,7 @@ import {
 import merge from "lodash/merge";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 
-import { ArrayLayoutToolbar, getDefaultKey } from "./ArrayToolbar";
+import { ArrayLayoutToolbar } from "./ArrayToolbar";
 import { useJsonForms } from "@jsonforms/react";
 import { memo } from "./config";
 import { uniqBy, orderBy, isArray, isEqual } from "lodash";

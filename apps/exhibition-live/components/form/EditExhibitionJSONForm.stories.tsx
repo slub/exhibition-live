@@ -1,4 +1,3 @@
-import { ComponentMeta } from "@storybook/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { JSONSchema7 } from "json-schema";
 import { JSONSchemaFaker } from "json-schema-faker";
@@ -67,4 +66,4 @@ export const SemanticJsonFormExhibition = () => {
 export default {
   title: "form/exhibition/EditExhibitionJSONForm",
   component: NewSemanticJsonForm,
-} as ComponentMeta<typeof NewSemanticJsonForm>;
+}

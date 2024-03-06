@@ -10,7 +10,6 @@ import {
   materialRenderers,
 } from "@jsonforms/material-renderers";
 import { JsonForms } from "@jsonforms/react";
-import { ComponentMeta } from "@storybook/react";
 import isEmpty from "lodash/isEmpty";
 import { useCallback, useState } from "react";
 
@@ -19,7 +18,7 @@ import AutocompleteURIFieldRenderer from "./AutocompleteURIFieldRenderer";
 export default {
   title: "form/exhibition/AutocompleteURIFieldRenderer",
   component: AutocompleteURIFieldRenderer,
-} as ComponentMeta<typeof AutocompleteURIFieldRenderer>;
+}
 
 const schema = {
   $schema: "http://json-schema.org/draft-07/schema#",

@@ -1,4 +1,3 @@
-import { ComponentMeta } from "@storybook/react";
 import React from "react";
 
 import WikidataThingCard from "./WikidataThingCard";
@@ -8,7 +7,7 @@ import WikidateAllPropTable from "./WikidataAllPropTable";
 export default {
   title: "form/wikidata/WikidataThingCard",
   component: WikidataThingCard,
-} as ComponentMeta<typeof WikidataThingCard>;
+}
 
 export const WikidataThingCardDefault = () => (
   <WikidataThingCard thingIRI={"http://www.wikidata.org/entity/Q3"} />

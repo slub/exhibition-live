@@ -4,7 +4,6 @@ import {
   materialRenderers,
 } from "@jsonforms/material-renderers";
 import { JsonForms } from "@jsonforms/react";
-import { ComponentMeta } from "@storybook/react";
 import { useCallback, useState } from "react";
 
 import AutoIdentifierRenderer from "./AutoIdentifierRenderer";
@@ -12,7 +11,7 @@ import AutoIdentifierRenderer from "./AutoIdentifierRenderer";
 export default {
   title: "form/exhibition/AutoIdentifierRenderer",
   component: AutoIdentifierRenderer,
-} as ComponentMeta<typeof AutoIdentifierRenderer>;
+}
 
 const schema = {
   $schema: "http://json-schema.org/draft-07/schema#",

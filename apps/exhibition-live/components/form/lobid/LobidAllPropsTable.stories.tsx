@@ -1,4 +1,3 @@
-import { ComponentMeta } from "@storybook/react";
 import React from "react";
 
 import LobidAllPropTable from "./LobidAllPropTable";
@@ -6,7 +5,7 @@ import LobidAllPropTable from "./LobidAllPropTable";
 export default {
   title: "form/lobid/LobidAllPropsTable",
   component: LobidAllPropTable,
-} as ComponentMeta<typeof LobidAllPropTable>;
+}
 
 const exampleAllProps = {
   dateOfConferenceOrEvent: ["18.06.2022-25.09.2022"],

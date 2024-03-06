@@ -440,6 +440,7 @@ const SimilarityFinder: FunctionComponent<Props> = ({
       if (!id || !entryData?.allProps) return;
       const knowledgeBaseDescription = knowledgeBases.find(kb => kb.id === source)
       const mappingConfig = declarativeMappings[typeName];
+      console.log("mappingConfig", mappingConfig);
       if (!mappingConfig) {
         console.warn(`no mapping config for ${typeName}`);
         return;
@@ -550,6 +551,30 @@ const SimilarityFinder: FunctionComponent<Props> = ({
     })
   }, [preselectedClassIRI, handleEntityChange, searchString])
 
+  const ResultList = useCallback(
+    () => {
+      let idx = 0;
+      // @ts-ignore
+      return knowledgeBases.map((kb) => {
+        const entries = searchResults[kb.id] || []
+        return <ClassicResultListWrapper
+          key={kb.id}
+          label={kb.label}
+          selected={selectedKnowledgeSources?.includes(kb.id)}
+        >
+          {searchString && (
+            <List>
+              {entries.map((entry) => {
+                idx++;
+                return kb.listItemRenderer(entry, idx, classIRI, elementIndex === idx, () => handleAccept(entry.id, entry, kb.id))
+              })}
+            </List>
+          )}
+        </ClassicResultListWrapper>
+
+      })}
+  , [searchResults, knowledgeBases, selectedKnowledgeSources, classIRI, handleAccept, elementIndex])
+
   return <div style={{overflow: 'hidden'}}>
 
     <Grid container alignItems="center" direction={"column"} spacing={2}
@@ -574,27 +599,7 @@ const SimilarityFinder: FunctionComponent<Props> = ({
           flexDirection: "column" /* flexWrap: 'wrap'*/,
         }}
       >
-        {(() => {
-          let idx = 0;
-          // @ts-ignore
-          return knowledgeBases.map((kb) => {
-            const entries = searchResults[kb.id]
-            return <ClassicResultListWrapper
-              key={kb.id}
-              label={kb.label}
-              selected={selectedKnowledgeSources?.includes(kb.id)}
-            >
-              {searchString && (
-                <List>
-                  {entries.map((entry) => {
-                    idx++;
-                    return kb.listItemRenderer(entry, idx, classIRI, elementIndex === idx, () => handleAccept(entry.id, entry, kb.id))
-                  })}
-                </List>
-              )}
-            </ClassicResultListWrapper>
-
-          })})()}
+        {<ResultList/>}
       </Grid>
     </Grid>
     <div

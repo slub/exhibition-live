@@ -29,11 +29,13 @@ type EntityDetailListItemProps = {
   entityIRI: string;
   typeIRI?: string;
   onClear?: () => void;
+  data?: any;
 };
 export const EntityDetailListItem = ({
   entityIRI,
   typeIRI,
   onClear,
+  data: defaultData,
 }: EntityDetailListItemProps) => {
   const typeIRIs = useTypeIRIFromEntity(entityIRI);
   const classIRI: string | undefined = typeIRI || typeIRIs?.[0];
@@ -53,7 +55,7 @@ export const EntityDetailListItem = ({
     "show",
   );
   const { t } = useTranslation();
-  const data = rawData?.document;
+  const data = rawData?.document?.["@type"] ? rawData?.document : defaultData
   const cardInfo = useMemo<PrimaryFieldResults<string>>(() => {
     const fieldDecl = primaryFields[typeName];
     if (data && fieldDecl) {

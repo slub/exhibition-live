@@ -1,16 +1,17 @@
-import { MoreVert as MoreVertIcon } from "@mui/icons-material";
+import {MoreVert as MoreVertIcon} from "@mui/icons-material";
 import {
-  Button,
-  Container,
+  Accordion, AccordionDetails,
+  AccordionSummary,
+  Button, Container,
   Link,
   Menu,
   MenuItem,
-  MenuList,
+  MenuList, Stack,
   Table,
   TableBody,
   TableCell,
   TableContainer,
-  TableRow,
+  TableRow, Typography,
 } from "@mui/material";
 import React, {
   FunctionComponent,
@@ -19,12 +20,17 @@ import React, {
   useState,
 } from "react";
 
-import { MappingConfigurationDialog } from "../../mapping/MappingConfigurationDialog";
-import { gndBaseIRI } from "../../utils/gnd/prefixes";
+import {MappingConfigurationDialog} from "../../mapping/MappingConfigurationDialog";
+import {gndBaseIRI} from "../../utils/gnd/prefixes";
+import {EntityChip} from "../show";
+import {useQuery} from "@tanstack/react-query";
+import {findEntityWithinLobidByIRI} from "../../utils/lobid/findEntityWithinLobid";
+import WikidataAllPropTable from "../wikidata/WikidataAllPropTable";
 
 interface OwnProps {
   allProps?: any;
   onEntityChange?: (uri: string) => void;
+  disableContextMenu?: boolean;
 }
 
 type Props = OwnProps;
@@ -36,10 +42,10 @@ const camelCaseToTitleCase = (str: string) => {
 };
 
 const LabledLink = ({
-  uri,
-  label,
-  onClick,
-}: {
+                      uri,
+                      label,
+                      onClick,
+                    }: {
   uri: string;
   label?: string;
   onClick?: () => void;
@@ -48,7 +54,7 @@ const LabledLink = ({
     () =>
       uri.substring(
         (uri.includes("#") ? uri.lastIndexOf("#") : uri.lastIndexOf("/")) + 1 ??
-          0,
+        0,
         uri.length,
       ),
     [uri],
@@ -83,9 +89,9 @@ const useMenuState = () => {
 };
 
 const PropertyContextMenu = ({
-  onClose,
-  property,
-}: {
+                               onClose,
+                               property,
+                             }: {
   onClose?: () => void;
   property: string;
 }) => {
@@ -102,7 +108,7 @@ const PropertyContextMenu = ({
   return (
     <>
       <MappingConfigurationDialog
-        mapping={{ source: { path: property } }}
+        mapping={{source: {path: property}}}
         open={mappingModalOpen}
         onClose={handleMappingModalClose}
       />
@@ -115,89 +121,112 @@ const PropertyContextMenu = ({
 };
 
 const PropertyItem = ({
-  property,
-  value,
-  onEntityChange,
-}: {
+                        property,
+                        value: originalValue,
+                        onEntityChange,
+                        disableContextMenu,
+                      }: {
   property: string;
   value: any;
   onEntityChange?: (uri: string) => void;
+  disableContextMenu?: boolean;
 }) => {
-  const { menuAnchorEl, menuOpen, handleMenuClick, handleMenuClose } =
+  const {menuAnchorEl, menuOpen, handleMenuClick, handleMenuClose} =
     useMenuState();
+  const value = useMemo(() => {
+    return typeof originalValue === "object" && !Array.isArray(originalValue) ? [originalValue] : originalValue;
+  }, [originalValue]);
   return (
     <TableRow>
       <TableCell
-        style={{ width: 100, overflow: "hidden", textOverflow: "ellipsis" }}
+        style={{width: 100, overflow: "hidden", textOverflow: "ellipsis"}}
         component="th"
         scope="row"
       >
-        <Button
-          id={"menu-button-" + property}
-          sx={{
-            textAlign: "left",
-            textTransform: "none",
-          }}
-          size={"small"}
-          variant={"text"}
-          aria-label={"mapping"}
-          onClick={handleMenuClick}
-        >
-          {camelCaseToTitleCase(property)}
-        </Button>
-        <Menu
-          id="basic-menu"
-          anchorEl={menuAnchorEl}
-          open={menuOpen}
-          onClose={handleMenuClose}
-          MenuListProps={{
-            "aria-labelledby": "menu-button" + property,
-          }}
-        >
-          <PropertyContextMenu onClose={handleMenuClose} property={property} />
-        </Menu>
+        {disableContextMenu
+          ? <Typography variant="body2">{camelCaseToTitleCase(property)}</Typography>
+          : <>
+            <Button
+              id={"menu-button-" + property}
+              sx={{
+                textAlign: "left",
+                textTransform: "none",
+              }}
+              size={"small"}
+              variant={"text"}
+              aria-label={"mapping"}
+              onClick={handleMenuClick}
+            >
+              {camelCaseToTitleCase(property)}
+            </Button>
+            <Menu
+              id="basic-menu"
+              anchorEl={menuAnchorEl}
+              open={menuOpen}
+              onClose={handleMenuClose}
+              MenuListProps={{
+                "aria-labelledby": "menu-button" + property,
+              }}
+            >
+              <PropertyContextMenu onClose={handleMenuClose} property={property}/>
+            </Menu>
+          </>}
       </TableCell>
       <TableCell
-        sx={{ overflow: "hidden", textOverflow: "ellipsis" }}
+        sx={{overflow: "hidden", textOverflow: "ellipsis"}}
         align="right"
-      >
-        {Array.isArray(value)
-          ? value.map((v, index) => {
-              const comma = index < value.length - 1 ? "," : "";
-              if (typeof v === "string") {
-                return (
-                  <span key={v}>
+      >{Array.isArray(value)
+        ? <Stack spacing={1} direction="row" flexWrap={"wrap"} justifyContent={"end"}>
+          {value.map((v, index) => {
+            const comma = index < value.length - 1 ? "," : "";
+            if (typeof v === "string") {
+              return (
+                <span key={v}>
                     {v}
-                    {comma}{" "}
+                  {comma}{" "}
                   </span>
-                );
-              }
-              if (typeof v.id === "string") {
-                return (
-                  <span key={v.id}>
+              );
+            }
+            if (typeof v.id === "string") {
+              return (
+                <span key={v.id}>
                     <LabledLink
                       uri={v.id}
                       label={v.label}
                       onClick={() => onEntityChange && onEntityChange(v.id)}
                     />
-                    {comma}{" "}
+                  {comma}{" "}
                   </span>
-                );
-              }
-            })
-          : typeof value === "string" ||
-            typeof value === "number" ||
-            typeof value === "boolean"
+              );
+            }
+            if (typeof v === "object" && v['@id'] && v['@type']) {
+              return (<EntityChip
+                  key={v['@id']}
+                  index={index}
+                  data={v}
+                  entityIRI={v['@id']}
+                  typeIRI={v['@type']}
+
+                />
+              );
+            }
+          })}
+        </Stack>
+        : (typeof value === "string" ||
+          typeof value === "number" ||
+          typeof value === "boolean")
           ? value.toString()
-          : ""}
+          : ""
+      }
       </TableCell>
     </TableRow>
   );
 };
 const LobidAllPropTable: FunctionComponent<Props> = ({
-  allProps,
-  onEntityChange,
-}) => {
+                                                       allProps,
+                                                       onEntityChange,
+                                                       disableContextMenu,
+                                                     }) => {
   const handleClickEntry = useCallback(
     (id: string) => {
       onEntityChange && onEntityChange(id);
@@ -205,10 +234,22 @@ const LobidAllPropTable: FunctionComponent<Props> = ({
     [onEntityChange],
   );
 
-  return (
+  const gndIRI = useMemo(() => {
+    const gndIRI_ = allProps?.idAuthority?.["@id"] || allProps?.idAuthority
+    if (typeof gndIRI_ !== "string") return undefined
+    return gndIRI_.startsWith(gndBaseIRI) ? gndIRI_ : undefined
+  }, [allProps]);
+  const {data: rawEntry} = useQuery(
+    ["lobid", gndIRI],
+    () => findEntityWithinLobidByIRI(gndIRI),
+    {enabled: !!gndIRI},
+  );
+
+
+  return (<>
     <TableContainer component={Container}>
       <Table
-        sx={{ minWidth: "100%", tableLayout: "fixed" }}
+        sx={{minWidth: "100%", tableLayout: "fixed"}}
         aria-label="custom detail table"
       >
         <TableBody>
@@ -217,7 +258,7 @@ const LobidAllPropTable: FunctionComponent<Props> = ({
               .filter(
                 ([key, value]) =>
                   !key.startsWith("@") &&
-                  (typeof value === "string" ||
+                  (typeof value === "string" || typeof value === "number" || typeof value === "boolean" || (typeof value === "object" && value['@id'] && value['@type']) ||
                     (Array.isArray(value) && value.length > 0)),
               )
               .map(([key, value]) => (
@@ -226,12 +267,39 @@ const LobidAllPropTable: FunctionComponent<Props> = ({
                   property={key}
                   value={value}
                   onEntityChange={handleClickEntry}
+                  disableContextMenu={disableContextMenu}
                 />
               ))}
         </TableBody>
       </Table>
     </TableContainer>
-  );
+    {rawEntry && <><Accordion>
+      <AccordionSummary>
+        <Typography>GND Eintrag</Typography>
+      </AccordionSummary>
+      <AccordionDetails>
+        <LobidAllPropTable
+          allProps={rawEntry}
+        />
+      </AccordionDetails>
+    </Accordion>
+      {(rawEntry.sameAs || [])
+        .filter(({id}) =>
+          id.startsWith("http://www.wikidata.org/entity/"),
+        )
+        .map(({id}) => (
+          <Accordion key={id}>
+            <AccordionSummary>
+              <Typography>Wikidata Einträge</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <WikidataAllPropTable key={id} thingIRI={id}/>
+            </AccordionDetails>
+          </Accordion>
+        ))}
+    </>
+    }
+  </>);
 };
 
 export default LobidAllPropTable;

@@ -1,7 +1,7 @@
 import NiceModal, {useModal} from "@ebay/nice-modal-react";
 import {useTypeIRIFromEntity} from "../../state";
 import {useCallback, useMemo, useState} from "react";
-import {primaryFields, typeIRItoTypeName} from "../../config";
+import {primaryFieldExtracts, primaryFields, typeIRItoTypeName} from "../../config";
 import useExtendedSchema from "../../state/useExtendedSchema";
 import {useGlobalCRUDOptions} from "../../state/useGlobalCRUDOptions";
 import {useCRUDWithQueryClient} from "../../state/useCRUDWithQueryClient";
@@ -52,7 +52,7 @@ export const EditEntityModal = NiceModal.create(
         const [isStale, setIsStale] = useState(false)
         const data = rawData?.document || defaultData;
         const cardInfo = useMemo<PrimaryFieldResults<string>>(() => {
-            const fieldDecl = primaryFields[typeName];
+            const fieldDecl = primaryFieldExtracts[typeName];
             if (data && fieldDecl)
                 return applyToEachField(data, fieldDecl, extractFieldIfString);
             return {

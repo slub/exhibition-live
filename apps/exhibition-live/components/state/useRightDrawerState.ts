@@ -14,8 +14,8 @@ export const useRightDrawerState = create<UseRightDrawerState>((set, get) => ({
       ? set({ open: open(get().open) })
       : set({ open }),
   width: 500,
-  setWidth: (width) =>
-    typeof width === "function"
-      ? set({ width: width(get().width) })
-      : set({ width }),
+  setWidth: (widthPassed) => {
+    const width = typeof widthPassed === "function" ? widthPassed(get().width) : widthPassed;
+    if(typeof width === "number" && !isNaN(width))  set({width});
+  },
 }));

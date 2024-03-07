@@ -8,7 +8,7 @@ import React, {
   useState,
 } from "react";
 
-import { BASE_IRI, primaryFields } from "../config";
+import {BASE_IRI, primaryFieldExtracts, primaryFields} from "../config";
 import {
   applyToEachField,
   extractFieldIfString,
@@ -65,7 +65,7 @@ export const SimpleChipRenderer = (
   // @ts-ignore
   const { label, description, image } = useMemo(() => {
     if (!typeName) return {};
-    const fieldDecl = primaryFields[typeName];
+    const fieldDecl = primaryFieldExtracts[typeName];
     if (data && fieldDecl)
       return applyToEachField(data, fieldDecl, extractFieldIfString);
     return {};

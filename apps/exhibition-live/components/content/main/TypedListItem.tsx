@@ -1,5 +1,5 @@
 import React, { FunctionComponent, useCallback, useMemo } from "react";
-import { primaryFields, typeIRItoTypeName } from "../../config";
+import {primaryFieldExtracts, primaryFields, typeIRItoTypeName} from "../../config";
 import {
   applyToEachField,
   extractFieldIfString,
@@ -27,7 +27,7 @@ const TypedListItem: FunctionComponent<Props> = ({ index, data, disableLoad }) =
   const entityIRI = data["@id"] as string;
   const typeName = typeIRItoTypeName(typeIRI);
   //const loadedSchema = useExtendedSchema({ typeName, classIRI: typeIRI });
-  const primaryFieldDesc = primaryFields[typeName];
+  const primaryFieldDesc = primaryFieldExtracts[typeName];
 
   const { label, description, image } = useMemo(
     () => applyToEachField(data, primaryFieldDesc, extractFieldIfString),

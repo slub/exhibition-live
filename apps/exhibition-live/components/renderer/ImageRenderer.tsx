@@ -44,7 +44,7 @@ const ImageRenderer = (props: ControlProps) => {
         variant={"standard"}
         sx={(theme) => ({ marginBottom: theme.spacing(2) })}
       >
-        <Grid container direction={"row"} alignItems="flex-end">
+        <Grid container direction={"column"} alignItems="center">
           {
             <Grid item>
               <IconButton onClick={() => setEditMode((prev) => !prev)}>
@@ -65,7 +65,7 @@ const ImageRenderer = (props: ControlProps) => {
           )}
           {data && (
             <Grid item>
-              <Image src={data} alt={data} style={{ width: "100%" }} />
+              <Image src={data} alt={data} style={{ maxWidth: '200px', width: "100%" }} />
             </Grid>
           )}
         </Grid>

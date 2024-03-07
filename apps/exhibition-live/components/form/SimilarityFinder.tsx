@@ -366,7 +366,7 @@ const SimilarityFinder: FunctionComponent<Props> = ({
       })).then((results) => {
         const searchResults = (Object.assign({}, ...results)) as Record<KnowledgeSources, any[]>
         setSearchResults(searchResults)
-        const resultCount = Object.values(searchResults).reduce((acc, list) => acc + list.length, 0)
+        const resultCount = Object.values(searchResults).reduce((acc, list = []) => acc + list.length, 0)
         setElementCount(resultCount)
       })
     }, 500)

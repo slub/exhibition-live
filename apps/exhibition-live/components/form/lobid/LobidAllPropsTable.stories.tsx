@@ -3,7 +3,7 @@ import React from "react";
 import LobidAllPropTable from "./LobidAllPropTable";
 
 export default {
-  title: "form/lobid/LobidAllPropsTable",
+  title: "presentation/lobid/LobidAllPropsTable",
   component: LobidAllPropTable,
 }
 

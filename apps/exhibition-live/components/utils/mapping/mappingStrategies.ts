@@ -42,13 +42,21 @@ export type StrategyFunction = (
   context?: StrategyContext,
 ) => Promise<any> | any;
 
-type ConcatenateStrategy = Strategy & {
+export type ConcatenateStrategy = Strategy & {
   id: "concatenate";
   options?: {
     separator?: string;
   };
 };
 
+/**
+ * Concatenates an array of strings into a single string
+ * @param sourceData array of strings
+ * @param _targetData not used
+ * @param options options for the concatenation
+ *    - separator: the separator to use between the strings
+ * @returns the concatenated string
+ */
 export const concatenate = (
   sourceData: any[],
   _targetData: string,
@@ -61,6 +69,12 @@ export const concatenate = (
 type TakeFirstStrategy = Strategy & {
   id: "takeFirst";
 };
+
+/**
+ * Takes the first element of an array
+ * @param sourceData array of elements
+ * @param _targetData not used
+ */
 export const takeFirst = (sourceData: any[], _targetData: any): any =>
   sourceData[0];
 
@@ -74,6 +88,12 @@ type AppendStrategy = Strategy & {
   };
 };
 
+/**
+ * Appends an array of values to another array
+ * @param values array of values to append
+ * @param targetData array to append to
+ * @param options options for the append
+ */
 export const append = (
   values: any[],
   targetData: any[],
@@ -112,6 +132,14 @@ type CreateEntityWithAuthoritativeLink = Strategy & {
   }
 }
 
+/**
+ * Creates an entity with an authoritative link
+ * @param sourceData array of source data
+ * @param _targetData not used
+ * @param options options for the creation
+ * @param context the context for the strategy
+ * @returns the created entity
+ */
 export const createEntityWithAuthoritativeLink = async (
   sourceData: any,
   _targetData: any,
@@ -302,7 +330,7 @@ export const createEntityWithReificationFromString = async (
       ) {
         continue;
       }
-      const trimmedSourceDataElement = typeof sourceDataElement === "string" ? sourceDataElement.trim() : sourceDataElement
+      const trimmedSourceDataElement = sourceDataElement.trim()
       const strategy = statementProperty.mapping?.strategy;
       if (!strategy) {
         set(newData, statementProperty.property, trimmedSourceDataElement);
@@ -578,6 +606,9 @@ export const dateRangeStringToSpecialInt = (
   const data = Array.isArray(sourceData) ? sourceData[0] : sourceData;
   if (!data) return null;
   const [start, end] = data.split("-");
+  const extractedElement = extractElement === "start" ? start : end;
+  if(!extractedElement) return null
+  if(extractedElement.length === 4) return dayJsDateToSpecialInt(dayjs(extractedElement, "YYYY"), true);
   return dayJsDateToSpecialInt(
     dayjs(extractElement === "start" ? start : end, "DD.MM.YYYY"),
   );

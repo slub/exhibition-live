@@ -2,7 +2,7 @@ import {StorybookConfig} from "@storybook/nextjs";
 
 const config: StorybookConfig = {
   "stories": [
-    //"../stories/**/*.stories.mdx"
+    "../components/**/*.mdx",
     "../components/**/*.stories.@(js|jsx|ts|tsx)",
   ],
 
@@ -20,6 +20,18 @@ const config: StorybookConfig = {
   docs: {
     autodocs: true
   },
+  webpackFinal: async (config) => {
+    config.module.rules.push(
+        {
+          test: /\.(nq|ttl)$/i,
+          use: [
+            {
+              loader: 'file-loader',
+            },
+          ],
+        })
+    return config;
+  }
   /*
   webpackFinal: async (config) => {
     // Remove existing mdx rule if any (but should be none)

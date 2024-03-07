@@ -1,6 +1,9 @@
 import { JSONSchema7 } from "json-schema";
 
 export const addressSchema: JSONSchema7 = {
+  $schema: "http://json-schema.org/draft-07/schema#",
+  $id: "https://example.com/person.schema.json",
+  $comment: "v1.0.0",
   $defs: {
     Address: {
       type: "object",
@@ -30,7 +33,7 @@ export const addressSchema: JSONSchema7 = {
         givenName: {
           type: "string",
         },
-        child: {
+        children: {
           type: "array",
           items: {
             $ref: "#/$defs/Person",
@@ -48,6 +51,4 @@ export const addressSchema: JSONSchema7 = {
       },
     },
   },
-  $schema: "http://json-schema.org/draft-07/schema#",
-  $id: "https://example.com/person.schema.json",
 };

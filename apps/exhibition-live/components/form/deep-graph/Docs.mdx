@@ -1,0 +1,16 @@
+import { Meta, Canvas, ArgTypes, Controls } from '@storybook/blocks';
+
+import * as DeepGraphToJSONShowcase from './DeepGraphToJSONShowcase.stories';
+
+<Meta of={DeepGraphToJSONShowcase} />
+
+## Deep Graph to JSON extractor
+
+The following example shows how to use the `DeepGraphToJSON` extractor to extract a deep graph to JSON.
+It shows side by side the schema, the raw data in the serialization of n-triples, and the extracted JSON document.
+
+<Canvas of={DeepGraphToJSONShowcase.DeepGraphToJSONShowcasePrimary} withToolbar />
+
+Experiment with the controls to see how the JSON document changes when you change the parameters. But be careful not to allow for too much recursion as this might lead to a stack overflow due to the recursive nature of the graph.
+
+<Controls of={DeepGraphToJSONShowcase.DeepGraphToJSONShowcasePrimary} />

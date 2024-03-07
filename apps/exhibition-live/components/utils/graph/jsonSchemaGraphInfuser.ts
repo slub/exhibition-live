@@ -11,11 +11,30 @@ import { isJSONSchema, isJSONSchemaDefinition } from "../core/jsonSchema";
 import isNil from "lodash/isNil";
 
 export type WalkerOptions = {
+  /**
+   * If true, empty arrays will be omitted from the result
+   */
   omitEmptyArrays: boolean;
+  /**
+   * If true, empty objects will be omitted from the result
+   */
   omitEmptyObjects: boolean;
+  /**
+   * The maximum recursion level for each reference within the schema
+   * for each `$ref` that is beeing recursed, the counter will be increased by 1 and further expansion will be stopped if the counter reaches this value for that reference
+   */
   maxRecursionEachRef: number;
+  /**
+   * The maximum recursion level for the whole schema
+   */
   maxRecursion: number;
+  /**
+   * If set, properties will be skipped at the given level (this is almost the same as `maxRecursion` but it will not stop the recursion for the whole schema, just for the properties)
+   */
   skipAtLevel: number;
+  /**
+   * if set to true expansion will stop as soon as a named node is encountered
+   */
   doNotRecurseNamedNodes?: boolean;
 };
 
@@ -34,7 +53,7 @@ const propertyWalker = (
   skipProps: boolean,
 ) => {
   const base = namespace(baseIRI);
-  const MAX_RECURSION = options?.maxRecursionEachRef || 5;
+  const maxRecursionEachRef = options?.maxRecursionEachRef || 5;
   const skipNextProps =
     typeof options?.skipAtLevel === "number"
       ? level >= options?.skipAtLevel
@@ -88,7 +107,7 @@ const propertyWalker = (
             isJSONSchemaDefinition(subSchema as JSONSchema7Definition) &&
             isJSONSchema(subSchema as JSONSchema7)
           ) {
-            if (!circularSet[ref] || circularSet[ref] < MAX_RECURSION) {
+            if (!circularSet[ref] || circularSet[ref] < maxRecursionEachRef) {
               val = propertyWalker(
                 baseIRI,
                 newNode as clownface.GraphPointer,
@@ -133,7 +152,7 @@ const propertyWalker = (
                     ) &&
                     isJSONSchema(subSchema as JSONSchema7)
                   ) {
-                    if ((circularSet[ref] || 0) < MAX_RECURSION) {
+                    if ((circularSet[ref] || 0) < maxRecursionEachRef) {
                       return propertyWalker(
                         baseIRI,
                         quad,
@@ -238,8 +257,8 @@ export const jsonSchemaGraphInfuser = (
   rootSchema: JSONSchema7,
   options: Partial<WalkerOptions>,
 ) => {
-  const tbbt = clownface({ dataset });
-  const startNode: clownface.GraphPointer = tbbt.node(ds.namedNode(iri));
+  const graphPointer = clownface({ dataset });
+  const startNode: clownface.GraphPointer = graphPointer.node(ds.namedNode(iri));
   return propertyWalker(
     baseIRI,
     startNode,

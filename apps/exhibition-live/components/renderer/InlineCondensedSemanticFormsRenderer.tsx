@@ -4,7 +4,7 @@ import {
   Resolve,
   resolveSchema,
 } from "@jsonforms/core";
-import { useJsonForms, withJsonFormsControlProps } from "@jsonforms/react";
+import {useJsonForms, withJsonFormsControlProps} from "@jsonforms/react";
 import {
   Box,
   FormControl,
@@ -15,27 +15,25 @@ import {
   Typography,
 } from "@mui/material";
 import merge from "lodash/merge";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { v4 as uuidv4 } from "uuid";
+import React, {useCallback, useEffect, useMemo, useState} from "react";
 
-import { slent } from "../form/formConfigs";
 import DiscoverAutocompleteInput from "../form/discover/DiscoverAutocompleteInput";
-import { primaryFields, PUBLIC_BASE_PATH, typeIRItoTypeName } from "../config";
-import { AutocompleteSuggestion } from "../form/DebouncedAutoComplete";
-import { extractFieldIfString } from "../utils/mapping/simpleFieldExtractor";
-import { PrimaryField } from "../utils/types";
+import {primaryFields, typeIRItoTypeName} from "../config";
+import {AutocompleteSuggestion} from "../form/DebouncedAutoComplete";
+import {extractFieldIfString} from "../utils/mapping/simpleFieldExtractor";
+import {PrimaryField} from "../utils/types";
 import {
   useGlobalSearchWithHelper,
   useRightDrawerState,
   useSimilarityFinderState,
 } from "../state";
-import { encodeIRI, makeFormsPath } from "../utils/core";
-import { SearchbarWithFloatingButton } from "../layout/main-layout/Searchbar";
+import {makeFormsPath} from "../utils/core";
+import {SearchbarWithFloatingButton} from "../layout/main-layout/Searchbar";
 import SimilarityFinder from "../form/SimilarityFinder";
-import { JSONSchema7 } from "json-schema";
-import { useRouter } from "next/router";
-import { useTranslation } from "next-i18next";
-import { EntityDetailListItem } from "../form/show";
+import {JSONSchema7} from "json-schema";
+import {useRouter} from "next/router";
+import {useTranslation} from "next-i18next";
+import {EntityDetailListItem} from "../form/show";
 
 const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
   const {
@@ -44,22 +42,21 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
     schema,
     uischema,
     visible,
-    required,
-    renderers,
     config,
     data,
     handleChange,
     path,
     rootSchema,
     label,
-    description,
   } = props;
-  const [formData, setFormData] = useState<any>({ "@id": data });
   const appliedUiSchemaOptions = merge({}, config, uischema.options);
-  const [editMode, setEditMode] = useState(false);
+  const {$ref, typeIRI} = appliedUiSchemaOptions.context || {};
+  const typeName = useMemo(
+    () => typeIRI && typeIRItoTypeName(typeIRI),
+    [typeIRI],
+  );
   const ctx = useJsonForms();
   const [realLabel, setRealLabel] = useState("");
-  const [modalIsOpen, setModalIsOpen] = useState(false);
   const formsPath = useMemo(
     () => makeFormsPath(config?.formsPath, path),
     [config?.formsPath, path],
@@ -67,11 +64,10 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
   const selected = useMemo(
     () =>
       data
-        ? { value: data || null, label: realLabel }
-        : { value: null, label: null },
+        ? {value: data || null, label: realLabel}
+        : {value: null, label: null},
     [data, realLabel],
   );
-  const { $ref, typeIRI } = appliedUiSchemaOptions.context || {};
   const subSchema = useMemo(() => {
     if (!$ref) return;
     const schema2 = {
@@ -100,10 +96,9 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
         return;
       }
       if (v.value !== data) handleChange(path, v.value);
-      setFormData({ "@id": v.value });
       setRealLabel(v.label);
     },
-    [path, handleChange, data, setRealLabel, setFormData],
+    [path, handleChange, data, setRealLabel],
   );
 
   useEffect(() => {
@@ -134,58 +129,20 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
     [handleSelectedChange],
   );
 
-  const typeName = useMemo(
-    () => typeIRI && typeIRItoTypeName(typeIRI),
-    [typeIRI],
-  );
 
   const router = useRouter();
   const locale = router.query.locale || "";
-  const handleToggle = useCallback(
-    (event?: React.MouseEvent) => {
-      event?.stopPropagation();
-      //open new tab if middle mouse click
-      if (event?.button === 1) {
-        window.open(
-          `/${locale}/create/${typeName}?encID=${encodeIRI(data)}`,
-          "_blank",
-        );
-        return;
-      }
-      setModalIsOpen(!modalIsOpen);
-    },
-    [setModalIsOpen, modalIsOpen, locale, typeName],
-  );
 
   const searchOnDataPath = useMemo(() => {
     const typeName = typeIRItoTypeName(typeIRI);
     return primaryFields[typeName]?.label;
   }, [typeIRI]);
 
-  const handleSaveAndClose = useCallback(() => {
-    setModalIsOpen(false);
-    const id = formData["@id"];
-    if (!id) return;
+  const labelKey = useMemo(() => {
     const fieldDecl = primaryFields[typeName] as PrimaryField | undefined;
-    let label = id;
-    if (fieldDecl?.label)
-      label = extractFieldIfString(formData, fieldDecl.label);
-    handleSelectedChange({
-      value: id,
-      label: typeof label === "string" ? label : id,
-    });
-  }, [setModalIsOpen, formData, handleSelectedChange]);
+    return fieldDecl?.label || "title";
+  }, [typeName]);
 
-  const handleClose = useCallback(() => {
-    setModalIsOpen(false);
-  }, [setModalIsOpen]);
-
-  const handleFormDataChange = useCallback(
-    (data: any) => {
-      setFormData(data);
-    },
-    [setFormData],
-  );
 
   const handleMappedDataAccepted = useCallback(
     (newData: any) => {
@@ -198,7 +155,7 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
     },
     [handleSelectedChange],
   );
-  const { open: sidebarOpen } = useRightDrawerState();
+  const {open: sidebarOpen} = useRightDrawerState();
   const {
     path: globalPath,
     searchString,
@@ -214,47 +171,9 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
     handleMappedDataAccepted,
   );
 
-  const newURI = useCallback(() => {
-    const prefix = schema.title || slent[""].value;
-    const iri = `${prefix}${uuidv4()}`;
-    const fieldDecl = primaryFields[typeName] as PrimaryField | undefined;
-    const labelKey = fieldDecl?.label || "title";
-    setFormData({ "@id": iri, [labelKey]: searchString });
-    return iri;
-  }, [schema, data, searchString, setFormData]);
 
-  const handleAddNew = useCallback(
-    (event?: React.MouseEvent) => {
-      event?.stopPropagation();
-      newURI();
-      setModalIsOpen(true);
-    },
-    [setModalIsOpen, newURI],
-  );
 
-  const { t } = useTranslation();
-
-  const handleAddNewWithinNewTab = useCallback(
-    (event: React.MouseEvent) => {
-      if (event.button !== 1) return;
-      event?.stopPropagation();
-      const newIRI = newURI();
-      handleSelectedChange({
-        value: newIRI,
-        label: `${t(typeName)} neu (${newIRI.substring(
-          newIRI.lastIndexOf("/") + 1,
-          newIRI.length,
-        )})`,
-      });
-      window.open(
-        `${PUBLIC_BASE_PATH}/${locale}/create/${typeName}?encID=${encodeIRI(
-          newIRI,
-        )}`,
-        "_blank",
-      );
-    },
-    [setModalIsOpen, newURI, typeName, locale],
-  );
+  const {t} = useTranslation();
 
   const showAsFocused = useMemo(
     () => isActive && sidebarOpen,
@@ -262,7 +181,7 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
   );
   const isValid = errors.length === 0;
 
-  const { cycleThroughElements } = useSimilarityFinderState();
+  const {cycleThroughElements} = useSimilarityFinderState();
 
   const handleKeyUp = useCallback(
     (ev: React.KeyboardEvent<HTMLInputElement>) => {
@@ -282,9 +201,18 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
     () => typeof selected.value === "string",
     [selected],
   );
+
+  const detailsData = useMemo(() => {
+    if (!selected.value) return;
+    return {
+      "@id": selected.value,
+      [labelKey]: selected.label,
+    };
+  }, [selected, labelKey]);
+
   return (
     <Hidden xsUp={!visible}>
-      <Box sx={{ position: "relative" }}>
+      <Box sx={{position: "relative"}}>
         <Typography
           variant={"h5"}
           sx={{
@@ -311,7 +239,7 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
           >
             {!sidebarOpen ? (
               <DiscoverAutocompleteInput
-                loadOnStart={editMode}
+                loadOnStart={true}
                 readonly={Boolean(ctx.readonly)}
                 typeIRI={typeIRI}
                 typeName={typeName || ""}
@@ -322,7 +250,7 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
                 searchString={searchString || ""}
                 inputProps={{
                   onFocus: handleFocus,
-                  ...(showAsFocused && { focused: true }),
+                  ...(showAsFocused && {focused: true}),
                 }}
               />
             ) : (
@@ -346,11 +274,12 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
             )}
           </FormControl>
         ) : (
-          <List sx={{ marginTop: "1em" }}>
+          <List sx={{marginTop: "1em"}}>
             <EntityDetailListItem
               entityIRI={selected.value}
               typeIRI={typeIRI}
               onClear={!ctx.readOnly && handleClear}
+              data={detailsData}
             />
           </List>
         )}

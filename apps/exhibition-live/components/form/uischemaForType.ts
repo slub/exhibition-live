@@ -12,7 +12,7 @@ import PersonUISchema from "./uischema/Person.uischema.json";
 import PlaceUISchema from "./uischema/Place.uischema.json";
 import TagUISchema from "./uischema/Tag.uischema.json";
 import SeriesTypeUISchema from "./uischema/SeriesType.uischema.json";
-import WorkPlaceUISchema from "./uischema/WorkPlace.uischema.json";
+import WorkplaceUISchema from "./uischema/Workplace.uischema.json";
 import PersonRoleUISchema from "./uischema/PersonRole.uischema.json";
 import CorporationRoleUISchema from "./uischema/CorporationRole.uischema.json";
 import EventTypeUISchema from "./uischema/EventType.uischema.json";
@@ -31,7 +31,7 @@ export const uischemata = {
   Place: PlaceUISchema,
   Tag: TagUISchema,
   SeriesType: SeriesTypeUISchema,
-  WorkPlace: WorkPlaceUISchema,
+  Workplace: WorkplaceUISchema,
   ExhibitionSeries: ExhibtionSeriesUISchema,
   PersonRole: PersonRoleUISchema,
   CorporationRole: CorporationRoleUISchema,

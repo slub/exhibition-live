@@ -31,6 +31,10 @@
       ]
     },
     {
+      "type": "Control",
+      "scope": "#/properties/image"
+    },
+    {
       "type": "Group",
       "label": "Beziehungen zu anderen Orten",
       "elements": [

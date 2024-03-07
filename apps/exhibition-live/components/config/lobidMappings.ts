@@ -574,6 +574,43 @@ export const corporateBody2PlaceDeclarativeMapping: DeclarativeMappings = [
     target: {
       path: "idAuthority.@id",
     }
+  },
+  {
+    source: {
+      path: "placeOfBusiness",
+    },
+    target: {
+      path: "location",
+    },
+    mapping: {
+      strategy: {
+        id: "createEntity",
+        options: {
+          single: true,
+          typeIRI: sladb("Location").value,
+          subFieldMapping: {
+            fromEntity: [
+              {
+                source: {
+                  path: "label",
+                },
+                target: {
+                  path: "title",
+                },
+              },
+              {
+                source: {
+                  path: "id",
+                },
+                target: {
+                  path: "idAuthority.@id",
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
   }
 ];
 export const corporateBodyDeclarativeMapping: DeclarativeMappings = [

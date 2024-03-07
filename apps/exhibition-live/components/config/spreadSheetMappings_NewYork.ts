@@ -374,7 +374,7 @@ export const matchBasedSpreadsheetMappings_NewYork = [
     source: {
       columns: {
         titlePattern: "Beteiligte Person {{=it.i + 1}} (Name)",
-        amount: 1,
+        amount: 4,
         includeRightNeighbours: 3
       }
     },

@@ -258,12 +258,6 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> = ({
 
   return (
     <Box sx={{ minHeight: "100%", width: "100%" }}>
-      <FormDebuggingTools
-        jsonData={{
-          formData: data,
-          cleanedData,
-        }}
-      />
       <Backdrop
         sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
         open={isLoading}
@@ -296,6 +290,12 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> = ({
           )
         }
         {...rest}
+      />
+      <FormDebuggingTools
+        jsonData={{
+          formData: data,
+          cleanedData,
+        }}
       />
     </Box>
   );

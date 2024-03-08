@@ -1,9 +1,10 @@
 import { AsyncOxigraph } from "async-oxigraph";
 import { create } from "zustand";
+import {PUBLIC_BASE_PATH} from "../config";
 
 const initAsyncOxigraph = async function () {
-  const ao = new AsyncOxigraph("/worker.js");
-  await ao.init("/web_bg.wasm"); // Default is same folder as worker.js
+  const ao = new AsyncOxigraph(PUBLIC_BASE_PATH + "/worker.js");
+  await ao.init(PUBLIC_BASE_PATH + "/web_bg.wasm"); // Default is same folder as worker.js
   return ao;
 };
 

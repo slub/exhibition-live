@@ -23,7 +23,7 @@ const SPARQLLocalOxigraphToolkit: FunctionComponent<Props> = ({
     const query = yasqe?.getValueWithoutComments();
     if (!query) return;
     const response = await sparqlQuery(query);
-    yasr?.setResponse(response);
+    yasr?.setResponse(response.data);
   }, [yasgui, sparqlQuery]);
 
   return (

@@ -1,0 +1,77 @@
+{
+  "@id": "http://localhost:8080/data/person/leonard-hofstadter",
+  "@type": "http://schema.org/Person",
+  "familyName": "Hofstadter",
+  "givenName": "Leonard",
+  "knows": [
+    {
+      "@id": "http://localhost:8080/data/person/amy-farrah-fowler",
+      "@type": "http://schema.org/Person",
+      "familyName": "Fowler",
+      "givenName": "Amy"
+    },
+    {
+      "@id": "http://localhost:8080/data/person/bernadette-rostenkowski",
+      "@type": "http://schema.org/Person",
+      "familyName": "Rostenkowski-Wolowitz",
+      "givenName": "Bernadette"
+    },
+    {
+      "@id": "http://localhost:8080/data/person/howard-wolowitz",
+      "@type": "http://schema.org/Person",
+      "familyName": "Wolowitz",
+      "givenName": "Howard"
+    },
+    {
+      "@id": "http://localhost:8080/data/person/penny",
+      "@type": "http://schema.org/Person",
+      "givenName": "Penny",
+      "address": {
+        "addressCountry": "US",
+        "addressRegion": "CA",
+        "postalCode": "91104",
+        "streetAddress": "2311 North Los Robles Avenue, Aparment 4B"
+      }
+    },
+    {
+      "@id": "http://localhost:8080/data/person/rajesh-koothrappali",
+      "@type": "http://schema.org/Person",
+      "familyName": "Koothrappali",
+      "givenName": "Rajesh"
+    },
+    {
+      "@id": "http://localhost:8080/data/person/sheldon-cooper",
+      "@type": "http://schema.org/Person",
+      "familyName": "Cooper",
+      "givenName": "Sheldon",
+      "address": {
+        "addressCountry": "US",
+        "addressRegion": "CA",
+        "postalCode": "91104",
+        "streetAddress": "2311 North Los Robles Avenue, Aparment 4A"
+      }
+    },
+    {
+      "@id": "http://localhost:8080/data/person/stuart-bloom",
+      "@type": "http://schema.org/Person",
+      "familyName": "Bloom",
+      "givenName": "Stuart"
+    },
+    {
+      "@id": "http://localhost:8080/data/person/mary-cooper",
+      "@type": "http://schema.org/Person",
+      "familyName": "Cooper",
+      "givenName": "Mary",
+      "address": {
+        "addressCountry": "US",
+        "addressRegion": "TX"
+      }
+    }
+  ],
+  "address": {
+    "addressCountry": "US",
+    "addressRegion": "CA",
+    "postalCode": "91104",
+    "streetAddress": "2311 North Los Robles Avenue, Aparment 4A"
+  }
+}

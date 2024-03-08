@@ -9,6 +9,10 @@ import { exhibitionDeclarativeMapping } from "./lobidMappings";
 let i = 0;
 
 const strategyContext: StrategyContext = {
+  searchEntityByLabel: async (label: string, typeIRI: string) => {
+    console.warn("using stub method");
+    return null; //'http://example.com/1231231'
+  },
   getPrimaryIRIBySecondaryIRI: async (
     secondaryIRI: string,
     authorityIRI: string,
@@ -38,7 +42,9 @@ describe("apply different mapping strategies", () => {
         title: "Documenta (15. : 2022 : Kassel)",
         endDate: { dateValue: 20220925 },
         startDate: { dateValue: 20220618 },
-        titleVariant: [],
+        titleVariant: [
+          "dOCUMENtA fifteen"
+        ],
         locations: [
           {
             __draft: true,
@@ -67,7 +73,9 @@ describe("apply different mapping strategies", () => {
         idAuthority: { "@id": "https://d-nb.info/gnd/1256926108" },
         endDate: { dateValue: 20180805 },
         startDate: { dateValue: 20180802 },
-        titleVariant: [],
+        titleVariant: [
+          "Gemeinsames Landjugendtreffen (2018)"
+        ],
         locations: [
           {
             "@id": "http://example.com/0",

@@ -4,23 +4,15 @@ import N3Parser from "@rdfjs/parser-n3";
 import { Dataset } from "@rdfjs/types";
 import fs from "fs";
 import { JSONSchema7 } from "json-schema";
-import path, { dirname } from "path";
 import dsExt from "rdf-dataset-ext";
-import { fileURLToPath } from "url";
+// @ts-ignore
+import tbbt from "tbbt-ld/dist/tbbt.nq";
+import result01 from "../../../fixtures/tests/jsonSchemaGraphInfuser_01.json";
 
 import { jsonSchemaGraphInfuser } from "./jsonSchemaGraphInfuser";
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-
 function sampleDataset() {
-  //const filename = path.join(path.dirname(require.resolve('tbbt-ld')), 'dist/tbbt.nq')
-  const filename = path.join(
-    __dirname,
-    "../../../node_modules/tbbt-ld",
-    "dist/tbbt.nq",
-  );
-  console.log(filename);
-  const input = fs.createReadStream(filename);
+  const input = fs.createReadStream(tbbt);
   const parser = new N3Parser();
 
   return dsExt.fromStream(datasetFactory.dataset(), parser.import(input));
@@ -93,51 +85,6 @@ describe("can get data via json schema", () => {
         maxRecursion: 5,
       },
     );
-    //console.log(JSON.stringify(data, null, 2))
-    expect(data).toStrictEqual({
-      familyName: "Hofstadter",
-      givenName: "Leonard",
-      knows: [
-        {
-          familyName: "Fowler",
-          givenName: "Amy",
-          knows: [],
-        },
-        {
-          familyName: "Rostenkowski-Wolowitz",
-          givenName: "Bernadette",
-          knows: [],
-        },
-        {
-          familyName: "Wolowitz",
-          givenName: "Howard",
-          knows: [],
-        },
-        {
-          givenName: "Penny",
-          knows: [],
-        },
-        {
-          familyName: "Koothrappali",
-          givenName: "Rajesh",
-          knows: [],
-        },
-        {
-          familyName: "Cooper",
-          givenName: "Sheldon",
-          knows: [],
-        },
-        {
-          familyName: "Bloom",
-          givenName: "Stuart",
-          knows: [],
-        },
-        {
-          familyName: "Cooper",
-          givenName: "Mary",
-          knows: [],
-        },
-      ],
-    });
+    expect(data).toStrictEqual(result01);
   });
 });

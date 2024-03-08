@@ -84,7 +84,6 @@ describe("make construct query", () => {
         },
       })
       .toString();
-    console.log(constructQuery);
     expect(constructQuery).toMatch(/CONSTRUCT {.*/);
   });
 
@@ -94,7 +93,6 @@ describe("make construct query", () => {
       schema2,
       ["@id"],
     );
-    console.log(whereOptionals);
     expect(whereOptionals).toMatch(subject);
   });
 });

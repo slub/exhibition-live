@@ -68,14 +68,8 @@ describe("make select query", () => {
     const query = jsonSchema2Select(schema, "http://example.com/person");
     //trim whitespace on each line
     const strippedQuery = query.replace(/^\s+|\s+$/gm, "");
-    console.log(strippedQuery);
     expect(strippedQuery).toEqual(
-      `SELECT ?entity  (SAMPLE(?name_0) AS ?name_0_single)  (COUNT(?knows_0) AS ?knows_0_count)  (SAMPLE(?name_1) AS ?name_1_single)  (SAMPLE(?description_1) AS ?description_1_single)  WHERE {
-?entity a <http://example.com/person> .
-?entity :name ?name_0 .  OPTIONAL {  ?entity :knows ?knows_0 .  }  ?entity :father ?father_0 .
-OPTIONAL {  ?father_0 :name ?name_1 .  }  OPTIONAL {  ?father_0 :description ?description_1 .  }
-}
-GROUP BY ?entity`,
+      "SELECT DISTINCT ?entity  (SAMPLE(?name) AS ?name_single)  (COUNT(DISTINCT ?knows) AS ?knows_count)  (SAMPLE(?father_name) AS ?father_name_single)  (SAMPLE(?father_description) AS ?father_description_single)  WHERE {\n?entity a <http://example.com/person> .\n?entity :name ?name .  OPTIONAL {  ?entity :knows ?knows .\n}  ?entity :father ?father .\nOPTIONAL {  ?father :name ?father_name .  }  OPTIONAL {  ?father :description ?father_description .  }\n}\nGROUP BY ?entity"
     );
   });
 });

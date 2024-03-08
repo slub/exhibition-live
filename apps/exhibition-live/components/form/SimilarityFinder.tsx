@@ -374,7 +374,6 @@ const SimilarityFinder: FunctionComponent<Props> = ({
 
   useEffect(() => {
     if (!searchString || searchString.length < 1) return;
-    console.log("searching", searchString, preselectedClassIRI)
     searchAll(searchString, preselectedClassIRI, {limit: 10})
   }, [searchString, preselectedClassIRI, searchAll]);
 
@@ -440,7 +439,6 @@ const SimilarityFinder: FunctionComponent<Props> = ({
       if (!id || !entryData?.allProps) return;
       const knowledgeBaseDescription = knowledgeBases.find(kb => kb.id === source)
       const mappingConfig = declarativeMappings[typeName];
-      console.log("mappingConfig", mappingConfig);
       if (!mappingConfig) {
         console.warn(`no mapping config for ${typeName}`);
         return;

@@ -1,24 +1,27 @@
 import {describe, expect, test} from "@jest/globals";
 import fs from "fs";
 import {JSONSchema7} from "json-schema";
-import path, {dirname} from "path";
 import dsExt from "rdf-dataset-ext";
 
-import {jsonSchemaGraphInfuser} from "./traverseGraphExtractBySchema";
 import datasetFactory from "@rdfjs/dataset";
 import N3Parser from "@rdfjs/parser-n3";
 import {Dataset} from "@rdfjs/types";
+//import * as tbbt from "tbbt-ld/dist/tbbt.nq";
+//@ts-ignore
+//import testResult01 from "fixture/test_01.json";
+import { fileURLToPath } from 'url';
+import { resolve, dirname } from 'path';
+import {jsonSchemaGraphInfuser} from "./traverseGraphExtractBySchema";
 
+// Mimic __filename and __dirname
 // @ts-ignore
-//const __dirname = dirname(fileURLToPath(import.meta.url));
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+const testResult01 = JSON.parse( fs.readFileSync(resolve(__dirname,  'fixture', 'test_01.json', ), 'utf-8'));
 
 function sampleDataset() {
-  const filename = path.join(
-    __dirname,
-    "../../../node_modules/tbbt-ld",
-    "dist/tbbt.nq",
-  );
-  const input = fs.createReadStream(filename);
+  const input = fs.createReadStream(resolve( __dirname, '..','..', '..','node_modules', 'tbbt-ld', "dist", "tbbt.nq"));
   const parser = new N3Parser();
 
   return dsExt.fromStream(datasetFactory.dataset(), parser.import(input));
@@ -92,82 +95,6 @@ describe("can get data via json schema", () => {
       },
     );
     //console.log(JSON.stringify(data, null, 2))
-    expect(data).toStrictEqual({
-      "@id": "http://localhost:8080/data/person/leonard-hofstadter",
-      "@type": "http://schema.org/Person",
-      "address": {
-        "addressCountry": "US",
-        "addressRegion": "CA",
-        "postalCode": "91104",
-        "streetAddress": "2311 North Los Robles Avenue, Aparment 4A",
-      },
-      familyName: "Hofstadter",
-      givenName: "Leonard",
-      knows: [
-        {
-          "@id": "http://localhost:8080/data/person/amy-farrah-fowler",
-          "@type": "http://schema.org/Person",
-          familyName: "Fowler",
-          givenName: "Amy",
-        },
-        {
-          "@id": "http://localhost:8080/data/person/bernadette-rostenkowski",
-          "@type": "http://schema.org/Person",
-          familyName: "Rostenkowski-Wolowitz",
-          givenName: "Bernadette",
-        },
-        {
-          "@id": "http://localhost:8080/data/person/howard-wolowitz",
-          "@type": "http://schema.org/Person",
-          familyName: "Wolowitz",
-          givenName: "Howard",
-        },
-        {
-          "@id": "http://localhost:8080/data/person/penny",
-          "@type": "http://schema.org/Person",
-          "address": {
-            "addressCountry": "US",
-            "addressRegion": "CA",
-            "postalCode": "91104",
-            "streetAddress": "2311 North Los Robles Avenue, Aparment 4B",
-          },
-          givenName: "Penny",
-        },
-        {
-          "@id": "http://localhost:8080/data/person/rajesh-koothrappali",
-          "@type": "http://schema.org/Person",
-          familyName: "Koothrappali",
-          givenName: "Rajesh",
-        },
-        {
-          "@id": "http://localhost:8080/data/person/sheldon-cooper",
-          "@type": "http://schema.org/Person",
-          "address": {
-            "addressCountry": "US",
-            "addressRegion": "CA",
-            "postalCode": "91104",
-            "streetAddress": "2311 North Los Robles Avenue, Aparment 4A",
-          },
-          familyName: "Cooper",
-          givenName: "Sheldon",
-        },
-        {
-          "@id": "http://localhost:8080/data/person/stuart-bloom",
-          "@type": "http://schema.org/Person",
-          familyName: "Bloom",
-          givenName: "Stuart",
-        },
-        {
-          "@id": "http://localhost:8080/data/person/mary-cooper",
-          "@type": "http://schema.org/Person",
-          "address": {
-            "addressCountry": "US",
-            "addressRegion": "TX",
-          },
-          familyName: "Cooper",
-          givenName: "Mary",
-        },
-      ],
-    });
+    expect(data).toStrictEqual(testResult01);
   });
 });

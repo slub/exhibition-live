@@ -1,11 +1,21 @@
 {
-  "name": "@slub/edb-graph-traversal_src",
+  "name": "@slub/edb-graph-traversal",
   "version": "1.0.0",
   "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs",
+      "default": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
   "description": "A TypeScript library for traversing RDF Graphs to extract and query data matching JSON Schemas, facilitating the development of semantic user interfaces.",
   "scripts": {
-    "build:package.json": "make-package-json",
-    "build": "tsup && pnpm run build:package.json",
+    "build": "tsup",
     "lint": "eslint \"**/*.ts*\"",
     "lint-fix": "eslint --fix \"**/*.ts*\"",
     "test": "NODE_OPTIONS=--experimental-vm-modules jest",
@@ -20,10 +30,11 @@
     "@slub/edb-build-helper": "workspace:*",
     "@slub/edb-tsconfig": "workspace:*",
     "@slub/edb-tsup-config": "workspace:*",
+    "@types/jest": "^29.5.12",
     "@types/json-schema": "^7.0.14",
     "@types/lodash": "^4.14.200",
-    "@types/rdfjs__data-model": "^2.0.7",
     "@types/rdf-dataset-ext": "^1.0.3",
+    "@types/rdfjs__data-model": "^2.0.7",
     "@types/rdfjs__dataset": "^2.0.0",
     "@types/rdfjs__namespace": "^2.0.8",
     "@types/rdfjs__parser-jsonld": "^1.2.5",
@@ -32,6 +43,7 @@
     "jest": "^29.7.0",
     "rdf-dataset-ext": "^1.0.1",
     "ts-jest": "^29.1.2",
+    "ts-jest-mock-import-meta": "^1.2.0",
     "typescript": "^5.3.3"
   },
   "dependencies": {
@@ -44,7 +56,7 @@
     "@tpluscode/rdf-ns-builders": "^2.0.1",
     "add": "^2.0.6",
     "clownface": "2.0.2",
-    "lodash": "^4.17.21",
+    "lodash-es": "^4.17.21",
     "pnpm": "^8.15.3"
   },
   "repository": {

@@ -51,10 +51,13 @@
     "@rdfjs/data-model": "^2.0.2",
     "@rdfjs/dataset": "^2.0.1",
     "@rdfjs/namespace": "^2.0.0",
-    "@rdfjs/parser-jsonld": "^2.1.0",
     "@rdfjs/parser-n3": "^2.0.1",
     "@rdfjs/types": "^1.1.0",
     "@react-oauth/google": "^0.12.1",
+    "@slub/edb-core-utils": "workspace:*",
+    "@slub/edb-graph-traversal": "workspace:*",
+    "@slub/remte-query-implementations": "workspace:*",
+    "@slub/sparql-schema": "workspace:*",
     "@tabler/icons": "^2.38.0",
     "@tanstack/react-query": "^4.24.6",
     "@tanstack/react-query-devtools": "^5.8.2",
@@ -122,11 +125,7 @@
     "vis-timeline": "^7.7.3",
     "vis-util": "^5.0.6",
     "xss": "^1.0.14",
-    "zustand": "^4.3.2",
-    "@slub/edb-graph-traversal": "workspace:*",
-    "@slub/edb-core-utils": "workspace:*",
-    "@slub/sparql-schema": "workspace:*",
-    "@slub/remte-query-implementations": "workspace:*"
+    "zustand": "^4.3.2"
   },
   "devDependencies": {
     "@babel/core": "^7.20.12",

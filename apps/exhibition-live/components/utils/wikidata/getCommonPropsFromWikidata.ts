@@ -2,9 +2,9 @@ import { QueryEngine } from "@comunica/query-sparql";
 import { BindingsStream, IDataSource } from "@comunica/types";
 import { Literal } from "@rdfjs/types";
 
-import { prefixes2sparqlPrefixDeclaration } from "../sparql";
 import { wikidataPrefixes } from "./prefixes";
 import isNil from "lodash/isNil";
+import {prefixes2sparqlPrefixDeclaration} from "@slub/sparql-schema";
 
 const buildPropsQuery = (entity: string, withSubclassRelations?: boolean) => `
 SELECT ?property ?propLabel ?object ?objectLabel

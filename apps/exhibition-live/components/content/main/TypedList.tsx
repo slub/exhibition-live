@@ -11,8 +11,7 @@ import { v4 as uuidv4 } from "uuid";
 import { useGlobalCRUDOptions } from "../../state/useGlobalCRUDOptions";
 import {
   jsonSchema2Select,
-  SPARQLFlavour,
-} from "../../utils/sparql/jsonSchema2Select";
+} from "../../utils/sparql";
 import {
   Backdrop,
   Box,
@@ -68,7 +67,6 @@ import { remove, moveToTrash } from "../../utils/crud";
 import { JsonSchema } from "@jsonforms/core";
 import useExtendedSchema from "../../state/useExtendedSchema";
 import Button from "@mui/material/Button";
-import { withDefaultPrefix } from "../../utils/crud/makeSPARQLWherePart";
 import get from "lodash/get";
 import { download, generateCsv, mkConfig } from "export-to-csv";
 import { useDrawerDimensions } from "../../state";
@@ -79,6 +77,8 @@ import { OverflowChip } from "../../lists/OverflowChip";
 import { SparqlEndpoint, useSettings } from "../../state/useLocalSettings";
 import { EntityDetailModal } from "../../form/show";
 import { useTranslation } from "next-i18next";
+import {withDefaultPrefix} from "@slub/sparql-schema";
+import { SPARQLFlavour } from "@slub/edb-core-types";
 
 type Props = {
   typeName: string;

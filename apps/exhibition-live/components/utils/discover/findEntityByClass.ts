@@ -1,11 +1,10 @@
-import { variable } from "@rdfjs/data-model";
+import df from "@rdfjs/data-model";
 import { SELECT } from "@tpluscode/sparql-builder";
 
 import {
   defaultPrefix,
   defaultQueryBuilderOptions,
 } from "../../form/formConfigs";
-import { defaultQuerySelect } from "../sparql/remoteOxigraph";
 
 export function fixSparqlOrder(sparqlQuery) {
   const regex = /(ORDER BY\s+[^ ]+)(\s*)GROUP BY\s+\(([^\)]+)\)/gm;
@@ -17,16 +16,16 @@ export const findEntityByClass: (searchString: (string | null), typeIRI: string,
   doQuery: (query: string) => Promise<any>,
   limit: number = 10,
 ) => {
-  const subjectV = variable("subject"),
-    nameV = variable("name"),
-    titleV = variable("title"),
-    descriptionV = variable("description"),
-    concatenatedV = variable("concatenated"),
-    safeNameV = variable("safeName"),
-    safeTitleV = variable("safeTitle"),
-    safeDescriptionV = variable("safeDescription"),
-    oneOfTitleV = variable("oneOfTitle"),
-    firstOneOfTitleV = variable("firstOneOfTitle");
+  const subjectV = df.variable("subject"),
+    nameV = df.variable("name"),
+    titleV = df.variable("title"),
+    descriptionV = df.variable("description"),
+    concatenatedV = df.variable("concatenated"),
+    safeNameV = df.variable("safeName"),
+    safeTitleV = df.variable("safeTitle"),
+    safeDescriptionV = df.variable("safeDescription"),
+    oneOfTitleV = df.variable("oneOfTitle"),
+    firstOneOfTitleV = df.variable("firstOneOfTitle");
   let query =
     searchString && searchString.length > 0
       ? SELECT.DISTINCT` ${subjectV} (SAMPLE(${oneOfTitleV}) AS ${firstOneOfTitleV})`

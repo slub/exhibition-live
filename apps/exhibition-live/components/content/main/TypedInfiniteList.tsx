@@ -8,7 +8,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import schema from "../../../public/schema/Exhibition.schema.json";
 import { v4 as uuidv4 } from "uuid";
 import { useGlobalCRUDOptions } from "../../state/useGlobalCRUDOptions";
-import { jsonSchema2Select } from "../../utils/sparql/jsonSchema2Select";
+import { jsonSchema2Select } from "../../utils/sparql";
 import {
   Box,
   Link,
@@ -45,10 +45,10 @@ import { remove } from "../../utils/crud";
 import { JsonSchema } from "@jsonforms/core";
 import useExtendedSchema from "../../state/useExtendedSchema";
 import Button from "@mui/material/Button";
-import { withDefaultPrefix } from "../../utils/crud/makeSPARQLWherePart";
 import { flatten } from "lodash";
 import get from "lodash/get";
 import { useModifiedRouter } from "../../basic";
+import {withDefaultPrefix} from "@slub/sparql-schema";
 
 type Props = {
   typeName: string;

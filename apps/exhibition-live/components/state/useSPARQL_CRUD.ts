@@ -1,10 +1,5 @@
-import { NamespaceBuilder } from "@rdfjs/namespace";
 import {
-  Bindings,
   Dataset,
-  DatasetCore,
-  Quad,
-  ResultStream,
 } from "@rdfjs/types";
 import {
   QueryObserverOptions,
@@ -28,11 +23,12 @@ import { useSnackbar } from "notistack";
 
 import {
   jsonSchemaGraphInfuser,
-  WalkerOptions,
 } from "../utils/graph/jsonSchemaGraphInfuser";
 import { jsonSchema2construct } from "../utils/sparql";
 import { useQueryKeyResolver } from "./useQueryKeyResolver";
-import { variable } from "@rdfjs/data-model";
+import df from "@rdfjs/data-model";
+import {CRUDFunctions, SparqlBuildOptions} from "@slub/edb-core-types";
+import {WalkerOptions} from "@slub/edb-graph-traversal";
 
 type OwnUseCRUDResults = {
   save: (data?: any) => Promise<void>;
@@ -46,31 +42,6 @@ type OwnUseCRUDResults = {
 };
 
 export type UseCRUDResults = UseQueryResult<any, Error> & OwnUseCRUDResults;
-export interface SparqlBuildOptions {
-  base?: string;
-  prefixes?: Record<string, string | NamespaceBuilder>;
-}
-
-export interface SelectFetchOptions {
-  withHeaders?: boolean;
-}
-
-export type CRUDFunctions = {
-  updateFetch: (
-    query: string,
-  ) => Promise<
-    | ResultStream<any>
-    | boolean
-    | void
-    | ResultStream<Bindings>
-    | ResultStream<Quad>
-    | Response
-  >;
-  constructFetch: (query: string) => Promise<DatasetCore>;
-  selectFetch: (query: string, options?: SelectFetchOptions) => Promise<any>;
-  askFetch: (query: string) => Promise<boolean>;
-};
-
 export type CRUDOptions = CRUDFunctions & {
   defaultPrefix: string;
   data: any;
@@ -127,7 +98,7 @@ export const useSPARQL_CRUD = (
     async (entityIRI_: string) => {
       const ownIRI = entityIRI_ || entityIRI;
       if (!ownIRI || !selectFetch) return null;
-      const classes = variable("classes");
+      const classes = df.variable("classes");
       const query = SELECT`${classes}`.WHERE`
       <${ownIRI}> a ${classes} .
     `.build(queryBuildOptions);

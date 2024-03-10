@@ -60,7 +60,7 @@ import {
   DeclarativeMatchBasedFlatMapping,
   DeclarativeMatchBasedFlatMappings
 } from "../utils/mapping/mapMatchBasedByConfig";
-import {CRUDFunctions} from "../state/useSPARQL_CRUD";
+import { CRUDFunctions } from "@slub/edb-core-types";
 
 //we will create a cashed worksheet, were selectively rows are preloaded and once loaded use for a certain stale time
 type CachedWorkSheet = {

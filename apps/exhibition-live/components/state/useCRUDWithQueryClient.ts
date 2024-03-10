@@ -13,13 +13,13 @@ import {
   exists,
   load,
   LoadResult,
-  NamedAndTypedEntity,
   remove,
   save,
 } from "../utils/crud";
 import { useQueryKeyResolver } from "./useQueryKeyResolver";
 import { JsonLdContext } from "jsonld-context-parser";
 import { filterUndefOrNull } from "../utils/core";
+import {NamedAndTypedEntity} from "@slub/edb-core-types";
 
 export const useCRUDWithQueryClient = (
   entityIRI: string | undefined,

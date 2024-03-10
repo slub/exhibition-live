@@ -20,7 +20,7 @@ import { useMemo } from "react";
 import { SearchBar } from "./Search";
 import { ParentSize } from "@visx/responsive";
 import { fixSparqlOrder } from "../../utils/discover";
-import { variable } from "@rdfjs/data-model";
+import df from "@rdfjs/data-model";
 import { useTranslation } from "next-i18next";
 
 export const HeaderTitle = styled(Typography)(({ theme }) => ({
@@ -106,7 +106,7 @@ export const Dashboard = (props) => {
   const { data: typeCountData } = useQuery(
     ["typeCount"],
     () => {
-      const countV = variable("count");
+      const countV = df.variable("count");
       const query = fixSparqlOrder(
         SELECT`
       ?type (COUNT(?s) AS ${countV})`.WHERE`

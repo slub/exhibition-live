@@ -8,10 +8,10 @@ import dsExt from "rdf-dataset-ext";
 import React, { FunctionComponent, useEffect, useState } from "react";
 import { JsonView } from "react-json-view-lite";
 import stringToStream from "string-to-stream";
+import { WalkerOptions } from "@slub/edb-graph-traversal"
 
 import {
   jsonSchemaGraphInfuser,
-  WalkerOptions,
 } from "../../utils/graph/jsonSchemaGraphInfuser";
 import { addressSchema } from "../../../fixtures/schema";
 import { bringDefinitionToTop } from "../../utils/core";

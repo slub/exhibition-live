@@ -9,8 +9,8 @@ import stringToStream from "string-to-stream";
 
 import {
   jsonSchemaGraphInfuser,
-  WalkerOptions,
 } from "../utils/graph/jsonSchemaGraphInfuser";
+import {WalkerOptions} from "@slub/edb-graph-traversal";
 
 type UseJsonLdParserOptions = {
   onJsonldData?: (data: any) => void;

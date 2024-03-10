@@ -10,11 +10,10 @@ import { useGlobalCRUDOptions } from "../../state/useGlobalCRUDOptions";
 import { SELECT } from "@tpluscode/sparql-builder";
 import { primaryFields, typeIRItoTypeName } from "../../config";
 import { defaultPrefix } from "../../form/formConfigs";
-import { variable } from "@rdfjs/data-model";
+import df from "@rdfjs/data-model";
 import { isString, orderBy, uniq } from "lodash";
 import { fixSparqlOrder } from "../../utils/discover";
 import { Box, Chip, Grid, Skeleton, Tab, Tabs } from "@mui/material";
-import { withDefaultPrefix } from "../../utils/crud/makeSPARQLWherePart";
 import { filterUndefOrNull } from "../../utils/core";
 import { Line, LineChart, Tooltip, XAxis, YAxis } from "recharts";
 import VisTimelineWrapper from "../visTimelineWrapper/VisTimelineWrapper";
@@ -32,6 +31,7 @@ import {
 import { useTranslation } from "next-i18next";
 import NiceModal from "@ebay/nice-modal-react";
 import { EntityDetailModal } from "../../form/show";
+import {withDefaultPrefix} from "@slub/sparql-schema";
 
 const makeFilterUNION2 = (searchString: string, length: number) => {
   const filterUNION = [];
@@ -247,7 +247,7 @@ export const SearchBar = ({ relevantTypes }: { relevantTypes: string[] }) => {
     ["search", searchText],
     async () => {
       if (!selectFetch) return [];
-      const count = variable("count");
+      const count = df.variable("count");
       const searchString = searchText.toLowerCase().replace(/"/g, "");
       const defaultClassIRIs = relevantTypes.map((iri) => `<${iri}>`);
       const query = fixSparqlOrder(
@@ -327,7 +327,7 @@ export const SearchBar = ({ relevantTypes }: { relevantTypes: string[] }) => {
         selectedClassIRIs.length > 0
           ? selectedClassIRIs.map((iri) => `<${iri}>`)
           : defaultClassIRIs;
-      const entityV = variable("entity");
+      const entityV = df.variable("entity");
       const query = fixSparqlOrder(
         withDefaultPrefix(
           defaultPrefix,

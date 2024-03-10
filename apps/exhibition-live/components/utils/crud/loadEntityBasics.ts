@@ -1,6 +1,5 @@
-import { PrimaryField } from "../types";
 import { basicFieldsQuery } from "./basicFieldsQuery";
-import { SPARQLCRUDOptions } from "./types";
+import {PrimaryField, SPARQLCRUDOptions} from "@slub/edb-core-types";
 
 export const loadEntityBasics = async (
   entityIRI: string,

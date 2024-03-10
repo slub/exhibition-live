@@ -3,12 +3,10 @@ import { WorkerResult } from "async-oxigraph";
 import N3 from "n3";
 import { useCallback, useMemo } from "react";
 
-import { oxigraphCrudOptions } from "../utils/sparql/remoteOxigraph";
-import { allegroCrudOptions } from "../utils/sparql/remoteAllegro";
 import { SparqlEndpoint, useSettings } from "./useLocalSettings";
 import { useOxigraph } from "./useOxigraph";
-import { CRUDFunctions } from "./useSPARQL_CRUD";
-import { qleverCrudOptions } from "../utils/sparql/remoteQlever";
+import {CRUDFunctions} from "@slub/edb-core-types";
+import {allegroCrudOptions, oxigraphCrudOptions, qleverCrudOptions} from "@slub/remte-query-implementations";
 
 type UseGlobalCRUDOptions = () => {
   crudOptions?: CRUDFunctions;

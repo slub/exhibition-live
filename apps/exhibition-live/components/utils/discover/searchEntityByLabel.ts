@@ -1,4 +1,4 @@
-import { variable } from "@rdfjs/data-model";
+import df from "@rdfjs/data-model";
 import { SELECT } from "@tpluscode/sparql-builder";
 import {
   defaultPrefix,
@@ -12,7 +12,7 @@ export const searchEntityByLabel = async (
   doQuery: (query: string) => Promise<any>,
   limit: number = 10,
 ) => {
-  const subjectV = variable("subject");
+  const subjectV = df.variable("subject");
   const typeName = typeIRItoTypeName(typeIRI);
   const primaryField = primaryFields[typeName];
   const labelField = primaryField?.label || "label";

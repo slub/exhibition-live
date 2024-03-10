@@ -11,3 +11,6 @@ export * from "./getClasses";
 export * from "./cleanJSONLD";
 export * from "./moveToTrash";
 export * from "./restoreFromTrash";
+export * from "./jsonld2NTriples";
+export * from "./jsonld2DataSet";
+export * from "./dataset2NTriples";

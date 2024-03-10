@@ -7,6 +7,7 @@ import { JsonLdContext } from "jsonld-context-parser";
 import { JSONSchema7 } from "json-schema";
 import {traverseGraphExtractBySchema, WalkerOptions} from "@slub/edb-graph-traversal";
 import {NamedEntityData} from "@slub/edb-core-types";
+import {jsonld2DataSet} from "./jsonld2DataSet";
 
 type CleanJSONLDOptions = {
   walkerOptions?: Partial<WalkerOptions>;
@@ -132,12 +133,7 @@ export const cleanJSONLD = async (
   };
 
   try {
-    const jsonldStream = stringToStream(JSON.stringify(jsonldDoc));
-    const parser = new Parser();
-    const ds = await dsExt.fromStream(
-      datasetFactory.dataset(),
-      parser.import(jsonldStream),
-    );
+    const ds = await jsonld2DataSet(jsonldDoc);
     const res = traverseGraphExtractBySchema(
       defaultPrefix,
       entityIRI,

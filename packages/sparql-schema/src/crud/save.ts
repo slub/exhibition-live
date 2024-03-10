@@ -1,10 +1,14 @@
 import N3 from "n3";
-import jsonld from "jsonld";
+import Parser from "@rdfjs/parser-jsonld";
 import { INSERT } from "@tpluscode/sparql-builder";
 import { withDefaultPrefix } from "./makeSPARQLWherePart";
 import { JSONSchema7 } from "json-schema";
 import { makeSPARQLDeleteQuery } from "./makeSPARQLDeleteQuery";
 import {NamedAndTypedEntity, SPARQLCRUDOptions} from "@slub/edb-core-types";
+import dsExt from "rdf-dataset-ext";
+import datasetFactory from "@rdfjs/dataset";
+import stringToStream from "string-to-stream";
+import {dataset2NTriples} from "./dataset2NTriples";
 
 type SaveOptions = SPARQLCRUDOptions & {
   skipRemove?: boolean;
@@ -18,11 +22,7 @@ export const save = async (
   const { skipRemove, queryBuildOptions, defaultPrefix } = options;
   const entityIRI = dataToBeSaved["@id"];
   const typeIRI = dataToBeSaved["@type"];
-  const ntWriter = new N3.Writer({ format: "Turtle" });
-  const ds = await jsonld.toRDF(dataToBeSaved);
-
-  // @ts-ignore
-  const ntriples = ntWriter.quadsToString([...ds]).replaceAll("_:_:", "_:");
+  const ntriples = await dataset2NTriples(dataToBeSaved as any);
   const insertQuery = withDefaultPrefix(
     defaultPrefix,
     INSERT.DATA` ${ntriples} `.build(queryBuildOptions),

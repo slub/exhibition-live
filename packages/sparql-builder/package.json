@@ -1,0 +1,42 @@
+{
+  "name": "@slub/sparql-schema",
+  "version": "1.0.0",
+  "description": "JsonSchema to SPARQL Query converter",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs",
+      "default": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsup",
+    "lint": "eslint \"**/*.ts*\"",
+    "lint-fix": "eslint --fix \"**/*.ts*\"",
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest",
+    "test:watch": "NODE_OPTIONS=--experimental-vm-modules jest --watch --color",
+    "test:coverage": "NODE_OPTIONS=--experimental-vm-modules jest --coverage",
+    "doc": "typedoc"
+  },
+  "devDependencies": {
+    "@slub/edb-build-helper": "workspace:*",
+    "@slub/edb-core-types": "workspace:*",
+    "@slub/edb-tsconfig": "workspace:*",
+    "@slub/edb-tsup-config": "workspace:*",
+    "@types/jest": "^29.5.12",
+    "@types/json-schema": "^7.0.14",
+    "eslint-config-edb": "workspace:*",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "@tpluscode/rdf-ns-builders": "^4.3.0",
+    "@tpluscode/sparql-builder": "^0.3.31",
+    "ajv": "^8.12.0",
+    "json-schema": "^0.4.0"
+  }
+}

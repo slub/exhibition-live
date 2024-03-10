@@ -1,0 +1,12 @@
+{
+  "name": "@slub/edb-core-types",
+  "version": "1.0.0",
+  "description": "Core types for EDB",
+  "type": "module",
+  "types": "./index.d.ts",
+  "scripts": {
+    "lint": "eslint \"**/*.ts*\"",
+    "lint-fix": "eslint --fix \"**/*.ts*\"",
+    "doc": "typedoc"
+  }
+}

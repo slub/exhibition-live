@@ -232,7 +232,7 @@ const propertyWalker = (
     ...Object.fromEntries(entries),
   };
 };
-export const jsonSchemaGraphInfuser = (
+export const traverseGraphExtractBySchema = (
   baseIRI: string,
   iri: string,
   dataset: Dataset,

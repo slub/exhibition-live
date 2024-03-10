@@ -11,7 +11,7 @@ import {Dataset} from "@rdfjs/types";
 //import testResult01 from "fixture/test_01.json";
 import { fileURLToPath } from 'url';
 import { resolve, dirname } from 'path';
-import {jsonSchemaGraphInfuser} from "./traverseGraphExtractBySchema";
+import {traverseGraphExtractBySchema} from "./traverseGraphExtractBySchema";
 
 // Mimic __filename and __dirname
 // @ts-ignore
@@ -82,7 +82,7 @@ describe("can get data via json schema", () => {
   test("get from test schema", async () => {
     const schema = {...schemaStub, ...schemaStub.$defs.Person};
     const ds = await sampleDataset();
-    const data = jsonSchemaGraphInfuser(
+    const data = traverseGraphExtractBySchema(
       baseIRI,
       "http://localhost:8080/data/person/leonard-hofstadter",
       ds as Dataset,

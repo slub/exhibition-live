@@ -1,10 +1,10 @@
 import N3 from "n3";
 import jsonld from "jsonld";
 import { INSERT } from "@tpluscode/sparql-builder";
-import { NamedAndTypedEntity, SPARQLCRUDOptions } from "./types";
 import { withDefaultPrefix } from "./makeSPARQLWherePart";
 import { JSONSchema7 } from "json-schema";
 import { makeSPARQLDeleteQuery } from "./makeSPARQLDeleteQuery";
+import {NamedAndTypedEntity, SPARQLCRUDOptions} from "@slub/edb-core-types";
 
 type SaveOptions = SPARQLCRUDOptions & {
   skipRemove?: boolean;
@@ -41,7 +41,7 @@ export const save = async (
   try {
     await updateFetch(deleteQuery);
   } catch (e) {
-    throw new Error("unable to delete the entry - DELETE query failed", e);
+    throw new Error("unable to delete the entry - DELETE query failed", { cause: e});
   }
   return await updateFetch(insertQuery);
 };

@@ -1,4 +1,3 @@
-import { NamedAndTypedEntity } from "./types";
 import { makeSPARQLWherePart } from "./makeSPARQLWherePart";
 import { ASK } from "@tpluscode/sparql-builder";
 

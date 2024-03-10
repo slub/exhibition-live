@@ -1,12 +1,9 @@
 import { JSONSchema7 } from "json-schema";
-import { NamedAndTypedEntity, SPARQLCRUDOptions } from "./types";
 import { makeSPARQLConstructQuery } from "./makeSPARQLConstructQuery";
-import {
-  jsonSchemaGraphInfuser,
-  WalkerOptions,
-} from "../graph/jsonSchemaGraphInfuser";
 import { JsonLdContext } from "jsonld-context-parser";
 import { Dataset, DatasetCore } from "@rdfjs/types";
+import {traverseGraphExtractBySchema, WalkerOptions} from "@slub/edb-graph-traversal";
+import {SPARQLCRUDOptions} from "@slub/edb-core-types";
 
 type LoadOptions = SPARQLCRUDOptions & {
   walkerOptions?: Partial<WalkerOptions>;
@@ -39,7 +36,7 @@ export const load = async (
       subjects.add(quad.subject.value);
     }
   }
-  const document = jsonSchemaGraphInfuser(
+  const document = traverseGraphExtractBySchema(
     options.defaultPrefix,
     entityIRI,
     ds as Dataset,

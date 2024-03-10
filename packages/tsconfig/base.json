@@ -2,6 +2,8 @@
   "$schema": "https://json.schemastore.org/tsconfig",
   "display": "Default",
   "compilerOptions": {
+    "lib": ["es2022"],
+    "target": "es2022",
     "composite": false,
     "declaration": true,
     "declarationMap": true,

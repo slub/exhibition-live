@@ -1,7 +1,7 @@
 import { JSONSchema7 } from "json-schema";
-import { SPARQLCRUDOptions } from "./types";
 import { makeSPARQLWherePart, withDefaultPrefix } from "./makeSPARQLWherePart";
 import { DELETE } from "@tpluscode/sparql-builder";
+import {SPARQLCRUDOptions} from "@slub/edb-core-types";
 
 export const makeSPARQLRestoreFromTrashQuery = (
   entityIRI: string | string[],
@@ -10,13 +10,13 @@ export const makeSPARQLRestoreFromTrashQuery = (
   options: SPARQLCRUDOptions,
 ) => {
   const s = "?subject";
-  const wherePart = makeSPARQLWherePart(entityIRI, typeIRI, s);
+  const typeIRIWithTrash = typeIRI + "_trash";
+  const wherePart = makeSPARQLWherePart(entityIRI, typeIRIWithTrash, s);
   return withDefaultPrefix(
     options.defaultPrefix,
-    DELETE` ${s} a ?class_trash `.INSERT` ${s} a ?class `.WHERE`
+    DELETE` ${s} a ?class_trash `.INSERT` ${s} a <${typeIRI}> `.WHERE`
       ${wherePart}
-      ${s} a ?class_trash .
-      BIND (IRI(REPLACE(STR(?class_trash), "_trash", "")) AS ?class)`.build(
+      `.build(
       options.queryBuildOptions,
     ),
   );

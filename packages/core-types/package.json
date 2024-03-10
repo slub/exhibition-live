@@ -8,5 +8,9 @@
     "lint": "eslint \"**/*.ts*\"",
     "lint-fix": "eslint --fix \"**/*.ts*\"",
     "doc": "typedoc"
+  },
+  "dependencies": {
+    "@rdfjs/namespace": "^2.0.1",
+    "@rdfjs/types": "^1.1.0"
   }
 }

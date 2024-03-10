@@ -2,14 +2,11 @@ import stringToStream from "string-to-stream";
 import Parser from "@rdfjs/parser-jsonld";
 import dsExt from "rdf-dataset-ext";
 import datasetFactory from "@rdfjs/dataset";
-import {
-  jsonSchemaGraphInfuser,
-  WalkerOptions,
-} from "../graph/jsonSchemaGraphInfuser";
 import { Dataset } from "@rdfjs/types";
 import { JsonLdContext } from "jsonld-context-parser";
 import { JSONSchema7 } from "json-schema";
-import { NamedEntityData } from "./types";
+import {traverseGraphExtractBySchema, WalkerOptions} from "@slub/edb-graph-traversal";
+import {NamedEntityData} from "@slub/edb-core-types";
 
 type CleanJSONLDOptions = {
   walkerOptions?: Partial<WalkerOptions>;
@@ -141,7 +138,7 @@ export const cleanJSONLD = async (
       datasetFactory.dataset(),
       parser.import(jsonldStream),
     );
-    const res = jsonSchemaGraphInfuser(
+    const res = traverseGraphExtractBySchema(
       defaultPrefix,
       entityIRI,
       ds as Dataset,
@@ -152,6 +149,6 @@ export const cleanJSONLD = async (
       ? { ...res, "@context": finalJsonldContext }
       : res;
   } catch (e) {
-    throw new Error("Cannot convert JSONLD to dataset", e);
+    throw new Error("Cannot convert JSONLD to dataset", {cause: e });
   }
 };

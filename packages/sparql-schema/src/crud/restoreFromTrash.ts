@@ -1,17 +1,15 @@
 import { JSONSchema7 } from "json-schema";
-import { SPARQLCRUDOptions } from "./types";
-import { makeSPARQLDeleteQuery } from "./makeSPARQLDeleteQuery";
-import { makeSPARQLToTrashQuery } from "./makeSPARQLToTrashQuery";
+import {SPARQLCRUDOptions} from "@slub/edb-core-types";
+import {makeSPARQLRestoreFromTrashQuery} from "./makeSPARQLRestoreFromTrashQuery";
 
-export const moveToTrash = async (
+export const restoreFromTrash = async (
   entityIRI: string | string[],
   typeIRI: string | undefined,
   schema: JSONSchema7,
   updateFetch: (query: string) => Promise<any>,
   options: SPARQLCRUDOptions,
 ) => {
-  //will rename every classIRI to classIRI_trash
-  const renameClassQuery = makeSPARQLToTrashQuery(
+  const renameClassQuery = makeSPARQLRestoreFromTrashQuery(
     entityIRI,
     typeIRI,
     schema,

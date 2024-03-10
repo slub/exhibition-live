@@ -24,6 +24,7 @@
     "doc": "typedoc"
   },
   "devDependencies": {
+    "@rdfjs/types": "^1.1.0",
     "@slub/edb-build-helper": "workspace:*",
     "@slub/edb-core-types": "workspace:*",
     "@slub/edb-tsconfig": "workspace:*",
@@ -34,9 +35,15 @@
     "typescript": "^5.3.3"
   },
   "dependencies": {
+    "@rdfjs/data-model": "^2.0.2",
     "@tpluscode/rdf-ns-builders": "^4.3.0",
     "@tpluscode/sparql-builder": "^0.3.31",
     "ajv": "^8.12.0",
-    "json-schema": "^0.4.0"
+    "json-schema": "^0.4.0",
+    "jsonld": "^8.3.2",
+    "jsonld-context-parser": "^2.4.0",
+    "n3": "^1.17.2",
+    "rdf-dataset-ext": "^1.1.0",
+    "string-to-stream": "^3.0.1"
   }
 }

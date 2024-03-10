@@ -1,5 +1,5 @@
 import {Bindings, DatasetCore, Quad, ResultStream} from "@rdfjs/types";
-import {SelectFetchOptions} from "adb-next/components/state/useSPARQL_CRUD";
+import {NamespaceBuilder} from "@rdfjs/namespace";
 
 export type Prefixes = {
   [k: string]: string;
@@ -32,6 +32,44 @@ export type PrimaryFieldResults<T> = {
   label: T | null;
   description: T | null;
   image: T | null;
+};
+
+
+export type NamedEntityData = {
+  "@id": string;
+  [key: string]: any;
+};
+export type NamedAndTypedEntity = NamedEntityData & {
+  "@type": string;
+};
+export interface SparqlBuildOptions {
+  base?: string;
+  prefixes?: Record<string, string | NamespaceBuilder>;
+}
+
+export interface SelectFetchOptions {
+  withHeaders?: boolean;
+}
+
+export type CRUDFunctions = {
+  updateFetch: (
+    query: string,
+  ) => Promise<
+    | ResultStream<any>
+    | boolean
+    | void
+    | ResultStream<Bindings>
+    | ResultStream<Quad>
+    | Response
+  >;
+  constructFetch: (query: string) => Promise<DatasetCore>;
+  selectFetch: (query: string, options?: SelectFetchOptions) => Promise<any>;
+  askFetch: (query: string) => Promise<boolean>;
+};
+
+export type SPARQLCRUDOptions = {
+  queryBuildOptions?: SparqlBuildOptions;
+  defaultPrefix: string;
 };
 
 export type CRUDFunctions = {
@@ -69,3 +107,4 @@ export type SparqlEndpoint = {
     | "qlever";
 };
 
+export type SPARQLFlavour = "default" | "oxigraph" | "blazegraph" | "allegro";

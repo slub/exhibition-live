@@ -1,26 +1,31 @@
-import { jsonSchema2construct } from "../sparql";
 import { makeSPARQLWherePart, withDefaultPrefix } from "./makeSPARQLWherePart";
-import { DELETE } from "@tpluscode/sparql-builder";
 import { JSONSchema7 } from "json-schema";
-import { SPARQLCRUDOptions } from "./types";
+import { SPARQLCRUDOptions } from "@slub/edb-core-types";
+import { jsonSchema2construct } from "..";
+import { CONSTRUCT } from "@tpluscode/sparql-builder";
+import df from "@rdfjs/data-model";
 
-export const makeSPARQLDeleteQuery = (
+export const makeSPARQLConstructQuery = (
   entityIRI: string,
   typeIRI: string | undefined,
   schema: JSONSchema7,
   options: SPARQLCRUDOptions,
 ) => {
   const { defaultPrefix, queryBuildOptions } = options;
-  const wherePart = typeIRI ? makeSPARQLWherePart(entityIRI, typeIRI) : "";
+  const subjectV = df.variable("subject");
+  const wherePart = makeSPARQLWherePart(entityIRI, typeIRI, subjectV);
   const { construct, whereRequired, whereOptionals } = jsonSchema2construct(
-    entityIRI,
+    subjectV,
     schema,
-    ["@id"],
+    [],
     ["@id", "@type"],
   );
+  if (wherePart + whereRequired + whereOptionals === "") {
+    throw new Error("makeSPARQLConstructQuery:empty WHERE clause");
+  }
   return withDefaultPrefix(
     defaultPrefix,
-    DELETE` ${construct} `
+    CONSTRUCT` ${construct} `
       .WHERE`${wherePart} ${whereRequired}\n${whereOptionals}`.build(
       queryBuildOptions,
     ),

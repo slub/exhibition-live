@@ -3,9 +3,8 @@ import { JSONSchema7, JSONSchema7Definition } from "json-schema";
 
 import { isJSONSchema, isJSONSchemaDefinition } from "@slub/json-schema-utils";
 
-import { PrimaryFieldDeclaration } from "@slub/edb-core-types";
+import {PrimaryFieldDeclaration, SPARQLFlavour} from "@slub/edb-core-types";
 
-export type SPARQLFlavour = "default" | "oxigraph" | "blazegraph" | "allegro";
 const makeWherePart = (queryClause: string, required: boolean) =>
   required ? queryClause : ` OPTIONAL { ${queryClause} } `;
 const makePrefixedProperty = (property: string, prefix: string = "") =>

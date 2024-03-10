@@ -16,7 +16,6 @@ import {v4 as uuidv4} from "uuid";
 
 import {declarativeMappings} from "../config/lobidMappings";
 import {useSettings} from "../state/useLocalSettings";
-import {NodePropertyItem} from "../utils/graph/nodeToPropertyTree";
 import {Img} from "../utils/image/Img";
 import {mapByConfig} from "../utils/mapping/mapByConfig";
 import {
@@ -46,6 +45,7 @@ import LobidAllPropTable from "./lobid/LobidAllPropTable";
 import WikidataAllPropTable from "./wikidata/WikidataAllPropTable";
 import ClassicEntityCard from "./lobid/ClassicEntityCard";
 import {debounce} from "lodash";
+import {NodePropertyItem} from "@slub/edb-graph-traversal";
 
 // @ts-ignore
 type Props = {

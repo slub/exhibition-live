@@ -40,10 +40,7 @@ import {
 } from "material-react-table";
 import {
   encodeIRI,
-  filterForArrayProperties,
-  filterForPrimitiveProperties,
   filterUndefOrNull,
-  isJSONSchema,
 } from "../../utils/core";
 import { JSONSchema7 } from "json-schema";
 import {
@@ -57,7 +54,6 @@ import {
   Visibility,
 } from "@mui/icons-material";
 import { primaryFields } from "../../config";
-import { parseMarkdownLinks } from "../../utils/core/parseMarkdownLink";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { SemanticFormsModal } from "../../renderer/SemanticFormsModal";
 import NiceModal from "@ebay/nice-modal-react";
@@ -79,6 +75,8 @@ import { EntityDetailModal } from "../../form/show";
 import { useTranslation } from "next-i18next";
 import {withDefaultPrefix} from "@slub/sparql-schema";
 import { SPARQLFlavour } from "@slub/edb-core-types";
+import {filterForArrayProperties, filterForPrimitiveProperties, isJSONSchema} from "@slub/json-schema-utils";
+import { parseMarkdownLinks } from "@slub/edb-core-utils";
 
 type Props = {
   typeName: string;

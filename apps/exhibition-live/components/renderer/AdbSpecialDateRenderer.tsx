@@ -18,9 +18,8 @@ import {
   Hidden,
   TextField,
 } from "@mui/material";
+import {getDatePart, getPaddedDatePart, leftpad} from "@slub/edb-core-utils";
 import React, { useCallback } from "react";
-import { leftpad } from "../utils/core/leftpad";
-import { getDatePart, getPaddedDatePart } from "../utils/core/specialDate";
 
 const getDatePartAsString = (date: number, part: "day" | "month" | "year") => {
   const value = getDatePart(date, part);

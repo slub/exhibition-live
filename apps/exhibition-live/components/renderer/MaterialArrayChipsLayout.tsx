@@ -16,7 +16,7 @@ import { memo } from "./config";
 import { uniqBy, orderBy } from "lodash";
 import { SemanticFormsModal } from "./SemanticFormsModal";
 import { BASE_IRI } from "../config";
-import { bringDefinitionToTop, irisToData, makeFormsPath } from "../utils/core";
+import { irisToData, makeFormsPath } from "../utils/core";
 import { JSONSchema7 } from "json-schema";
 import {
   defaultJsonldContext,
@@ -31,6 +31,7 @@ import { useGlobalCRUDOptions } from "../state/useGlobalCRUDOptions";
 import { useCRUDWithQueryClient } from "../state/useCRUDWithQueryClient";
 import { useSnackbar } from "notistack";
 import { SimpleChipRenderer } from "./SimpleChipRenderer";
+import {bringDefinitionToTop} from "@slub/json-schema-utils";
 
 type OwnProps = {
   removeItems(path: string, toDelete: number[]): () => void;

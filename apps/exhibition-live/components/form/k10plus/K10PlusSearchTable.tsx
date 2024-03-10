@@ -27,16 +27,13 @@ import React, {
 
 import { useLocalHistory } from "../../state";
 import { useSettings } from "../../state/useLocalSettings";
-import {
-  NodePropertyTree,
-  nodeToPropertyTree,
-} from "../../utils/graph/nodeToPropertyTree";
 import { findEntityWithinK10Plus } from "../../utils/k10plus/findEntityWithinK10Plus";
 import { RecordElement } from "../../utils/k10plus/searchRetrieveResponse-types";
 import ClassicEntityCard from "../lobid/ClassicEntityCard";
 import ClassicResultListItem from "../result/ClassicResultListItem";
 import { fabio, geonames, radatana } from "./marc2rdfMappingDeclaration";
 import { kxp, mapDatafieldToQuads } from "./marcxml2rdf";
+import {NodePropertyTree, nodeToPropertyTree} from "@slub/edb-graph-traversal";
 
 type Props = {
   searchString: string;
@@ -60,8 +57,6 @@ const marcRecord2RDF: (record: RecordElement) => KXPEntry = (record) => {
     mapDatafieldToQuads(subjectNode, ds),
   );
   const dataset = datasetFactory.dataset(extractedKnowledge);
-  //const ntWriter = new N3.Writer({format: 'Turtle', prefixes})
-  //const ntriples = ntWriter.quadsToString(extractedKnowledge).replaceAll('_:_:', '_:')
   const tbbt = clownface({ dataset });
   const properties = nodeToPropertyTree(subjectNode, tbbt);
   return {

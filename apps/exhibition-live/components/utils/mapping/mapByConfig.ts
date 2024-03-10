@@ -43,7 +43,6 @@ export const mapByConfigFlat = async (
   strategyContext: StrategyContext,
 ): Promise<any> => {
   const newData = cloneDeep(targetData); //clone targetData to not mutate it accidentally
-  const ajv = new Ajv();
   for (const { source, target, mapping } of mappingConfig) {
     const { path: targetPath } = target;
     if (!source?.columns || source.columns.length === 0)

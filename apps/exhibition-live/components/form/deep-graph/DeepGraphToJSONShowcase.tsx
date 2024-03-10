@@ -14,10 +14,10 @@ import {
   jsonSchemaGraphInfuser,
 } from "../../utils/graph/jsonSchemaGraphInfuser";
 import { addressSchema } from "../../../fixtures/schema";
-import { bringDefinitionToTop } from "../../utils/core";
 // @ts-ignore
 import tbbt from "tbbt-ld/dist/tbbt.nq";
 import {Grid, Typography} from "@mui/material";
+import { bringDefinitionToTop } from "@slub/json-schema-utils";
 
 type EntityIRIs = "http://localhost:8080/data/person/leonard-hofstadter" | "http://localhost:8080/data/person/mary-cooper" | "http://localhost:8080/data/person/bernadette-rostenkowski" | "http://localhost:8080/data/person/amy-farrah-fowler" | "http://localhost:8080/data/person/penny" | "http://localhost:8080/data/person/sheldon-cooper" | "http://localhost:8080/data/person/howard-wolowitz" | "http://localhost:8080/data/person/rajesh-koothrappali";
 type OwnProps = {

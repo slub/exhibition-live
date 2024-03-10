@@ -26,16 +26,12 @@ import {
   MRT_Virtualizer,
 } from "material-react-table";
 import {
-  filterForPrimitiveProperties,
-  filterForArrayProperties,
   encodeIRI,
-  isJSONSchema,
 } from "../../utils/core";
 import { JSONSchema7 } from "json-schema";
 import { Add, Details, Edit } from "@mui/icons-material";
 import { useRouter } from "next/router";
 import { primaryFields } from "../../config";
-import { parseMarkdownLinks } from "../../utils/core/parseMarkdownLink";
 import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
 import { SemanticFormsModal } from "../../renderer/SemanticFormsModal";
 import NiceModal from "@ebay/nice-modal-react";
@@ -49,6 +45,8 @@ import { flatten } from "lodash";
 import get from "lodash/get";
 import { useModifiedRouter } from "../../basic";
 import {withDefaultPrefix} from "@slub/sparql-schema";
+import {filterForArrayProperties, filterForPrimitiveProperties, isJSONSchema} from "@slub/json-schema-utils";
+import {parseMarkdownLinks} from "@slub/edb-core-utils";
 
 type Props = {
   typeName: string;

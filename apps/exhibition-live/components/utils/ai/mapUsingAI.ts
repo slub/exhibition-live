@@ -1,6 +1,6 @@
 import { ChatCompletionRequestMessage, Configuration, OpenAIApi } from "openai";
-import { filterForPrimitivePropertiesAndArrays } from "../core";
 import { JSONSchema7 } from "json-schema";
+import { filterForPrimitivePropertiesAndArrays } from "@slub/json-schema-utils";
 
 type Context = {
   jsonSchema: JSONSchema7;

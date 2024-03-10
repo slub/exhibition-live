@@ -2,13 +2,13 @@ import { JsonSchema } from "@jsonforms/core";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 
-import { getPaddedDate } from "../core/specialDate";
 import { mapByConfig } from "./mapByConfig";
 import isNil from "lodash/isNil";
 import { findEntityWithinLobidByIRI } from "../lobid/findEntityWithinLobid";
 import {declarativeMappings, primaryFields, typeIRItoTypeName} from "../../config";
 import set from "lodash/set";
 import get from "lodash/get";
+import { getPaddedDate } from "@slub/edb-core-utils";
 
 dayjs.extend(customParseFormat);
 

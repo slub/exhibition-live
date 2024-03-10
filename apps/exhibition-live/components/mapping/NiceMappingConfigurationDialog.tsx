@@ -18,9 +18,9 @@ import {
   DeclarativeMatchBasedFlatMapping, matchBased2DeclarativeFlatMapping
 } from "../utils/mapping/mapMatchBasedByConfig";
 import {OwnColumnDesc} from "../google/types";
-import {parseJSONObject} from "../utils/core";
 import {JsonView} from "react-json-view-lite";
 import {DeclarativeFlatMapping} from "../utils/mapping/mappingStrategies";
+import { parseJSONObject } from "../utils/core/parseJSON";
 
 type NiceMappingConfigurationDialogProps = {
   mapping: any

@@ -18,7 +18,6 @@ import {
   extractFieldIfString,
 } from "../utils/mapping/simpleFieldExtractor";
 import { SemanticFormsModal } from "./SemanticFormsModal";
-import { bringDefinitionToTop } from "../utils/core";
 import { JSONSchema7 } from "json-schema";
 import { useJsonForms } from "@jsonforms/react";
 import dot from "dot";
@@ -30,6 +29,7 @@ import { TabIcon } from "../theme/icons";
 import { useModifiedRouter } from "../basic";
 import NiceModal from "@ebay/nice-modal-react";
 import { EntityDetailModal } from "../form/show";
+import {bringDefinitionToTop} from "@slub/json-schema-utils";
 
 type SimpleExpandPanelRendererProps = {
   data: any;

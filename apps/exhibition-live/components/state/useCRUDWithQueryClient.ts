@@ -8,18 +8,11 @@ import {
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
-import {
-  cleanJSONLD,
-  exists,
-  load,
-  LoadResult,
-  remove,
-  save,
-} from "../utils/crud";
 import { useQueryKeyResolver } from "./useQueryKeyResolver";
 import { JsonLdContext } from "jsonld-context-parser";
 import { filterUndefOrNull } from "../utils/core";
 import {NamedAndTypedEntity} from "@slub/edb-core-types";
+import {cleanJSONLD, exists, load, LoadResult, remove, save} from "@slub/sparql-schema";
 
 export const useCRUDWithQueryClient = (
   entityIRI: string | undefined,

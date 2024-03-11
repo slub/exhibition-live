@@ -28,6 +28,7 @@
     "build": "turbo run build",
     "build:pages": "turbo run build:pages",
     "dev": "turbo run dev --parallel",
+    "test": "turbo run test",
     "lint": "turbo run lint",
     "lint:fix": "turbo run lint:fix",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
@@ -41,6 +42,7 @@
     "@turbo/gen": "^1.10.16",
     "eslint": "^8.52.0",
     "prettier": "^3.0.3",
+    "tsup": "^8.0.2",
     "turbo": "^1.10.16",
     "typescript": "^5"
   }

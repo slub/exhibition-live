@@ -10,6 +10,10 @@
       "dependsOn": ["^build"],
       "outputs": ["_site"]
     },
+    "build:watch": {},
+    "test": {
+      "dependsOn": ["^test"]
+    },
     "lint": {},
     "lint:fix": {},
     "docs": {},

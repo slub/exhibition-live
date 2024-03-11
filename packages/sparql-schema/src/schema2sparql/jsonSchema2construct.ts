@@ -44,9 +44,6 @@ export const jsonSchema2construct: (
     level: number,
   ) => {
     if (level > MAX_RECURSION) {
-      console.warn(
-        `will stop at level ${level} to prevent infinite loop because MAX_RECURSION is set to ${MAX_RECURSION}`,
-      );
       return;
     }
     if (

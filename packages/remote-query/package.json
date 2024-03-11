@@ -1,5 +1,5 @@
 {
-  "name": "@slub/remte-query-implementations",
+  "name": "@slub/remote-query-implementations",
   "version": "1.0.0",
   "description": "a set of store specific implementations of SPARQL query builders",
   "type": "module",
@@ -18,7 +18,7 @@
     "build": "tsup",
     "lint": "eslint \"**/*.ts*\"",
     "lint-fix": "eslint --fix \"**/*.ts*\"",
-    "test": "NODE_OPTIONS=--experimental-vm-modules jest",
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest --passWithNoTests --color",
     "test:watch": "NODE_OPTIONS=--experimental-vm-modules jest --watch --color",
     "test:coverage": "NODE_OPTIONS=--experimental-vm-modules jest --coverage",
     "doc": "typedoc"

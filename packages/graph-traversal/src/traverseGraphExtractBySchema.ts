@@ -35,9 +35,6 @@ const propertyWalker = (
     typeof options?.maxRecursion === "number" &&
     level > options?.maxRecursion
   ) {
-    console.info(
-      `will stop at level ${level} to prevent infinite loop because MAX_RECURSION is set to ${options.maxRecursion}`,
-    );
     return;
   }
 

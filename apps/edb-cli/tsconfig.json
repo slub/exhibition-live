@@ -1,0 +1,10 @@
+{
+  "extends": "@slub/edb-tsconfig/node-application.json",
+  "include": ["./src"],
+  "compilerOptions": {
+    "baseUrl": ".",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true
+  },
+  "exclude": ["node_modules", ".build"]
+}

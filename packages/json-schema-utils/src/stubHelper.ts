@@ -5,7 +5,7 @@ export type GenRequiredPropertiesFunction = (modelName: string) => string[];
 export type GenJSONLDSemanticPropertiesFunction = (
   modelName: string,
 ) => JSONSchema7["properties"];
-const filterForPrimitiveProperties = (properties: JSONSchema7["properties"]) =>
+export const filterForPrimitives = (properties: JSONSchema7["properties"]) =>
   Object.fromEntries(
     Object.entries(properties || {}).filter(
       ([, value]) =>
@@ -45,7 +45,7 @@ export const recursivelyFindRefsAndAppendStub: (
   const definitionsKey = "$defs" in rootSchema ? "$defs" : "definitions";
   if (schema.$ref) {
     if (
-      options?.excludeType.includes(
+      options?.excludeType?.includes(
         schema.$ref.substring(
           `#/${definitionsKey}/`.length,
           schema.$ref.length,
@@ -127,7 +127,7 @@ export const definitionsToStubDefinitions = (
     const stub = {
       ...(isObject(value) ? value : {}),
       properties: isObject(value)
-        ? filterForPrimitiveProperties(value.properties)
+        ? filterForPrimitives((value as any)?.properties)
         : undefined,
     };
     return {
@@ -163,7 +163,7 @@ export const prepareStubbedSchema = (
   const schemaWithRefStub = recursivelyFindRefsAndAppendStub(
     "root",
     schema,
-    options,
+    options || {},
     schema,
   );
 

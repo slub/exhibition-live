@@ -4,7 +4,7 @@ import {NamespaceBuilder} from "@rdfjs/namespace";
 
 export type QueryOptions =  { defaultPrefix: string, queryBuildOptions: SparqlBuildOptions}
 
-export type SLUBEdbConfRaw = {
+export type EdbConfRaw = {
   BASE_IRI: string;
   API_URL: string;
   namespaceBase: string,
@@ -16,6 +16,6 @@ export type SLUBEdbConfRaw = {
   }
   sparqlEndpoint: SparqlEndpoint
 }
-export type Config = SLUBEdbConfRaw & {
+export type Config = Omit<EdbConfRaw, "namespaceBase"> & {
   namespace: NamespaceBuilder<string>,
 }

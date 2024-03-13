@@ -1,0 +1,18 @@
+{
+  "name": "@slub/edb-global-types",
+  "version": "1.0.0",
+  "description": "Global types for EDB",
+  "type": "module",
+  "types": "./index.d.ts",
+  "scripts": {
+    "lint": "eslint \"**/*.ts*\"",
+    "lint-fix": "eslint --fix \"**/*.ts*\"",
+    "doc": "typedoc"
+  },
+  "dependencies": {
+    "@rdfjs/namespace": "^2.0.1",
+    "@rdfjs/types": "^1.1.0",
+    "@slub/edb-graph-traversal": "workspace:*",
+    "@slub/sparql-schema": "workspace:*"
+  }
+}

@@ -3,6 +3,7 @@
   "display": "Node App",
   "extends": "@tsconfig/node18/tsconfig.json",
   "compilerOptions": {
+    "moduleResolution": "node",
     "allowJs": false,
     "allowSyntheticDefaultImports": true,
     "allowUnreachableCode": false,

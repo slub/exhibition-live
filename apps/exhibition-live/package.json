@@ -56,7 +56,7 @@
     "@react-oauth/google": "^0.12.1",
     "@slub/edb-core-utils": "workspace:*",
     "@slub/edb-graph-traversal": "workspace:*",
-    "@slub/remte-query-implementations": "workspace:*",
+    "@slub/remote-query-implementations": "workspace:*",
     "@slub/sparql-schema": "workspace:*",
     "@tabler/icons": "^2.38.0",
     "@tanstack/react-query": "^4.24.6",

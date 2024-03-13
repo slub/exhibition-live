@@ -6,7 +6,7 @@ import { useCallback, useMemo } from "react";
 import { SparqlEndpoint, useSettings } from "./useLocalSettings";
 import { useOxigraph } from "./useOxigraph";
 import {CRUDFunctions} from "@slub/edb-core-types";
-import {allegroCrudOptions, oxigraphCrudOptions, qleverCrudOptions} from "@slub/remte-query-implementations";
+import {allegroCrudOptions, oxigraphCrudOptions, qleverCrudOptions} from "@slub/remote-query-implementations";
 
 type UseGlobalCRUDOptions = () => {
   crudOptions?: CRUDFunctions;

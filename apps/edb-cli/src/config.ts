@@ -1,5 +1,5 @@
 import namespace, {NamespaceBuilder} from "@rdfjs/namespace";
-import {Config} from "./types.js";
+import {Config} from "@slub/edb-global-types";
 
 const BASE_IRI = "http://ontologies.slub-dresden.de/exhibition#"
 export const sladb = namespace(BASE_IRI);

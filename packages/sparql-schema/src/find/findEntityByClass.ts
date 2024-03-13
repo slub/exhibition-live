@@ -1,8 +1,7 @@
 import df from "@rdfjs/data-model";
 import { SELECT } from "@tpluscode/sparql-builder";
+import {QueryOptions} from "@slub/edb-global-types";
 
-import {SparqlBuildOptions} from "@slub/edb-core-types";
-import {QueryOptions} from "./types.js";
 
 export const fixSparqlOrder: (sparqlQuery: string) => string = sparqlQuery => {
   const regex = /(ORDER BY\s+[^ ]+)(\s*)GROUP BY\s+\(([^\)]+)\)/gm;

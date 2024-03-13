@@ -36,7 +36,8 @@
   },
   "workspaces": [
     "apps/*",
-    "packages/*"
+    "packages/*",
+    "manifestation/*"
   ],
   "devDependencies": {
     "@turbo/gen": "^1.10.16",

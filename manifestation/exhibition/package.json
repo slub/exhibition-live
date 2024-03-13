@@ -1,0 +1,13 @@
+{
+  "name": "@slub/exhibition-schema",
+  "version": "1.0.0",
+  "description": "Schema for the exhibition database",
+  "type": "module",
+  "types": "./index.d.ts",
+  "scripts": {
+    "build": "mkdir -p docs/reference && jsonschema2md -o docs/reference -d schemas/jsonschema"
+  },
+  "devDependencies": {
+    "@adobe/jsonschema2md": "^7.1.5"
+  }
+}

@@ -58,6 +58,14 @@ bun i && bun run storybook
 
 Open [http://localhost:6006](http://localhost:6006) with your browser to see the storybook.
 
+## Using Docker
+
+1. [Install Docker](https://docs.docker.com/get-docker/) on your machine.
+1. Build your container: `docker build -t exhibition-docker .`.
+1. Run your container: `docker run -p 3000:3000 exhibition-docker`.
+
+
+
 ## Technologies
 
 ### NextJS

@@ -71,11 +71,6 @@
         },
         {
           "type": "Control",
-          "label": "Link zur virtuellen Ausstellung",
-          "scope": "#/properties/exhibitionweblink"
-        },
-        {
-          "type": "Control",
           "label": "Bild",
           "scope": "#/properties/image"
         },
@@ -174,7 +169,7 @@
     },
     {
       "type": "Category",
-      "label": "Beteiligte Personen und Institutionen",
+      "label": "Personen und Institutionen",
       "elements": [
         {
           "type": "Control",
@@ -205,7 +200,7 @@
     },
     {
       "type": "Category",
-      "label": "Exponate und Ressourcen der Ausstellung",
+      "label": "Exponate",
       "elements": [
         {
           "type": "Control",
@@ -226,6 +221,17 @@
             "detail": "GENERATED",
             "isReifiedStatement": true
           }
+        }
+      ]
+    },
+    {
+      "type": "Category",
+      "label": "Quellen",
+      "elements": [
+        {
+          "type": "Control",
+          "label": "Link zur virtuellen Ausstellung",
+          "scope": "#/properties/exhibitionweblink"
         },
         {
           "type": "Control",

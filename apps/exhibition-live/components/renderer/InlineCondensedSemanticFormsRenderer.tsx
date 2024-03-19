@@ -226,11 +226,7 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
           {label}
         </Typography>
       </Box>
-      <Box
-        sx={{
-          height: "4em",
-        }}
-      >
+      <Box>
         {!hasValue ? (
           <FormControl
             fullWidth={!appliedUiSchemaOptions.trim}
@@ -258,7 +254,6 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
                 fullWidth
                 disabled={Boolean(ctx.readonly)}
                 variant="standard"
-                error={!isValid}
                 onChange={(ev) => handleSearchStringChange(ev.target.value)}
                 value={searchString || ""}
                 label={label}
@@ -274,7 +269,7 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
             )}
           </FormControl>
         ) : (
-          <List sx={{marginTop: "1em"}}>
+          <List sx={{marginTop: "1em"}} dense>
             <EntityDetailListItem
               entityIRI={selected.value}
               typeIRI={typeIRI}

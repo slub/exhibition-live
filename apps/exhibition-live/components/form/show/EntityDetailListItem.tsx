@@ -88,7 +88,6 @@ export const EntityDetailListItem = ({
 
   return (
     <ListItem
-      dense
       sx={{ paddingLeft: 0 }}
       secondaryAction={
         onClear && (

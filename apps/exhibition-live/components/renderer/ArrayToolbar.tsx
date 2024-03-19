@@ -174,14 +174,6 @@ export const ArrayLayoutToolbar = memo(
             />
           ) : (
             <Grid container direction={"column"}>
-              <Hidden xsUp={errors.length === 0}>
-                <Grid item>
-                  <ValidationIcon
-                    id="tooltip-validation"
-                    errorMessages={errors}
-                  />
-                </Grid>
-              </Hidden>
               {!isReifiedStatement && (
                 <Grid item>
                   <Grid

@@ -29,6 +29,7 @@
     "@slub/edb-core-types": "workspace:*",
     "@slub/edb-tsconfig": "workspace:*",
     "@slub/edb-tsup-config": "workspace:*",
+    "@slub/edb-graph-traversal": "workspace:*",
     "@types/jest": "^29.5.12",
     "@types/json-schema": "^7.0.14",
     "eslint-config-edb": "workspace:*",

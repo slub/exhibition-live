@@ -8,7 +8,7 @@ import {
   Resolve,
 } from "@jsonforms/core";
 import merge from "lodash/merge";
-import React, { useCallback, useMemo, useState } from "react";
+import React, {useCallback, useEffect, useMemo, useState} from "react";
 
 import { ArrayLayoutToolbar } from "./ArrayToolbar";
 import { useJsonForms } from "@jsonforms/react";
@@ -120,6 +120,15 @@ const MaterialArrayChipsLayoutComponent = (props: ArrayLayoutProps & {}) => {
 
   const isReifiedStatement = Boolean(appliedUiSchemaOptions.isReifiedStatement);
 
+  const formsPath = useMemo(
+    () => makeFormsPath(config?.formsPath, path),
+    [config?.formsPath, path],
+  );
+
+  useEffect(() => {
+    setFormData( irisToData(slent(uuidv4()).value, typeIRI))
+  }, [formsPath, typeIRI,setFormData]);
+
   return (
     <Box
       sx={(theme) => ({
@@ -156,7 +165,7 @@ const MaterialArrayChipsLayoutComponent = (props: ArrayLayoutProps & {}) => {
             entityIRI && setFormData({ "@id": entityIRI })
           }
           onFormDataChange={(data) => setFormData(data)}
-          formsPath={makeFormsPath(config?.formsPath, path)}
+          formsPath={formsPath}
         />
       )}
       {isReifiedStatement && (

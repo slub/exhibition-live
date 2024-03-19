@@ -167,6 +167,10 @@ const MaterialArrayLayoutComponent = (props: ArrayLayoutProps & {}) => {
     [config?.formsPath, path],
   );
 
+  useEffect(() => {
+    setFormData( irisToData(slent(uuidv4()).value, typeIRI))
+  }, [formsPath, typeIRI,setFormData]);
+
   return (
     <div>
       <ArrayLayoutToolbar

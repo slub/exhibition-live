@@ -38,7 +38,7 @@ const propertyWalker = (
     return;
   }
 
-  const isDraft = node.out(base["__draft"])?.value;
+  const isDraft = Boolean(node.out(base["__draft"])?.value);
   let additionalProps = {};
   if (subSchema.type === "object") {
     if (node.term?.termType === "NamedNode") {

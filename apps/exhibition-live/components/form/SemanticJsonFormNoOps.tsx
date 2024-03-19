@@ -297,7 +297,6 @@ export const SemanticJsonFormNoOps: FunctionComponent<
       </Grid>
       {formsPath === globalPath && (
         <Grid item>
-          {" "}
           <SearchbarWithFloatingButton>
             <SimilarityFinder
               search={searchText}
@@ -307,6 +306,7 @@ export const SemanticJsonFormNoOps: FunctionComponent<
               onEntityIRIChange={handleEntityIRIChange}
               searchOnDataPath={searchOnDataPath}
               onMappedDataAccepted={handleMappedData}
+              hideFooter
             />
           </SearchbarWithFloatingButton>{" "}
         </Grid>

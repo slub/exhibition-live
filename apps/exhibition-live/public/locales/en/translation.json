@@ -59,6 +59,9 @@
   "will move entries to trash": "Will move {{count}} entries to trash",
   "loading typename": "Loading {{typeName}}",
   "reloaded": "reloaded",
-  "no hits": "no suggestions",
-  "no suggestions": "no hits"
+  "no hits": "no hits",
+  "no suggestions": "no suggestions",
+  "search delivered no results": "Search delivered no results",
+  "found hits": "found {{count}} hits",
+  "data source disabled": "Data source deactivated"
 }

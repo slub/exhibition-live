@@ -1,6 +1,6 @@
 import {Resolve} from "@jsonforms/core";
 import {NoteAdd, Storage as KnowledgebaseIcon} from "@mui/icons-material";
-import {Badge, Box, Button, Divider, Grid, List, TextField, TextFieldProps} from "@mui/material";
+import {Badge, Box, Button, Divider, Grid, Hidden, List, TextField, TextFieldProps} from "@mui/material";
 import ClassicResultListWrapper from "./result/ClassicResultListWrapper";
 import {JSONSchema7} from "json-schema";
 import * as React from "react";
@@ -51,6 +51,7 @@ type Props = {
   onExistingEntityAccepted?: (entityIRI: string, data: any) => void;
   searchOnDataPath?: string;
   search?: string;
+  hideFooter?: boolean;
 };
 type State = {};
 
@@ -218,7 +219,7 @@ const useKnowledgeBases = () => {
           label={label}
           secondary={secondary}
           avatar={avatar}
-          altAvatar={String(idx + 1)}
+          altAvatar={String(idx)}
           selected={selected}
           popperChildren={
             <EntityDetailElement
@@ -262,7 +263,7 @@ const useKnowledgeBases = () => {
           label={label}
           secondary={secondary}
           avatar={avatar}
-          altAvatar={String(idx + 1)}
+          altAvatar={String(idx)}
           selected={selected}
           popperChildren={
             <ClassicEntityCard
@@ -309,6 +310,7 @@ const SimilarityFinder: FunctionComponent<Props> = ({
                                                       searchOnDataPath,
                                                       search,
                                                       jsonSchema,
+                                                      hideFooter
                                                     }) => {
   const {openai} = useSettings();
   const [selectedKnowledgeSources, setSelectedKnowledgeSources] = useState<
@@ -439,9 +441,9 @@ const SimilarityFinder: FunctionComponent<Props> = ({
       }
       try {
         const mappingContext = makeDefaultMappingStrategyContext(
-              crudOptions?.selectFetch,
-              declarativeMappings,
-            )
+          crudOptions?.selectFetch,
+          declarativeMappings,
+        )
         const existingEntry = await mappingContext.getPrimaryIRIBySecondaryIRI(id, knowledgeBaseDescription?.authorityIRI || "urn:local", classIRI)
         const dataFromGND = await mapByConfig(
           entryData.allProps,
@@ -449,7 +451,7 @@ const SimilarityFinder: FunctionComponent<Props> = ({
           mappingConfig,
           mappingContext,
         );
-        if(existingEntry) {
+        if (existingEntry) {
           onEntityIRIChange && onEntityIRIChange(existingEntry);
           onExistingEntityAccepted && onExistingEntityAccepted(existingEntry, dataFromGND);
           return;
@@ -482,7 +484,7 @@ const SimilarityFinder: FunctionComponent<Props> = ({
 
   const handleAccept = useCallback(
     (id: string | undefined, entryData: any, source: KnowledgeSources) => {
-      if(source === "kb") {
+      if (source === "kb") {
         handleEntityChange(id, entryData);
       } else {
         if (selectedKnowledgeSources?.includes("ai")) {
@@ -541,6 +543,7 @@ const SimilarityFinder: FunctionComponent<Props> = ({
           key={kb.id}
           label={kb.label}
           selected={selectedKnowledgeSources?.includes(kb.id)}
+          hitCount={entries.length}
         >
           {searchString && (
             <List>
@@ -552,8 +555,9 @@ const SimilarityFinder: FunctionComponent<Props> = ({
           )}
         </ClassicResultListWrapper>
 
-      })}
-  , [searchResults, knowledgeBases, selectedKnowledgeSources, classIRI, handleAccept, elementIndex])
+      })
+    }
+    , [searchResults, knowledgeBases, selectedKnowledgeSources, classIRI, handleAccept, elementIndex])
 
   return <div style={{overflow: 'hidden'}}>
 
@@ -582,21 +586,26 @@ const SimilarityFinder: FunctionComponent<Props> = ({
         {<ResultList/>}
       </Grid>
     </Grid>
-    <div
-      ref={setRef}
-      style={{
-        position: "absolute",
-        bottom: 0,
-        right: 0,
-        left: 0,
-        backgroundColor: "white"
-      }}
-    >
-      <Divider/>
-      <Button variant="outlined" startIcon={<NoteAdd/>} onClick={showEditDialog}>
-        {t("create new", {item: t(typeName)})}
-      </Button>
-    </div>
+    <Hidden xsUp={hideFooter}>
+      <Grid
+        container
+        ref={setRef}
+        alignItems="center"
+        justifyContent="center"
+        direction={"column"}
+        sx={{
+          position: "absolute",
+          bottom: 0,
+          right: 0,
+          left: 0,
+          backgroundColor: "white"
+        }}
+      >
+        <Button variant="contained" color={"primary"} startIcon={<NoteAdd/>} onClick={showEditDialog}>
+          {t("create new", {item: t(typeName)})}
+        </Button>
+      </Grid>
+    </Hidden>
   </div>
 };
 

@@ -56,5 +56,8 @@
   "loading typename": "Lade {{typeName}}",
   "reloaded": "neu geladen",
   "no suggestions": "keine Vorschläge",
-  "no hits": "keine Treffer"
+  "no hits": "keine Treffer",
+  "search delivered no results": "Die Suche ergab keine Treffer",
+  "found hits": "{{count}} gefundene Suchergebnisse",
+  "data source disabled": "Datenquelle deaktiviert"
 }

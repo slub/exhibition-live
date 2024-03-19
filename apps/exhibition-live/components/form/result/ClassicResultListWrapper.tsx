@@ -6,12 +6,14 @@ import {
   Grid,
 } from "@mui/material";
 import { FunctionComponent, useCallback, useState } from "react";
+import {useTranslation} from "next-i18next";
 
 type Props = {
   label?: string;
   selected?: boolean;
   children?: React.ReactNode;
   handleClick?: (id: undefined) => void;
+  hitCount?: number;
 };
 
 const ClassicResultListWrapper: FunctionComponent<Props> = ({
@@ -19,7 +21,9 @@ const ClassicResultListWrapper: FunctionComponent<Props> = ({
   selected,
   children,
   handleClick,
+  hitCount,
 }) => {
+  const { t } = useTranslation();
   return (
     <Paper sx={{ width: "100%" }}>
       <Grid container sx={{ width: "100%", display: "block" }}>
@@ -30,6 +34,7 @@ const ClassicResultListWrapper: FunctionComponent<Props> = ({
             onClick={handleClick}
           >
             <ListItemText
+              disableTypography={!selected}
               primary={label}
               primaryTypographyProps={{
                 fontSize: 15,
@@ -38,7 +43,7 @@ const ClassicResultListWrapper: FunctionComponent<Props> = ({
                 mb: "2px",
               }}
               secondary={
-                selected ? "Suche liefert folgende Treffer" : "Keine Suche"
+                selected ? (hitCount > 0 ? t("found hits", {count: hitCount})  : t("no hits") ) : t("datasource disabled")
               }
               secondaryTypographyProps={{
                 noWrap: true,

@@ -9,6 +9,7 @@ COPY --from=bun /usr/local/bin/bunx /usr/local/bin
 COPY . .
 
 ENV NEXT_TELEMETRY_DISABLED 1
+ENV NEXT_PUBLIC_BASE_PATH ""
 
 RUN bun i --frozen-lockfile
 RUN cp /app/apps/exhibition-live/next.config.standalone.js /app/apps/exhibition-live/next.config.js

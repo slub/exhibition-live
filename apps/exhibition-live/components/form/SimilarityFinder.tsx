@@ -2,7 +2,6 @@ import {Resolve} from "@jsonforms/core";
 import {NoteAdd, Storage as KnowledgebaseIcon} from "@mui/icons-material";
 import {Badge, Box, Button, Divider, Grid, List, TextField, TextFieldProps} from "@mui/material";
 import ClassicResultListWrapper from "./result/ClassicResultListWrapper";
-import {dcterms} from "@tpluscode/rdf-ns-builders";
 import {JSONSchema7} from "json-schema";
 import * as React from "react";
 import {
@@ -22,12 +21,8 @@ import {
   DeclarativeMapping,
   StrategyContext,
 } from "../utils/mapping/mappingStrategies";
-import DiscoverSearchTable from "./discover/DiscoverSearchTable";
 import {sladb, slent} from "./formConfigs";
-import K10PlusSearchTable, {
-  findFirstInProps,
-} from "./k10plus/K10PlusSearchTable";
-import LobidSearchTable, {gndEntryWithMainInfo} from "./lobid/LobidSearchTable";
+import {gndEntryWithMainInfo} from "./lobid/LobidSearchTable";
 import {findEntityByAuthorityIRI, findEntityByClass} from "../utils/discover";
 import {useGlobalCRUDOptions} from "../state/useGlobalCRUDOptions";
 import {mapAbstractDataUsingAI, mapDataUsingAI} from "../utils/ai";
@@ -45,7 +40,6 @@ import LobidAllPropTable from "./lobid/LobidAllPropTable";
 import WikidataAllPropTable from "./wikidata/WikidataAllPropTable";
 import ClassicEntityCard from "./lobid/ClassicEntityCard";
 import {debounce} from "lodash";
-import {NodePropertyItem} from "@slub/edb-graph-traversal";
 
 // @ts-ignore
 type Props = {
@@ -477,18 +471,6 @@ const SimilarityFinder: FunctionComponent<Props> = ({
     [classIRI, typeName, onMappedDataAccepted, onExistingEntityAccepted, onEntityIRIChange, crudOptions?.selectFetch, knowledgeBases],
   );
 
-
-  const handleAcceptKXP = useCallback(
-    (id: string | undefined, entryData: NodePropertyItem) => {
-      const props = entryData.properties;
-      if (!props) return;
-      const title = findFirstInProps(props, dcterms.title);
-      const description = findFirstInProps(props, dcterms.description);
-      const abstract = findFirstInProps(props, dcterms.abstract);
-      handleMapAbstractAndDescUsingAI(id, {title, description, abstract});
-    },
-    [handleMapAbstractAndDescUsingAI],
-  );
 
   const handleEntityChange = useCallback(
     (id: string | undefined, data: any) => {

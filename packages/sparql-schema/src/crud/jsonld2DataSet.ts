@@ -9,7 +9,8 @@ export const jsonld2DataSet: (jsonld: any) => Promise<DatasetCore<Quad>> = async
 ) => {
     let ds = datasetFactory.dataset();
     try {
-        ds = await jsonld.toRDF(input) as DatasetCore<Quad>;
+      const quads =  await jsonld.toRDF(input) as Quad[]
+      ds =  datasetFactory.dataset(quads);
     } catch (e) {
         throw new Error("unable to parse the data", { cause: e});
     }

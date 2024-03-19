@@ -131,9 +131,7 @@ export const cleanJSONLD = async (
 
     let ds = datasetFactory.dataset();
     try {
-        console.log("jsonldDoc", jsonldDoc);
         ds = await jsonld2DataSet(jsonldDoc);
-        console.log("ds", ds);
     } catch (e) {
         throw new Error("Cannot convert JSONLD to dataset", {cause: e});
     }

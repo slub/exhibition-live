@@ -9,6 +9,7 @@ import dsExt from "rdf-dataset-ext";
 import datasetFactory from "@rdfjs/dataset";
 import stringToStream from "string-to-stream";
 import {dataset2NTriples} from "./dataset2NTriples";
+import {jsonld2DataSet} from "./jsonld2DataSet";
 
 type SaveOptions = SPARQLCRUDOptions & {
   skipRemove?: boolean;
@@ -22,7 +23,8 @@ export const save = async (
   const { skipRemove, queryBuildOptions, defaultPrefix } = options;
   const entityIRI = dataToBeSaved["@id"];
   const typeIRI = dataToBeSaved["@type"];
-  const ntriples = await dataset2NTriples(dataToBeSaved as any);
+  const ds = await jsonld2DataSet(dataToBeSaved);
+  const ntriples = await dataset2NTriples(ds);
   const insertQuery = withDefaultPrefix(
     defaultPrefix,
     INSERT.DATA` ${ntriples} `.build(queryBuildOptions),

@@ -64,7 +64,10 @@ Open [http://localhost:6006](http://localhost:6006) with your browser to see the
 1. Build your container: `docker build -t exhibition-docker .`.
 1. Run your container: `docker run -p 3000:3000 exhibition-docker`.
 
+### develop within docker
 
+1. `docker compose up -d`
+2. `docker compose  exec exhibition-live /bin/bash`
 
 ## Technologies
 

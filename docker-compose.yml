@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+  nodejs:
+    image: exhibition-docker
+    container_name: exhibition-live
+    env_file: .env
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+    stdin_open: true
+    tty: true
+    command: tail -f /dev/null

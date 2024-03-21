@@ -127,8 +127,9 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
         value: entityIRI,
         label: data.label || entityIRI,
       });
+      closeDrawer()
     },
-    [handleSelectedChange],
+    [handleSelectedChange, closeDrawer],
   );
 
 
@@ -173,6 +174,10 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
     handleMappedDataAccepted,
   );
 
+  const handleMappedDataIntermediate = useCallback((d: any) => {
+    handleMappedData(d)
+    closeDrawer()
+  }, [handleMappedData, closeDrawer])
 
 
   const {t} = useTranslation();
@@ -279,7 +284,7 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
               jsonSchema={schema as JSONSchema7}
               onExistingEntityAccepted={handleExistingEntityAccepted}
               searchOnDataPath={searchOnDataPath}
-              onMappedDataAccepted={handleMappedData}
+              onMappedDataAccepted={handleMappedDataIntermediate}
             />
           </SearchbarWithFloatingButton>
         )}

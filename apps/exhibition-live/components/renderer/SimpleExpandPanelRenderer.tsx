@@ -30,6 +30,7 @@ import { useModifiedRouter } from "../basic";
 import NiceModal from "@ebay/nice-modal-react";
 import { EntityDetailModal } from "../form/show";
 import {bringDefinitionToTop} from "@slub/json-schema-utils";
+import {withEllipsis} from "../utils/typography";
 
 type SimpleExpandPanelRendererProps = {
   data: any;
@@ -42,6 +43,7 @@ type SimpleExpandPanelRendererProps = {
   onChange: (data: any) => void;
   path: string;
   childLabelTemplate?: string;
+  elementDetailItemPath?: string;
   elementLabelProp?: string;
   formsPath?: string;
 };
@@ -61,6 +63,7 @@ export const SimpleExpandPanelRenderer = (
     childLabelTemplate,
     elementLabelProp,
     formsPath,
+    elementDetailItemPath
   } = props;
   const typeIRI = schema.properties?.["@type"]?.const;
   const typeName = useMemo(
@@ -100,6 +103,8 @@ export const SimpleExpandPanelRenderer = (
     return label || data?.__label;
   }, [childLabelTemplate, elementLabelProp, data, label]);
 
+  const elementDetailItem = useMemo(() => elementDetailItemPath ?  get(data, elementDetailItemPath) : null, [elementDetailItemPath, data]);
+
   const { crudOptions } = useGlobalCRUDOptions();
   const { loadQuery, saveMutation } = useCRUDWithQueryClient(
     entityIRI,
@@ -131,8 +136,12 @@ export const SimpleExpandPanelRenderer = (
   const locale = router.query.locale || "";
 
   const showDetailModal = useCallback(() => {
-    NiceModal.show(EntityDetailModal, { typeIRI, entityIRI, data });
-  }, [typeIRI, entityIRI, data]);
+    if(elementDetailItem?.["@id"] && elementDetailItem?.["@type"]) {
+        NiceModal.show(EntityDetailModal, { typeIRI: elementDetailItem["@type"], entityIRI: elementDetailItem["@id"], data: elementDetailItem });
+    } else {
+      NiceModal.show(EntityDetailModal, {typeIRI, entityIRI, data});
+    }
+  }, [typeIRI, entityIRI, data, elementDetailItem]);
 
   return (
     <ListItem
@@ -162,8 +171,8 @@ export const SimpleExpandPanelRenderer = (
         <ListItemText
           primaryTypographyProps={{ style: { whiteSpace: "normal" } }}
           secondaryTypographyProps={{ style: { whiteSpace: "normal" } }}
-          primary={realLabel}
-          secondary={description}
+          primary={withEllipsis(realLabel, 80)}
+          secondary={withEllipsis(description, 100)}
         />
       </ListItemButton>
     </ListItem>

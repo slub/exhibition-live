@@ -98,6 +98,7 @@ export const useCRUDWithQueryClient = (
     {
       onSuccess: async () => {
         await queryClient.invalidateQueries(["load", entityIRI]);
+        await queryClient.invalidateQueries(["show", entityIRI]);
         /*for (const sourceIRI of resolveSourceIRIs(entityIRI)) {
         console.log('invalidateQueries', sourceIRI)
         await queryClient.invalidateQueries(["load", sourceIRI]);

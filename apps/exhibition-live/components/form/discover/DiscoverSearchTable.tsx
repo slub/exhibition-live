@@ -89,6 +89,7 @@ const DiscoverSearchTable: FunctionComponent<Props> = ({
                                     typeIRI={typeIRI}
                                     data={undefined}
                                     cardActionChildren={null}
+                                    readonly
                                 />
                             }
                         />

@@ -24,8 +24,6 @@ import {
   extractFieldIfString,
 } from "../../utils/mapping/simpleFieldExtractor";
 import { useQuery } from "@tanstack/react-query";
-import { EntityDetailElement } from "../show";
-import { sladb } from "../formConfigs";
 import {typeIRItoTypeName} from "../../config";
 
 type Props = {

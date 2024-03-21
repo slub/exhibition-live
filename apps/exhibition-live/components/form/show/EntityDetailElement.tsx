@@ -19,6 +19,8 @@ type EntityDetailElementProps = {
   entityIRI: string;
   data: any;
   cardActionChildren?: React.ReactNode;
+  inlineEditing?: boolean;
+  readonly?: boolean;
 };
 
 export const EntityDetailElement = ({
@@ -26,6 +28,8 @@ export const EntityDetailElement = ({
   entityIRI,
   data: liveData,
   cardActionChildren,
+  inlineEditing,
+  readonly,
   ...rest
 }: EntityDetailElementProps & Partial<BoxProps>) => {
   const boxProps = rest || {};
@@ -67,6 +71,8 @@ export const EntityDetailElement = ({
         data={data}
         cardInfo={cardInfo}
         cardActionChildren={cardActionChildren}
+        inlineEditing={inlineEditing}
+        readonly={readonly}
       />
     </Box>
   );

@@ -98,6 +98,7 @@ export const EntityDetailModal = NiceModal.create(
             entityIRI={entityIRI}
             data={data}
             cardInfo={cardInfo}
+            inlineEditing={true}
           />
         </DialogContent>
         <DialogActions>

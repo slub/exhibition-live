@@ -232,6 +232,7 @@ const useKnowledgeBases = () => {
               typeIRI={typeIRI}
               data={undefined}
               cardActionChildren={null}
+              readonly
             />
           }
         />

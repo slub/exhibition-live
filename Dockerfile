@@ -11,7 +11,7 @@ COPY . .
 ENV NEXT_TELEMETRY_DISABLED 1
 ENV NEXT_PUBLIC_BASE_PATH ""
 
-RUN bun i --frozen-lockfile
+RUN bun i
 RUN cp /app/apps/exhibition-live/next.config.standalone.js /app/apps/exhibition-live/next.config.js
 RUN bun run build
 

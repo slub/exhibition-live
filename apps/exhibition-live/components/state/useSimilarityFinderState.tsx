@@ -1,4 +1,4 @@
-import { create } from "zustand";
+import {create} from "zustand";
 
 export type UseSimilarityFinderState = {
   elementIndex: number;
@@ -25,3 +25,4 @@ export const useSimilarityFinderState = create<UseSimilarityFinderState>(
     setElementIndex: (index: number) => set({ elementIndex: index }),
   }),
 );
+

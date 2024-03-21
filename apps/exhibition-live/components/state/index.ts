@@ -12,3 +12,5 @@ export * from "./useDrawerDimensions";
 export * from "./useRightDrawerState";
 export * from "./useTypeIRIFromEntity";
 export * from "./useSimilarityFinderState";
+export * from "./useLoadQuery";
+export * from "./useKeyEventForSimilarityFinder";

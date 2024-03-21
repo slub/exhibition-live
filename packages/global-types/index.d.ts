@@ -1,8 +1,6 @@
-import {SparqlBuildOptions, SparqlEndpoint} from "@slub/edb-core-types";
+import {SparqlEndpoint} from "@slub/edb-core-types";
 import {WalkerOptions} from "@slub/edb-graph-traversal";
 import {NamespaceBuilder} from "@rdfjs/namespace";
-
-export type QueryOptions =  { defaultPrefix: string, queryBuildOptions: SparqlBuildOptions}
 
 export type EdbConfRaw = {
   BASE_IRI: string;

@@ -33,6 +33,7 @@
     "@slub/edb-graph-traversal": "workspace:*",
     "@slub/remote-query-implementations": "workspace:*",
     "@slub/sparql-schema": "workspace:*",
+    "@slub/json-schema-utils": "workspace:*",
     "@tpluscode/sparql-builder": "^0.3.31",
     "cmd-ts": "^0.13.0",
     "elysia": "^0.8.17",

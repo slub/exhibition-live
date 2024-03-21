@@ -18,7 +18,14 @@ import { lobidTypemap } from "../../config";
 const lobidSearchURL = "https://lobid.org/gnd/search";
 const lobidURL = "https://lobid.org/gnd/";
 
-const mapTypeName = (typeName: string) => lobidTypemap[typeName] || typeName;
+const mapTypeName = (typeName: string) => {
+    const gndType =  lobidTypemap[typeName] || typeName;
+    return Array.isArray(gndType) ? gndType : [gndType]
+};
+
+const makeTypeFilter = (gndTypes: string[]) => {
+    return gndTypes.map(gndType => `type:${gndType}`).join(' OR ')
+}
 const gndIRIToID = (iri: string) => iri.substring(gndBaseIRI.length);
 export const findEntityWithinLobid = async (
   searchString: string,
@@ -31,7 +38,7 @@ export const findEntityWithinLobid = async (
         "?" +
         new URLSearchParams({
           q: searchString,
-          filter: `type:${mapTypeName(typeName)}`,
+          filter: makeTypeFilter( mapTypeName(typeName)),
           size: (limit || 10).toString(),
           format: "json",
         }).toString(),
@@ -54,7 +61,7 @@ export const findEntityWithinLobidWithCertainProperty = async (
       "?" +
       new URLSearchParams({
         ...(searchString ? { q: searchString } : {}),
-        filter: `type:${mapTypeName(typeName)} AND _exists_:${property}`,
+        filter: `${makeTypeFilter(mapTypeName(typeName))} AND _exists_:${property}`,
         size: (limit || 10).toString(),
         format: "json",
       }).toString(),

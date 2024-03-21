@@ -1,6 +1,6 @@
 import df from "@rdfjs/data-model";
 import { SELECT } from "@tpluscode/sparql-builder";
-import {QueryOptions} from "@slub/edb-global-types";
+import {QueryOptions} from "@slub/edb-core-types";
 
 
 export const fixSparqlOrder: (sparqlQuery: string) => string = sparqlQuery => {

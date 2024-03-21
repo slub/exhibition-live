@@ -20,9 +20,8 @@ import { sladb, slent } from "../form/formConfigs";
 import {BASE_IRI, primaryFields, typeIRItoTypeName} from "../config";
 import { memo } from "./config";
 import {
-  useGlobalSearchWithHelper,
-  useRightDrawerState,
-  useSimilarityFinderState,
+    useGlobalSearchWithHelper, useKeyEventForSimilarityFinder,
+    useRightDrawerState,
 } from "../state";
 import { SearchbarWithFloatingButton } from "../layout/main-layout/Searchbar";
 import SimilarityFinder from "../form/SimilarityFinder";
@@ -108,6 +107,7 @@ export const ArrayLayoutToolbar = memo(
       (iri: string, data: any) => {
         const label = data[getDefaultLabelKey(typeIRI)] || data.label || iri;
         handleSelectedChange({ value: iri, label });
+        inputRef.current?.focus();
       },
       [handleSelectedChange, typeIRI],
     );
@@ -115,13 +115,14 @@ export const ArrayLayoutToolbar = memo(
     const handleMappedDataAccepted = useCallback(
       (newData: any) => {
         addItem(path, newData)();
+        inputRef.current?.focus();
       },
       [addItem, path],
     );
 
     const { open: sidebarOpen } = useRightDrawerState();
-    const { cycleThroughElements } = useSimilarityFinderState();
 
+    const inputRef = React.useRef<HTMLInputElement | null>(null);
     const {
       path: globalPath,
       searchString,
@@ -137,15 +138,7 @@ export const ArrayLayoutToolbar = memo(
       handleMappedDataAccepted,
     );
 
-    const handleKeyUp = useCallback(
-      (ev: React.KeyboardEvent<HTMLInputElement>) => {
-        if (ev.key === "ArrowUp" || ev.key === "ArrowDown") {
-          cycleThroughElements(ev.key === "ArrowDown" ? 1 : -1);
-          ev.preventDefault();
-        }
-      },
-      [cycleThroughElements],
-    );
+    const handleKeyUp = useKeyEventForSimilarityFinder();
 
     return (
       <Box>
@@ -168,20 +161,13 @@ export const ArrayLayoutToolbar = memo(
                 marginBottom: theme.spacing(1),
               })}
               inputProps={{
+                ref: inputRef,
                 onFocus: handleFocus,
                 onKeyUp: handleKeyUp,
               }}
             />
           ) : (
             <Grid container direction={"column"}>
-              <Hidden xsUp={errors.length === 0}>
-                <Grid item>
-                  <ValidationIcon
-                    id="tooltip-validation"
-                    errorMessages={errors}
-                  />
-                </Grid>
-              </Hidden>
               {!isReifiedStatement && (
                 <Grid item>
                   <Grid

@@ -22,8 +22,8 @@ import {encodeIRI} from "../../utils/core";
 
 import {typeIRItoTypeName} from "../../config";
 import {useSettings} from "../../state/useLocalSettings";
-import {uischemas} from "../uischemas";
-import {uischemata} from "../uischemaForType";
+import NiceModal from "@ebay/nice-modal-react";
+import {EditEntityModal} from "../edit/EditEntityModal";
 
 interface OwnProps {
     typeIRI: string;
@@ -31,7 +31,8 @@ interface OwnProps {
     cardInfo: PrimaryFieldResults<string>;
     cardActionChildren?: React.ReactNode;
     data: any;
-    readOnly?: boolean
+    readonly?: boolean;
+    inlineEditing?: boolean;
 }
 
 type Props = OwnProps;
@@ -41,25 +42,29 @@ export const EntityDetailCard: FunctionComponent<Props> = ({
                                                                cardInfo,
                                                                data,
                                                                cardActionChildren,
-                                                               readOnly
+                                                               readonly,
+                                                               inlineEditing
                                                            }) => {
     const {t} = useTranslation();
 
     const router = useModifiedRouter();
     const editEntry = useCallback(() => {
         const typeName = typeIRItoTypeName(typeIRI);
-        router.push(`/create/${typeName}?encID=${encodeIRI(entityIRI)}`);
-    }, [router, typeIRI, entityIRI]);
+        if(inlineEditing) {
+            NiceModal.show(EditEntityModal, {
+                entityIRI: entityIRI,
+                typeIRI: typeIRI,
+                data,
+                disableLoad: true
+            })
+        } else {
+          router.push(`/create/${typeName}?encID=${encodeIRI(entityIRI)}`);
+        }
+    }, [router, typeIRI, entityIRI, inlineEditing]);
+
     const {
         features: {enableDebug},
     } = useSettings();
-
-    const typeName = typeIRItoTypeName(typeIRI);
-    const loadedSchema = useExtendedSchema({typeName, classIRI: typeIRI});
-    const uischema = useMemo(
-        () => uischemata[typeName] || (uischemas as any)[typeName],
-        [typeName],
-    );
 
     return (
         <>
@@ -83,9 +88,9 @@ export const EntityDetailCard: FunctionComponent<Props> = ({
                     </CardContent>
                 </CardActionArea>
                 {cardActionChildren !== null && <CardActions>{
-                    typeof cardActionChildren !== 'undefined' && !readOnly ? cardActionChildren : <>
+                    typeof cardActionChildren !== 'undefined' && !readonly ? cardActionChildren : <>
                         <Button size="small" color="primary" onClick={editEntry}>
-                            {t("edit")}
+                            {inlineEditing ? t("edit inline")  :  t("edit")}
                         </Button>
                     </>
                 }

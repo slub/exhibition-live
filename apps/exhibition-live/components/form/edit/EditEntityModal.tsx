@@ -151,6 +151,7 @@ export const EditEntityModal = NiceModal.create(
                         defaultEditMode={true}
                         searchText={""}
                         schema={loadedSchema as JSONSchema7}
+                        formsPath={"root"}
                         jsonFormsProps={{
                             uischema,
                             uischemas: uischemas,

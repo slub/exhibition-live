@@ -14,7 +14,10 @@
                 {
                   "type": "Control",
                   "label": "Titel des Werkes",
-                  "scope": "#/properties/title"
+                  "scope": "#/properties/title",
+                  "options": {
+                    "focus": true
+                  }
                 },
                 {
                   "type": "Control",

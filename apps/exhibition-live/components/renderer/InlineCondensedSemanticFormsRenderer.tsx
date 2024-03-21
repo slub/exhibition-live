@@ -25,7 +25,7 @@ import {PrimaryField} from "../utils/types";
 import {
   useGlobalSearchWithHelper,
   useRightDrawerState,
-  useSimilarityFinderState,
+  useKeyEventForSimilarityFinder,
 } from "../state";
 import {makeFormsPath} from "../utils/core";
 import {SearchbarWithFloatingButton} from "../layout/main-layout/Searchbar";
@@ -89,16 +89,18 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
     if (!data) setRealLabel("");
   }, [data, setRealLabel]);
 
+  const { closeDrawer } = useRightDrawerState()
   const handleSelectedChange = useCallback(
     (v: AutocompleteSuggestion) => {
       if (!v) {
         handleChange(path, undefined);
+        closeDrawer()
         return;
       }
       if (v.value !== data) handleChange(path, v.value);
       setRealLabel(v.label);
     },
-    [path, handleChange, data, setRealLabel],
+    [path, handleChange, data, setRealLabel, closeDrawer],
   );
 
   useEffect(() => {
@@ -125,8 +127,9 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
         value: entityIRI,
         label: data.label || entityIRI,
       });
+      closeDrawer()
     },
-    [handleSelectedChange],
+    [handleSelectedChange, closeDrawer],
   );
 
 
@@ -171,6 +174,10 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
     handleMappedDataAccepted,
   );
 
+  const handleMappedDataIntermediate = useCallback((d: any) => {
+    handleMappedData(d)
+    closeDrawer()
+  }, [handleMappedData, closeDrawer])
 
 
   const {t} = useTranslation();
@@ -181,17 +188,7 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
   );
   const isValid = errors.length === 0;
 
-  const {cycleThroughElements} = useSimilarityFinderState();
-
-  const handleKeyUp = useCallback(
-    (ev: React.KeyboardEvent<HTMLInputElement>) => {
-      if (ev.key === "ArrowUp" || ev.key === "ArrowDown") {
-        cycleThroughElements(ev.key === "ArrowDown" ? 1 : -1);
-        ev.preventDefault();
-      }
-    },
-    [cycleThroughElements],
-  );
+  const handleKeyUp = useKeyEventForSimilarityFinder();
 
   const handleClear = useCallback(() => {
     handleSelectedChange(null);
@@ -226,11 +223,7 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
           {label}
         </Typography>
       </Box>
-      <Box
-        sx={{
-          height: "4em",
-        }}
-      >
+      <Box>
         {!hasValue ? (
           <FormControl
             fullWidth={!appliedUiSchemaOptions.trim}
@@ -258,7 +251,6 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
                 fullWidth
                 disabled={Boolean(ctx.readonly)}
                 variant="standard"
-                error={!isValid}
                 onChange={(ev) => handleSearchStringChange(ev.target.value)}
                 value={searchString || ""}
                 label={label}
@@ -274,7 +266,7 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
             )}
           </FormControl>
         ) : (
-          <List sx={{marginTop: "1em"}}>
+          <List sx={{marginTop: "1em"}} dense>
             <EntityDetailListItem
               entityIRI={selected.value}
               typeIRI={typeIRI}
@@ -292,7 +284,7 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
               jsonSchema={schema as JSONSchema7}
               onExistingEntityAccepted={handleExistingEntityAccepted}
               searchOnDataPath={searchOnDataPath}
-              onMappedDataAccepted={handleMappedData}
+              onMappedDataAccepted={handleMappedDataIntermediate}
             />
           </SearchbarWithFloatingButton>
         )}

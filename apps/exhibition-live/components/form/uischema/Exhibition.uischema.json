@@ -11,7 +11,10 @@
             {
               "type": "Control",
               "label": "Titel der Ausstellung",
-              "scope": "#/properties/title"
+              "scope": "#/properties/title",
+              "options": {
+                "focus": true
+              }
             },
             {
               "type": "Control",
@@ -173,15 +176,11 @@
       "elements": [
         {
           "type": "Control",
-          "label": "Herkunftsorganisation",
-          "scope": "#/properties/sourceCorporation"
-        },
-        {
-          "type": "Control",
           "label": "Künstler",
           "scope": "#/properties/involvedPersons",
           "options": {
             "elementLabelTemplate": "{{=it.person?.name || ''}} ({{=it.role?.title || ''}})",
+            "elementDetailItemPath": "person",
             "detail": "GENERATED",
             "isReifiedStatement": true
           }
@@ -192,6 +191,7 @@
           "scope": "#/properties/involvedCorporations",
           "options": {
             "elementLabelTemplate": "{{=it.corporation?.name || ''}} ({{=it.role?.title || ''}})",
+            "elementDetailItemPath": "corporation",
             "detail": "GENERATED",
             "isReifiedStatement": true
           }
@@ -204,23 +204,8 @@
       "elements": [
         {
           "type": "Control",
-          "label": "Ausgestellte Werke nach Personen",
-          "scope": "#/properties/exponatsAndPersons",
-          "options": {
-            "elementLabelTemplate": "{{=it.role?.title || ''}}:{{=it.person?.name || ''}} - {{=it.exponat?.title || ''}}",
-            "detail": "GENERATED",
-            "isReifiedStatement": true
-          }
-        },
-        {
-          "type": "Control",
-          "label": "Ausgestellte Werke nach Institutionen",
-          "scope": "#/properties/exponatsAndCorporations",
-          "options": {
-            "elementLabelTemplate": "{{=it.role?.title || ''}}:{{=it.corporation?.name || ''}} - {{=it.exponat?.title || ''}}",
-            "detail": "GENERATED",
-            "isReifiedStatement": true
-          }
+          "label": "Exponate",
+          "scope": "#/properties/exponats"
         }
       ]
     },

@@ -263,6 +263,7 @@ const MaterialArrayLayoutComponent = (props: ArrayLayoutProps & {}) => {
                   index={index}
                   count={count}
                   path={childPath}
+                  elementDetailItemPath={appliedUiSchemaOptions.elementDetailItemPath}
                   childLabelTemplate={
                     appliedUiSchemaOptions.elementLabelTemplate
                   }

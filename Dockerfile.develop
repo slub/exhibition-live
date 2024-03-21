@@ -1,0 +1,22 @@
+FROM oven/bun:1 as bun
+
+FROM node:18-slim AS base
+
+FROM base AS dev
+WORKDIR /app
+COPY --from=bun /usr/local/bin/bun /usr/local/bin
+COPY --from=bun /usr/local/bin/bunx /usr/local/bin
+
+ENV NEXT_TELEMETRY_DISABLED 1
+ENV NEXT_PUBLIC_BASE_PATH ""
+
+
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
+USER nextjs
+
+EXPOSE 3000
+
+ENV PORT 3000
+# set hostname to localhost
+ENV HOSTNAME "0.0.0.0"

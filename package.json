@@ -41,8 +41,8 @@
   ],
   "devDependencies": {
     "@turbo/gen": "^1.10.16",
-    "eslint": "^8.52.0",
-    "prettier": "^3.0.3",
+    "eslint": "^8.57.0",
+    "prettier": "^3.2.5",
     "tsup": "^8.0.2",
     "turbo": "^1.10.16",
     "typescript": "^5"

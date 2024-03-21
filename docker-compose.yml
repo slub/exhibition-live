@@ -1,0 +1,16 @@
+version: '3'
+
+services:
+  nodejs:
+    build:
+      context: .
+      dockerfile: Dockerfile.develop
+    container_name: exhibition-dev
+    env_file: .env
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+    stdin_open: true
+    tty: true
+    command: /bin/bash -c 'bun i &&  bun run dev --filter="./packages/*" & (sleep 10 && bun run dev --filter="/apps/exhibition-live")'

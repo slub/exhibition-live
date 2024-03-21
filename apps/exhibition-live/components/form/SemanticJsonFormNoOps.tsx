@@ -47,7 +47,7 @@ import {
   primaryTextFieldControlTester,
   PrimaryTextFieldRenderer,
 } from "../renderer/PrimaryFieldTextRenderer";
-import { useGlobalSearch } from "../state";
+import {useGlobalSearch, useRightDrawerState} from "../state";
 import MaterialArrayOfLinkedItemChipsRenderer, {
   materialArrayLayoutChipsTester,
 } from "../renderer/MaterialArrayOfLinkedItemChipsRenderer";
@@ -201,6 +201,8 @@ export const SemanticJsonFormNoOps: FunctionComponent<
     [onChange, onError],
   );
 
+  const { closeDrawer } = useRightDrawerState()
+
   const handleMappedData = useCallback(
     (newData: any) => {
       if (!newData) return;
@@ -211,6 +213,7 @@ export const SemanticJsonFormNoOps: FunctionComponent<
             ? "confirm save mapping"
             : "confirm mapping",
       }).then(() => {
+        closeDrawer()
         onChange(
           (data: any) => ({
             ...newData,
@@ -221,14 +224,16 @@ export const SemanticJsonFormNoOps: FunctionComponent<
         );
       });
     },
-    [onChange, typeIRI],
+    [onChange, typeIRI, closeDrawer],
   );
 
   const handleEntityIRIChange = useCallback(
-    (iri) =>
+    (iri) => {
       onEntityDataChange &&
-      onEntityDataChange({ "@id": iri, "@type": typeIRI }),
-    [onEntityDataChange, typeIRI],
+      onEntityDataChange({"@id": iri, "@type": typeIRI});
+      closeDrawer()
+    },
+    [onEntityDataChange, typeIRI, closeDrawer],
   );
 
   const WithCard = useMemo(
@@ -297,7 +302,6 @@ export const SemanticJsonFormNoOps: FunctionComponent<
       </Grid>
       {formsPath === globalPath && (
         <Grid item>
-          {" "}
           <SearchbarWithFloatingButton>
             <SimilarityFinder
               search={searchText}
@@ -307,6 +311,7 @@ export const SemanticJsonFormNoOps: FunctionComponent<
               onEntityIRIChange={handleEntityIRIChange}
               searchOnDataPath={searchOnDataPath}
               onMappedDataAccepted={handleMappedData}
+              hideFooter
             />
           </SearchbarWithFloatingButton>{" "}
         </Grid>

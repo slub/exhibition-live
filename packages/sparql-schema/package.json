@@ -16,6 +16,7 @@
   },
   "scripts": {
     "build": "tsup",
+    "dev": "tsup --watch",
     "lint": "eslint \"**/*.ts*\"",
     "lint-fix": "eslint --fix \"**/*.ts*\"",
     "test": "NODE_OPTIONS=--experimental-vm-modules jest",
@@ -30,6 +31,7 @@
     "@slub/edb-tsconfig": "workspace:*",
     "@slub/edb-tsup-config": "workspace:*",
     "@slub/edb-graph-traversal": "workspace:*",
+    "@slub/json-schema-utils": "workspace:*",
     "@types/jest": "^29.5.12",
     "@types/json-schema": "^7.0.14",
     "eslint-config-edb": "workspace:*",

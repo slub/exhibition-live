@@ -87,10 +87,6 @@ const ClassicResultListItem: FunctionComponent<Props> = ({
     <>
       <ListItem sx={{p: 0}} alignItems="flex-start">
         <ListItemButton
-          sx={{
-            backgroundColor: "transparent",
-            "&:hover": {backgroundColor: "transparent"},
-          }}
           onClick={handleSelect}
           onFocus={handleFocus}
           onBlur={handleBlur}
@@ -125,6 +121,7 @@ const ClassicResultListItem: FunctionComponent<Props> = ({
         </ListItemButton>
       </ListItem>
       <ClassicResultPopperItem
+        sx={{zIndex: 2000}}
         anchorEl={anchorRef.current}
         popperRef={popperRef as any}
         open={hasFocus || selected}>

@@ -393,7 +393,7 @@ export const EntityDetailCardExampleWithControls: Story = {
     entityIRI: exampleOne.data["@id"],
     cardInfo: exampleOne.cardInfo,
     data: exampleOne.data,
-    readOnly: true,
+    readonly: true,
   }
 }
 

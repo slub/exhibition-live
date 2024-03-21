@@ -121,6 +121,7 @@ const ClassicResultListItem: FunctionComponent<Props> = ({
         </ListItemButton>
       </ListItem>
       <ClassicResultPopperItem
+        sx={{zIndex: 2000}}
         anchorEl={anchorRef.current}
         popperRef={popperRef as any}
         open={hasFocus || selected}>

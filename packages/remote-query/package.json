@@ -16,6 +16,7 @@
   },
   "scripts": {
     "build": "tsup",
+    "dev": "tsup --watch",
     "lint": "eslint \"**/*.ts*\"",
     "lint-fix": "eslint --fix \"**/*.ts*\"",
     "test": "NODE_OPTIONS=--experimental-vm-modules jest --passWithNoTests --color",

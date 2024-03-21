@@ -108,3 +108,6 @@ export type SparqlEndpoint = {
 };
 
 export type SPARQLFlavour = "default" | "oxigraph" | "blazegraph" | "allegro";
+
+export type QueryOptions =  { defaultPrefix: string, queryBuildOptions: SparqlBuildOptions}
+

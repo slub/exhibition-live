@@ -16,6 +16,7 @@
   "description": "A TypeScript library for traversing RDF Graphs to extract and query data matching JSON Schemas, facilitating the development of semantic user interfaces.",
   "scripts": {
     "build": "tsup",
+    "dev": "tsup --watch",
     "lint": "eslint \"**/*.ts*\"",
     "lint-fix": "eslint --fix \"**/*.ts*\"",
     "test": "NODE_OPTIONS=--experimental-vm-modules jest",

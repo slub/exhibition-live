@@ -11,7 +11,10 @@
             {
               "type": "Control",
               "label": "Titel der Ausstellung",
-              "scope": "#/properties/title"
+              "scope": "#/properties/title",
+              "options": {
+                "focus": true
+              }
             },
             {
               "type": "Control",

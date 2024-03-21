@@ -14,7 +14,10 @@
                 {
                   "type": "Control",
                   "label": "Name",
-                  "scope": "#/properties/name"
+                  "scope": "#/properties/name",
+                  "options": {
+                    "focus": true
+                  }
                 },
                 {
                   "type": "Control",

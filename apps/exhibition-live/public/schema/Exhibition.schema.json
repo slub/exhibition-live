@@ -571,9 +571,6 @@
             "$ref": "#/$defs/Genre"
           }
         },
-        "sourceCorporation": {
-          "$ref": "#/$defs/Corporation"
-        },
         "fromDateDisplay": {
           "type": "string"
         },
@@ -712,16 +709,10 @@
             }
           }
         },
-        "exponatsAndPersons": {
+        "exponats": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/ExponatsAndPersons"
-          }
-        },
-        "exponatsAndCorporations": {
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/ExponatsAndCorporations"
+             "$ref": "#/$defs/ExhibitionExponat"
           }
         },
         "resources": {

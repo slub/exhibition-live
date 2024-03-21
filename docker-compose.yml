@@ -13,4 +13,4 @@ services:
       - .:/app
     stdin_open: true
     tty: true
-    command: /bin/bash -c 'bun i && cd ./apps/exhibition-live && bun run dev'
+    command: /bin/bash -c 'bun i &&  bun run dev --filter="./packages/*" & (sleep 10 && bun run dev --filter="/apps/exhibition-live")'

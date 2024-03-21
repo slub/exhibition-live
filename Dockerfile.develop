@@ -11,8 +11,8 @@ ENV NEXT_TELEMETRY_DISABLED 1
 ENV NEXT_PUBLIC_BASE_PATH ""
 
 
-RUN addgroup --system --gid 1000 nodejs
-RUN adduser --system --uid 1000 nextjs
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
 USER nextjs
 
 EXPOSE 3000

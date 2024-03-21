@@ -1,0 +1,21 @@
+{
+  "type": "VerticalLayout",
+  "elements": [
+    {
+      "type": "Control",
+      "scope": "#/properties/title",
+      "label": "Bezeichnung",
+      "options": {
+        "focus": true
+      }
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/description",
+      "label": "Beschreibung",
+      "options": {
+        "multi": true
+      }
+    }
+  ]
+}

@@ -25,7 +25,7 @@ import {PrimaryField} from "../utils/types";
 import {
   useGlobalSearchWithHelper,
   useRightDrawerState,
-  useSimilarityFinderState,
+  useKeyEventForSimilarityFinder,
 } from "../state";
 import {makeFormsPath} from "../utils/core";
 import {SearchbarWithFloatingButton} from "../layout/main-layout/Searchbar";
@@ -89,16 +89,18 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
     if (!data) setRealLabel("");
   }, [data, setRealLabel]);
 
+  const { closeDrawer } = useRightDrawerState()
   const handleSelectedChange = useCallback(
     (v: AutocompleteSuggestion) => {
       if (!v) {
         handleChange(path, undefined);
+        closeDrawer()
         return;
       }
       if (v.value !== data) handleChange(path, v.value);
       setRealLabel(v.label);
     },
-    [path, handleChange, data, setRealLabel],
+    [path, handleChange, data, setRealLabel, closeDrawer],
   );
 
   useEffect(() => {
@@ -181,17 +183,7 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
   );
   const isValid = errors.length === 0;
 
-  const {cycleThroughElements} = useSimilarityFinderState();
-
-  const handleKeyUp = useCallback(
-    (ev: React.KeyboardEvent<HTMLInputElement>) => {
-      if (ev.key === "ArrowUp" || ev.key === "ArrowDown") {
-        cycleThroughElements(ev.key === "ArrowDown" ? 1 : -1);
-        ev.preventDefault();
-      }
-    },
-    [cycleThroughElements],
-  );
+  const handleKeyUp = useKeyEventForSimilarityFinder();
 
   const handleClear = useCallback(() => {
     handleSelectedChange(null);

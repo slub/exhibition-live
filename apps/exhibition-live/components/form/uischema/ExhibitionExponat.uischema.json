@@ -68,33 +68,21 @@
           "elements": [
             {
               "type": "Group",
-              "label": "Beginn",
               "elements": [
                 {
                   "type": "Control",
-                  "label": "Genauigkeit",
-                  "scope": "#/properties/fromType"
-                },
-                {
-                  "type": "Control",
-                  "label": "",
-                  "scope": "#/properties/fromDate"
+                  "label": "Beginn",
+                  "scope": "#/properties/startDate"
                 }
               ]
             },
             {
               "type": "Group",
-              "label": "Ende",
               "elements": [
                 {
                   "type": "Control",
-                  "label": "Genauigkeit",
-                  "scope": "#/properties/toType"
-                },
-                {
-                  "type": "Control",
-                  "label": "",
-                  "scope": "#/properties/toDate"
+                  "label": "Ende",
+                  "scope": "#/properties/endDate"
                 }
               ]
             }
@@ -111,8 +99,10 @@
           "label": "Künstler",
           "scope": "#/properties/relatedPersons",
           "options": {
-            "elementLabelProp": "name",
-            "detail": "GENERATED"
+            "elementLabelTemplate": "{{=it.person?.name || ''}} ({{=it.role?.title || ''}})",
+            "elementDetailItemPath": "person",
+            "detail": "GENERATED",
+            "isReifiedStatement": true
           }
         },
         {
@@ -120,8 +110,10 @@
           "label": "Institutionen",
           "scope": "#/properties/relatedCorporations",
           "options": {
-            "elementLabelProp": "name",
-            "detail": "GENERATED"
+            "elementLabelTemplate": "{{=it.corporation?.name || ''}} ({{=it.role?.title || ''}})",
+            "elementDetailItemPath": "corporation",
+            "detail": "GENERATED",
+            "isReifiedStatement": true
           }
         }
       ]

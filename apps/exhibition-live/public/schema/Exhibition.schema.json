@@ -331,9 +331,6 @@
     "ExponatsAndPersons": {
       "type": "object",
       "properties": {
-        "exponat": {
-          "$ref": "#/$defs/ExhibitionExponat"
-        },
         "person": {
           "$ref": "#/$defs/Person"
         },
@@ -345,9 +342,6 @@
     "ExponatsAndCorporations": {
       "type": "object",
       "properties": {
-        "exponat": {
-          "$ref": "#/$defs/ExhibitionExponat"
-        },
         "corporation": {
           "$ref": "#/$defs/Corporation"
         },
@@ -374,7 +368,7 @@
           "type": "string",
           "maxLength": 200
         },
-        "fromDate": {
+        "startDate": {
           "type": "object",
           "properties": {
             "dateValue": {
@@ -401,7 +395,7 @@
             }
           }
         },
-        "toDate": {
+        "endDate": {
           "type": "object",
           "properties": {
             "dateValue": {

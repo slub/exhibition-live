@@ -18,10 +18,6 @@ const makeGenSlubJSONLDSemanticProperties: (
       title: entityBaseIRI,
       type: "string",
     },
-    image: {
-      title: "Bild",
-      type: "string",
-    },
     idAuthority: {
       title: "Autorität",
       type: "object",

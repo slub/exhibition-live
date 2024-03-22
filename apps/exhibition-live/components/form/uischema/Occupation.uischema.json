@@ -1,0 +1,40 @@
+{
+  "type": "VerticalLayout",
+  "elements": [
+    {
+      "type": "HorizontalLayout",
+      "elements": [
+        {
+          "type": "Control",
+          "scope": "#/properties/title",
+          "label": "Berufsbezeichnung",
+          "options": {
+            "focus": true
+          }
+        },
+        {
+          "type": "Control",
+          "scope": "#/properties/parent",
+          "label": "Übergeordneter Beruf"
+        }
+      ]
+    },
+    {
+      "type": "HorizontalLayout",
+      "elements": [
+        {
+          "type": "Control",
+          "scope": "#/properties/description",
+          "label": "Beschreibung",
+          "options": {
+            "multi": true
+          }
+        },
+        {
+          "type": "Control",
+          "scope": "#/properties/image"
+        }
+      ]
+    }
+  ]
+}

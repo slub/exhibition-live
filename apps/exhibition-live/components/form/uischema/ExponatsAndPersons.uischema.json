@@ -3,15 +3,11 @@
   "elements": [
     {
       "type": "Control",
-      "scope": "#/properties/role"
-    },
-    {
-      "type": "Control",
       "scope": "#/properties/person"
     },
     {
       "type": "Control",
-      "scope": "#/properties/exponat"
+      "scope": "#/properties/role"
     }
   ]
 }

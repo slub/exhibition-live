@@ -88,4 +88,5 @@ export const uischemas: JsonFormsUISchemaRegistryEntry[] = [
   "ExhibitionWebLink",
   "Genre",
   "Exhibition",
+  "Occupation",
 ].map((key) => createUiSchema(key, BASE_IRI));

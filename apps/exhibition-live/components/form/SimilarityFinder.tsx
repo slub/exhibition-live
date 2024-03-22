@@ -26,7 +26,7 @@ import {gndEntryWithMainInfo} from "./lobid/LobidSearchTable";
 import {findEntityByAuthorityIRI, findEntityByClass} from "../utils/discover";
 import {useGlobalCRUDOptions} from "../state/useGlobalCRUDOptions";
 import {mapAbstractDataUsingAI, mapDataUsingAI} from "../utils/ai";
-import {useGlobalSearch, useSimilarityFinderState} from "../state";
+import {useGlobalSearch, useModalRegistry, useSimilarityFinderState} from "../state";
 import {useTranslation} from "next-i18next";
 import {searchEntityByLabel} from "../utils/discover/searchEntityByLabel";
 import {primaryFields, typeIRItoTypeName} from "../config";
@@ -516,15 +516,18 @@ const SimilarityFinder: FunctionComponent<Props> = ({
       setMargin(ref.clientHeight);
     }
   }, [ref]);
+  const { registerModal } = useModalRegistry()
 
   const showEditDialog = useCallback(() => {
     const defaultLabelKey = getDefaultLabelKey(preselectedClassIRI);
-    const newItem = {
-      "@id": slent(uuidv4()).value,
-      "@type": preselectedClassIRI,
-      [defaultLabelKey]: searchString,
-    }
-    NiceModal.show(EditEntityModal, {
+      const newItem = {
+          "@id": slent(uuidv4()).value,
+          "@type": preselectedClassIRI,
+          [defaultLabelKey]: searchString,
+      }
+    const modalID = `edit-${newItem["@type"]}-${newItem["@id"]}`
+    registerModal(modalID, EditEntityModal)
+    NiceModal.show(modalID, {
       entityIRI: newItem["@id"],
       typeIRI: newItem["@type"],
       data: newItem,
@@ -532,7 +535,7 @@ const SimilarityFinder: FunctionComponent<Props> = ({
     }).then(({entityIRI, data}) => {
       handleEntityChange(entityIRI, data)
     })
-  }, [preselectedClassIRI, handleEntityChange, searchString])
+  }, [registerModal, preselectedClassIRI, searchString, handleEntityChange])
 
   const ResultList = useCallback(
     () => {
@@ -561,7 +564,6 @@ const SimilarityFinder: FunctionComponent<Props> = ({
     , [searchResults, knowledgeBases, selectedKnowledgeSources, classIRI, handleAccept, elementIndex])
 
   return <div style={{overflow: 'hidden'}}>
-
     <Grid container alignItems="center" direction={"column"} spacing={2}
           style={{overflowY: "auto", marginBottom: margin}}>
       <Grid item sx={{width: "100%"}}>

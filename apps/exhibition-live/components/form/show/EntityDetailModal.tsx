@@ -31,10 +31,12 @@ type EntityDetailModalProps = {
   entityIRI: string;
   data: any;
   disableLoad?: boolean;
+  readonly?: boolean;
+  inlineEditing?: boolean;
 };
 
 export const EntityDetailModal = NiceModal.create(
-  ({ typeIRI, entityIRI, data: defaultData, disableLoad }: EntityDetailModalProps) => {
+  ({ typeIRI, entityIRI, data: defaultData, disableLoad, readonly, inlineEditing }: EntityDetailModalProps) => {
     const modal = useModal();
     const typeIRIs = useTypeIRIFromEntity(entityIRI);
     const classIRI: string | undefined = typeIRI || typeIRIs?.[0];
@@ -98,7 +100,8 @@ export const EntityDetailModal = NiceModal.create(
             entityIRI={entityIRI}
             data={data}
             cardInfo={cardInfo}
-            inlineEditing={true}
+            inlineEditing={inlineEditing}
+            readonly={readonly}
           />
         </DialogContent>
         <DialogActions>

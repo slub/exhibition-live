@@ -24,6 +24,7 @@ import NiceModal from "@ebay/nice-modal-react";
 import { EntityDetailModal } from "./EntityDetailModal";
 import { Clear, HideImage } from "@mui/icons-material";
 import { ellipsis } from "../../utils/core";
+import {useRootFormContext} from "../../provider";
 
 type EntityDetailListItemProps = {
   entityIRI: string;
@@ -77,13 +78,14 @@ export const EntityDetailListItem = ({
     };
   }, [typeName, data]);
   const { label, image, description } = cardInfo;
+  const { isWithinRootForm } = useRootFormContext()
   const showDetailModal = useCallback(() => {
-    NiceModal.show(EntityDetailModal, { typeIRI, entityIRI, data });
+    NiceModal.show(EntityDetailModal, { typeIRI, entityIRI, data, inlineEditing: isWithinRootForm });
   }, [typeIRI, entityIRI, data]);
   //Sorry for this hack, in future we will have class dependent List items
   const variant = useMemo(
     () => (typeIRI.endsWith("Person") ? "circular" : "rounded"),
-    [typeIRI],
+    [typeIRI, isWithinRootForm],
   );
 
   return (

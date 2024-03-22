@@ -251,6 +251,7 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> = ({
         NiceModal.show(EntityDetailModal, {
             typeIRI,
             entityIRI: entityIRI,
+            readonly: true,
         });
     }, [typeIRI, entityIRI]);
 

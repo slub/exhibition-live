@@ -14,3 +14,4 @@ export * from "./useTypeIRIFromEntity";
 export * from "./useSimilarityFinderState";
 export * from "./useLoadQuery";
 export * from "./useKeyEventForSimilarityFinder";
+export * from "./useModalRegistry";

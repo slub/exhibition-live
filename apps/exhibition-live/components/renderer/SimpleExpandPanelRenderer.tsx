@@ -1,5 +1,4 @@
 import { JsonSchema, update } from "@jsonforms/core";
-import DeleteIcon from "@mui/icons-material/Delete";
 import {
   Avatar,
   IconButton,
@@ -17,7 +16,6 @@ import {
   applyToEachField,
   extractFieldIfString,
 } from "../utils/mapping/simpleFieldExtractor";
-import { SemanticFormsModal } from "./SemanticFormsModal";
 import { JSONSchema7 } from "json-schema";
 import { useJsonForms } from "@jsonforms/react";
 import dot from "dot";
@@ -25,8 +23,6 @@ import { useCRUDWithQueryClient } from "../state/useCRUDWithQueryClient";
 import { useGlobalCRUDOptions } from "../state/useGlobalCRUDOptions";
 import { defaultJsonldContext, defaultPrefix } from "../form/formConfigs";
 import get from "lodash/get";
-import { TabIcon } from "../theme/icons";
-import { useModifiedRouter } from "../basic";
 import NiceModal from "@ebay/nice-modal-react";
 import { EntityDetailModal } from "../form/show";
 import {bringDefinitionToTop} from "@slub/json-schema-utils";
@@ -53,16 +49,13 @@ export const SimpleExpandPanelRenderer = (
   const { dispatch } = useJsonForms();
   const {
     data,
-    index,
     entityIRI,
     schema,
     rootSchema,
     onRemove,
-    onChange,
     count,
     childLabelTemplate,
     elementLabelProp,
-    formsPath,
     elementDetailItemPath
   } = props;
   const typeIRI = schema.properties?.["@type"]?.const;
@@ -81,7 +74,6 @@ export const SimpleExpandPanelRenderer = (
       return applyToEachField(data, fieldDecl, extractFieldIfString);
     return {};
   }, [data, typeName, entityIRI]);
-  const [modalIsOpen, setModalIsOpen] = useState(false);
 
   const subSchema = useMemo(
     () =>
@@ -132,14 +124,12 @@ export const SimpleExpandPanelRenderer = (
     if (!saveMutation) return;
     saveMutation.mutate(data);
   }, [saveMutation, data]);
-  const router = useModifiedRouter();
-  const locale = router.query.locale || "";
 
   const showDetailModal = useCallback(() => {
     if(elementDetailItem?.["@id"] && elementDetailItem?.["@type"]) {
-        NiceModal.show(EntityDetailModal, { typeIRI: elementDetailItem["@type"], entityIRI: elementDetailItem["@id"], data: elementDetailItem });
+        NiceModal.show(EntityDetailModal, { typeIRI: elementDetailItem["@type"], entityIRI: elementDetailItem["@id"], data: elementDetailItem, inlineEditing: true  });
     } else {
-      NiceModal.show(EntityDetailModal, {typeIRI, entityIRI, data});
+      NiceModal.show(EntityDetailModal, {typeIRI, entityIRI, data, inlineEditing: true });
     }
   }, [typeIRI, entityIRI, data, elementDetailItem]);
 

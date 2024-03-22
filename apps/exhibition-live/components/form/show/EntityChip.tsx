@@ -16,6 +16,7 @@ import {
   ChipProps,
   Tooltip
 } from "@mui/material";
+import {useRootFormContext} from "../../provider";
 
 type EntityChipProps = {
   index?: number;
@@ -76,12 +77,13 @@ export const EntityChip = ({
     [typeIRI],
   );
   const [tooltipEnabled, setTooltipEnabled] = useState(false);
+  const { isWithinRootForm } = useRootFormContext()
   const showDetailModal = useCallback(
     (e: MouseEvent) => {
       e.preventDefault();
-      NiceModal.show(EntityDetailModal, {entityIRI, data: {}});
+      NiceModal.show(EntityDetailModal, {entityIRI, data: {}, inlineEditing: isWithinRootForm});
     },
-    [entityIRI],
+    [entityIRI, isWithinRootForm],
   );
   const handleShouldShow = useCallback(
     (e: MouseEvent<Element>) => {

@@ -1,9 +1,7 @@
 import React, {
     FunctionComponent,
     useCallback,
-    useMemo,
 } from "react";
-import useExtendedSchema from "../../state/useExtendedSchema";
 import {JsonView} from "react-json-view-lite";
 import {PrimaryFieldResults} from "../../utils/types";
 import {
@@ -24,6 +22,7 @@ import {typeIRItoTypeName} from "../../config";
 import {useSettings} from "../../state/useLocalSettings";
 import NiceModal from "@ebay/nice-modal-react";
 import {EditEntityModal} from "../edit/EditEntityModal";
+import {useModalRegistry} from "../../state";
 
 interface OwnProps {
     typeIRI: string;
@@ -48,10 +47,13 @@ export const EntityDetailCard: FunctionComponent<Props> = ({
     const {t} = useTranslation();
 
     const router = useModifiedRouter();
+    const { registerModal } = useModalRegistry()
     const editEntry = useCallback(() => {
         const typeName = typeIRItoTypeName(typeIRI);
-        if(inlineEditing) {
-            NiceModal.show(EditEntityModal, {
+        if(inlineEditing === true) {
+            const modalID = `edit-${typeIRI}-${entityIRI}`
+            registerModal(modalID, EditEntityModal)
+            NiceModal.show(modalID, {
                 entityIRI: entityIRI,
                 typeIRI: typeIRI,
                 data,
@@ -60,11 +62,12 @@ export const EntityDetailCard: FunctionComponent<Props> = ({
         } else {
           router.push(`/create/${typeName}?encID=${encodeIRI(entityIRI)}`);
         }
-    }, [router, typeIRI, entityIRI, inlineEditing]);
+    }, [router, typeIRI, entityIRI, inlineEditing, registerModal]);
 
     const {
         features: {enableDebug},
     } = useSettings();
+
 
     return (
         <>
@@ -88,10 +91,10 @@ export const EntityDetailCard: FunctionComponent<Props> = ({
                     </CardContent>
                 </CardActionArea>
                 {cardActionChildren !== null && <CardActions>{
-                    typeof cardActionChildren !== 'undefined' && !readonly ? cardActionChildren : <>
-                        <Button size="small" color="primary" onClick={editEntry}>
+                    typeof cardActionChildren !== 'undefined' ? cardActionChildren : <>
+                    {!readonly && <Button size="small" color="primary" onClick={editEntry}>
                             {inlineEditing ? t("edit inline")  :  t("edit")}
-                        </Button>
+                        </Button>}
                     </>
                 }
                 </CardActions>}

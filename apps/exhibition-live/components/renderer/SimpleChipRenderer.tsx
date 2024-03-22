@@ -24,6 +24,7 @@ import { useModifiedRouter } from "../basic";
 import NiceModal from "@ebay/nice-modal-react";
 import { EntityDetailModal } from "../form/show/EntityDetailModal";
 import {bringDefinitionToTop} from "@slub/json-schema-utils";
+import {useRootFormContext} from "../provider";
 
 type SimpleChipRendererProps = {
   data: any;
@@ -119,13 +120,14 @@ export const SimpleChipRenderer = (
   const router = useModifiedRouter();
   const locale = router.query.locale || "";
   const [tooltipEnabled, setTooltipEnabled] = useState(false);
+  const { isWithinRootForm } = useRootFormContext()
 
   const showDetailModal = useCallback(
     (e: MouseEvent) => {
       e.preventDefault();
-      NiceModal.show(EntityDetailModal, { entityIRI, data: {} });
+      NiceModal.show(EntityDetailModal, { entityIRI, data: {}, inlineEditing: isWithinRootForm });
     },
-    [entityIRI],
+    [entityIRI, isWithinRootForm],
   );
   const handleShouldShow = useCallback(
     (e: MouseEvent<Element>) => {

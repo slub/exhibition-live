@@ -1,8 +1,6 @@
-import AddIcon from "@mui/icons-material/Add";
 import {
   Box,
   Grid,
-  Hidden,
   IconButton,
   TextField,
   Tooltip,
@@ -12,11 +10,10 @@ import * as React from "react";
 import { useTranslation } from "next-i18next";
 import { v4 as uuidv4 } from "uuid";
 
-import ValidationIcon from "./ValidationIcon";
 import DiscoverAutocompleteInput from "../form/discover/DiscoverAutocompleteInput";
 import { useCallback, useMemo } from "react";
 import { JsonSchema7 } from "@jsonforms/core";
-import { sladb, slent } from "../form/formConfigs";
+import { slent } from "../form/formConfigs";
 import {BASE_IRI, primaryFields, typeIRItoTypeName} from "../config";
 import { memo } from "./config";
 import {
@@ -139,6 +136,7 @@ export const ArrayLayoutToolbar = memo(
     );
 
     const handleKeyUp = useKeyEventForSimilarityFinder();
+    const { keepMounted } = useRightDrawerState();
 
     return (
       <Box>
@@ -148,7 +146,7 @@ export const ArrayLayoutToolbar = memo(
           </Box>
         )}
         <Box>
-          {sidebarOpen && !isReifiedStatement ? (
+          {(keepMounted || sidebarOpen) && !isReifiedStatement ? (
             <TextField
               fullWidth
               disabled={Boolean(readonly)}

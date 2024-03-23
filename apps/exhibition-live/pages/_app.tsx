@@ -19,6 +19,8 @@ import { appWithTranslation, UserConfig } from "next-i18next";
 import nextI18NextConfig from "../next-i18next.config";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { AdbProvider } from "../components/provider/adbContext";
+import {LocalizationProvider} from "@mui/x-date-pickers";
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
 export const queryClient = new QueryClient();
 const QueryClientProviderWrapper = ({
@@ -33,7 +35,7 @@ const QueryClientProviderWrapper = ({
 function App({ Component, pageProps }: AppProps) {
   return (
     <QueryClientProviderWrapper>
-      <>
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
         <ThemeComponent>
           <SnackbarProvider>
             <NiceModal.Provider>
@@ -46,7 +48,7 @@ function App({ Component, pageProps }: AppProps) {
           </SnackbarProvider>
         </ThemeComponent>
         <ReactQueryDevtools initialIsOpen={false} />
-      </>
+      </LocalizationProvider>
     </QueryClientProviderWrapper>
   );
 }

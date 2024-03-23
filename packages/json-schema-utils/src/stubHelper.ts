@@ -1,5 +1,6 @@
-import { JSONSchema7, JSONSchema7Definition } from "json-schema";
+import {JSONSchema7, JSONSchema7Definition} from "json-schema";
 import isObject from "lodash/isObject";
+import {defs, getDefintitionKey} from "./jsonSchema";
 
 export type GenRequiredPropertiesFunction = (modelName: string) => string[];
 export type GenJSONLDSemanticPropertiesFunction = (
@@ -17,10 +18,6 @@ export const filterForPrimitives = (properties: JSONSchema7["properties"]) =>
           value.type === "boolean"),
     ),
   );
-export const defs: (
-  schema: JSONSchema7,
-) => NonNullable<JSONSchema7["definitions"]> = (schema: JSONSchema7) =>
-  schema.$defs || schema.definitions || {};
 
 type RefAppendOptions = {
   excludeType?: string[];
@@ -42,7 +39,7 @@ export const recursivelyFindRefsAndAppendStub: (
   if (options?.excludeField?.includes(field)) {
     return schema;
   }
-  const definitionsKey = "$defs" in rootSchema ? "$defs" : "definitions";
+  const definitionsKey = getDefintitionKey(rootSchema)
   if (schema.$ref) {
     if (
       options?.excludeType?.includes(
@@ -142,7 +139,7 @@ export const prepareStubbedSchema = (
   requiredProperties?: GenRequiredPropertiesFunction,
   options?: RefAppendOptions,
 ) => {
-  const definitionsKey = "$defs" in schema ? "$defs" : "definitions";
+  const definitionsKey = getDefintitionKey(schema);
 
   const withJSONLDProperties: (
     name: string,

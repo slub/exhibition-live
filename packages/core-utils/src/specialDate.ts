@@ -35,6 +35,21 @@ export const getPaddedDatePart = (
 };
 
 /**
+ * Returns a JavaScript Date object from a given numeric date representation.
+ * if no day is given, the first day of the month is assumed.
+ * if no month is given, January is assumed.
+ * @param date
+ */
+export const getJSDate: (date: number) => Date = (
+  date
+) => {
+  const day = getDatePart(date, "day") || 1
+  const month = getDatePart(date, "month") || 1
+  const year = getDatePart(date, "year")
+  return new Date(year, month - 1, day)
+}
+
+/**
  * Formats a JavaScript Date object into a string of format YYYYMMDD, with each part padded as necessary.
  *
  * @param {Date} date - The Date object to format.

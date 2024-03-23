@@ -1,4 +1,4 @@
-import { JSONSchema7, JSONSchema7Definition } from "json-schema";
+import {JSONSchema7, JSONSchema7Definition} from "json-schema";
 
 /**
  * Checks if the given JSON schema definition is not a boolean.
@@ -138,12 +138,29 @@ export const filterForArrayProperties = (
  * @param {string} name - The name of the definition to move to the top.
  * @returns {JSONSchema7} A new JSON schema object with the specified definition moved to the top.
  */
-export const bringDefinitionToTop = (schema: JSONSchema7, name) => {
-  const defsFieldName = schema.definitions ? "definitions" : "$defs";
+export const bringDefinitionToTop: (schema: JSONSchema7, name: string) => JSONSchema7 = (schema,  name) => {
+  const definitions = defs(schema);
   const specificModel =
-    (schema[defsFieldName]?.[name] as object | undefined) || {};
+    (definitions?.[name] as object | undefined) || {};
   return {
     ...schema,
     ...specificModel,
-  };
+  } as JSONSchema7;
 };
+
+
+/**
+ * Returns the key used for definitions in the given JSON schema.
+ * If no definitions key is found, the default key "definitions" is returned.
+ * @param schema
+ */
+export const getDefintitionKey = (schema: JSONSchema7) =>  "$defs" in schema ? "$defs" : "definitions";
+
+/**
+ * Returns the definitions object from the given JSON schema or an empty object if it does not exist.
+ * @param schema
+ */
+export const defs: (
+  schema: JSONSchema7,
+) => NonNullable<JSONSchema7["definitions"]> = (schema: JSONSchema7) =>
+  schema.$defs || schema.definitions || {};

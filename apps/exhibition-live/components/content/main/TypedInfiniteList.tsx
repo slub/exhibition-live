@@ -37,14 +37,13 @@ import { SemanticFormsModal } from "../../renderer/SemanticFormsModal";
 import NiceModal from "@ebay/nice-modal-react";
 import GenericModal from "../../form/GenericModal";
 import { useSnackbar } from "notistack";
-import { remove } from "../../utils/crud";
 import { JsonSchema } from "@jsonforms/core";
 import useExtendedSchema from "../../state/useExtendedSchema";
 import Button from "@mui/material/Button";
 import { flatten } from "lodash";
 import get from "lodash/get";
 import { useModifiedRouter } from "../../basic";
-import {withDefaultPrefix} from "@slub/sparql-schema";
+import {remove, withDefaultPrefix} from "@slub/sparql-schema";
 import {filterForArrayProperties, filterForPrimitiveProperties, isJSONSchema} from "@slub/json-schema-utils";
 import {parseMarkdownLinks} from "@slub/edb-core-utils";
 

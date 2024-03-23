@@ -13,6 +13,7 @@ import { PrimaryFieldResults } from "../../utils/types";
 import { EntityDetailCard } from "./EntityDetailCard";
 import { useTypeIRIFromEntity } from "../../state";
 import { useTranslation } from "next-i18next";
+import {PrimaryField} from "@slub/edb-core-types";
 
 type EntityDetailElementProps = {
   typeIRI: string | undefined;
@@ -53,7 +54,7 @@ export const EntityDetailElement = ({
   const { t } = useTranslation();
   const data = liveData || rawData?.document;
   const cardInfo = useMemo<PrimaryFieldResults<string>>(() => {
-    const fieldDecl = primaryFields[typeName];
+    const fieldDecl = primaryFields[typeName] as PrimaryField | undefined;
     if (data && fieldDecl)
       return applyToEachField(data, fieldDecl, extractFieldIfString);
     return {

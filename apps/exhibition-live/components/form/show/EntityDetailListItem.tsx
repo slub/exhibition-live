@@ -81,11 +81,11 @@ export const EntityDetailListItem = ({
   const { isWithinRootForm } = useRootFormContext()
   const showDetailModal = useCallback(() => {
     NiceModal.show(EntityDetailModal, { typeIRI, entityIRI, data, inlineEditing: isWithinRootForm });
-  }, [typeIRI, entityIRI, data]);
+  }, [typeIRI, entityIRI, data, isWithinRootForm]);
   //Sorry for this hack, in future we will have class dependent List items
   const variant = useMemo(
     () => (typeIRI.endsWith("Person") ? "circular" : "rounded"),
-    [typeIRI, isWithinRootForm],
+    [typeIRI],
   );
 
   return (

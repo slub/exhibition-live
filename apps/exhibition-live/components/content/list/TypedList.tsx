@@ -1,30 +1,11 @@
-import {
-  defaultPrefix,
-  defaultQueryBuilderOptions,
-  sladb,
-  slent,
-} from "../../form/formConfigs";
+import {defaultPrefix, defaultQueryBuilderOptions, sladb, slent,} from "../../form/formConfigs";
 import * as React from "react";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {useCallback, useEffect, useMemo, useRef, useState} from "react";
 import schema from "../../../public/schema/Exhibition.schema.json";
-import { v4 as uuidv4 } from "uuid";
-import { useGlobalCRUDOptions } from "../../state/useGlobalCRUDOptions";
-import {
-  jsonSchema2Select,
-} from "../../utils/sparql";
-import {
-  Backdrop,
-  Box,
-  CircularProgress,
-  Grid,
-  IconButton,
-  Link,
-  ListItemIcon,
-  MenuItem,
-  Skeleton,
-  Tooltip,
-  Typography,
-} from "@mui/material";
+import {v4 as uuidv4} from "uuid";
+import {useGlobalCRUDOptions} from "../../state/useGlobalCRUDOptions";
+import {jsonSchema2Select,} from "../../utils/sparql";
+import {Backdrop, Box, CircularProgress, IconButton, ListItemIcon, Menu, MenuItem, Skeleton,} from "@mui/material";
 import {
   MaterialReactTable,
   MRT_ColumnDef,
@@ -38,45 +19,31 @@ import {
   MRT_VisibilityState,
   useMaterialReactTable,
 } from "material-react-table";
-import {
-  encodeIRI,
-  filterUndefOrNull,
-} from "../../utils/core";
-import { JSONSchema7 } from "json-schema";
-import {
-  Add,
-  Delete,
-  DeleteForever,
-  Details,
-  Edit,
-  FileDownload,
-  OpenInNew,
-  Visibility,
-} from "@mui/icons-material";
-import { primaryFields } from "../../config";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { SemanticFormsModal } from "../../renderer/SemanticFormsModal";
+import { MRT_Localization_EN } from 'material-react-table/locales/en';
+import { MRT_Localization_DE } from 'material-react-table/locales/de';
+
+import {JSONSchema7} from "json-schema";
+import {Delete, DeleteForever, Edit, FileDownload, NoteAdd, OpenInNew,} from "@mui/icons-material";
+import {primaryFields} from "../../config";
+import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
+import {SemanticFormsModal} from "../../renderer/SemanticFormsModal";
 import NiceModal from "@ebay/nice-modal-react";
 import GenericModal from "../../form/GenericModal";
-import { useSnackbar } from "notistack";
-import { remove, moveToTrash } from "../../utils/crud";
-import { JsonSchema } from "@jsonforms/core";
+import {useSnackbar} from "notistack";
+import {JsonSchema} from "@jsonforms/core";
 import useExtendedSchema from "../../state/useExtendedSchema";
 import Button from "@mui/material/Button";
-import get from "lodash/get";
-import { download, generateCsv, mkConfig } from "export-to-csv";
-import { useDrawerDimensions } from "../../state";
-import { useModifiedRouter } from "../../basic";
-import { OverflowContainer } from "../../lists";
-import isNil from "lodash/isNil";
-import { OverflowChip } from "../../lists/OverflowChip";
-import { SparqlEndpoint, useSettings } from "../../state/useLocalSettings";
-import { EntityDetailModal } from "../../form/show";
-import { useTranslation } from "next-i18next";
-import {withDefaultPrefix} from "@slub/sparql-schema";
-import { SPARQLFlavour } from "@slub/edb-core-types";
-import {filterForArrayProperties, filterForPrimitiveProperties, isJSONSchema} from "@slub/json-schema-utils";
-import { parseMarkdownLinks } from "@slub/edb-core-utils";
+import {download, generateCsv, mkConfig} from "export-to-csv";
+import {useModifiedRouter} from "../../basic";
+import {SparqlEndpoint, useSettings} from "../../state/useLocalSettings";
+import {EntityDetailModal} from "../../form/show";
+import {useTranslation} from "next-i18next";
+import {moveToTrash, remove, withDefaultPrefix} from "@slub/sparql-schema";
+import {SPARQLFlavour} from "@slub/edb-core-types";
+import {bringDefinitionToTop} from "@slub/json-schema-utils";
+import {computeColumns} from "./listHelper";
+import { tableConfig } from "../../config/tableConfig";
+import {encodeIRI, filterUndefOrNull } from "@slub/edb-core-utils";
 
 type Props = {
   typeName: string;
@@ -95,124 +62,6 @@ const getFlavour = (endpoint?: SparqlEndpoint): SPARQLFlavour => {
   }
 };
 
-const p = (path: string[]) => path.join("_");
-
-const mkAccessor =
-  (path: string, defaultValue?: string | any) => (row: any) => {
-    return get(row, path, defaultValue || "");
-  };
-
-type PathKeyMap = {
-  [key: string]: {
-    path: string;
-    defaultValue?: any;
-  };
-};
-
-const urlSuffix = (uri: string) => {
-  return uri.substring(
-    (uri.includes("#") ? uri.lastIndexOf("#") : uri.lastIndexOf("/")) + 1 ?? 0,
-    uri.length,
-  );
-};
-const mkMultiAccessor = (pathKeysMap: PathKeyMap) => (row: any) => {
-  return Object.fromEntries(
-    Object.entries(pathKeysMap).map(([key, { path, defaultValue }]) => [
-      key,
-      get(row, path, defaultValue || ""),
-    ]),
-  );
-};
-const computeColumns: (
-  schema: JSONSchema7,
-  path?: string[],
-) => MRT_ColumnDef<any>[] = (schema: JSONSchema7, path: string[] = []) =>
-  (!schema?.properties
-    ? []
-    : [
-        {
-          id: p([...path, "IRI"]),
-          header: p([...path, "IRI"]),
-          accessorKey: `${p([...path, "entity"])}.value`,
-          Cell: ({ cell }) => (
-            <OverflowContainer tooltip={cell.getValue()}>
-              {urlSuffix(cell.getValue() ?? "")}
-            </OverflowContainer>
-          ),
-        },
-        ...Object.keys(filterForPrimitiveProperties(schema.properties)).map(
-          (key) => ({
-            header: p([...path, key]),
-            id: p([...path, key, "single"]),
-            maxSize: 400,
-            accessorFn: mkAccessor(`${p([...path, key, "single"])}.value`, ""),
-            Cell: ({ cell }) => (
-              <OverflowContainer>{cell.getValue() ?? ""}</OverflowContainer>
-            ),
-          }),
-        ),
-        ...Object.entries(schema.properties || {})
-          .filter(
-            ([, value]) =>
-              typeof value === "object" &&
-              value.type === "object" &&
-              !value.$ref,
-          )
-          .map(([key, value]) =>
-            isJSONSchema(value) ? computeColumns(value, [...path, key]) : [],
-          )
-          .flat(),
-        ...Object.keys(filterForArrayProperties(schema.properties)).flatMap(
-          (key) => [
-            {
-              header: p([...path, key]),
-              id: p([...path, key, "label_group"]),
-              maxSize: 500,
-              accessorFn: mkMultiAccessor({
-                group: {
-                  path: `${p([...path, key, "label_group"])}.value`,
-                  defaultValue: "",
-                },
-                count: {
-                  path: `${p([...path, key, "count"])}.value`,
-                  defaultValue: 0,
-                },
-              }),
-              Cell: ({ cell, table }) => {
-                const { group, count } = cell.getValue();
-                const table_ = table as MRT_TableInstance<any>;
-                return (
-                  <Grid
-                    container
-                    flexWrap={
-                      table_.getState().density === "spacious"
-                        ? "wrap"
-                        : "nowrap"
-                    }
-                    alignItems={"center"}
-                  >
-                    <Grid item>
-                      <Typography variant={"body2"}>{count}</Typography>
-                    </Grid>
-                    {!isNil(count) &&
-                      count > 0 &&
-                      parseMarkdownLinks(group).map(({ label, url }, index) => {
-                        return (
-                          <Grid item key={url + index} sx={{ m: 0.5 }}>
-                            <Link>
-                              <OverflowChip entityIRI={url} label={label} />
-                            </Link>
-                          </Grid>
-                        );
-                      })}
-                  </Grid>
-                );
-              },
-            },
-          ],
-        ),
-      ]) as any as MRT_ColumnDef<any>[];
-
 const alwaysDisplayColumns = ["mrt-row-actions", "IRI"];
 
 const csvConfig = mkConfig({
@@ -221,18 +70,41 @@ const csvConfig = mkConfig({
   useKeysAsHeaders: true,
 });
 
-const defsFieldName = (schema as JSONSchema7).definitions
-  ? "definitions"
-  : "$defs";
+const ExportMenuButton = ({children}: {children: React.ReactNode}) => {
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+  const open = Boolean(anchorEl);
+  return <>
+    <IconButton onClick={handleClick}>
+      <FileDownload />
+    </IconButton>
+    <Menu
+      id="export-menu"
+      anchorEl={anchorEl}
+      open={open}
+      onClose={handleClose}
+      MenuListProps={{
+        'aria-labelledby': 'export-button',
+        role: 'listbox',
+      }}
+    >{children}</Menu>
+  </>
+}
+
 export const TypedList = ({ typeName }: Props) => {
-  const classIRI = useMemo(() => {
+  const typeIRI = useMemo(() => {
     return sladb(typeName).value;
   }, [typeName]);
+  const { t } = useTranslation();
+  const { t: t2 } = useTranslation("table");
+
   const loadedSchema = useMemo(
-    () =>
-      ({ ...schema, ...schema[defsFieldName][typeName] }) as
-        | JSONSchema7
-        | undefined,
+    () => bringDefinitionToTop(schema as JSONSchema7, typeName),
     [typeName],
   );
 
@@ -248,18 +120,17 @@ export const TypedList = ({ typeName }: Props) => {
     },
     [setSorting],
   );
-  const { drawerHeight } = useDrawerDimensions();
 
   const { crudOptions } = useGlobalCRUDOptions();
 
   const { data: resultListData, isLoading } = useQuery(
-    ["allEntries", classIRI, sorting],
+    ["allEntries", typeIRI, sorting],
     async () => {
       const sparqlQuery = withDefaultPrefix(
         defaultPrefix,
         jsonSchema2Select(
           loadedSchema,
-          classIRI,
+          typeIRI,
           [],
           {
             primaryFields: primaryFields,
@@ -292,17 +163,23 @@ export const TypedList = ({ typeName }: Props) => {
     [resultListData],
   );
 
-  const columns = useMemo<MRT_ColumnDef<any>[]>(
-    () => computeColumns(loadedSchema),
-    [loadedSchema],
+  const conf = useMemo(() =>  tableConfig[typeName] || tableConfig.default, [typeName] )
+
+  const displayColumns = useMemo<MRT_ColumnDef<any>[]>(
+    () => {
+      const cols =  computeColumns(loadedSchema, typeName, t2, conf?.matcher);
+      //const entries = Object.fromEntries(cols.map(c => [c.header, ""]))
+      //console.log(JSON.stringify(entries, null, 2))
+      return cols
+    },
+    [loadedSchema, typeName, t2, conf?.matcher],
   );
 
-  const displayColumns = columns; /*useMemo<MRT_ColumnDef<any>[]>(
-    () => columns.filter((col) => !headerVars || headerVars.includes(col.id) || alwaysDisplayColumns.includes(col.id)),
-    [columns, headerVars],
-  );*/
+  const columnOrder = useMemo(() => ["mrt-row-select", ...displayColumns.map((col) => col.id)], [displayColumns]);
 
   const router = useModifiedRouter();
+  const locale = ( router.query.locale || "en") as string;
+  const localization = useMemo(() => locale === "de" ? MRT_Localization_DE : MRT_Localization_EN, [locale])
   const editEntry = useCallback(
     (id: string) => {
       router.push(`/create/${typeName}?encID=${encodeIRI(id)}`);
@@ -312,13 +189,13 @@ export const TypedList = ({ typeName }: Props) => {
   const showEntry = useCallback(
     (id: string) => {
       NiceModal.show(EntityDetailModal, {
-        typeIRI: classIRI,
+        typeIRI: typeIRI,
         entityIRI: id,
       });
     },
-    [classIRI],
+    [typeIRI],
   );
-  const extendedSchema = useExtendedSchema({ typeName, classIRI });
+  const extendedSchema = useExtendedSchema({ typeName, classIRI: typeIRI });
   const queryClient = useQueryClient();
   const { mutateAsync: moveToTrashAsync, isLoading: aboutToMoveToTrash } =
     useMutation(
@@ -328,7 +205,7 @@ export const TypedList = ({ typeName }: Props) => {
           throw new Error("entityIRI or updateFetch is not defined");
         return moveToTrash(
           id,
-          classIRI,
+          typeIRI,
           loadedSchema,
           crudOptions.updateFetch,
           {
@@ -342,7 +219,7 @@ export const TypedList = ({ typeName }: Props) => {
           console.log("invalidateQueries");
           queryClient.invalidateQueries(["list"]);
           queryClient.invalidateQueries(
-            filterUndefOrNull(["allEntries", classIRI || undefined]),
+            filterUndefOrNull(["allEntries", typeIRI || undefined]),
           );
         },
       },
@@ -352,7 +229,7 @@ export const TypedList = ({ typeName }: Props) => {
     async (id: string) => {
       if (!id || !crudOptions.updateFetch)
         throw new Error("entityIRI or updateFetch is not defined");
-      return remove(id, classIRI, loadedSchema, crudOptions.updateFetch, {
+      return remove(id, typeIRI, loadedSchema, crudOptions.updateFetch, {
         defaultPrefix,
         queryBuildOptions: defaultQueryBuilderOptions,
       });
@@ -362,7 +239,7 @@ export const TypedList = ({ typeName }: Props) => {
         console.log("invalidateQueries");
         queryClient.invalidateQueries(["list"]);
         queryClient.invalidateQueries(
-          filterUndefOrNull(["allEntries", classIRI || undefined]),
+          filterUndefOrNull(["allEntries", typeIRI || undefined]),
         );
       },
     },
@@ -441,21 +318,17 @@ export const TypedList = ({ typeName }: Props) => {
     [setColumnFilters],
   );
 
-  const { t } = useTranslation();
 
-  const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>(
-    {
-      externalId_single: false,
-    },
-  );
+  const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>(conf.columnVisibility);
+
 
   const handleChangeColumnVisibility = useCallback(
     (s: any) => {
-      console.log("handleChangeColumnVisibility", s);
       setColumnVisibility(s);
     },
     [setColumnVisibility],
   );
+
   /*useEffect(() => {
     const disableList = Object.fromEntries(
       columns
@@ -568,10 +441,12 @@ export const TypedList = ({ typeName }: Props) => {
     manualSorting: true,
     onSortingChange: handleColumnOrderChange,
     onColumnVisibilityChange: handleChangeColumnVisibility,
+    columnFilterDisplayMode: 'popover',
     initialState: {
-      columnVisibility: { id: true, externalId_single: false },
+      columnVisibility: conf.columnVisibility,
       pagination: { pageIndex: 0, pageSize: 20 },
     },
+    localization,
     rowCount: resultList.length,
     enableRowActions: true,
     renderCreateRowDialogContent: ({ table, row, internalEditComponents }) => {
@@ -581,7 +456,7 @@ export const TypedList = ({ typeName }: Props) => {
           askClose={() => table.setCreatingRow(row)}
           schema={extendedSchema as JsonSchema}
           entityIRI={slent(uuidv4()).value}
-          typeIRI={classIRI}
+          typeIRI={typeIRI}
         >
           <MRT_EditActionButtons variant="text" table={table} row={row} />
         </SemanticFormsModal>
@@ -589,49 +464,51 @@ export const TypedList = ({ typeName }: Props) => {
     },
     renderTopToolbarCustomActions: ({ table }) => (
       <Box sx={{ display: "flex", gap: "1rem" }}>
-        <Button
-          variant="contained"
-          onClick={() => {
-            //table.setCreatingRow(true);
-            editEntry(slent(uuidv4()).value);
-          }}
-        >
-          <Add />
+        <Button variant="contained" color={"primary"} startIcon={<NoteAdd/>} onClick={() => {editEntry(slent(uuidv4()).value)}}>
+          {t("create new", {item: t(typeName)})}
         </Button>
-        <Button onClick={handleExportData} startIcon={<FileDownload />}>
-          Alle Daten exportieren
-        </Button>
-        <Button
-          disabled={table.getRowModel().rows.length === 0}
-          //export all rows as seen on the screen (respects pagination, sorting, filtering, etc.)
-          onClick={() => handleExportRows(table.getRowModel().rows)}
-          startIcon={<FileDownload />}
-        >
-          Aktuelle Seite exportieren
-        </Button>
-        <Button
-          disabled={
-            !table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected()
-          }
-          //only export selected rows
-          onClick={() => handleExportRows(table.getSelectedRowModel().rows)}
-          startIcon={<FileDownload />}
-        >
-          Nur ausgewählte Zeilen exportieren
-        </Button>
+        <ExportMenuButton>
+          <MenuItem onClick={handleExportData}>
+            <ListItemIcon>
+              <FileDownload />
+            </ListItemIcon>
+            Alle Daten exportieren
+          </MenuItem>
+          <MenuItem
+            disabled={table.getRowModel().rows.length === 0}
+            onClick={() => handleExportRows(table.getRowModel().rows)}>
+            <ListItemIcon>
+              <FileDownload />
+            </ListItemIcon>
+            Aktuelle Seite exportieren
+          </MenuItem>
+          <MenuItem
+            disabled={
+              !table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected()
+            }
+            onClick={() =>
+              handleExportRows(table.getSelectedRowModel().rows)
+            }
+          >
+            <ListItemIcon>
+              <FileDownload />
+            </ListItemIcon>
+            Nur ausgewählte Zeilen exportieren
+          </MenuItem>
+        </ExportMenuButton>
         {table.getIsSomeRowsSelected() && (
           <>
             <IconButton
               onClick={() => handleMoveToTrashSelected(table)}
               color="error"
-              aria-label="move to trash"
+              aria-label={t("move to trash")}
             >
               <Delete />
             </IconButton>
             <IconButton
               onClick={() => handleRemoveSelected(table)}
               color="error"
-              aria-label="delete forever"
+              aria-label={t("delete permanently")}
             >
               <DeleteForever />
             </IconButton>
@@ -645,67 +522,58 @@ export const TypedList = ({ typeName }: Props) => {
       slent(uuidv4()).value,
     displayColumnDefOptions: {
       "mrt-row-actions": {
-        header: t("actions"),
-        minSize: 150,
+        header: ""
       },
     },
-    renderRowActions: ({ row, table }) => (
-      <Box sx={{ display: "flex" }}>
-        <Tooltip title="Show">
-          <IconButton onClick={() => showEntry(row.id)}>
-            <OpenInNew />
-          </IconButton>
-        </Tooltip>
-        <Tooltip title="Edit">
-          <IconButton onClick={() => editEntry(row.id)}>
-            <Edit />
-          </IconButton>
-        </Tooltip>
-        <Tooltip title="Move to trash">
-          <IconButton color="error" onClick={() => handleMoveToTrash(row.id)}>
-            <Delete />
-          </IconButton>
-        </Tooltip>
-        <Tooltip title="Delete forever">
-          <IconButton color="error" onClick={() => handleRemove(row.id)}>
-            <DeleteForever />
-          </IconButton>
-        </Tooltip>
-      </Box>
-    ),
-    renderRowActionMenuItems: (row) => {
+    renderRowActionMenuItems: ({row}) => {
       return [
         <MenuItem
-          key={0}
-          onClick={() => {
-            // View profile logic...
-            row.closeMenu();
-            editEntry((row.row.getValue("entity") as any).value);
-          }}
-          sx={{ m: 0 }}
+          key="show"
+          onClick={() => showEntry(row.id)}
+          sx={{ minWidth: 200 }}
+        >
+          <ListItemIcon>
+            <OpenInNew />
+          </ListItemIcon>
+          {t("show")}
+        </MenuItem>,
+        <MenuItem
+          key="edit"
+          onClick={() => editEntry(row.id)}
+          sx={{ minWidth: 200 }}
         >
           <ListItemIcon>
             <Edit />
           </ListItemIcon>
-          bearbeiten
+          {t("edit")}
         </MenuItem>,
         <MenuItem
-          key={1}
-          onClick={() => {
-            row.closeMenu();
-          }}
-          sx={{ m: 0 }}
+          key="moveToTrash"
+          onClick={() => handleMoveToTrash(row.id)}
+          sx={{ minWidth: 200 }}
         >
           <ListItemIcon>
-            <Details />
+            <Delete />
           </ListItemIcon>
-          Details
+          {t("move to trash")}
+        </MenuItem>,
+        <MenuItem
+          key="deleteForever"
+          onClick={() => handleRemove(row.id)}
+          sx={{ minWidth: 200 }}
+        >
+          <ListItemIcon>
+            <DeleteForever />
+          </ListItemIcon>
+          {t("delete permanently")}
         </MenuItem>,
       ];
     },
     enableColumnResizing: true,
+    enableColumnDragging: false,
     onColumnFiltersChange: handleColumnFilterChange,
     state: {
+      columnOrder,
       sorting,
       rowSelection,
       columnFilters,
@@ -713,18 +581,21 @@ export const TypedList = ({ typeName }: Props) => {
     },
   });
 
+  const [typeLoaded, setTypeLoaded] = useState(null)
+
   useEffect(() => {
-    if (typeName) {
+    if (typeName && typeLoaded !== typeName) {
+      setTypeLoaded(typeName)
       enqueueSnackbar(t("loading typename", { typeName: t(typeName) }), {
         variant: "info",
       });
       table.reset();
     }
-  }, [typeName, enqueueSnackbar, t, table]);
+  }, [typeName, typeLoaded, enqueueSnackbar, t, table]);
 
   return (
     <Box sx={{ width: "100%" }}>
-      {isLoading && columns.length <= 0 ? (
+      {isLoading && displayColumns.length <= 0 ? (
         <Skeleton variant="rectangular" height={"50%"} />
       ) : (
         <>

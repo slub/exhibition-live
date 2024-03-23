@@ -40,7 +40,7 @@ import { useGlobalCRUDOptions } from "../state/useGlobalCRUDOptions";
 import { encodeIRI, filterUndefOrNull } from "../utils/core";
 import { useQuery } from "@tanstack/react-query";
 import { OwnColumnDesc } from "./types";
-import TypedListItem from "../content/main/TypedListItem";
+import TypedListItem from "../content/list/TypedListItem";
 import {
   defaultJsonldContext,
   defaultPrefix,

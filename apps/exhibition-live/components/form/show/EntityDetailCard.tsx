@@ -62,7 +62,7 @@ export const EntityDetailCard: FunctionComponent<Props> = ({
         } else {
           router.push(`/create/${typeName}?encID=${encodeIRI(entityIRI)}`);
         }
-    }, [router, typeIRI, entityIRI, inlineEditing, registerModal]);
+    }, [router, typeIRI, entityIRI, inlineEditing, registerModal, data]);
 
     const {
         features: {enableDebug},

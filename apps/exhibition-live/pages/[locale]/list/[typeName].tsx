@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import React from "react";
 
 import { MainLayout } from "../../../components/layout/main-layout";
-import { TypedList } from "../../../components/content/main/TypedList";
+import { TypedList } from "../../../components/content/list/TypedList";
 import schema from "../../../public/schema/Exhibition.schema.json";
 import { useTranslation } from "next-i18next";
 import { getI18nProps, mixinStaticPathsParams } from "../../../components/i18n";

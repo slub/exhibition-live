@@ -247,7 +247,7 @@ const useKnowledgeBases = () => {
         alt={"gnd logo"}
         width={24}
         height={24}
-        src={"/Icons/gnd-logo.png"}
+        src={"Icons/gnd-logo.png"}
       />,
       find: async (searchString: string, typeIRI, findOptions?: FindOptions) => {
         return (await findEntityWithinLobid(searchString, typeIRItoTypeName(typeIRI), findOptions?.limit || 10))?.member?.map(

@@ -1,6 +1,7 @@
 {
   "database_name": "Exhibitions",
   "edit": "edit",
+  "show": "show",
   "edit inline": "edit inline",
   "cancel": "cancel",
   "settings": "settings",
@@ -63,5 +64,8 @@
   "no suggestions": "no suggestions",
   "search delivered no results": "Search delivered no results",
   "found hits": "found {{count}} hits",
-  "data source disabled": "Data source deactivated"
+  "data source disabled": "Data source deactivated",
+  "move to trash": "move to trash",
+  "restore from trash": "restore from trash",
+  "delete permanently": "delete permanently"
 }

@@ -21,7 +21,7 @@ export const mixinStaticPathsParams = (paths) =>
     )
     .flat();
 
-export async function getI18nProps(ctx, ns = ["translation"]) {
+export async function getI18nProps(ctx, ns = ["translation", "table"]) {
   const locale = ctx?.params?.locale;
   let props = {
     ...(await serverSideTranslations(locale, ns)),

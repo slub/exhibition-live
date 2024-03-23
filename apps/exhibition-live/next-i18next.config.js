@@ -5,6 +5,7 @@ module.exports = {
   i18n: {
     defaultLocale: "de",
     locales: ["de", "en"],
+    ns: ["translation", "table"],
     defaultNS: "translation",
   },
   react: { useSuspense: false },

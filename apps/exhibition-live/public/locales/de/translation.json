@@ -1,6 +1,7 @@
 {
   "database_name": "Ausstellungen",
   "edit": "bearbeiten",
+  "show": "anzeigen",
   "edit inline": "Inline bearbeiten",
   "cancel": "abbrechen",
   "settings": "Einstellungen",
@@ -11,7 +12,7 @@
   "list": "auflisten",
   "List": "Liste",
   "exhibition database": "Ausstellungsdatenbank",
-  "create new": "neue(s) {{item}} erstellen",
+  "create new": "{{item}} neu anlegen",
   "Exhibition": "Ausstellung",
   "Exhibition_plural": "Ausstellungen",
   "Person": "Person",
@@ -59,5 +60,8 @@
   "no hits": "keine Treffer",
   "search delivered no results": "Die Suche ergab keine Treffer",
   "found hits": "{{count}} gefundene Suchergebnisse",
-  "data source disabled": "Datenquelle deaktiviert"
+  "data source disabled": "Datenquelle deaktiviert",
+  "move to trash": "in den Papierkorb verschieben",
+  "restore from trash": "aus dem Papierkorb wiederherstellen",
+  "delete permanently": "endgültig löschen"
 }

@@ -6,10 +6,10 @@ import {
   filterForArrayProperties,
   filterForPrimitiveProperties,
   isJSONSchema,
-  isJSONSchemaDefinition
 } from "@slub/json-schema-utils";
-import {Avatar, Box, Grid, Link, Typography} from "@mui/material";
+import {Avatar, Box, Checkbox, Grid, Link, Typography} from "@mui/material";
 import isNil from "lodash/isNil";
+import maxBy from 'lodash/maxBy';
 import {parseMarkdownLinks} from "@slub/edb-core-utils";
 import {OverflowChip} from "../../lists/OverflowChip";
 import * as React from "react";
@@ -21,8 +21,15 @@ import {primaryFields} from "../../config";
 import {PrimaryField} from "@slub/edb-core-types";
 import {applyToEachField, extractFieldAny, extractFieldIfString} from "../../utils/mapping/simpleFieldExtractor";
 import ReactMarkdown from "react-markdown";
-import children = ReactMarkdown.propTypes.children;
 import {FieldExtractDeclaration} from "../../utils/types";
+import {
+  and, formatIs, isBooleanControl, isControl,
+  isOneOfControl,
+  isStringControl,
+  JsonSchema,
+  RankedTester,
+  rankWith, TesterContext
+} from "@jsonforms/core";
 
 const p = (path: string[]) => path.join("_");
 export const mkAccessor =
@@ -124,55 +131,134 @@ export const PrimaryColumnContent = ({entityIRI, typeName, children, data, densi
   </Link>
 
 }
+type ComputeColumnDefFunction<T = any> = (typeName:string, key: string, schemaDef: JSONSchema7Definition, t: TFunction,  path?: string[]) => MRT_ColumnDef<T>
+export interface MuiTableColumnDefinitionRegistryEntry<T = any> {
+  tester: RankedTester;
+  columnDef: ComputeColumnDefFunction<T>
+}
 
 
-export const defaultColumnDefinitionStub: (typeName:string, key: string, schemaDef: JSONSchema7Definition, t: TFunction,  path?: string[]) => MRT_ColumnDef<any> = (typeName, key, schemaDef, t,  path = []) => {
-  if(isJSONSchemaDefinition(schemaDef) && typeof schemaDef === "object" && schemaDef.type === "string" && schemaDef.oneOf) {
-    console.log({key, schemaDef, path})
-    return ({
+const cellConfigRegistry: MuiTableColumnDefinitionRegistryEntry[] = [
+  {
+    tester: rankWith(1, isControl ),
+    columnDef: (typeName, key, schemaDef, t, path) =>  ({
       header: t(p([...path, key])),
       id: p([...path, key, "single"]),
       maxSize: 400,
-      filterFn: 'equals',
-      filterSelectOptions: schemaDef.oneOf.map((e: any) => ({label: e.title || t(`key_${e.const}`), value: e.const})),
-      filterVariant: 'select',
       accessorFn: mkAccessor(`${p([...path, key, "single"])}.value`, ""),
+      Cell: ({cell, renderedCellValue, row, table}) => (
+        primaryFields[typeName]?.label === key
+          ? <PrimaryColumnContent
+            entityIRI={row.original.entity.value}
+            typeName={typeName}
+            data={row.original}
+            density={table.getState().density}
+          >{renderedCellValue}</PrimaryColumnContent>
+          : <OverflowContainer density={table.getState().density}>{renderedCellValue}</OverflowContainer>
+      ),
+    })
+  },
+  {
+    tester: rankWith(2, and(isControl, formatIs("uri") )),
+    columnDef: (typeName, key, schemaDef, t, path) => ({
+      header: t(p([...path, key])),
+      id: p([...path, key, "single"]),
+      maxSize: 400,
+      accessorFn: mkAccessor(`${p([...path, key, "single"])}.value`, ""),
+      Cell: ({cell, row, table}) => (
+        <Link href={(String(cell.getValue()))} target="_blank" component="a">
+          <OverflowContainer tooltip={String(cell.getValue())}>
+          {decodeURIComponent( urlSuffix(String(cell.getValue()) ?? ""))}
+          </OverflowContainer>
+        </Link>
+      ),
+    })
+  },
+  {
+    tester: rankWith(4, and(isOneOfControl, isStringControl )),
+    columnDef: (typeName, key, schemaDef, t, path) => {
+      const def = schemaDef as JSONSchema7;
+      return ({
+        header: t(p([...path, key])),
+        id: p([...path, key, "single"]),
+        maxSize: 400,
+        filterFn: 'equals',
+        filterSelectOptions: def.oneOf.map((e: JSONSchema7) => ({label: e.title || t(`key_${e.const}`), value: e.const})),
+        filterVariant: 'select',
+        accessorFn: mkAccessor(`${p([...path, key, "single"])}.value`, ""),
+        Cell: ({cell, row, table}) => {
+          let v: any = cell.getValue()
+          if(typeof v === "string" && v.length >  0) {
+            const oneOfElement = def.oneOf?.find((e: JSONSchema7) => e.const === v) as JSONSchema7;
+            v = oneOfElement?.title || t(`key_${v}`);
+          }
+          return (
+            <OverflowContainer density={table.getState().density}>{v}</OverflowContainer>
+          );
+        },
+      });
+    }
+  },
+  {
+    tester: rankWith(3, isBooleanControl),
+    columnDef: (typeName, key, schemaDef, t, path) => ({
+      header: t(p([...path, key])),
+      id: p([...path, key, "single"]),
+      maxSize: 100,
+      filterVariant: 'checkbox',
+      accessorFn: mkAccessor(`${p([...path, key, "single"])}.value`, "", (v) => typeof v === "boolean" ? v : (v === "true")),
       Cell: ({cell, row, table}) => {
-        let v: any = cell.getValue()
-        if(typeof v === "string" && v.length >  0) {
-          const oneOfElement = schemaDef.oneOf?.find((e) => (e as any).const === v);
-          v = (oneOfElement as any)?.title || t(`key_${v}`);
-        }
+        const v = cell.getValue();
         return (
-          <OverflowContainer density={table.getState().density}>{v}</OverflowContainer>
+          <>
+            <Checkbox  indeterminate={v === ""} checked={v === true || v === "true"} disabled={true} />
+          </>
         );
-      },
-    });
+      }
+    })
   }
-  return ({
-    header: t(p([...path, key])),
-    id: p([...path, key, "single"]),
-    maxSize: 400,
-    accessorFn: mkAccessor(`${p([...path, key, "single"])}.value`, ""),
-    Cell: ({cell, renderedCellValue, row, table}) => (
-      primaryFields[typeName]?.label === key
-        ? <PrimaryColumnContent
-          entityIRI={row.original.entity.value}
-          typeName={typeName}
-          data={row.original}
-          density={table.getState().density}
-        >{renderedCellValue}</PrimaryColumnContent>
-        : <OverflowContainer density={table.getState().density}>{renderedCellValue}</OverflowContainer>
-    ),
-  });
+]
+
+
+export const defaultColumnDefinitionStub:
+  (typeName:string,
+   key: string,
+   schemaDef: JSONSchema7Definition,
+   rootSchema: JSONSchema7,
+   t: TFunction,
+   path?: string[]) => MRT_ColumnDef<any> =
+  (typeName,
+   key,
+   schemaDef,
+   rootSchema,
+   t,
+   path = []) => {
+
+  const testerContext: TesterContext = {
+    rootSchema: rootSchema as JsonSchema,
+    config: {}
+  }
+  const uiSchema = {
+    type: "Control",
+    scope: `#/properties/${key}`
+  }
+
+  const columnDef = maxBy(cellConfigRegistry, (entry) => {
+    const tested = entry.tester(uiSchema, schemaDef as JsonSchema, testerContext);
+    return tested
+  })
+  //console.log({columnDef})
+  return columnDef.columnDef(typeName, key, schemaDef, t, path)
 }
 
+
+/*
 export const defaultColumnDefinition: (typeName: string, key: string, schemaDef: JSONSchema7Definition,  t: TFunction,  path?: string[]) => MRT_ColumnDef<any> = (typeName, key, schemaDef, t,  path = []) => ({
   ...defaultColumnDefinitionStub(typeName, key,schemaDef, t, path),
   Cell: ({cell, renderedCellValue, row}) => (
     <OverflowContainer>{renderedCellValue}</OverflowContainer>
   )
-})
+})*/
 
 export type ColumnDefMatcher<TData = any> = (key: string, schemaDef: JSONSchema7Definition, typeName: string, t: TFunction, path?: string[]) => MRT_ColumnDef<TData> | null
 export const computeColumns: (
@@ -198,7 +284,7 @@ export const computeColumns: (
       ...Object.entries(filterForPrimitiveProperties(schema.properties)).map(
         ([key, propertyDefinition], index): MRT_ColumnDef<any> => {
           const columnDefinition =  matcher ? matcher(key, propertyDefinition, typeName, t, path) : null
-          return columnDefinition || defaultColumnDefinitionStub(typeName, key, propertyDefinition, t, path);
+          return columnDefinition || defaultColumnDefinitionStub(typeName, key, propertyDefinition, schema, t, path);
         },
       ),
       ...Object.entries(schema.properties || {})

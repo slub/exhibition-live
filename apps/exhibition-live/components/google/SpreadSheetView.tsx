@@ -396,8 +396,8 @@ export const GoogleSpeadSheetWorkSheetView: FC<
       mapping: []
     }
     try {
-      const cSpreashsheetMapping =spreadSheetMappings[selectedMapping]
-      final = columnDesc.length <= 0 || !cSpreashsheetMapping  ? final : {raw: cSpreashsheetMapping.raw, mapping: cSpreashsheetMapping.fieldMapping(columnDesc)}
+      const cSpreadSheetMapping =spreadSheetMappings[selectedMapping]
+      final = columnDesc.length <= 0 || !cSpreadSheetMapping  ? final : {raw: cSpreadSheetMapping.raw, mapping: cSpreadSheetMapping.fieldMapping(columnDesc)}
     } catch (e) {
       console.error("failed to apply declarative mapping to column description", e)
     }
@@ -407,17 +407,18 @@ export const GoogleSpeadSheetWorkSheetView: FC<
   useEffect(() => {
     setReducedColumns(columns?.slice(0, maxColumns) || []);
   }, [columns, maxColumns, setReducedColumns]);
-  useEffect(() => {
-    (async () => {
+
+  const calculateMapping = useCallback(
+    async () => {
       if(!workSheet.loaded)
         return
       try {
         const cells = [...Array(workSheet.columnCount)].map((_, index) => {
           return workSheet.getCell(0, index);
         });
-        const columnDesc_ = cells.map((cell, index) => ({
+        const columnDesc_ = cells.map((googleSpreadSheetCell, index) => ({
           index,
-          value: cell.value,
+          value: googleSpreadSheetCell?.value || null ,
           letter: index2letter(index),
         }));
         setColumnDesc(columnDesc_);
@@ -455,8 +456,7 @@ export const GoogleSpeadSheetWorkSheetView: FC<
         console.log(e);
       }
       setLoaded(true);
-    })();
-  }, [workSheet, workSheet.loaded, crudOptions,spreadSheetMapping.mapping , setLoaded, setColumnDesc, setSelectedMapping, rawMappedData]);
+    }, [workSheet, crudOptions,spreadSheetMapping.mapping , setLoaded, setColumnDesc, setSelectedMapping]);
 
   const rowCount = useMemo(() => Math.ceil( workSheet.rowCount - 2), [workSheet.rowCount])
   // needs to be just the right amount of rows: so full pageSize  but a the end the Rest of the rowCount divided by pageSize
@@ -658,6 +658,7 @@ export const GoogleSpeadSheetWorkSheetView: FC<
               label={"show table"}
             />
           </FormControl>
+          <Button onClick={calculateMapping}>Calculate Mapping</Button>
         </Grid>
         <Grid item>
           <Button onClick={handleMapping}>
@@ -895,7 +896,7 @@ export const SpreadSheetViewModal = NiceModal.create(
 type GoogleSpreadSheetViewProps = {
   sheetId: string;
 };
-export const GoogleSpeadSheetView: FC<GoogleSpreadSheetViewProps> = ({
+export const GoogleSpreadSheetView: FC<GoogleSpreadSheetViewProps> = ({
   sheetId,
 }) => {
   const { spreadSheet, loaded } = useSpreadSheet(sheetId);

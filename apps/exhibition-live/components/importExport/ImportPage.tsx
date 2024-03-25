@@ -7,7 +7,7 @@ import { hasGrantedAnyScopeGoogle } from "@react-oauth/google";
 import { useGoogleToken } from "../google/useGoogleToken";
 import NiceModal from "@ebay/nice-modal-react";
 import { GoogleDrivePickerModal } from "../google/GoogleDrivePicker";
-import { GoogleSpeadSheetView } from "../google/SpreadSheetView";
+import { GoogleSpreadSheetView } from "../google/SpreadSheetView";
 
 const scopes: [string, string, string] = [
   "https://www.googleapis.com/auth/drive.readonly.metadata",
@@ -46,7 +46,7 @@ export const ImportPage: FunctionComponent = () => {
         </Grid2>
         <Grid2 lg={12}>
           {hasAccess && typeof documentId === "string" && (
-            <GoogleSpeadSheetView sheetId={documentId} />
+            <GoogleSpreadSheetView sheetId={documentId} />
           )}
         </Grid2>
       </Grid2>

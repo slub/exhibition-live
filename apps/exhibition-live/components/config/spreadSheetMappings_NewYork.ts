@@ -7,6 +7,7 @@ import {
   indexFromTitle,
   matchBased2DeclarativeFlatMapping
 } from "../utils/mapping/mapMatchBasedByConfig";
+import {filterUndefOrNull} from "@slub/edb-core-utils";
 
 /*
 B:Name Kiste
@@ -471,4 +472,12 @@ export const matchBasedSpreadsheetMappings_NewYork = [
 
 export const spreadSheetMappings_NewYork: (
   fields: OwnColumnDesc[],
-) => DeclarativeFlatMappings = (fields) =>  matchBasedSpreadsheetMappings_NewYork.map(mapping =>  matchBased2DeclarativeFlatMapping(fields, mapping));
+) => DeclarativeFlatMappings = (fields) => filterUndefOrNull(matchBasedSpreadsheetMappings_NewYork.map(mapping => {
+  let declarativeFlatMapping = null;
+  try {
+    declarativeFlatMapping = matchBased2DeclarativeFlatMapping(fields, mapping);
+  } catch (e) {
+    console.error(`Error while creating mapping for ${mapping.id}`, e);
+  }
+  return declarativeFlatMapping;
+}));

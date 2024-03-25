@@ -1,5 +1,5 @@
 import React, { useState, MouseEvent, useCallback } from "react";
-import { Tooltip, Typography } from "@mui/material";
+import {Tooltip, Typography, TypographyOwnProps} from "@mui/material";
 
 type OverflowContainerProps = {
   children: React.ReactNode;
@@ -10,7 +10,8 @@ export const OverflowContainer = ({
   children,
   tooltip,
   density,
-}: OverflowContainerProps) => {
+  ...props
+}: OverflowContainerProps & Partial<TypographyOwnProps>) => {
   const [tooltipEnabled, setTooltipEnabled] = useState(false);
 
   const handleShouldShow = useCallback(
@@ -33,7 +34,10 @@ export const OverflowContainer = ({
           overflow: "hidden",
           maxHeight: "10rem",
         }}
-        onMouseEnter={handleShouldShow} noWrap={density !== "spacious"}>
+        onMouseEnter={handleShouldShow}
+        noWrap={density !== "spacious"}
+        {...props}
+      >
         {children}
       </Typography>
     </Tooltip>

@@ -26,6 +26,7 @@ import {EntityChip} from "../show";
 import {useQuery} from "@tanstack/react-query";
 import {findEntityWithinLobidByIRI} from "../../utils/lobid/findEntityWithinLobid";
 import WikidataAllPropTable from "../wikidata/WikidataAllPropTable";
+import {OverflowContainer} from "../../lists";
 
 interface OwnProps {
   allProps?: any;
@@ -139,12 +140,12 @@ const PropertyItem = ({
   return (
     <TableRow>
       <TableCell
-        style={{width: 100, overflow: "hidden", textOverflow: "ellipsis"}}
+        style={{width: "20%", overflow: "hidden", textOverflow: "ellipsis"}}
         component="th"
         scope="row"
       >
         {disableContextMenu
-          ? <Typography variant="body2">{camelCaseToTitleCase(property)}</Typography>
+          ? <OverflowContainer variant="body2">{camelCaseToTitleCase(property)}</OverflowContainer>
           : <>
             <Button
               id={"menu-button-" + property}
@@ -280,6 +281,7 @@ const LobidAllPropTable: FunctionComponent<Props> = ({
       <AccordionDetails>
         <LobidAllPropTable
           allProps={rawEntry}
+          disableContextMenu
         />
       </AccordionDetails>
     </Accordion>

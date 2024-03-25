@@ -3,10 +3,12 @@
   "elements": [
     {
       "type": "Control",
+      "label": "Organisation",
       "scope": "#/properties/corporation"
     },
     {
       "type": "Control",
+      "label": "Rolle in der Ausstellung",
       "scope": "#/properties/role"
     }
   ]

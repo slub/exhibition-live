@@ -3,10 +3,12 @@
   "elements": [
     {
       "type": "Control",
+      "label": "Person",
       "scope": "#/properties/person"
     },
     {
       "type": "Control",
+      "label": "Rolle in der Ausstellung",
       "scope": "#/properties/role"
     }
   ]

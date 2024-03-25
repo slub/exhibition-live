@@ -165,7 +165,16 @@ export const MaterialCategorizationStepperLayout = (
               </Typography>
             </Hidden>
           </Grid>
-          <Grid item xs={10}>
+          <Grid
+            item
+            xs={10}
+            sx={theme => ({
+              marginTop:4,
+              [theme.breakpoints.down('md')] : {
+                marginTop:0
+              }
+            })}
+            >
             <div>
               <MaterialLayoutRenderer {...childProps} />
             </div>

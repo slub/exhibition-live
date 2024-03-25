@@ -1,5 +1,8 @@
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 const locales = ["en", "de"];
+import 'dayjs/locale/de';
+import 'dayjs/locale/en';
+import  dayjs from "dayjs";
 export const getI18nPaths = () =>
   locales.map((lng) => ({
     params: {
@@ -22,7 +25,8 @@ export const mixinStaticPathsParams = (paths) =>
     .flat();
 
 export async function getI18nProps(ctx, ns = ["translation", "table"]) {
-  const locale = ctx?.params?.locale;
+  const locale = ctx?.params?.locale || "en";
+  dayjs.locale(locale);
   let props = {
     ...(await serverSideTranslations(locale, ns)),
   };

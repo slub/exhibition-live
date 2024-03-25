@@ -15,12 +15,17 @@ import ThemeComponent from "../components/theme/ThemeComponent";
 import NiceModal from "@ebay/nice-modal-react";
 import { SnackbarProvider } from "notistack";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { appWithTranslation, UserConfig } from "next-i18next";
+import {appWithTranslation, UserConfig, useTranslation} from "next-i18next";
 import nextI18NextConfig from "../next-i18next.config";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { AdbProvider } from "../components/provider/adbContext";
 import {LocalizationProvider} from "@mui/x-date-pickers";
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import dayjs from "dayjs";
+import 'dayjs/locale/de';
+import 'dayjs/locale/en';
+import {useEffect} from "react";
+
 
 export const queryClient = new QueryClient();
 const QueryClientProviderWrapper = ({
@@ -33,6 +38,10 @@ const QueryClientProviderWrapper = ({
   );
 };
 function App({ Component, pageProps }: AppProps) {
+  const { i18n } = useTranslation()
+  useEffect(() => {
+    dayjs.locale(i18n.language in ["en", "de"] ? i18n.language : "en")
+  }, [i18n.language]);
   return (
     <QueryClientProviderWrapper>
       <LocalizationProvider dateAdapter={AdapterDayjs}>

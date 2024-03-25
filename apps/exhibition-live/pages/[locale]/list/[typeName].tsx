@@ -32,7 +32,6 @@ export async function getStaticProps(ctx) {
   };
 }
 export default (props: Props) => {
-  const router = useRouter();
   const { t } = useTranslation();
   const { typeName } = props;
   const title = `${t(typeName)} - ${t("list")}`

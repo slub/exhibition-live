@@ -63,5 +63,8 @@
   "data source disabled": "Datenquelle deaktiviert",
   "move to trash": "in den Papierkorb verschieben",
   "restore from trash": "aus dem Papierkorb wiederherstellen",
-  "delete permanently": "endgültig löschen"
+  "delete permanently": "endgültig löschen",
+  "export all data": "alle Daten exportieren",
+  "export selected rows only": "nur ausgewählte Zeilen exportieren",
+  "export page only": "nur aktuelle Seite exportieren"
 }

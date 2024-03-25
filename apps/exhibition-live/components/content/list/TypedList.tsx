@@ -472,7 +472,7 @@ export const TypedList = ({ typeName }: Props) => {
             <ListItemIcon>
               <FileDownload />
             </ListItemIcon>
-            Alle Daten exportieren
+            {t("export all data")}
           </MenuItem>
           <MenuItem
             disabled={table.getRowModel().rows.length === 0}
@@ -480,7 +480,7 @@ export const TypedList = ({ typeName }: Props) => {
             <ListItemIcon>
               <FileDownload />
             </ListItemIcon>
-            Aktuelle Seite exportieren
+            {t("export page only")}
           </MenuItem>
           <MenuItem
             disabled={
@@ -493,7 +493,7 @@ export const TypedList = ({ typeName }: Props) => {
             <ListItemIcon>
               <FileDownload />
             </ListItemIcon>
-            Nur ausgewählte Zeilen exportieren
+            {t("export selected rows only")}
           </MenuItem>
         </ExportMenuButton>
         {table.getIsSomeRowsSelected() && (

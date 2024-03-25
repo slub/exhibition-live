@@ -67,5 +67,8 @@
   "data source disabled": "Data source deactivated",
   "move to trash": "move to trash",
   "restore from trash": "restore from trash",
-  "delete permanently": "delete permanently"
+  "delete permanently": "delete permanently",
+  "export all data": "export all data",
+  "export selected rows only": "export selected rows only",
+  "export page only": "export page only"
 }

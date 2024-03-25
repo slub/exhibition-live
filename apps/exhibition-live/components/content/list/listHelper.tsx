@@ -2,7 +2,12 @@ import get from "lodash/get";
 import {JSONSchema7, JSONSchema7Definition} from "json-schema";
 import {MRT_ColumnDef, MRT_TableInstance} from "material-react-table";
 import {OverflowContainer} from "../../lists";
-import {filterForArrayProperties, filterForPrimitiveProperties, isJSONSchema} from "@slub/json-schema-utils";
+import {
+  filterForArrayProperties,
+  filterForPrimitiveProperties,
+  isJSONSchema,
+  isJSONSchemaDefinition
+} from "@slub/json-schema-utils";
 import {Avatar, Box, Grid, Link, Typography} from "@mui/material";
 import isNil from "lodash/isNil";
 import {parseMarkdownLinks} from "@slub/edb-core-utils";
@@ -121,15 +126,49 @@ export const PrimaryColumnContent = ({entityIRI, typeName, children, data, densi
 }
 
 
-export const defaultColumnDefinitionStub: (key: string, t: TFunction,  path?: string[]) => MRT_ColumnDef<any> = (key, t,  path = []) => ({
-  header: t( p([...path, key])),
-  id: p([...path, key, "single"]),
-  maxSize: 400,
-  accessorFn: mkAccessor(`${p([...path, key, "single"])}.value`, "")
-})
+export const defaultColumnDefinitionStub: (typeName:string, key: string, schemaDef: JSONSchema7Definition, t: TFunction,  path?: string[]) => MRT_ColumnDef<any> = (typeName, key, schemaDef, t,  path = []) => {
+  if(isJSONSchemaDefinition(schemaDef) && typeof schemaDef === "object" && schemaDef.type === "string" && schemaDef.oneOf) {
+    console.log({key, schemaDef, path})
+    return ({
+      header: t(p([...path, key])),
+      id: p([...path, key, "single"]),
+      maxSize: 400,
+      filterFn: 'equals',
+      filterSelectOptions: schemaDef.oneOf.map((e: any) => ({label: e.title || t(`key_${e.const}`), value: e.const})),
+      filterVariant: 'select',
+      accessorFn: mkAccessor(`${p([...path, key, "single"])}.value`, ""),
+      Cell: ({cell, row, table}) => {
+        let v: any = cell.getValue()
+        if(typeof v === "string" && v.length >  0) {
+          const oneOfElement = schemaDef.oneOf?.find((e) => (e as any).const === v);
+          v = (oneOfElement as any)?.title || t(`key_${v}`);
+        }
+        return (
+          <OverflowContainer density={table.getState().density}>{v}</OverflowContainer>
+        );
+      },
+    });
+  }
+  return ({
+    header: t(p([...path, key])),
+    id: p([...path, key, "single"]),
+    maxSize: 400,
+    accessorFn: mkAccessor(`${p([...path, key, "single"])}.value`, ""),
+    Cell: ({cell, renderedCellValue, row, table}) => (
+      primaryFields[typeName]?.label === key
+        ? <PrimaryColumnContent
+          entityIRI={row.original.entity.value}
+          typeName={typeName}
+          data={row.original}
+          density={table.getState().density}
+        >{renderedCellValue}</PrimaryColumnContent>
+        : <OverflowContainer density={table.getState().density}>{renderedCellValue}</OverflowContainer>
+    ),
+  });
+}
 
-export const defaultColumnDefinition: (key: string, t: TFunction,  path?: string[]) => MRT_ColumnDef<any> = (key, t,  path = []) => ({
-  ...defaultColumnDefinitionStub(key, t, path),
+export const defaultColumnDefinition: (typeName: string, key: string, schemaDef: JSONSchema7Definition,  t: TFunction,  path?: string[]) => MRT_ColumnDef<any> = (typeName, key, schemaDef, t,  path = []) => ({
+  ...defaultColumnDefinitionStub(typeName, key,schemaDef, t, path),
   Cell: ({cell, renderedCellValue, row}) => (
     <OverflowContainer>{renderedCellValue}</OverflowContainer>
   )
@@ -159,19 +198,7 @@ export const computeColumns: (
       ...Object.entries(filterForPrimitiveProperties(schema.properties)).map(
         ([key, propertyDefinition], index): MRT_ColumnDef<any> => {
           const columnDefinition =  matcher ? matcher(key, propertyDefinition, typeName, t, path) : null
-          return columnDefinition || {
-            ...defaultColumnDefinitionStub(key, t, path),
-            Cell: ({cell, renderedCellValue, row, table}) => (
-              primaryFields[typeName]?.label === key
-                ? <PrimaryColumnContent
-                  entityIRI={row.original.entity.value}
-                  typeName={typeName}
-                  data={row.original}
-                  density={table.getState().density}
-                >{renderedCellValue}</PrimaryColumnContent>
-                : <OverflowContainer density={table.getState().density}>{renderedCellValue}</OverflowContainer>
-            ),
-          };
+          return columnDefinition || defaultColumnDefinitionStub(typeName, key, propertyDefinition, t, path);
         },
       ),
       ...Object.entries(schema.properties || {})

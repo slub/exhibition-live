@@ -319,7 +319,7 @@ export const TypedList = ({ typeName }: Props) => {
   );
 
 
-  const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>(conf.columnVisibility);
+  const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>(conf.columnVisibility || tableConfig.default.columnVisibility);
 
 
   const handleChangeColumnVisibility = useCallback(

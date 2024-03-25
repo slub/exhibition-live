@@ -72,9 +72,9 @@ export const EntityDetailModal = NiceModal.create(
       <Dialog
         open={modal.visible}
         onClose={() => modal.remove()}
-        fullWidth={true}
         scroll={"paper"}
         disableScrollLock={false}
+        maxWidth={false}
       >
         <AppBar position="static">
           <Toolbar variant="dense">

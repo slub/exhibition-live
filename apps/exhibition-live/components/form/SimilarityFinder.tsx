@@ -22,7 +22,7 @@ import {
   StrategyContext,
 } from "../utils/mapping/mappingStrategies";
 import {sladb, slent} from "./formConfigs";
-import {gndEntryWithMainInfo} from "./lobid/LobidSearchTable";
+import {gndEntryFromSuggestion, gndEntryWithMainInfo} from "./lobid/LobidSearchTable";
 import {findEntityByAuthorityIRI, findEntityByClass} from "../utils/discover";
 import {useGlobalCRUDOptions} from "../state/useGlobalCRUDOptions";
 import {mapAbstractDataUsingAI, mapDataUsingAI} from "../utils/ai";
@@ -35,11 +35,13 @@ import {EditEntityModal} from "./edit/EditEntityModal";
 import {PrimaryField} from "../utils/types";
 import ClassicResultListItem from "./result/ClassicResultListItem";
 import {EntityDetailElement} from "./show";
-import {findEntityWithinLobid} from "../utils/lobid/findEntityWithinLobid";
+import {findEntityWithinLobid, findEntityWithinLobidByIRI} from "../utils/lobid/findEntityWithinLobid";
 import LobidAllPropTable from "./lobid/LobidAllPropTable";
 import WikidataAllPropTable from "./wikidata/WikidataAllPropTable";
 import ClassicEntityCard from "./lobid/ClassicEntityCard";
 import {debounce} from "lodash";
+import {filterUndefOrNull} from "@slub/edb-core-utils";
+import {useQuery} from "@tanstack/react-query";
 
 // @ts-ignore
 type Props = {
@@ -192,6 +194,63 @@ const SearchFieldWithBadges = ({
   </Grid>
 }
 
+type GNDListItemRendererProps = {
+    data: any, idx: number, typeIRI: string, selected: boolean, onSelect?: () => void
+}
+const GNDListItemRenderer = ({data: initialData, idx, typeIRI, selected , onSelect}: GNDListItemRendererProps) => {
+    const { id } = initialData
+    const { data} = useQuery(['entityDetail', id], async () => {
+        const rawEntry = await findEntityWithinLobidByIRI(id);
+        return {
+            ...gndEntryWithMainInfo(rawEntry),
+            secondary: initialData.secondary,
+        }
+    }, {
+        initialData,
+        enabled: selected
+    } )
+    const {label, avatar, secondary} = data;
+    return <ClassicResultListItem
+        key={id}
+        id={id}
+        index={idx}
+        onSelected={onSelect}
+        label={label}
+        secondary={secondary}
+        avatar={avatar}
+        altAvatar={String(idx)}
+        selected={selected}
+        popperChildren={
+            <ClassicEntityCard
+                sx={{
+                    maxWidth: "30em",
+                    maxHeight: "80vh",
+                    overflow: "auto",
+                }}
+                id={id}
+                data={data}
+                onSelectItem={onSelect}
+                acceptTitle={"Eintrag übernehmen"}
+                detailView={
+                    <>
+                        <LobidAllPropTable
+                            allProps={data.allProps}
+                            onEntityChange={onSelect}
+                        />
+                        {(data.allProps?.sameAs || [])
+                            .filter(({id}) =>
+                                id.startsWith("http://www.wikidata.org/entity/"),
+                            )
+                            .map(({id}) => (
+                                <WikidataAllPropTable key={id} thingIRI={id}/>
+                            ))}
+                    </>
+                }
+            />
+        }
+    />
+}
+
 const useKnowledgeBases = () => {
   const {crudOptions} = useGlobalCRUDOptions();
   const kbs: KnowledgeBaseDescription[] = useMemo(() => [
@@ -250,52 +309,11 @@ const useKnowledgeBases = () => {
         src={"Icons/gnd-logo.png"}
       />,
       find: async (searchString: string, typeIRI, findOptions?: FindOptions) => {
-        return (await findEntityWithinLobid(searchString, typeIRItoTypeName(typeIRI), findOptions?.limit || 10))?.member?.map(
-          (allProps: any) => gndEntryWithMainInfo(allProps),
+        return filterUndefOrNull(await findEntityWithinLobid(searchString, typeIRItoTypeName(typeIRI), findOptions?.limit || 10, "json:suggest"))?.map(
+          (allProps: any) => gndEntryFromSuggestion(allProps),
         )
       },
-      listItemRenderer: (data: any, idx: number, typeIRI: string, selected, onSelect) => {
-        const {id, label, avatar, secondary} = data;
-        return <ClassicResultListItem
-          key={id}
-          id={id}
-          index={idx}
-          onSelected={onSelect}
-          label={label}
-          secondary={secondary}
-          avatar={avatar}
-          altAvatar={String(idx)}
-          selected={selected}
-          popperChildren={
-            <ClassicEntityCard
-              sx={{
-                maxWidth: "30em",
-                maxHeight: "80vh",
-                overflow: "auto",
-              }}
-              id={id}
-              data={data}
-              onSelectItem={onSelect}
-              acceptTitle={"Eintrag übernehmen"}
-              detailView={
-                <>
-                  <LobidAllPropTable
-                    allProps={data.allProps}
-                    onEntityChange={onSelect}
-                  />
-                  {(data.allProps?.sameAs || [])
-                    .filter(({id}) =>
-                      id.startsWith("http://www.wikidata.org/entity/"),
-                    )
-                    .map(({id}) => (
-                      <WikidataAllPropTable key={id} thingIRI={id}/>
-                    ))}
-                </>
-              }
-            />
-          }
-        />
-      }
+      listItemRenderer: (data: any, idx: number, typeIRI: string, selected, onSelect) => <GNDListItemRenderer data={data} idx={idx} typeIRI={typeIRI} selected={selected} onSelect={onSelect}/>
     }
   ], [crudOptions?.selectFetch])
   return kbs

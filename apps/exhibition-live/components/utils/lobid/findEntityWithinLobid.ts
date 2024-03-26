@@ -31,6 +31,7 @@ export const findEntityWithinLobid = async (
   searchString: string,
   typeName: string,
   limit?: number,
+  format?: string,
 ) => {
   try {
     const res = await fetch(
@@ -40,7 +41,7 @@ export const findEntityWithinLobid = async (
           q: searchString,
           filter: makeTypeFilter( mapTypeName(typeName)),
           size: (limit || 10).toString(),
-          format: "json",
+          format: format || "json",
         }).toString(),
     );
     return await res.json();

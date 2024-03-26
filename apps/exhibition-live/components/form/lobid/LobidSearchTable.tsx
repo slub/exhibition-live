@@ -25,6 +25,7 @@ import {
 } from "../../utils/mapping/simpleFieldExtractor";
 import { useQuery } from "@tanstack/react-query";
 import {typeIRItoTypeName} from "../../config";
+import Ajv from "ajv";
 
 type Props = {
   searchString: string;
@@ -79,7 +80,55 @@ const defaultPrimaryFields: PrimaryFieldExtract<any> = {
   label: "preferredName",
 };
 
-export const gndEntryWithMainInfo = (allProps: any) => {
+type GNDSuggestResponse = {
+    id: string;
+    label: string;
+    category: string;
+    image?: string;
+}
+
+const suggestResponseSchema =   {
+  "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+        "id": {
+            "type": "string"
+        },
+        "label": {
+            "type": "string"
+        },
+        "category": {
+            "type": "string"
+        },
+        "image": {
+            "type": "string"
+        }
+    },
+    "required": [ "id", "label", "category" ]
+}
+
+export const gndEntryFromSuggestion = (allProps: any) => {
+  const ajv = new Ajv();
+  if(!ajv.validate(suggestResponseSchema, allProps)) {
+    console.error("Invalid GND Suggestion Response", allProps)
+    return null;
+  }
+  const {id, label, category, image}: GNDSuggestResponse = allProps;
+  const labelParts = label.split(" | ");
+  const [primary, ...secondary] = labelParts;
+
+
+  //return dummy data
+  return {
+    id,
+    label: primary,
+    secondary: secondary.join(" | "),
+    avatar: image,
+    allProps: {}
+  }
+
+}
+export const gndEntryWithMainInfo: (allProps: any) => { secondary: string; allProps: any; id: any; label: string; avatar: string } = (allProps: any) => {
   const { id, type } = allProps;
   const primaryFieldDeclaration =
     getFirstMatchingFieldDeclaration(type, gndPrimaryFields) ||

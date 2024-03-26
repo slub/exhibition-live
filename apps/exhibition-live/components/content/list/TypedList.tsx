@@ -436,6 +436,7 @@ export const TypedList = ({ typeName }: Props) => {
     enableColumnVirtualization: false,
     enableColumnOrdering: true,
     enableRowSelection: true,
+    enableFacetedValues: true,
     onRowSelectionChange: handleRowSelectionChange,
     manualPagination: false,
     manualSorting: true,
@@ -444,7 +445,7 @@ export const TypedList = ({ typeName }: Props) => {
     columnFilterDisplayMode: 'popover',
     initialState: {
       columnVisibility: conf.columnVisibility,
-      pagination: { pageIndex: 0, pageSize: 20 },
+      pagination: { pageIndex: 0, pageSize: 100 },
     },
     localization,
     rowCount: resultList.length,

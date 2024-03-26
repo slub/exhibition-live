@@ -3,14 +3,12 @@ import {JSONSchema7, JSONSchema7Definition} from "json-schema";
 import {MRT_ColumnDef, MRT_TableInstance} from "material-react-table";
 import {OverflowContainer} from "../../lists";
 import {
-  filterForArrayProperties,
-  filterForPrimitiveProperties,
-  isJSONSchema,
+  isJSONSchema, isPrimitive,
 } from "@slub/json-schema-utils";
 import {Avatar, Box, Checkbox, Grid, Link, Typography} from "@mui/material";
 import isNil from "lodash/isNil";
 import maxBy from 'lodash/maxBy';
-import {parseMarkdownLinks} from "@slub/edb-core-utils";
+import {filterUndefOrNull, parseMarkdownLinks} from "@slub/edb-core-utils";
 import {OverflowChip} from "../../lists/OverflowChip";
 import * as React from "react";
 import {TFunction} from "i18next";
@@ -19,16 +17,15 @@ import NiceModal from "@ebay/nice-modal-react";
 import {EntityDetailModal} from "../../form/show";
 import {primaryFields} from "../../config";
 import {PrimaryField} from "@slub/edb-core-types";
-import {applyToEachField, extractFieldAny, extractFieldIfString} from "../../utils/mapping/simpleFieldExtractor";
-import ReactMarkdown from "react-markdown";
+import {applyToEachField} from "../../utils/mapping/simpleFieldExtractor";
 import {FieldExtractDeclaration} from "../../utils/types";
 import {
-  and, formatIs, isBooleanControl, isControl,
+  and, formatIs, isArrayObjectControl, isBooleanControl, isControl,
   isOneOfControl,
   isStringControl,
   JsonSchema,
   RankedTester,
-  rankWith, TesterContext
+  rankWith, Tester, TesterContext
 } from "@jsonforms/core";
 
 const p = (path: string[]) => path.join("_");
@@ -137,15 +134,33 @@ export interface MuiTableColumnDefinitionRegistryEntry<T = any> {
   columnDef: ComputeColumnDefFunction<T>
 }
 
+/**
+ * generates Column Definition stub with header, id and accessorFn for a single value column
+ *
+ * each part  will look like `path_to_key_single`
+ * translation needs to be provided in the form of `path_to_key` using the t-function
+ *
+ * @param path path to the key (empty array for root)
+ * @param key last part of the path
+ * @param t translation function
+ */
+const singleValueColumnStub: (path: string[], key: string, t: TFunction, label?: string) => Pick<MRT_ColumnDef<any>, "header" | "id" | "accessorFn"> = (path, key, t, label) => ({
+  header: label || t(p([...path, key])),
+  id: p([...path, key, "single"]),
+  accessorFn: mkAccessor(`${p([...path, key, "single"])}.value`, "")
+})
+
+const isPrimitiveControl: Tester = (_, schema) => typeof schema.type === "string" && isPrimitive(schema.type)
+
+const isObjectWithRefControl: Tester = (uischema, schema) => schema.$ref && isControl(uischema)
+
+const titleOf = (schema: JSONSchema7Definition ) => (schema as JSONSchema7)?.title
 
 const cellConfigRegistry: MuiTableColumnDefinitionRegistryEntry[] = [
   {
-    tester: rankWith(1, isControl ),
+    tester: rankWith(1, isPrimitiveControl  ),
     columnDef: (typeName, key, schemaDef, t, path) =>  ({
-      header: t(p([...path, key])),
-      id: p([...path, key, "single"]),
-      maxSize: 400,
-      accessorFn: mkAccessor(`${p([...path, key, "single"])}.value`, ""),
+      ...singleValueColumnStub(path, key, t, titleOf(schemaDef)),
       Cell: ({cell, renderedCellValue, row, table}) => (
         primaryFields[typeName]?.label === key
           ? <PrimaryColumnContent
@@ -161,17 +176,15 @@ const cellConfigRegistry: MuiTableColumnDefinitionRegistryEntry[] = [
   {
     tester: rankWith(2, and(isControl, formatIs("uri") )),
     columnDef: (typeName, key, schemaDef, t, path) => ({
-      header: t(p([...path, key])),
-      id: p([...path, key, "single"]),
+      ...singleValueColumnStub(path, key, t, titleOf(schemaDef)),
       maxSize: 400,
-      accessorFn: mkAccessor(`${p([...path, key, "single"])}.value`, ""),
-      Cell: ({cell, row, table}) => (
-        <Link href={(String(cell.getValue()))} target="_blank" component="a">
-          <OverflowContainer tooltip={String(cell.getValue())}>
-          {decodeURIComponent( urlSuffix(String(cell.getValue()) ?? ""))}
-          </OverflowContainer>
-        </Link>
-      ),
+      Cell: ({cell}) => (
+          <Link href={(String(cell.getValue()))} target="_blank" component="a">
+            <OverflowContainer tooltip={String(cell.getValue())}>
+              {decodeURIComponent(urlSuffix(String(cell.getValue()) ?? ""))}
+            </OverflowContainer>
+          </Link>
+        ),
     })
   },
   {
@@ -179,13 +192,11 @@ const cellConfigRegistry: MuiTableColumnDefinitionRegistryEntry[] = [
     columnDef: (typeName, key, schemaDef, t, path) => {
       const def = schemaDef as JSONSchema7;
       return ({
-        header: t(p([...path, key])),
-        id: p([...path, key, "single"]),
+        ...singleValueColumnStub(path, key, t, titleOf(schemaDef)),
         maxSize: 400,
         filterFn: 'equals',
         filterSelectOptions: def.oneOf.map((e: JSONSchema7) => ({label: e.title || t(`key_${e.const}`), value: e.const})),
         filterVariant: 'select',
-        accessorFn: mkAccessor(`${p([...path, key, "single"])}.value`, ""),
         Cell: ({cell, row, table}) => {
           let v: any = cell.getValue()
           if(typeof v === "string" && v.length >  0) {
@@ -202,20 +213,99 @@ const cellConfigRegistry: MuiTableColumnDefinitionRegistryEntry[] = [
   {
     tester: rankWith(3, isBooleanControl),
     columnDef: (typeName, key, schemaDef, t, path) => ({
-      header: t(p([...path, key])),
-      id: p([...path, key, "single"]),
-      maxSize: 100,
+      ...singleValueColumnStub(path, key, t, titleOf(schemaDef)),
+      maxSize: 200,
+      size: 150,
       filterVariant: 'checkbox',
-      accessorFn: mkAccessor(`${p([...path, key, "single"])}.value`, "", (v) => typeof v === "boolean" ? v : (v === "true")),
       Cell: ({cell, row, table}) => {
         const v = cell.getValue();
         return (
           <>
-            <Checkbox  indeterminate={v === ""} checked={v === true || v === "true"} disabled={true} />
+            <Checkbox  indeterminate={isNil(v) || v === ""} checked={v === true || v === "true"} disabled={true} />
           </>
         );
       }
     })
+  },
+  {
+    tester: rankWith(2, isArrayObjectControl),
+    columnDef: (typeName, key, schemaDef, t, path) => {
+      const id = p([...path, key, "label_group"])
+      return {
+        header: titleOf(schemaDef) || t(p([...path, key])),
+        id,
+        maxSize: 500,
+        accessorFn: mkAccessor(
+          `${p([...path, key, "label_group"])}.value`,
+          "",
+          (v) => parseMarkdownLinks(v).map(({label}) => label).join(", "),
+        ),
+        filterFn: "contains",
+        Cell: ({renderedCellValue, table, row}) => {
+          const getValue = mkMultiAccessor({
+            group: {
+              path: `${p([...path, key, "label_group"])}.value`,
+              defaultValue: "",
+            },
+            count: {
+              path: `${p([...path, key, "count"])}.value`,
+              defaultValue: 0,
+            },
+          })
+          const {group, count} = getValue(row.original);
+          const table_ = table as MRT_TableInstance<any>;
+          return count > 0 && (
+            <Grid
+              container
+              flexWrap={
+                table_.getState().density === "spacious"
+                  ? "wrap"
+                  : "nowrap"
+              }
+              alignItems={"center"}
+            >
+              <Grid item>
+                {table.getState().columnFilters.find(cf => cf.id === id)
+                  ?  <OverflowContainer>{renderedCellValue}</OverflowContainer>
+                  : <Typography variant={"body2"}>({count})</Typography> }
+              </Grid>
+              {!isNil(count) &&
+                count > 0 &&
+                parseMarkdownLinks(group).map(({label, url}, index) => {
+                  return (
+                    <Grid item key={url + index} sx={{m: 0.5}}>
+                      <Link>
+                        <OverflowChip entityIRI={url} label={label}/>
+                      </Link>
+                    </Grid>
+                  );
+                })}
+            </Grid>
+          );
+        }
+      }
+    }
+  }, {
+    tester: rankWith(2, isObjectWithRefControl),
+    columnDef: (typeName, key, schemaDef, t, path) => {
+      const id = p([...path, key, "entity"])
+      const labelPath = p([...path, key, "label"])
+      const descriptionPath = p([...path, key, "description"])
+      const iriPath = p([...path, key, "IRI"])
+      return {
+        header: titleOf(schemaDef) || t(p([...path, key])),
+        id,
+        maxSize: 500,
+        filterVariant: "select",
+        accessorFn: mkAccessor(`${labelPath}.value`, ""),
+        Cell: ({renderedCellValue, table, row}) => {
+          const description = row.original[descriptionPath]?.value
+          const label = row.original[labelPath]?.value
+          const iri = row.original[iriPath]?.value
+          return iri && label?.length > 0 && <OverflowChip label={renderedCellValue} secondary={description} entityIRI={iri}/>
+        }
+      }
+    }
   }
 ]
 
@@ -247,18 +337,12 @@ export const defaultColumnDefinitionStub:
     const tested = entry.tester(uiSchema, schemaDef as JsonSchema, testerContext);
     return tested
   })
+    const rank =  columnDef.tester(uiSchema, schemaDef as JsonSchema, testerContext)
   //console.log({columnDef})
-  return columnDef.columnDef(typeName, key, schemaDef, t, path)
+  return rank > 0 ?  columnDef.columnDef(typeName, key, schemaDef, t, path) : null
 }
 
 
-/*
-export const defaultColumnDefinition: (typeName: string, key: string, schemaDef: JSONSchema7Definition,  t: TFunction,  path?: string[]) => MRT_ColumnDef<any> = (typeName, key, schemaDef, t,  path = []) => ({
-  ...defaultColumnDefinitionStub(typeName, key,schemaDef, t, path),
-  Cell: ({cell, renderedCellValue, row}) => (
-    <OverflowContainer>{renderedCellValue}</OverflowContainer>
-  )
-})*/
 
 export type ColumnDefMatcher<TData = any> = (key: string, schemaDef: JSONSchema7Definition, typeName: string, t: TFunction, path?: string[]) => MRT_ColumnDef<TData> | null
 export const computeColumns: (
@@ -281,12 +365,12 @@ export const computeColumns: (
           </OverflowContainer>
         ),
       },
-      ...Object.entries(filterForPrimitiveProperties(schema.properties)).map(
+      ...filterUndefOrNull(Object.entries(schema.properties).map(
         ([key, propertyDefinition], index): MRT_ColumnDef<any> => {
           const columnDefinition =  matcher ? matcher(key, propertyDefinition, typeName, t, path) : null
           return columnDefinition || defaultColumnDefinitionStub(typeName, key, propertyDefinition, schema, t, path);
         },
-      ),
+      )),
       ...Object.entries(schema.properties || {})
         .filter(
           ([, value]) =>
@@ -298,55 +382,4 @@ export const computeColumns: (
           isJSONSchema(value) ? computeColumns(value,typeName , t, matcher, [...path, key]) : [],
         )
         .flat(),
-      ...Object.keys(filterForArrayProperties(schema.properties)).flatMap(
-        (key) => [
-          {
-            header: t(p([...path, key])),
-            id: p([...path, key, "label_group"]),
-            maxSize: 500,
-            accessorFn: mkAccessor(
-                `${p([...path, key, "label_group"])}.value`),
-            Cell: ({cell, table, row}) => {
-              const getValue = mkMultiAccessor({
-                group: {
-                  path: `${p([...path, key, "label_group"])}.value`,
-                  defaultValue: "",
-                },
-                count: {
-                  path: `${p([...path, key, "count"])}.value`,
-                  defaultValue: 0,
-                },
-              })
-              const {group, count} = getValue(row.original);
-              const table_ = table as MRT_TableInstance<any>;
-              return count > 0 && (
-                <Grid
-                  container
-                  flexWrap={
-                    table_.getState().density === "spacious"
-                      ? "wrap"
-                      : "nowrap"
-                  }
-                  alignItems={"center"}
-                >
-                  <Grid item>
-                    <Typography variant={"body2"}>({count})</Typography>
-                  </Grid>
-                  {!isNil(count) &&
-                    count > 0 &&
-                    parseMarkdownLinks(group).map(({label, url}, index) => {
-                      return (
-                        <Grid item key={url + index} sx={{m: 0.5}}>
-                          <Link>
-                            <OverflowChip entityIRI={url} label={label}/>
-                          </Link>
-                        </Grid>
-                      );
-                    })}
-                </Grid>
-              );
-            },
-          },
-        ],
-      ),
     ]) as any as MRT_ColumnDef<any>[];

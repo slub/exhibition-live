@@ -16,8 +16,8 @@ export const useSimilarityFinderState = create<UseSimilarityFinderState>(
     cycleThroughElements: (offset: number) => {
       const { elementIndex, elementCount } = get();
       if (elementIndex === 0 && offset < 0) return;
-      if(elementIndex === elementCount - 1 && offset > 0) return;
-      const newIndex = (elementIndex + offset) % elementCount;
+      if(elementIndex === elementCount && offset > 0) return;
+      const newIndex = (elementIndex + offset) % (elementCount + 1);
       set({ elementIndex: newIndex });
     },
     resetElementIndex: () => set({ elementIndex: 0 }),

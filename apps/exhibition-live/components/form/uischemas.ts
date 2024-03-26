@@ -82,7 +82,6 @@ export const uischemas: JsonFormsUISchemaRegistryEntry[] = [
   "ExponatsAndCorporations",
   "ExhibitionExponat",
   "ExhibitionCategory",
-  "OtherDate",
   "InvolvedPerson",
   "InvolvedCorporation",
   "ExhibitionWebLink",

@@ -32,7 +32,7 @@ import {
   Resolve,
 } from "@jsonforms/core";
 import merge from "lodash/merge";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { ArrayLayoutToolbar } from "./ArrayToolbar";
 import { useJsonForms } from "@jsonforms/react";
@@ -57,6 +57,7 @@ import { useCRUDWithQueryClient } from "../state/useCRUDWithQueryClient";
 import { useSnackbar } from "notistack";
 import { ErrorObject } from "ajv";
 import {bringDefinitionToTop} from "@slub/json-schema-utils";
+import {Pulse} from "../form/utils";
 
 type OwnProps = {
   removeItems(path: string, toDelete: number[]): () => void;
@@ -89,6 +90,8 @@ const MaterialArrayLayoutComponent = (props: ArrayLayoutProps & {}) => {
   const [formData, setFormData] = useState<any>(
     irisToData(slent(uuidv4()).value, typeIRI),
   );
+
+  const addButtonRef = useRef<HTMLButtonElement>(null);
 
   const handleInlineFormDataChange = useCallback(
     (data: any) => {
@@ -154,13 +157,19 @@ const MaterialArrayLayoutComponent = (props: ArrayLayoutProps & {}) => {
   }, [setModalIsOpen, addItem, formData, setFormData, typeIRI]);
 
   const isReifiedStatement = Boolean(appliedUiSchemaOptions.isReifiedStatement);
-  const [inlineErrors, setInlineErrors] = useState<ErrorObject[]>([]);
+  const [inlineErrors, setInlineErrors] = useState<ErrorObject[] | null>(null);
   const handleErrors = useCallback(
     (err: ErrorObject[]) => {
       setInlineErrors(err);
     },
     [setInlineErrors],
   );
+
+  useEffect(() => {
+    if (inlineErrors?.length === 0 && addButtonRef.current) {
+      addButtonRef.current.focus();
+    }
+  }, [inlineErrors]);
 
   const formsPath = useMemo(
     () => makeFormsPath(config?.formsPath, path),
@@ -231,8 +240,11 @@ const MaterialArrayLayoutComponent = (props: ArrayLayoutProps & {}) => {
             <IconButton
               disabled={inlineErrors?.length > 0}
               onClick={handleSaveAndAdd}
+              ref={addButtonRef}
             >
-              <AddIcon style={{ fontSize: 40 }} />
+              <Pulse pulse={inlineErrors?.length === 0}>
+                <AddIcon style={{ fontSize: 40 }} />
+              </Pulse>
             </IconButton>
           </Grid>
         </Grid>

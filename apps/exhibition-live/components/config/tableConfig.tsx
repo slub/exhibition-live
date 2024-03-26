@@ -88,6 +88,13 @@ export const tableConfig: TableConfigRegistry = {
       }
       return null
     }
+  },
+  "Workplace": {
+    matcher: (key, schemaDef, typeName, t, path) => {
+      if(key === "fromDate" || key === "toDate") {
+        return dateColDef(key, t, path)
+      }
+    }
   }
 }
 

@@ -537,31 +537,15 @@ const SimilarityFinder: FunctionComponent<Props> = ({
     })
   }, [registerModal, preselectedClassIRI, searchString, handleEntityChange])
 
-  const ResultList = useCallback(
-    () => {
-      let idx = 0;
-      // @ts-ignore
-      return knowledgeBases.map((kb) => {
-        const entries = searchResults[kb.id] || []
-        return <ClassicResultListWrapper
-          key={kb.id}
-          label={kb.label}
-          selected={selectedKnowledgeSources?.includes(kb.id)}
-          hitCount={entries.length}
-        >
-          {searchString && (
-            <List>
-              {entries.map((entry) => {
-                idx++;
-                return kb.listItemRenderer(entry, idx, classIRI, elementIndex === idx, () => handleAccept(entry.id, entry, kb.id))
-              })}
-            </List>
-          )}
-        </ClassicResultListWrapper>
-
-      })
-    }
-    , [searchResults, knowledgeBases, selectedKnowledgeSources, classIRI, handleAccept, elementIndex])
+  const resultsWithIndex = useMemo(() => {
+    let idx = 0;
+    const intermediate = Object.entries(searchResults).reduce((acc, [key, value]) =>
+        [...acc, ...value.map((entry) => {
+            idx++;
+            return {entry, idx, key}
+        })], [])
+    return Object.fromEntries( Object.keys(searchResults).map(kb => [kb, intermediate.filter(({key}) => key === kb)]))
+  }, [searchResults])
 
   return <div style={{overflow: 'hidden'}}>
     <Grid container alignItems="center" direction={"column"} spacing={2}
@@ -586,7 +570,18 @@ const SimilarityFinder: FunctionComponent<Props> = ({
           flexDirection: "column" /* flexWrap: 'wrap'*/,
         }}
       >
-        {<ResultList/>}
+          {knowledgeBases.map((kb) => {
+              const entries = resultsWithIndex[kb.id] || []
+              return <ClassicResultListWrapper
+                key={kb.id}
+                label={kb.label}
+                selected={selectedKnowledgeSources?.includes(kb.id)}
+                hitCount={entries.length}>
+                  {searchString && (
+                      <List>{entries.map(({entry, idx}) => kb.listItemRenderer(entry, idx, classIRI, elementIndex === idx, () => handleAccept(entry.id, entry, kb.id)))}</List>
+                  )}
+          </ClassicResultListWrapper>
+        })}
       </Grid>
     </Grid>
     <Hidden xsUp={hideFooter}>

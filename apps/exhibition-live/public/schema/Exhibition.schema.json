@@ -16,6 +16,7 @@
           "format": "uri"
         },
         "parent": {
+          "title": "Übergeordnetes Schlagwort",
           "$ref": "#/$defs/Tag"
         }
       }
@@ -31,6 +32,7 @@
           "type": "string"
         },
         "parent": {
+          "title": "Übergeordneter Beruf",
           "$ref": "#/$defs/Occupation"
         }
       }
@@ -58,6 +60,7 @@
           "type": "string"
         },
         "parent": {
+          "title": "Übergeordnete Ausstellungsreihe",
           "$ref": "#/$defs/ExhibitionSeries"
         },
         "seriesType": {
@@ -182,6 +185,7 @@
           "type": "string"
         },
         "parent": {
+          "title": "Übergeordneter Ort",
           "$ref": "#/$defs/Location"
         }
       }
@@ -228,6 +232,7 @@
           "$ref": "#/$defs/Location"
         },
         "parent": {
+          "title": "Übergeordnete Stätte",
           "$ref": "#/$defs/Place"
         },
         "image": {
@@ -271,6 +276,7 @@
           }
         },
         "parent": {
+          "title": "Übergeordnete Organisation",
           "$ref": "#/$defs/Corporation"
         },
         "location": {
@@ -468,33 +474,6 @@
         }
       }
     },
-    "OtherDate": {
-      "type": "object",
-      "properties": {
-        "dateValue": {
-          "type": "integer",
-          "title": "Datumswert",
-          "maxLength": 8
-        },
-        "dateType": {
-          "type": "integer",
-          "oneOf": [
-            {
-              "const": 1,
-              "title": "Vernissage"
-            },
-            {
-              "const": 2,
-              "title": "Midissage"
-            },
-            {
-              "const": 3,
-              "title": "Finissage"
-            }
-          ]
-        }
-      }
-    },
     "InvolvedPerson": {
       "type": "object",
       "properties": {
@@ -544,26 +523,6 @@
         },
         "description": {
           "type": "string"
-        },
-        "subtitle": {
-          "type": "string",
-          "maxLength": 200
-        },
-        "originalTitle": {
-          "type": "string",
-          "maxLength": 200
-        },
-        "exhibitionSeries": {
-          "$ref": "#/$defs/ExhibitionSeries"
-        },
-        "exhibitionCategory": {
-          "$ref": "#/$defs/ExhibitionCategory"
-        },
-        "exhibitionGenre": {
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/Genre"
-          }
         },
         "startDate": {
           "type": "object",
@@ -617,6 +576,26 @@
                 }
               ]
             }
+          }
+        },
+        "subtitle": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "originalTitle": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "exhibitionSeries": {
+          "$ref": "#/$defs/ExhibitionSeries"
+        },
+        "exhibitionCategory": {
+          "$ref": "#/$defs/ExhibitionCategory"
+        },
+        "exhibitionGenre": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Genre"
           }
         },
         "externalId": {

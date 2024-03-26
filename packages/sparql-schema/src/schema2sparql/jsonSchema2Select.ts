@@ -1,7 +1,7 @@
-import { JsonSchema, resolveSchema } from "@jsonforms/core";
-import { JSONSchema7, JSONSchema7Definition } from "json-schema";
+import {JsonSchema, resolveSchema} from "@jsonforms/core";
+import {JSONSchema7, JSONSchema7Definition} from "json-schema";
 
-import { isJSONSchema, isJSONSchemaDefinition } from "@slub/json-schema-utils";
+import {isJSONSchema, isJSONSchemaDefinition, isPrimitive} from "@slub/json-schema-utils";
 
 import {PrimaryFieldDeclaration, SPARQLFlavour} from "@slub/edb-core-types";
 
@@ -27,7 +27,7 @@ const propertiesToSPARQLSelectPatterns = (
   let select = "";
 
   const properties = schema.properties;
-  if (!properties) return { where, select };
+  if (!properties) return {where, select};
 
   Object.entries(properties).forEach(
     ([property, subSchema]: [string, JSONSchema7]) => {
@@ -89,7 +89,7 @@ const propertiesToSPARQLSelectPatterns = (
           `,
           isRequired,
         );
-      } else if (subSchema.type !== "object") {
+      } else if (typeof subSchema.type === "string" && isPrimitive(subSchema.type)) {
         //primitive (make sure we get only one value)
         select += ` (SAMPLE(${variable}) AS ${variable}_single) `;
         where += makeWherePart(
@@ -98,7 +98,7 @@ const propertiesToSPARQLSelectPatterns = (
         );
       } else if (subSchema.type === "object" && !subSchema.$ref) {
         //sub-object
-        const { where: subWhere, select: subSelect } =
+        const {where: subWhere, select: subSelect} =
           propertiesToSPARQLSelectPatterns(
             subSchema,
             rootSchema,
@@ -115,6 +115,46 @@ const propertiesToSPARQLSelectPatterns = (
           isRequired,
         );
         select += subSelect;
+      } else if (subSchema.$ref && !minimal) {
+        const subSubSchema = resolveSchema(
+          subSchema as JsonSchema,
+          "",
+          rootSchema as JsonSchema,
+        );
+        if (
+          subSubSchema &&
+          subSubSchema.properties) {
+          const {where: subWhere, select: subSelect} =
+            propertiesToSPARQLSelectPatterns(
+              subSubSchema as JSONSchema7,
+              rootSchema,
+              variable,
+              excludedProperties,
+              subPath,
+              level + 1,
+              primaryFields,
+              flavour,
+              true,
+            );
+          const typeVariable = makeVariable([...subPath, "type"]);
+          const typeName = subSchema.$ref.substring(subSchema.$ref.lastIndexOf("/") + 1, subSchema.$ref.length);
+          let primaryInfoWhere = "";
+          if(primaryFields && typeName in primaryFields) {
+            const primaryFieldDeclaration = primaryFields && primaryFields[typeName];
+            Object.entries(primaryFieldDeclaration).forEach(([key, value]) => {
+              const primaryMultiVariable = makeVariable([...subPath, `${key}_all`]);
+              const primarySingleVariable = makeVariable([...subPath, key]);
+              primaryInfoWhere += `OPTIONAL { ${variable} ${makePrefixedProperty(value)} ${primaryMultiVariable} . } `;
+              select += ` (SAMPLE(${primaryMultiVariable}) AS ${primarySingleVariable}) `;
+            })
+          }
+          where += makeWherePart(
+            ` ${currentVariable} ${prefixedProperty} ${variable} . \n ${variable} a ${typeVariable} . \n ${subWhere} \n ${primaryInfoWhere} `,
+            isRequired,
+          );
+          select += ` (SAMPLE(${variable}) AS ${variable}_IRI) (SAMPLE(${typeVariable}) AS ${typeVariable}) `;
+          select += subSelect;
+        }
       }
     },
   );
@@ -150,7 +190,7 @@ const sparqlPartFromOptions = (options: SPARQLSelectOptions) => {
     sparqlParts.push(
       ` ${options.orderBy
         .map(
-          ({ orderBy, descending }) =>
+          ({orderBy, descending}) =>
             `${descending ? "DESC" : "ASC"}(?${orderBy})`,
         )
         .join(" ")}`,
@@ -191,7 +231,7 @@ export const jsonSchema2Select = (
 ) => {
   if (!rootSchema.properties) return "";
   const variable = "?entity";
-  const { where, select } = propertiesToSPARQLSelectPatterns(
+  const {where, select} = propertiesToSPARQLSelectPatterns(
     rootSchema,
     rootSchema,
     variable,

@@ -31,5 +31,20 @@
   "personDeceased": "Person Deceased",
   "profession": "Profession",
   "workplace": "Workplace",
-  "memberOfCorp": "Member of Corporation"
+  "memberOfCorp": "Member of Corporation",
+  "seriesType": "Serientyp",
+  "location": "Ort",
+  "timeSeries": "Wiederholungszyklus",
+  "fromDate": "Von Datum",
+  "toDate": "Bis Datum",
+  "startDate": "Startdatum",
+  "endDate": "Enddatum",
+  "titleVariants": "Titelvarianten",
+  "resourceType": "Ressourcentyp",
+  "signature": "Signatur",
+  "person": "Person",
+  "corporation": "Körperschaft",
+  "role": "Rolle",
+  "relatedPerson": "Bezug zu Personen",
+  "relatedCorporation": "Bezug zu Körperschaften"
 }

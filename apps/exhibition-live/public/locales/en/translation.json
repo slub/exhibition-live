@@ -43,6 +43,16 @@
   "PersonRole_plural": "person roles",
   "Genre": "genre",
   "Genre_plural": "genres",
+  "Workplace": "workplace",
+  "Workplace_plural": "workplaces",
+  "SeriesType": "series type",
+  "SeriesType_plural": "series types",
+  "Occupation": "occupation",
+  "Occupation_plural": "occupations",
+  "ExponatsAndPersons": "exponats and persons",
+  "ExponatsAndPersons_plural": "exponats and persons",
+  "ExponatsAndCorporations": "expontats und organisations",
+  "ExponatsAndCorporations_plural": "expontats und organisations",
   "Corporation": "corporation",
   "Corporation_plural": "corporations",
   "CorporationRole": "corporation role",
@@ -67,8 +77,5 @@
   "data source disabled": "Data source deactivated",
   "move to trash": "move to trash",
   "restore from trash": "restore from trash",
-  "delete permanently": "delete permanently",
-  "export all data": "export all data",
-  "export selected rows only": "export selected rows only",
-  "export page only": "export page only"
+  "delete permanently": "delete permanently"
 }

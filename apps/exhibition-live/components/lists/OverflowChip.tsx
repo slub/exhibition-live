@@ -4,14 +4,15 @@ import NiceModal from "@ebay/nice-modal-react";
 import { EntityDetailModal } from "../form/show/EntityDetailModal";
 
 type OverflowContainerProps = {
-  label: string;
+  label: React.ReactNode;
+  secondary?: React.ReactNode;
   entityIRI: string;
 };
 
 const OverflowText = ({ children }: { children: string }) => {
   return <Typography noWrap>{children}</Typography>;
 };
-export const OverflowChip = ({ label, entityIRI }: OverflowContainerProps) => {
+export const OverflowChip = ({ label, entityIRI, secondary }: OverflowContainerProps) => {
   const [tooltipEnabled, setTooltipEnabled] = useState(false);
 
   const showDetailModal = useCallback(
@@ -31,7 +32,7 @@ export const OverflowChip = ({ label, entityIRI }: OverflowContainerProps) => {
 
   return (
     <Tooltip
-      title={label}
+      title={secondary || label}
       open={tooltipEnabled}
       onClose={() => setTooltipEnabled(false)}
     >

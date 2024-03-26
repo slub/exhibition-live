@@ -95,7 +95,7 @@ export const EntityChip = ({
   return (<>
       <Tooltip
         title={description}
-        open={description && description.length > 0 && tooltipEnabled}
+        open={Boolean(description && description.length > 0 && tooltipEnabled)}
         onClose={() => setTooltipEnabled(false)}
       >
         <Chip

@@ -12,6 +12,10 @@ import { v4 as uuidv4 } from "uuid";
 import { decodeIRI } from "../../../components/utils/core";
 import { useTranslation } from "next-i18next";
 import { getI18nProps, mixinStaticPathsParams } from "../../../components/i18n";
+import {useSettings} from "../../../components/state/useLocalSettings";
+import {useFormEditor} from "../../../components/state";
+import {Button, Hidden, ToggleButton} from "@mui/material";
+import {Visibility, VisibilityOff} from "@mui/icons-material";
 
 type Props = {
   typeName: string;
@@ -54,6 +58,8 @@ export default (props: Props) => {
   }, [setEntityIRI, typeName, searchParam]);
 
   const title = `Neue ${t(typeName)} anlegen - Ausstellungserfassung`
+  const { features } = useSettings();
+  const { previewEnabled, togglePreview } = useFormEditor();
 
   return (
     <>
@@ -63,7 +69,18 @@ export default (props: Props) => {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <MainLayout>
+      <MainLayout
+        toolbar={
+          <Hidden xsUp={!features?.enablePreview}>
+            <Button
+              onClick={() => togglePreview()}
+              startIcon={previewEnabled ? <VisibilityOff /> : <Visibility />}
+            >
+              Vorschau {previewEnabled ? "ausblenden" : "einblenden"}
+            </Button>
+          </Hidden>
+        }
+      >
         {classIRI && typeName && (
           <>
             <TypedForm

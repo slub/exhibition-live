@@ -39,7 +39,7 @@ const Main = styled("main", {
   };
 });
 
-export const MainLayout = ({ children }: { children: React.ReactNode }) => {
+export const MainLayout = ({ children, toolbar }: { children: React.ReactNode, toolbar?: React.ReactNode }) => {
   const theme = useTheme();
 
   const [leftDrawerOpened, setLeftDrawerOpened] = useState<boolean>(true);
@@ -55,6 +55,7 @@ export const MainLayout = ({ children }: { children: React.ReactNode }) => {
       <AppHeader
         drawerOpen={leftDrawerOpened}
         toggleDrawer={toggleLeftDrawer}
+        toolbar={toolbar}
       />
       <Sidebar open={leftDrawerOpened} />
 

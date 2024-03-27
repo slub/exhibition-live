@@ -17,12 +17,11 @@ import { useSettings } from "../../state/useLocalSettings";
 type AppHeaderProps = {
   toggleDrawer: () => void;
   drawerOpen: boolean;
+  toolbar?: React.ReactNode;
 };
 
-export const AppHeader = ({ drawerOpen, toggleDrawer }: AppHeaderProps) => {
+export const AppHeader = ({ drawerOpen, toggleDrawer, toolbar}: AppHeaderProps) => {
   const theme = useTheme();
-  const { features } = useSettings();
-  const { previewEnabled, togglePreview, formData } = useFormEditor();
 
   return (
     <AppBar
@@ -33,7 +32,7 @@ export const AppHeader = ({ drawerOpen, toggleDrawer }: AppHeaderProps) => {
         color: theme.palette.text.primary,
       }}
     >
-      <Toolbar>
+      <Toolbar sx={{justifyContent: "space-between"}}>
         <ButtonBase
           sx={{
             borderRadius: "12px",
@@ -43,16 +42,7 @@ export const AppHeader = ({ drawerOpen, toggleDrawer }: AppHeaderProps) => {
         >
           {drawerOpen ? <MenuIcon /> : <ListIcon />}
         </ButtonBase>
-
-        <Hidden xsUp={!features?.enablePreview}>
-          <ToggleButton
-            value="check"
-            selected={previewEnabled}
-            onClick={() => togglePreview()}
-          >
-            Vorschau {previewEnabled ? "ausblenden" : "einblenden"}
-          </ToggleButton>
-        </Hidden>
+        {toolbar}
       </Toolbar>
     </AppBar>
   );

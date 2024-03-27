@@ -27,7 +27,6 @@ type Props = {
   id: string;
   onBack?: () => void;
   onAcceptItem?: (id: string | undefined, data: any) => void;
-  onSelectItem?: (id: string | undefined) => void;
   detailView?: React.ReactNode;
   acceptTitle: string;
 };
@@ -36,25 +35,13 @@ const ClassicEntityCard: FunctionComponent<Props  & Partial<BoxProps>> = ({
   data,
   id,
   onBack,
-  onSelectItem,
   onAcceptItem,
   detailView,
   acceptTitle,
   ...rest
 }) => {
-  const [expanded, setExpanded] = useState(true);
   const _label = data.label || data.title || data.name || id;
 
-  const handleExpandClick = useCallback(() => {
-    setExpanded((expanded) => !expanded);
-  }, [setExpanded]);
-
-  const handleEntityChange = useCallback(
-    (uri: string) => {
-      onSelectItem && onSelectItem(uri);
-    },
-    [onSelectItem],
-  );
 
   return (
     <Box {...rest} >
@@ -91,17 +78,8 @@ const ClassicEntityCard: FunctionComponent<Props  & Partial<BoxProps>> = ({
               {acceptTitle}
             </Button>
           )}
-          {detailView && (
-            <Button
-              size="small"
-              onClick={handleExpandClick}
-              startIcon={expanded ? <ExpandLess /> : <ExpandMore />}
-            >
-              Details {expanded ? "verbergen" : "zeigen"}
-            </Button>
-          )}
         </CardActions>
-        {(expanded && detailView) || null}
+        { detailView || null}
       </Card>
     </Box>
   );

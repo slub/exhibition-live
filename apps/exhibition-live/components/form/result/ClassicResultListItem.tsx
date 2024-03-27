@@ -1,29 +1,34 @@
 // @flow
 import {
-  Avatar,
-  Divider,
-  ListItem,
-  ListItemAvatar,
-  ListItemButton,
-  ListItemButtonProps,
-  ListItemText,
-  Typography,
+    Avatar,
+    Divider,
+    IconButton,
+    ListItem,
+    ListItemAvatar,
+    ListItemButton,
+    ListItemButtonProps, ListItemProps,
+    ListItemText, Stack,
+    Typography,
 } from "@mui/material";
 import {useTheme} from "@mui/material/styles";
 import * as React from "react";
 import {FunctionComponent, useCallback, useEffect, useState} from "react";
 import {ClassicResultPopperItem} from "./ClassicResultPopperItem";
-import {useSimilarityFinderState} from "../../state";
+import {useKeyEventForSimilarityFinder, useSimilarityFinderState} from "../../state";
+import {Check} from "@mui/icons-material";
+import {OverflowContainer} from "../../lists";
 
 type OwnProps = {
   id: string;
   index: number;
-  onSelected: (id: string) => void;
+  onSelected: (id: string, index: number) => void;
   avatar?: string;
   label: string;
   secondary?: string;
   altAvatar?: string;
   popperChildren?: React.ReactNode;
+  listItemProps?: Partial<ListItemProps>;
+  onEnter?: () => void
 };
 
 type Props = OwnProps & ListItemButtonProps;
@@ -38,60 +43,63 @@ const ClassicResultListItem: FunctionComponent<Props> = ({
                                                            altAvatar,
                                                            selected,
                                                            popperChildren,
+                                                           listItemProps = {},
+                                                           onEnter,
                                                            ...rest
                                                          }) => {
   const theme = useTheme();
-  const anchorRef = React.useRef<HTMLDivElement | null>(null);
+  const anchorRef = React.useRef<HTMLLIElement | null>(null);
+  const buttonRef = React.useRef<HTMLDivElement | null>(null);
   const popperRef = React.useRef<HTMLDivElement | null>(null);
 
+  const [closed, setClosed] = useState(false);
   const handleSelect = useCallback(() => {
-    onSelected(id);
-  }, [onSelected, id]);
+    setClosed(false);
+    onSelected(id, index);
+  }, [onSelected, id, index, setClosed]);
 
-  const {cycleThroughElements, setElementIndex, resetElementIndex} = useSimilarityFinderState()
-  const [hasFocus, setHasFocus] = useState(false)
+  const { setElementIndex } = useSimilarityFinderState()
   const handleFocus = useCallback(() => {
-    setHasFocus(true)
     if(!selected) setElementIndex(index)
-  }, [setHasFocus, setElementIndex, selected, index])
+  }, [ setElementIndex, selected, index])
 
-  const handleBlur = useCallback(() => {
-    setHasFocus(false)
-    if(selected) resetElementIndex()
-  }, [setHasFocus, resetElementIndex, selected])
+  const handleEnter = useCallback(() => {
+      if(onEnter) {
+          setClosed(true)
+          onEnter()
+      }
+  }, [onEnter, setClosed]);
 
   useEffect(() => {
     if (selected) {
-      anchorRef.current?.focus()
+      anchorRef.current?.scrollIntoView({
+          behavior: "smooth",
+          block: "center"
+      })
+      buttonRef.current?.focus({
+          preventScroll: true
+      })
+
     }
   }, [selected]);
 
+  const handleKeyUpDown = useKeyEventForSimilarityFinder(handleEnter)
 
 
-  const handleKeyUpDown = useCallback((e: React.KeyboardEvent<HTMLDivElement>) => {
-    if (e.key === "ArrowDown" || e.key === "ArrowUp") {
-      e.preventDefault()
-      e.stopPropagation()
-      if (e.key === "ArrowDown") {
-        cycleThroughElements(1)
-      } else {
-        cycleThroughElements(-1)
-      }
-    }
-    if (e.key === "Enter") {
-      handleSelect()
-    }
-  }, [cycleThroughElements, handleSelect])
 
   return (
-    <>
-      <ListItem sx={{p: 0}} alignItems="flex-start">
+      <ListItem
+          sx={{p: 0}}
+          alignItems="flex-start"
+          ref={anchorRef}
+          {...listItemProps}
+      >
         <ListItemButton
           onClick={handleSelect}
           onFocus={handleFocus}
-          onBlur={handleBlur}
           onKeyUp={handleKeyUpDown}
-          ref={anchorRef}
+          selected={selected}
+          ref={buttonRef}
           {...rest}
         >
           <ListItemAvatar>
@@ -105,30 +113,30 @@ const ClassicResultListItem: FunctionComponent<Props> = ({
           </ListItemAvatar>
           <ListItemText
             primary={
-              <Typography variant="h5" color="inherit">
+              <OverflowContainer variant="h5" color="inherit">
                 {label}
-              </Typography>
+              </OverflowContainer>
             }
             secondary={
-              <Typography
+              <OverflowContainer
                 variant="caption"
+                useParentTarget
                 sx={{...theme.typography.caption}}
               >
                 {secondary}
-              </Typography>
+              </OverflowContainer>
             }
           />
         </ListItemButton>
+        <ClassicResultPopperItem
+              sx={{zIndex: 10000}}
+              anchorEl={anchorRef.current}
+              popperRef={popperRef as any}
+              onClose={() => setClosed(true)}
+              open={selected && !closed}>
+              {popperChildren}
+          </ClassicResultPopperItem>
       </ListItem>
-      <ClassicResultPopperItem
-        sx={{zIndex: 2000}}
-        anchorEl={anchorRef.current}
-        popperRef={popperRef as any}
-        open={hasFocus || selected}>
-        {popperChildren}
-      </ClassicResultPopperItem>
-      <Divider variant="inset" component="li"/>
-    </>
   );
 };
 

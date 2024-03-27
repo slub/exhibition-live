@@ -222,7 +222,6 @@ const LobidSearchTable: FunctionComponent<Props> = ({
                     id={id}
                     data={data}
                     onBack={() => handleSelect(undefined)}
-                    onSelectItem={handleSelect}
                     onAcceptItem={(id) => onAcceptItem && onAcceptItem(id, selectedEntry)}
                     acceptTitle={"Eintrag übernehmen"}
                     detailView={

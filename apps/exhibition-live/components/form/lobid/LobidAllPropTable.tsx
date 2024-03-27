@@ -32,6 +32,7 @@ interface OwnProps {
   allProps?: any;
   onEntityChange?: (uri: string) => void;
   disableContextMenu?: boolean;
+  inlineEditing?: boolean
 }
 
 type Props = OwnProps;
@@ -60,7 +61,7 @@ const LabledLink = ({
       ),
     [uri],
   );
-  return uri.startsWith(gndBaseIRI) ? (
+  return onClick && uri.startsWith(gndBaseIRI) ? (
     <Link onClick={onClick} component="button">
       {label || urlSuffix}
     </Link>
@@ -126,11 +127,13 @@ const PropertyItem = ({
                         value: originalValue,
                         onEntityChange,
                         disableContextMenu,
+                        inlineEditing
                       }: {
   property: string;
   value: any;
   onEntityChange?: (uri: string) => void;
   disableContextMenu?: boolean;
+  inlineEditing?: boolean;
 }) => {
   const {menuAnchorEl, menuOpen, handleMenuClick, handleMenuClose} =
     useMenuState();
@@ -194,7 +197,7 @@ const PropertyItem = ({
                     <LabledLink
                       uri={v.id}
                       label={v.label}
-                      onClick={() => onEntityChange && onEntityChange(v.id)}
+                      onClick={onEntityChange ? (() => onEntityChange(v.id)) : undefined}
                     />
                   {comma}{" "}
                   </span>
@@ -207,7 +210,7 @@ const PropertyItem = ({
                   data={v}
                   entityIRI={v['@id']}
                   typeIRI={v['@type']}
-
+                  inlineEditing={true}
                 />
               );
             }
@@ -225,15 +228,9 @@ const PropertyItem = ({
 };
 const LobidAllPropTable: FunctionComponent<Props> = ({
                                                        allProps,
-                                                       onEntityChange,
                                                        disableContextMenu,
+                                                       inlineEditing
                                                      }) => {
-  const handleClickEntry = useCallback(
-    (id: string) => {
-      onEntityChange && onEntityChange(id);
-    },
-    [onEntityChange],
-  );
 
   const gndIRI = useMemo(() => {
     const gndIRI_ = allProps?.idAuthority?.["@id"] || allProps?.idAuthority
@@ -267,8 +264,8 @@ const LobidAllPropTable: FunctionComponent<Props> = ({
                   key={key}
                   property={key}
                   value={value}
-                  onEntityChange={handleClickEntry}
                   disableContextMenu={disableContextMenu}
+                  inlineEditing={true}
                 />
               ))}
         </TableBody>

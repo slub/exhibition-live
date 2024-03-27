@@ -314,6 +314,7 @@ const InlineTextFieldRenderer = (props: ControlProps) => {
             {globalPath === formsPath && (
               <SearchbarWithFloatingButton>
                 <SimilarityFinder
+                  finderId={`${formsPath}_${path}`}
                   search={searchString}
                   data={data}
                   classIRI={typeIRI}

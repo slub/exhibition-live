@@ -288,6 +288,7 @@ export const SemanticJsonFormNoOps: FunctionComponent<
           {!disableSimilarityFinder && !enableSidebar && searchText && (
             <Grid xs={6} item>
               <SimilarityFinder
+                finderId={formsPath}
                 search={searchText}
                 data={data}
                 classIRI={typeIRI}
@@ -304,6 +305,7 @@ export const SemanticJsonFormNoOps: FunctionComponent<
         <Grid item>
           <SearchbarWithFloatingButton>
             <SimilarityFinder
+              finderId={formsPath}
               search={searchText}
               data={data}
               classIRI={typeIRI}

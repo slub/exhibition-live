@@ -175,7 +175,7 @@ const K10PlusSearchTable: FunctionComponent<Props> = ({
             key={entry.id}
             id={String(entry.id)}
             index={idx}
-            onSelected={handleSelect}
+            onSelected={(id) =>handleSelect(id)}
             label={
               entry.properties[dcterms.title.value]?.[0]?.value ||
               String(entry.id)

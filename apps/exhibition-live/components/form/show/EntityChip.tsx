@@ -23,12 +23,14 @@ type EntityChipProps = {
   entityIRI: string;
   typeIRI?: string;
   data?: any;
+  inlineEditing?: boolean;
 } & ChipProps;
 export const EntityChip = ({
                              index,
                              entityIRI,
                              typeIRI,
                              data: defaultData,
+                             inlineEditing,
                              ...chipProps
                            }: EntityChipProps) => {
   const typeIRIs = useTypeIRIFromEntity(entityIRI);
@@ -81,9 +83,9 @@ export const EntityChip = ({
   const showDetailModal = useCallback(
     (e: MouseEvent) => {
       e.preventDefault();
-      NiceModal.show(EntityDetailModal, {entityIRI, data: {}, inlineEditing: isWithinRootForm});
+      NiceModal.show(EntityDetailModal, {entityIRI, data: {}, inlineEditing: inlineEditing === undefined ? isWithinRootForm : inlineEditing});
     },
-    [entityIRI, isWithinRootForm],
+    [entityIRI, isWithinRootForm, inlineEditing],
   );
   const handleShouldShow = useCallback(
     (e: MouseEvent<Element>) => {

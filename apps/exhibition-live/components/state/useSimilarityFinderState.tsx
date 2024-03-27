@@ -7,12 +7,16 @@ export type UseSimilarityFinderState = {
   resetElementIndex: () => void;
   setElementCount: (count: number) => void;
   setElementIndex: (index: number) => void;
+  activeFinderIds: string[]
+  addActiveFinder: (id: string) => void
+  removeActiveFinder: (id: string) => void
 };
 
 export const useSimilarityFinderState = create<UseSimilarityFinderState>(
   (set, get) => ({
     elementIndex: 0,
     elementCount: 10,
+    activeFinderIds: [],
     cycleThroughElements: (offset: number) => {
       const { elementIndex, elementCount } = get();
       if (elementIndex === 0 && offset < 0) return;
@@ -23,6 +27,12 @@ export const useSimilarityFinderState = create<UseSimilarityFinderState>(
     resetElementIndex: () => set({ elementIndex: 0 }),
     setElementCount: (count: number) => set({ elementCount: count }),
     setElementIndex: (index: number) => set({ elementIndex: index }),
+    addActiveFinder: (id: string) => {
+        if(get().activeFinderIds.includes(id)) return;
+        const newActiveFinderIds = [...get().activeFinderIds, id]
+        set({activeFinderIds: newActiveFinderIds})
+    },
+    removeActiveFinder: (id: string) => set({ activeFinderIds: get().activeFinderIds.filter(finderId => finderId !== id) }),
   }),
 );
 

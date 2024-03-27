@@ -27,7 +27,7 @@ type EntityDetailElementProps = {
 export const EntityDetailElement = ({
   typeIRI,
   entityIRI,
-  data: liveData,
+  data: initialData,
   cardActionChildren,
   inlineEditing,
   readonly,
@@ -48,11 +48,11 @@ export const EntityDetailElement = ({
     defaultPrefix,
     crudOptions,
     defaultJsonldContext,
-    { enabled: true, refetchOnWindowFocus: true, initialData: liveData },
+    { enabled: true, refetchOnWindowFocus: true, initialData: initialData },
     "show",
   );
   const { t } = useTranslation();
-  const data = liveData || rawData?.document;
+  const data = initialData || rawData?.document;
   const cardInfo = useMemo<PrimaryFieldResults<string>>(() => {
     const fieldDecl = primaryFields[typeName] as PrimaryField | undefined;
     if (data && fieldDecl)

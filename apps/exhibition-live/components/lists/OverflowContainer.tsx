@@ -5,10 +5,12 @@ type OverflowContainerProps = {
   children: React.ReactNode;
   tooltip?: React.ReactNode;
   density?:  'comfortable' | 'compact' | 'spacious';
+  useParentTarget?: boolean
 };
 export const OverflowContainer = ({
   children,
   tooltip,
+  useParentTarget,
   density,
   ...props
 }: OverflowContainerProps & Partial<TypographyOwnProps>) => {
@@ -16,11 +18,12 @@ export const OverflowContainer = ({
 
   const handleShouldShow = useCallback(
     ({ currentTarget }: MouseEvent<Element>) => {
-      if (tooltip || (density === "spacious" ? currentTarget.scrollHeight > currentTarget.clientHeight :  currentTarget.scrollWidth > currentTarget.clientWidth)) {
+      const cTarget = useParentTarget ? currentTarget.parentElement : currentTarget
+      if (tooltip || (density === "spacious" ? cTarget.scrollHeight > cTarget.clientHeight :  cTarget.scrollWidth > cTarget.clientWidth)) {
         setTooltipEnabled(true);
       }
     },
-    [setTooltipEnabled, tooltip, density],
+    [setTooltipEnabled, tooltip, density, useParentTarget],
   );
 
   return (

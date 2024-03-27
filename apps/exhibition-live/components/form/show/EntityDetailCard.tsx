@@ -99,7 +99,7 @@ export const EntityDetailCard: FunctionComponent<Props> = ({
                 }
                 </CardActions>}
             </Card>
-            <LobidAllPropTable allProps={data} disableContextMenu/>
+            <LobidAllPropTable allProps={data} disableContextMenu inlineEditing={true}/>
             {enableDebug && (
                 <>
                     <JsonView

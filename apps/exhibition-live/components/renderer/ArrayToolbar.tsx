@@ -220,6 +220,7 @@ export const ArrayLayoutToolbar = memo(
           {globalPath === formsPath && (
             <SearchbarWithFloatingButton>
               <SimilarityFinder
+                finderId={`${formsPath}_${path}`}
                 search={searchString}
                 data={{}}
                 classIRI={typeIRI}

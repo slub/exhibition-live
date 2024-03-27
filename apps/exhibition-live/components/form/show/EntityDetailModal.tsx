@@ -15,7 +15,7 @@ import useExtendedSchema from "../../state/useExtendedSchema";
 import { useGlobalCRUDOptions } from "../../state/useGlobalCRUDOptions";
 import { useCRUDWithQueryClient } from "../../state/useCRUDWithQueryClient";
 import { defaultJsonldContext, defaultPrefix } from "../formConfigs";
-import { useMemo } from "react";
+import {useCallback, useMemo, useState} from "react";
 import { primaryFields, typeIRItoTypeName } from "../../config";
 import {
   applyToEachField,
@@ -68,6 +68,13 @@ export const EntityDetailModal = NiceModal.create(
       };
     }, [typeName, data]);
 
+    const [aboutToRemove, setAboutToRemove] = useState(false)
+    const removeSlowly = useCallback(() => {
+      if(aboutToRemove) return
+      setAboutToRemove(true)
+      setTimeout(() => modal.remove(), 500)
+    }, [modal, setAboutToRemove, aboutToRemove])
+
     return (
       <Dialog
         open={modal.visible}
@@ -75,6 +82,10 @@ export const EntityDetailModal = NiceModal.create(
         scroll={"paper"}
         disableScrollLock={false}
         maxWidth={false}
+        sx={{
+          transition: "opacity 0.5s",
+          opacity: aboutToRemove ? 0 : 1,
+        }}
       >
         <AppBar position="static">
           <Toolbar variant="dense">
@@ -102,6 +113,7 @@ export const EntityDetailModal = NiceModal.create(
             cardInfo={cardInfo}
             inlineEditing={inlineEditing}
             readonly={readonly}
+            onEditClicked={removeSlowly}
           />
         </DialogContent>
         <DialogActions>

@@ -32,6 +32,7 @@ interface OwnProps {
     data: any;
     readonly?: boolean;
     inlineEditing?: boolean;
+    onEditClicked?: () => void;
 }
 
 type Props = OwnProps;
@@ -42,7 +43,8 @@ export const EntityDetailCard: FunctionComponent<Props> = ({
                                                                data,
                                                                cardActionChildren,
                                                                readonly,
-                                                               inlineEditing
+                                                               inlineEditing,
+                                                               onEditClicked
                                                            }) => {
     const {t} = useTranslation();
 
@@ -62,7 +64,8 @@ export const EntityDetailCard: FunctionComponent<Props> = ({
         } else {
           router.push(`/create/${typeName}?encID=${encodeIRI(entityIRI)}`);
         }
-    }, [router, typeIRI, entityIRI, inlineEditing, registerModal, data]);
+        onEditClicked && onEditClicked()
+    }, [router, typeIRI, entityIRI, inlineEditing, registerModal, data, onEditClicked]);
 
     const {
         features: {enableDebug},

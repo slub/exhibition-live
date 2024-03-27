@@ -46,5 +46,8 @@
   "corporation": "Körperschaft",
   "role": "Rolle",
   "relatedPerson": "Bezug zu Personen",
-  "relatedCorporation": "Bezug zu Körperschaften"
+  "relatedCorporation": "Bezug zu Körperschaften",
+  "exhibitionType":  "type",
+  "exhibitionCategory":  "category",
+  "exhibitionSeries": "series"
 }

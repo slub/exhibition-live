@@ -246,6 +246,7 @@ const GNDListItemRenderer = ({data: initialData, idx, typeIRI, selected , onSele
         avatar={avatar}
         altAvatar={String(idx)}
         selected={selected}
+        onEnter={handleAccept}
         listItemProps={{
             secondaryAction: (
                 <Stack direction="row" spacing={1}>

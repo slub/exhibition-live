@@ -35,7 +35,7 @@ import {useRouter} from "next/router";
 import {useTranslation} from "next-i18next";
 import {EntityDetailListItem} from "../form/show";
 
-const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
+const InlineDropdownSemanticFormsRenderer = (props: ControlProps) => {
   const {
     id,
     errors,
@@ -186,9 +186,7 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
     () => isActive && sidebarOpen,
     [isActive, sidebarOpen],
   );
-  const isValid = errors.length === 0;
 
-  const handleKeyUp = useKeyEventForSimilarityFinder();
 
   const handleClear = useCallback(() => {
     handleSelectedChange(null);
@@ -230,20 +228,19 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
             id={id}
             variant={"standard"}
           >
-              <TextField
-                fullWidth
-                disabled={Boolean(ctx.readonly)}
-                variant="standard"
-                onChange={(ev) => handleSearchStringChange(ev.target.value)}
-                value={searchString || ""}
-                label={label}
-                sx={(theme) => ({
-                  marginTop: theme.spacing(1),
-                  marginBottom: theme.spacing(1),
-                })}
+              <DiscoverAutocompleteInput
+                loadOnStart={true}
+                readonly={Boolean(ctx.readonly)}
+                typeIRI={typeIRI}
+                typeName={typeName || ""}
+                selected={selected}
+                title={label || ""}
+                onSelectionChange={handleSelectedChange}
+                onSearchValueChange={handleSearchStringChange}
+                searchString={searchString || ""}
                 inputProps={{
                   onFocus: handleFocus,
-                  onKeyUp: handleKeyUp,
+                  ...(showAsFocused && {focused: true}),
                 }}
               />
           </FormControl>
@@ -276,4 +273,4 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
   );
 };
 
-export default withJsonFormsControlProps(InlineCondensedSemanticFormsRenderer);
+export default withJsonFormsControlProps(InlineDropdownSemanticFormsRenderer);

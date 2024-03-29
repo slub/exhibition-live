@@ -48,5 +48,8 @@
     "tsup": "^8.0.2",
     "turbo": "^1.13.0",
     "typescript": "^5"
+  },
+  "overrides": {
+    "@typescript-eslint/typescript-estree": "^7.4.0"
   }
 }

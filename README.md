@@ -26,6 +26,16 @@ bun i && bun run dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+## Committing and Contributing
+
+### Formatter
+
+please only commit linted and formatted code by using husky
+
+```bash
+bun run prepare
+```
+
 ## Storage Endpoints
 
 The project can operate on a variety of storage endpoints. The default is a temporary in memory DB within the browser,

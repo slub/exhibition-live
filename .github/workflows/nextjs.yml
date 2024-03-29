@@ -52,8 +52,6 @@ jobs:
           # If source files changed but packages didn't, rebuild from a prior cache.
           restore-keys: |
             ${{ runner.os }}-nextjs-${{ hashFiles('**/bun.lockdb', '**/package-lock.json', '**/yarn.lock') }}-
-      - name: Remove pnpm lock
-        run: rm -f pnpm-lock.yaml
       - name: Install dependencies
         run: bun install
       - name: create env file
@@ -62,8 +60,8 @@ jobs:
           NEXT_PUBLIC_BASE_PATH:  /${{ github.event.repository.name }}
         run: |
           touch .env
-          echo EXT_PUBLIC_GAPI_OAUTH_CLIENT_ID="${{ secrets.NEXT_PUBLIC_GAPI_OAUTH_CLIENT_ID  }}" >> .env
-          echo NEXT_PUBLIC_BASE_PATH="/${{ github.event.repository.name }}" >> .env
+          echo NEXT_PUBLIC_GAPI_OAUTH_CLIENT_ID="${{ secrets.NEXT_PUBLIC_GAPI_OAUTH_CLIENT_ID  }}" >> ./apps/exhibition-live/.env
+          echo NEXT_PUBLIC_BASE_PATH="/${{ github.event.repository.name }}" >> ./apps/exhibition-live/.env
       - name: Build with Next.js
         run: bun run build
       - name: Static HTML export with Next.js

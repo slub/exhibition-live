@@ -36,6 +36,8 @@ type OwnProps = {
   popperChildren?: React.ReactNode;
   listItemProps?: Partial<ListItemProps>;
   onEnter?: () => void;
+  onClose?: () => void;
+  popperClosed?: boolean;
 };
 
 type Props = OwnProps & ListItemButtonProps;
@@ -53,6 +55,8 @@ const ClassicResultListItem: FunctionComponent<Props> = ({
   popperChildren,
   listItemProps = {},
   onEnter,
+  popperClosed,
+  onClose,
   ...rest
 }) => {
   const theme = useTheme();
@@ -62,9 +66,8 @@ const ClassicResultListItem: FunctionComponent<Props> = ({
 
   const [closed, setClosed] = useState(false);
   const handleSelect = useCallback(() => {
-    setClosed(false);
     onSelected(id, index);
-  }, [onSelected, id, index, setClosed]);
+  }, [onSelected, id, index]);
 
   const { setElementIndex } = useSimilarityFinderState();
   const handleFocus = useCallback(() => {
@@ -73,10 +76,9 @@ const ClassicResultListItem: FunctionComponent<Props> = ({
 
   const handleEnter = useCallback(() => {
     if (onEnter) {
-      setClosed(true);
       onEnter();
     }
-  }, [onEnter, setClosed]);
+  }, [onEnter]);
 
   useEffect(() => {
     if (selected) {
@@ -84,11 +86,9 @@ const ClassicResultListItem: FunctionComponent<Props> = ({
         behavior: "smooth",
         block: "center",
       });
-      buttonRef.current?.focus({
-        preventScroll: true,
-      });
+      setClosed(false);
     }
-  }, [selected]);
+  }, [selected, setClosed]);
 
   const handleKeyUpDown = useKeyEventForSimilarityFinder(handleEnter);
 

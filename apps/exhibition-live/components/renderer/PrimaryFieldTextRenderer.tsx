@@ -28,6 +28,7 @@ import {
   useGlobalSearch,
   useKeyEventForSimilarityFinder,
   useRightDrawerState,
+  useSimilarityFinderState,
 } from "../state";
 
 interface MuiTextInputProps {

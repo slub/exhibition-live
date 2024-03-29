@@ -10,6 +10,8 @@ export type UseSimilarityFinderState = {
   activeFinderIds: string[];
   addActiveFinder: (id: string) => void;
   removeActiveFinder: (id: string) => void;
+  acceptWishPending: boolean;
+  setAcceptWishPending: (pending: boolean) => void;
 };
 
 export const useSimilarityFinderState = create<UseSimilarityFinderState>(
@@ -17,6 +19,10 @@ export const useSimilarityFinderState = create<UseSimilarityFinderState>(
     elementIndex: 0,
     elementCount: 10,
     activeFinderIds: [],
+    acceptWishPending: false,
+    setAcceptWishPending: (pending: boolean) => {
+      set({ acceptWishPending: pending });
+    },
     cycleThroughElements: (offset: number) => {
       const { elementIndex, elementCount } = get();
       if (elementIndex === 0 && offset < 0) return;

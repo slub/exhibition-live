@@ -6,8 +6,15 @@ import { useSimilarityFinderState } from "./useSimilarityFinderState";
  */
 export const useKeyEventForSimilarityFinder = (
   onEnter?: (selectedIndex: number) => void,
+  disableEnter?: boolean,
 ) => {
-  const { cycleThroughElements, elementIndex } = useSimilarityFinderState();
+  const { cycleThroughElements, elementIndex, setAcceptWishPending } =
+    useSimilarityFinderState();
+
+  const handleEnter = useCallback(
+    () => (onEnter ? onEnter(elementIndex) : setAcceptWishPending(true)),
+    [setAcceptWishPending, onEnter, elementIndex],
+  );
 
   return useCallback(
     (ev: React.KeyboardEvent<HTMLInputElement>) => {
@@ -15,12 +22,16 @@ export const useKeyEventForSimilarityFinder = (
         ev.preventDefault();
         ev.stopPropagation();
         cycleThroughElements(ev.key === "ArrowDown" ? 1 : -1);
-      } else if (onEnter && ev.key === "Enter") {
+      } else if (ev.key === "PageUp" || ev.key === "PageDown") {
         ev.preventDefault();
         ev.stopPropagation();
-        onEnter(elementIndex);
+        cycleThroughElements(ev.key === "PageDown" ? 10 : -10);
+      } else if (!disableEnter && ev.key === "Enter") {
+        ev.preventDefault();
+        ev.stopPropagation();
+        handleEnter();
       }
     },
-    [cycleThroughElements, elementIndex, onEnter],
+    [cycleThroughElements, handleEnter, disableEnter],
   );
 };

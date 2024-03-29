@@ -71,6 +71,7 @@ import { filterUndefOrNull } from "@slub/edb-core-utils";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import useExtendedSchema from "../state/useExtendedSchema";
 import { BasicThingInformation } from "@slub/edb-core-types";
+import { NumberInput } from "./NumberInput";
 
 // @ts-ignore
 type Props = {
@@ -165,6 +166,7 @@ const SearchFieldWithBadges = ({
   selectedKnowledgeSources,
   toggleKnowledgeSource,
   knowledgeBases,
+  advancedConfigChildren,
   ...rest
 }: {
   searchString: string;
@@ -173,6 +175,7 @@ const SearchFieldWithBadges = ({
   knowledgeBases: KnowledgeBaseDescription[];
   selectedKnowledgeSources: string[];
   toggleKnowledgeSource?: (source: string) => void;
+  advancedConfigChildren?: React.ReactNode;
 } & Partial<TextFieldProps>) => {
   const typeName = useMemo(() => typeIRItoTypeName(typeIRI), [typeIRI]);
   const { t } = useTranslation();
@@ -228,6 +231,12 @@ const SearchFieldWithBadges = ({
             </Badge>
           );
         })}
+        {advancedConfigChildren && (
+          <>
+            <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
+            {advancedConfigChildren}
+          </>
+        )}
       </Box>
     </Grid>
   );
@@ -240,6 +249,23 @@ type ListItemRendererProps = {
   selected: boolean;
   onSelect?: (id: string, index: number) => void;
   onAccept?: (id: string, data: any) => void;
+};
+
+const fetchBasicInformationFromGND: (
+  id: string,
+  initialData: BasicThingInformation,
+) => Promise<BasicThingInformation> = async (
+  id: string,
+  initialData: BasicThingInformation,
+) => {
+  const rawEntry = await findEntityWithinLobidByIRI(id);
+  const { category, secondary, avatar } = initialData;
+  return {
+    category,
+    avatar,
+    ...gndEntryWithMainInfo(rawEntry),
+    secondary: initialData.secondary,
+  };
 };
 
 const GNDListItemRenderer = ({
@@ -255,29 +281,32 @@ const GNDListItemRenderer = ({
   const queryClient = useQueryClient();
   const { data } = useQuery<BasicThingInformation>(
     ["entityDetail", id],
-    async () => {
-      const rawEntry = await findEntityWithinLobidByIRI(id);
-      const { category, secondary, avatar } = initialData;
-      return {
-        category,
-        avatar,
-        ...gndEntryWithMainInfo(rawEntry),
-        secondary: initialData.secondary,
-      };
-    },
+    async () => fetchBasicInformationFromGND(id, initialData),
     {
       initialData,
       enabled: selected,
     },
   );
 
+  const { resetElementIndex } = useSimilarityFinderState();
+
   const handleAccept = useCallback(async () => {
     const finalData = await queryClient.fetchQuery(
       ["entityDetail", id],
-      async () => gndEntryWithMainInfo(await findEntityWithinLobidByIRI(id)),
+      async () => fetchBasicInformationFromGND(id, initialData),
     );
+    resetElementIndex();
     onAccept && onAccept(id, finalData);
-  }, [onAccept, id, queryClient]);
+  }, [onAccept, id, queryClient, initialData, resetElementIndex]);
+
+  const { acceptWishPending, setAcceptWishPending } =
+    useSimilarityFinderState();
+  useEffect(() => {
+    if (selected && handleAccept && acceptWishPending) {
+      setAcceptWishPending(false);
+      handleAccept();
+    }
+  }, [handleAccept, selected, acceptWishPending, setAcceptWishPending]);
 
   const { label, avatar, secondary, category } = data;
   return (
@@ -353,14 +382,24 @@ const KBListItemRenderer = ({
   const typeName = useMemo(() => typeIRItoTypeName(typeIRI), [typeIRI]);
   const loadedSchema = useExtendedSchema({ typeName, classIRI: typeIRI });
   const loadEntity = useLoadQuery(defaultPrefix, crudOptions, "load");
+  const { resetElementIndex } = useSimilarityFinderState();
   const handleAccept = useCallback(async () => {
     const finalData = (await loadEntity(id, typeIRI, loadedSchema))?.document;
     if (!finalData) {
       console.warn("could not load entity");
       return;
     }
+    resetElementIndex();
     onAccept && onAccept(id, finalData);
-  }, [onAccept, id, loadEntity, typeIRI, loadedSchema]);
+  }, [onAccept, id, loadEntity, typeIRI, loadedSchema, resetElementIndex]);
+  const { acceptWishPending, setAcceptWishPending } =
+    useSimilarityFinderState();
+  useEffect(() => {
+    if (selected && handleAccept && acceptWishPending) {
+      setAcceptWishPending(false);
+      handleAccept();
+    }
+  }, [handleAccept, selected, acceptWishPending, setAcceptWishPending]);
 
   return (
     <ClassicResultListItem
@@ -521,6 +560,11 @@ const SimilarityFinder: FunctionComponent<Props> = ({
     setSearch,
   } = useGlobalSearch();
 
+  const [limit, setLimit] = useState(20);
+  const handleLimitChange = useCallback(
+    (e: any) => setLimit(parseInt(e.target.value)),
+    [setLimit],
+  );
   const {
     resetElementIndex,
     elementIndex,
@@ -601,8 +645,8 @@ const SimilarityFinder: FunctionComponent<Props> = ({
 
   useEffect(() => {
     if (!searchString || searchString.length < 1) return;
-    searchAll(searchString, preselectedClassIRI, { limit: 10 });
-  }, [searchString, preselectedClassIRI, searchAll]);
+    searchAll(searchString, preselectedClassIRI, { limit });
+  }, [searchString, preselectedClassIRI, searchAll, limit]);
 
   const [typeName, setTypeName] = useState(
     typeIRItoTypeName(preselectedClassIRI),
@@ -826,6 +870,17 @@ const SimilarityFinder: FunctionComponent<Props> = ({
               selectedKnowledgeSources={selectedKnowledgeSources}
               knowledgeBases={knowledgeBases}
               onKeyUp={handleKeyUp}
+              advancedConfigChildren={
+                <NumberInput
+                  style={{ maxWidth: "4em" }}
+                  value={limit}
+                  onChange={handleLimitChange}
+                  min={1}
+                  max={100}
+                  step={1}
+                  title={t("limit")}
+                />
+              }
             />
           </Grid>
           <Grid

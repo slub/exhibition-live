@@ -20,6 +20,7 @@ import {
   useGlobalSearchWithHelper,
   useKeyEventForSimilarityFinder,
   useRightDrawerState,
+  useSimilarityFinderState,
 } from "../state";
 import { SearchbarWithFloatingButton } from "../layout/main-layout/Searchbar";
 import SimilarityFinder from "../form/SimilarityFinder";

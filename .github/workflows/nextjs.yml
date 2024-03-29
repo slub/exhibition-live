@@ -63,7 +63,7 @@ jobs:
         run: |
           touch .env
           echo EXT_PUBLIC_GAPI_OAUTH_CLIENT_ID="${{ secrets.NEXT_PUBLIC_GAPI_OAUTH_CLIENT_ID  }}" >> .env
-          echo NEXT_PUBLIC_BASE_PATH="/${{ github.event.repository.name }}"
+          echo NEXT_PUBLIC_BASE_PATH="/${{ github.event.repository.name }}" >> .env
       - name: Build with Next.js
         run: bun run build
       - name: Static HTML export with Next.js

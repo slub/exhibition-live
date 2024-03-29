@@ -46,7 +46,6 @@
     "@mui/system": "^5.14.15",
     "@mui/utils": "^5.14.15",
     "@mui/x-date-pickers": "^6.16.3",
-    "@next/font": "13.1.1",
     "@phntms/use-local-state": "^0.1.4",
     "@rdfjs/data-model": "^2.0.2",
     "@rdfjs/dataset": "^2.0.1",

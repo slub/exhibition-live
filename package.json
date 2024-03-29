@@ -33,7 +33,7 @@
     "test": "turbo run test",
     "lint": "turbo run lint",
     "lint:fix": "turbo run lint:fix",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "format": "prettier --write \"**/*.{js,ts,tsx,jsx,md}\"",
     "precommit": "bun run lint:fix && bun run format"
   },
   "workspaces": [

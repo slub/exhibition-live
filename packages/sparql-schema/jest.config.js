@@ -1,8 +1,8 @@
 export default {
-  testEnvironment: 'node',
+  testEnvironment: "node",
   transform: {
-    '^.+\\.(ts|tsx)$': [
-      'ts-jest',
+    "^.+\\.(ts|tsx)$": [
+      "ts-jest",
       {
         useESM: true,
       },

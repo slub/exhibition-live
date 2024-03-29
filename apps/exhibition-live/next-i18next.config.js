@@ -9,6 +9,5 @@ module.exports = {
     defaultNS: "translation",
   },
   react: { useSuspense: false },
-  reloadOnPrerender: process.env.NODE_ENV === 'development',
+  reloadOnPrerender: process.env.NODE_ENV === "development",
 };
-

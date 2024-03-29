@@ -1,11 +1,11 @@
 import isEmpty from "lodash/isEmpty";
-import get from "lodash/get"
+import get from "lodash/get";
 import { JsonSchema } from "./types";
-import {decode} from "./jsonPointer";
-import {JSONSchema7} from "json-schema";
+import { decode } from "./jsonPointer";
+import { JSONSchema7 } from "json-schema";
 
 const invalidSegment = (pathSegment: string) =>
-  pathSegment === '#' || pathSegment === undefined || pathSegment === '';
+  pathSegment === "#" || pathSegment === undefined || pathSegment === "";
 
 /**
  * Resolve the given schema path in order to obtain a subschema.
@@ -17,22 +17,22 @@ const invalidSegment = (pathSegment: string) =>
 export const resolveSchema = (
   schema: JsonSchema,
   schemaPath: string,
-  rootSchema: JsonSchema
+  rootSchema: JsonSchema,
 ): JsonSchema | undefined => {
-  const segments = schemaPath?.split('/').map(decode);
+  const segments = schemaPath?.split("/").map(decode);
   return resolveSchemaWithSegments(schema, segments, rootSchema);
 };
 
 const resolveSchemaWithSegments = (
   schema_: JsonSchema,
   pathSegments: string[],
-  rootSchema: JsonSchema
+  rootSchema: JsonSchema,
 ): JsonSchema | undefined => {
   if (isEmpty(schema_)) {
     return undefined;
   }
 
-  let schema: JsonSchema |  undefined = schema_
+  let schema: JsonSchema | undefined = schema_;
 
   if (schema.$ref) {
     schema = resolveSchema(rootSchema, schema.$ref, rootSchema);
@@ -53,20 +53,19 @@ const resolveSchemaWithSegments = (
   const resolvedSchema = resolveSchemaWithSegments(
     singleSegmentResolveSchema,
     remainingSegments,
-    rootSchema
+    rootSchema,
   );
   if (resolvedSchema) {
     return resolvedSchema;
   }
 
-  if (segment === 'properties' || segment === 'items') {
+  if (segment === "properties" || segment === "items") {
     // Let's try to resolve the path, assuming oneOf/allOf/anyOf/then/else was omitted.
     // We only do this when traversing an object or array as we want to avoid
     // following a property which is named oneOf, allOf, anyOf, then or else.
     let alternativeResolveResult = undefined;
 
-    if(!schema)
-      return undefined
+    if (!schema) return undefined;
 
     const subSchemas = [].concat(
       // @ts-ignore
@@ -74,7 +73,7 @@ const resolveSchemaWithSegments = (
       schema.allOf ?? [],
       schema.anyOf ?? [],
       (schema as JSONSchema7).then ?? [],
-      (schema as JSONSchema7).else ?? []
+      (schema as JSONSchema7).else ?? [],
     );
 
     for (const subSchema of subSchemas) {
@@ -82,7 +81,7 @@ const resolveSchemaWithSegments = (
       alternativeResolveResult = resolveSchemaWithSegments(
         subSchema,
         [segment, ...remainingSegments],
-        rootSchema
+        rootSchema,
       );
       if (alternativeResolveResult) {
         break;

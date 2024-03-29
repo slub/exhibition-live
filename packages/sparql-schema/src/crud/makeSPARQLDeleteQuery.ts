@@ -2,7 +2,7 @@ import { jsonSchema2construct } from "..";
 import { makeSPARQLWherePart, withDefaultPrefix } from "./makeSPARQLWherePart";
 import { DELETE } from "@tpluscode/sparql-builder";
 import { JSONSchema7 } from "json-schema";
-import {SPARQLCRUDOptions} from "@slub/edb-core-types";
+import { SPARQLCRUDOptions } from "@slub/edb-core-types";
 
 export const makeSPARQLDeleteQuery = (
   entityIRI: string,

@@ -1,6 +1,6 @@
-import {JSONSchema7, JSONSchema7Definition} from "json-schema";
+import { JSONSchema7, JSONSchema7Definition } from "json-schema";
 import isObject from "lodash/isObject";
-import {defs, getDefintitionKey} from "./jsonSchema";
+import { defs, getDefintitionKey } from "./jsonSchema";
 
 export type GenRequiredPropertiesFunction = (modelName: string) => string[];
 export type GenJSONLDSemanticPropertiesFunction = (
@@ -39,7 +39,7 @@ export const recursivelyFindRefsAndAppendStub: (
   if (options?.excludeField?.includes(field)) {
     return schema;
   }
-  const definitionsKey = getDefintitionKey(rootSchema)
+  const definitionsKey = getDefintitionKey(rootSchema);
   if (schema.$ref) {
     if (
       options?.excludeType?.includes(

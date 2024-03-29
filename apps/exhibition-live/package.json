@@ -23,8 +23,6 @@
     "codegen:watch": "graphql-codegen --watch",
     "lint:fix": "fomat:fix && next lint --fix && eslint --fix ./components ./pages",
     "lint:check": "next lint && eslint ./components ./pages",
-    "format": "prettier --check --ignore-path ../../.gitignore .",
-    "format:fix": "prettier --write --ignore-path ../../.gitignore .",
     "docker:build": "docker build -t adb-next .",
     "docker:run": "docker run -p 3000:3000 adb-next"
   },

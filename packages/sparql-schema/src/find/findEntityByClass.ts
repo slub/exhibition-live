@@ -1,18 +1,25 @@
 import df from "@rdfjs/data-model";
 import { SELECT } from "@tpluscode/sparql-builder";
-import {QueryOptions} from "@slub/edb-core-types";
+import { QueryOptions } from "@slub/edb-core-types";
 
-
-export const fixSparqlOrder: (sparqlQuery: string) => string = sparqlQuery => {
+export const fixSparqlOrder: (sparqlQuery: string) => string = (
+  sparqlQuery,
+) => {
   const regex = /(ORDER BY\s+[^ ]+)(\s*)GROUP BY\s+\(([^\)]+)\)/gm;
   return sparqlQuery.replace(regex, "GROUP BY $3 $2\n$1");
 };
-export const findEntityByClass: (searchString: (string | null), typeIRI: string, doQuery: (query: string) => Promise<any>, limit: number, options: QueryOptions) => Promise<any> = async (
+export const findEntityByClass: (
   searchString: string | null,
   typeIRI: string,
   doQuery: (query: string) => Promise<any>,
   limit: number,
-  options
+  options: QueryOptions,
+) => Promise<any> = async (
+  searchString: string | null,
+  typeIRI: string,
+  doQuery: (query: string) => Promise<any>,
+  limit: number,
+  options,
 ) => {
   const { queryBuildOptions, defaultPrefix } = options;
   const subjectV = df.variable("subject"),

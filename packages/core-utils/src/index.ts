@@ -8,4 +8,4 @@ export * from "./specialDate";
 export * from "./irisToData";
 export * from "./makeFormsPath";
 export * from "./ellipsis";
-export * from "./parseMarkdownLink"
+export * from "./parseMarkdownLink";

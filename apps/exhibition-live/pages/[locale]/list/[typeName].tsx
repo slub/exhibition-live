@@ -34,7 +34,7 @@ export async function getStaticProps(ctx) {
 export default (props: Props) => {
   const { t } = useTranslation();
   const { typeName } = props;
-  const title = `${t(typeName)} - ${t("list")}`
+  const title = `${t(typeName)} - ${t("list")}`;
 
   return (
     <>

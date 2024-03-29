@@ -1,6 +1,6 @@
 import { makeSPARQLDeleteQuery } from "./makeSPARQLDeleteQuery";
 import { JSONSchema7 } from "json-schema";
-import {SPARQLCRUDOptions} from "@slub/edb-core-types";
+import { SPARQLCRUDOptions } from "@slub/edb-core-types";
 
 export const remove = async (
   entityIRI: string,

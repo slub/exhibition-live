@@ -2,8 +2,11 @@ import { JSONSchema7 } from "json-schema";
 import { makeSPARQLConstructQuery } from "./makeSPARQLConstructQuery";
 import { JsonLdContext } from "jsonld-context-parser";
 import { Dataset, DatasetCore } from "@rdfjs/types";
-import {traverseGraphExtractBySchema, WalkerOptions} from "@slub/edb-graph-traversal";
-import {SPARQLCRUDOptions} from "@slub/edb-core-types";
+import {
+  traverseGraphExtractBySchema,
+  WalkerOptions,
+} from "@slub/edb-graph-traversal";
+import { SPARQLCRUDOptions } from "@slub/edb-core-types";
 
 type LoadOptions = SPARQLCRUDOptions & {
   walkerOptions?: Partial<WalkerOptions>;

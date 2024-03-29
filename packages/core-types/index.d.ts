@@ -1,5 +1,5 @@
-import {Bindings, DatasetCore, Quad, ResultStream} from "@rdfjs/types";
-import {NamespaceBuilder} from "@rdfjs/namespace";
+import { Bindings, DatasetCore, Quad, ResultStream } from "@rdfjs/types";
+import { NamespaceBuilder } from "@rdfjs/namespace";
 
 export type Prefixes = {
   [k: string]: string;
@@ -33,7 +33,6 @@ export type PrimaryFieldResults<T> = {
   description: T | null;
   image: T | null;
 };
-
 
 export type NamedEntityData = {
   "@id": string;
@@ -88,7 +87,6 @@ export type CRUDFunctions = {
   askFetch: (query: string) => Promise<boolean>;
 };
 
-
 export type SparqlEndpoint = {
   label?: string;
   endpoint: string;
@@ -109,5 +107,7 @@ export type SparqlEndpoint = {
 
 export type SPARQLFlavour = "default" | "oxigraph" | "blazegraph" | "allegro";
 
-export type QueryOptions =  { defaultPrefix: string, queryBuildOptions: SparqlBuildOptions}
-
+export type QueryOptions = {
+  defaultPrefix: string;
+  queryBuildOptions: SparqlBuildOptions;
+};

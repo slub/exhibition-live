@@ -24,7 +24,7 @@ export async function getStaticProps(ctx) {
 
 export default () => {
   const { t } = useTranslation("translation");
-  const title = `${t("exhibition database")} ${t("data import")}`
+  const title = `${t("exhibition database")} ${t("data import")}`;
   return (
     <>
       <Head>

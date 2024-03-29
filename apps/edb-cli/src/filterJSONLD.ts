@@ -14,4 +14,4 @@ export const filterJSONLD = (obj: any, visited = new WeakSet()) => {
     }
   }
   return obj;
-}
+};

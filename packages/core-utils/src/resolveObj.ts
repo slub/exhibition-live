@@ -7,4 +7,6 @@
  * @returns {any} The value at the specified path or the default value if the path is not found.
  */
 export const resolveObj = (obj: any, path: string, defaultValue?: any) =>
-  path.length === 0 ? obj :  path.split(".").reduce((o, p) => o && o[p], obj) || defaultValue;
+  path.length === 0
+    ? obj
+    : path.split(".").reduce((o, p) => o && o[p], obj) || defaultValue;

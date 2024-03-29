@@ -1,6 +1,6 @@
-import {JSONSchema4, JSONSchema7} from "json-schema";
+import { JSONSchema4, JSONSchema7 } from "json-schema";
 
-export type JsonSchema = JSONSchema7 | JSONSchema4
+export type JsonSchema = JSONSchema7 | JSONSchema4;
 
 export type WalkerOptions = {
   omitEmptyArrays: boolean;

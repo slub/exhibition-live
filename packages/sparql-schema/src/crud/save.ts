@@ -4,12 +4,12 @@ import { INSERT } from "@tpluscode/sparql-builder";
 import { withDefaultPrefix } from "./makeSPARQLWherePart";
 import { JSONSchema7 } from "json-schema";
 import { makeSPARQLDeleteQuery } from "./makeSPARQLDeleteQuery";
-import {NamedAndTypedEntity, SPARQLCRUDOptions} from "@slub/edb-core-types";
+import { NamedAndTypedEntity, SPARQLCRUDOptions } from "@slub/edb-core-types";
 import dsExt from "rdf-dataset-ext";
 import datasetFactory from "@rdfjs/dataset";
 import stringToStream from "string-to-stream";
-import {dataset2NTriples} from "./dataset2NTriples";
-import {jsonld2DataSet} from "./jsonld2DataSet";
+import { dataset2NTriples } from "./dataset2NTriples";
+import { jsonld2DataSet } from "./jsonld2DataSet";
 
 type SaveOptions = SPARQLCRUDOptions & {
   skipRemove?: boolean;
@@ -43,7 +43,9 @@ export const save = async (
   try {
     await updateFetch(deleteQuery);
   } catch (e) {
-    throw new Error("unable to delete the entry - DELETE query failed", { cause: e});
+    throw new Error("unable to delete the entry - DELETE query failed", {
+      cause: e,
+    });
   }
   return await updateFetch(insertQuery);
 };

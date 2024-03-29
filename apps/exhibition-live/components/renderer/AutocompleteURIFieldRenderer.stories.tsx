@@ -18,7 +18,7 @@ import AutocompleteURIFieldRenderer from "./AutocompleteURIFieldRenderer";
 export default {
   title: "form/exhibition/AutocompleteURIFieldRenderer",
   component: AutocompleteURIFieldRenderer,
-}
+};
 
 const schema = {
   $schema: "http://json-schema.org/draft-07/schema#",

@@ -31,7 +31,7 @@ type Props = {
   acceptTitle: string;
 };
 
-const ClassicEntityCard: FunctionComponent<Props  & Partial<BoxProps>> = ({
+const ClassicEntityCard: FunctionComponent<Props & Partial<BoxProps>> = ({
   data,
   id,
   onBack,
@@ -42,9 +42,8 @@ const ClassicEntityCard: FunctionComponent<Props  & Partial<BoxProps>> = ({
 }) => {
   const _label = data.label || data.title || data.name || id;
 
-
   return (
-    <Box {...rest} >
+    <Box {...rest}>
       {onBack && (
         <IconButton onClick={onBack}>
           <ArrowBack />
@@ -79,7 +78,7 @@ const ClassicEntityCard: FunctionComponent<Props  & Partial<BoxProps>> = ({
             </Button>
           )}
         </CardActions>
-        { detailView || null}
+        {detailView || null}
       </Card>
     </Box>
   );

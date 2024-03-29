@@ -11,7 +11,7 @@ import AutoIdentifierRenderer from "./AutoIdentifierRenderer";
 export default {
   title: "form/exhibition/AutoIdentifierRenderer",
   component: AutoIdentifierRenderer,
-}
+};
 
 const schema = {
   $schema: "http://json-schema.org/draft-07/schema#",

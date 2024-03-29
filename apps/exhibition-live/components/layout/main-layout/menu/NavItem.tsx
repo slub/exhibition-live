@@ -53,9 +53,7 @@ export const NavItem = ({
   );
 
   const Icon = item.icon as React.FC<{ stroke: number; size: string }>;
-  const itemIcon = item?.icon ? (
-    <Icon stroke={1.5} size="1.3rem" />
-  ) : null;
+  const itemIcon = item?.icon ? <Icon stroke={1.5} size="1.3rem" /> : null;
 
   let itemTarget = "_self";
   if (item.target) {

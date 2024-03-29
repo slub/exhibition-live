@@ -65,7 +65,11 @@ const ImageRenderer = (props: ControlProps) => {
           )}
           {data && (
             <Grid item>
-              <Image src={data} alt={data} style={{ maxWidth: '200px', width: "100%" }} />
+              <Image
+                src={data}
+                alt={data}
+                style={{ maxWidth: "200px", width: "100%" }}
+              />
             </Grid>
           )}
         </Grid>

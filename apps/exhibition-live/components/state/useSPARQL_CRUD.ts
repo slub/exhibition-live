@@ -1,6 +1,4 @@
-import {
-  Dataset,
-} from "@rdfjs/types";
+import { Dataset } from "@rdfjs/types";
 import {
   QueryObserverOptions,
   QueryObserverResult,
@@ -21,14 +19,12 @@ import N3 from "n3";
 import { useCallback, useEffect, useState } from "react";
 import { useSnackbar } from "notistack";
 
-import {
-  jsonSchemaGraphInfuser,
-} from "../utils/graph/jsonSchemaGraphInfuser";
+import { jsonSchemaGraphInfuser } from "../utils/graph/jsonSchemaGraphInfuser";
 import { jsonSchema2construct } from "../utils/sparql";
 import { useQueryKeyResolver } from "./useQueryKeyResolver";
 import df from "@rdfjs/data-model";
-import {CRUDFunctions, SparqlBuildOptions} from "@slub/edb-core-types";
-import {WalkerOptions} from "@slub/edb-graph-traversal";
+import { CRUDFunctions, SparqlBuildOptions } from "@slub/edb-core-types";
+import { WalkerOptions } from "@slub/edb-graph-traversal";
 
 type OwnUseCRUDResults = {
   save: (data?: any) => Promise<void>;

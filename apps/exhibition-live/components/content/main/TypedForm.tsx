@@ -20,7 +20,7 @@ import { encodeIRI, irisToData } from "../../utils/core";
 import NewSemanticJsonForm from "../../form/SemanticJsonForm";
 import { useModifiedRouter } from "../../basic";
 import { EntityDetailElement } from "../../form/show";
-import {RootFormProvider} from "../../provider";
+import { RootFormProvider } from "../../provider";
 
 type Props = {
   children: React.ReactChild;

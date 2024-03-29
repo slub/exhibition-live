@@ -15,7 +15,7 @@ import useExtendedSchema from "../../state/useExtendedSchema";
 import { useGlobalCRUDOptions } from "../../state/useGlobalCRUDOptions";
 import { useCRUDWithQueryClient } from "../../state/useCRUDWithQueryClient";
 import { defaultJsonldContext, defaultPrefix } from "../formConfigs";
-import {useCallback, useMemo, useState} from "react";
+import { useCallback, useMemo, useState } from "react";
 import { primaryFields, typeIRItoTypeName } from "../../config";
 import {
   applyToEachField,
@@ -36,7 +36,14 @@ type EntityDetailModalProps = {
 };
 
 export const EntityDetailModal = NiceModal.create(
-  ({ typeIRI, entityIRI, data: defaultData, disableLoad, readonly, inlineEditing }: EntityDetailModalProps) => {
+  ({
+    typeIRI,
+    entityIRI,
+    data: defaultData,
+    disableLoad,
+    readonly,
+    inlineEditing,
+  }: EntityDetailModalProps) => {
     const modal = useModal();
     const typeIRIs = useTypeIRIFromEntity(entityIRI);
     const classIRI: string | undefined = typeIRI || typeIRIs?.[0];
@@ -52,7 +59,11 @@ export const EntityDetailModal = NiceModal.create(
       defaultPrefix,
       crudOptions,
       defaultJsonldContext,
-      { enabled: !disableLoad, refetchOnWindowFocus: true, initialData: defaultData },
+      {
+        enabled: !disableLoad,
+        refetchOnWindowFocus: true,
+        initialData: defaultData,
+      },
       "show",
     );
     const { t } = useTranslation();
@@ -68,12 +79,12 @@ export const EntityDetailModal = NiceModal.create(
       };
     }, [typeName, data]);
 
-    const [aboutToRemove, setAboutToRemove] = useState(false)
+    const [aboutToRemove, setAboutToRemove] = useState(false);
     const removeSlowly = useCallback(() => {
-      if(aboutToRemove) return
-      setAboutToRemove(true)
-      setTimeout(() => modal.remove(), 500)
-    }, [modal, setAboutToRemove, aboutToRemove])
+      if (aboutToRemove) return;
+      setAboutToRemove(true);
+      setTimeout(() => modal.remove(), 500);
+    }, [modal, setAboutToRemove, aboutToRemove]);
 
     return (
       <Dialog

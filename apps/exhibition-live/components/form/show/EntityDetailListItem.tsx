@@ -24,7 +24,7 @@ import NiceModal from "@ebay/nice-modal-react";
 import { EntityDetailModal } from "./EntityDetailModal";
 import { Clear, HideImage } from "@mui/icons-material";
 import { ellipsis } from "../../utils/core";
-import {useRootFormContext} from "../../provider";
+import { useRootFormContext } from "../../provider";
 
 type EntityDetailListItemProps = {
   entityIRI: string;
@@ -56,7 +56,7 @@ export const EntityDetailListItem = ({
     "show",
   );
   const { t } = useTranslation();
-  const data = rawData?.document?.["@type"] ? rawData?.document : defaultData
+  const data = rawData?.document?.["@type"] ? rawData?.document : defaultData;
   const cardInfo = useMemo<PrimaryFieldResults<string>>(() => {
     const fieldDecl = primaryFields[typeName];
     if (data && fieldDecl) {
@@ -78,9 +78,14 @@ export const EntityDetailListItem = ({
     };
   }, [typeName, data]);
   const { label, image, description } = cardInfo;
-  const { isWithinRootForm } = useRootFormContext()
+  const { isWithinRootForm } = useRootFormContext();
   const showDetailModal = useCallback(() => {
-    NiceModal.show(EntityDetailModal, { typeIRI, entityIRI, data, inlineEditing: isWithinRootForm });
+    NiceModal.show(EntityDetailModal, {
+      typeIRI,
+      entityIRI,
+      data,
+      inlineEditing: isWithinRootForm,
+    });
   }, [typeIRI, entityIRI, data, isWithinRootForm]);
   //Sorry for this hack, in future we will have class dependent List items
   const variant = useMemo(

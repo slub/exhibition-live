@@ -1,6 +1,7 @@
-import React, {FC, useCallback, useEffect, useMemo, useState} from "react";
+import React, { FC, useCallback, useEffect, useMemo, useState } from "react";
 import {
-  GoogleSpreadsheet, GoogleSpreadsheetCell,
+  GoogleSpreadsheet,
+  GoogleSpreadsheetCell,
   GoogleSpreadsheetWorksheet,
 } from "google-spreadsheet";
 import { useGoogleToken } from "./useGoogleToken";
@@ -10,14 +11,19 @@ import {
   Box,
   Button,
   Checkbox,
-  Chip, CircularProgress,
+  Chip,
+  CircularProgress,
   Dialog,
   DialogActions,
-  DialogContent, Divider,
+  DialogContent,
+  Divider,
   FormControl,
   Grid,
   IconButton,
-  List, Menu, MenuItem, Select,
+  List,
+  Menu,
+  MenuItem,
+  Select,
   Skeleton,
   Tab,
   Tabs,
@@ -33,7 +39,7 @@ import {
   useMaterialReactTable,
 } from "material-react-table";
 import { mapByConfigFlat } from "../utils/mapping/mapByConfig";
-import {spreadSheetMappings} from "../config/spreadSheetMappings";
+import { spreadSheetMappings } from "../config/spreadSheetMappings";
 import { declarativeMappings } from "../config";
 import { makeDefaultMappingStrategyContext } from "../form/SimilarityFinder";
 import { useGlobalCRUDOptions } from "../state/useGlobalCRUDOptions";
@@ -53,12 +59,15 @@ import useExtendedSchema from "../state/useExtendedSchema";
 import { JSONSchema7 } from "json-schema";
 import { useRouter } from "next/router";
 import FormControlLabel from "@mui/material/FormControlLabel";
-import {DeclarativeFlatMapping, DeclarativeFlatMappings} from "../utils/mapping/mappingStrategies";
-import {useTranslation} from "next-i18next";
-import {NiceMappingConfigurationDialog} from "../mapping/NiceMappingConfigurationDialog";
+import {
+  DeclarativeFlatMapping,
+  DeclarativeFlatMappings,
+} from "../utils/mapping/mappingStrategies";
+import { useTranslation } from "next-i18next";
+import { NiceMappingConfigurationDialog } from "../mapping/NiceMappingConfigurationDialog";
 import {
   DeclarativeMatchBasedFlatMapping,
-  DeclarativeMatchBasedFlatMappings
+  DeclarativeMatchBasedFlatMappings,
 } from "../utils/mapping/mapMatchBasedByConfig";
 import { CRUDFunctions } from "@slub/edb-core-types";
 
@@ -70,50 +79,75 @@ type CachedWorkSheet = {
   index: number;
   rowCount: number;
   columnCount: number;
-  preloadCells: (startRowIndex?: number, endRowIndex?: number, startColumnIndex?: number, endColumnIndex?: number) => Promise<void>;
+  preloadCells: (
+    startRowIndex?: number,
+    endRowIndex?: number,
+    startColumnIndex?: number,
+    endColumnIndex?: number,
+  ) => Promise<void>;
   getCell: (rowIndex: number, columnIndex: number) => GoogleSpreadsheetCell;
-}
+};
 
 type UseCachedWorkSheetOptions = {
   workSheet: GoogleSpreadsheetWorksheet;
   staleTime?: number;
   autoCache?: boolean;
-}
+};
 
-const useCashedWorkSheet = ({workSheet, staleTime = 1000 * 60 * 5, autoCache}: UseCachedWorkSheetOptions): CachedWorkSheet => {
+const useCashedWorkSheet = ({
+  workSheet,
+  staleTime = 1000 * 60 * 5,
+  autoCache,
+}: UseCachedWorkSheetOptions): CachedWorkSheet => {
   const [loaded, setLoaded] = useState<boolean>(false);
   const [rowCount, setRowCount] = useState<number>(0);
   const [columnCount, setColumnCount] = useState<number>(0);
   const [title, setTitle] = useState<string>("");
 
-  const getCell = useCallback( (rowIndex: number, columnIndex: number) => {
-    try {
-      return workSheet.getCell(rowIndex, columnIndex);
-    } catch (e) {
-      console.error("failed to load cell", e);
-      return null;
-    }
-  }, [workSheet]);
+  const getCell = useCallback(
+    (rowIndex: number, columnIndex: number) => {
+      try {
+        return workSheet.getCell(rowIndex, columnIndex);
+      } catch (e) {
+        console.error("failed to load cell", e);
+        return null;
+      }
+    },
+    [workSheet],
+  );
 
-  const preloadCells = useCallback(async (startRowIndex = 0, endRowIndex = 10, startColumnIndex = 0, endColumnIndex = 10) => {
-    console.log("will load cells", {startRowIndex, endRowIndex, startColumnIndex, endColumnIndex})
-    try {
-      await workSheet.loadCells({
+  const preloadCells = useCallback(
+    async (
+      startRowIndex = 0,
+      endRowIndex = 10,
+      startColumnIndex = 0,
+      endColumnIndex = 10,
+    ) => {
+      console.log("will load cells", {
         startRowIndex,
         endRowIndex,
         startColumnIndex,
         endColumnIndex,
       });
-    } catch (e) {
-      console.error("failed to load cells", e);
-      setTimeout(() => {
-        console.log("retrying to load cells")
-        setLoaded(true);
-      }, 1)
-      return;
-    }
-    setLoaded(true);
-  }, [workSheet, setLoaded]);
+      try {
+        await workSheet.loadCells({
+          startRowIndex,
+          endRowIndex,
+          startColumnIndex,
+          endColumnIndex,
+        });
+      } catch (e) {
+        console.error("failed to load cells", e);
+        setTimeout(() => {
+          console.log("retrying to load cells");
+          setLoaded(true);
+        }, 1);
+        return;
+      }
+      setLoaded(true);
+    },
+    [workSheet, setLoaded],
+  );
 
   useEffect(() => {
     (async () => {
@@ -124,10 +158,16 @@ const useCashedWorkSheet = ({workSheet, staleTime = 1000 * 60 * 5, autoCache}: U
   }, [workSheet, setLoaded, setRowCount, setColumnCount, setTitle]);
 
   useEffect(() => {
-    if(autoCache && !loaded) {
-      preloadCells(0, workSheet.rowCount, 0, workSheet.columnCount );
+    if (autoCache && !loaded) {
+      preloadCells(0, workSheet.rowCount, 0, workSheet.columnCount);
     }
-  }, [workSheet.rowCount, workSheet.columnCount, autoCache, loaded, preloadCells])
+  }, [
+    workSheet.rowCount,
+    workSheet.columnCount,
+    autoCache,
+    loaded,
+    preloadCells,
+  ]);
 
   return {
     loaded,
@@ -139,15 +179,17 @@ const useCashedWorkSheet = ({workSheet, staleTime = 1000 * 60 * 5, autoCache}: U
     preloadCells,
     getCell,
   };
-}
+};
 
 type GoogleSpreadSheetTableProps = {
   workSheet: CachedWorkSheet;
   columnIndicies: number[];
-}
+};
 
-
-export const GoogleSpreadSheetTable: FC<GoogleSpreadSheetTableProps> = ({workSheet, columnIndicies}) => {
+export const GoogleSpreadSheetTable: FC<GoogleSpreadSheetTableProps> = ({
+  workSheet,
+  columnIndicies,
+}) => {
   const loaded = workSheet.loaded;
   const [pagination, setPagination] = useState({
     pageIndex: 0,
@@ -156,13 +198,12 @@ export const GoogleSpreadSheetTable: FC<GoogleSpreadSheetTableProps> = ({workShe
   const [columns, setColumns] = useState<MRT_ColumnDef<any>[]>([]);
   const [columnDesc, setColumnDesc] = useState<OwnColumnDesc[]>([]);
   const reducedColumns = useMemo(() => {
-    return columns.filter((column, index) => columnIndicies.includes(index))
+    return columns.filter((column, index) => columnIndicies.includes(index));
   }, [columns, columnIndicies]);
 
   useEffect(() => {
     (async () => {
-      if(!loaded)
-        return
+      if (!loaded) return;
       try {
         const cells = [...Array(workSheet.columnCount)].map((_, index) => {
           return workSheet.getCell(0, index);
@@ -179,9 +220,11 @@ export const GoogleSpreadSheetTable: FC<GoogleSpreadSheetTableProps> = ({workShe
             header: (cell.value ?? "").toString(),
             accessorFn: (originalRow, rowIndex) => {
               try {
-                const dataCell = workSheet.getCell( originalRow + 1, index);
+                const dataCell = workSheet.getCell(originalRow + 1, index);
                 return dataCell?.value ?? null;
-              } catch (e) { return null }
+              } catch (e) {
+                return null;
+              }
             },
           };
         });
@@ -192,11 +235,21 @@ export const GoogleSpreadSheetTable: FC<GoogleSpreadSheetTableProps> = ({workShe
     })();
   }, [workSheet, loaded, setColumnDesc]);
 
-  const rowCount = useMemo(() => Math.ceil( workSheet.rowCount - 2), [workSheet])
+  const rowCount = useMemo(
+    () => Math.ceil(workSheet.rowCount - 2),
+    [workSheet],
+  );
   // needs to be just the right amount of rows: so full pageSize  but a the end the Rest of the rowCount divided by pageSize
-  const isLastRow = (rowCount - 2) <= (pagination.pageSize * pagination.pageIndex)
-  const amountOfFakeRows = rowCount <= 0 ? 0 : isLastRow ? rowCount % pagination.pageSize : pagination.pageSize
-  const fakeData = [...Array(amountOfFakeRows)].map((_, index) => index + (pagination.pageIndex * pagination.pageSize));
+  const isLastRow = rowCount - 2 <= pagination.pageSize * pagination.pageIndex;
+  const amountOfFakeRows =
+    rowCount <= 0
+      ? 0
+      : isLastRow
+        ? rowCount % pagination.pageSize
+        : pagination.pageSize;
+  const fakeData = [...Array(amountOfFakeRows)].map(
+    (_, index) => index + pagination.pageIndex * pagination.pageSize,
+  );
 
   const materialTable = useMaterialReactTable({
     // @ts-ignore
@@ -218,31 +271,44 @@ export const GoogleSpreadSheetTable: FC<GoogleSpreadSheetTableProps> = ({workShe
   ) : (
     <Skeleton height={"300px"} width={"100%"} />
   );
-
-}
-
+};
 
 type ColumnChipProps = {
-  columnIndex: number
-  columnLetter: string
-  columnDesc: OwnColumnDesc[]
-  value: any
-  label: string
-  spreadSheetMapping?: DeclarativeFlatMappings
-  rawMapping?: DeclarativeMatchBasedFlatMappings
-  workSheet: CachedWorkSheet
-}
-const ColumnChip = ({label, columnIndex,  columnLetter, columnDesc, spreadSheetMapping, rawMapping, workSheet}: ColumnChipProps) => {
-  const { t } = useTranslation()
+  columnIndex: number;
+  columnLetter: string;
+  columnDesc: OwnColumnDesc[];
+  value: any;
+  label: string;
+  spreadSheetMapping?: DeclarativeFlatMappings;
+  rawMapping?: DeclarativeMatchBasedFlatMappings;
+  workSheet: CachedWorkSheet;
+};
+const ColumnChip = ({
+  label,
+  columnIndex,
+  columnLetter,
+  columnDesc,
+  spreadSheetMapping,
+  rawMapping,
+  workSheet,
+}: ColumnChipProps) => {
+  const { t } = useTranslation();
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
-  const columnMapping = useMemo(() =>
-    spreadSheetMapping?.filter(mapping =>
-      //@ts-ignore
-      Boolean(mapping.source.columns.find((col) =>
-        typeof col === 'string' ? col === columnLetter : col === columnIndex
-  ))) || [], [spreadSheetMapping, columnIndex,  columnLetter]);
+  const columnMapping = useMemo(
+    () =>
+      spreadSheetMapping?.filter((mapping) =>
+        Boolean(
+          (mapping.source.columns as any)?.find((col) =>
+            typeof col === "string"
+              ? col === columnLetter
+              : col === columnIndex,
+          ),
+        ),
+      ) || [],
+    [spreadSheetMapping, columnIndex, columnLetter],
+  );
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -250,78 +316,93 @@ const ColumnChip = ({label, columnIndex,  columnLetter, columnDesc, spreadSheetM
     setAnchorEl(null);
   };
 
-  const handleAssignMapping = useCallback(() => {
+  const handleAssignMapping = useCallback(() => {}, []);
+  const handleOpenMapping = useCallback(
+    (
+      mappingDecl: DeclarativeFlatMapping,
+      rawMapping?: DeclarativeMatchBasedFlatMapping,
+    ) => {
+      NiceModal.show(NiceMappingConfigurationDialog, {
+        mapping: mappingDecl,
+        rawMapping,
+        sourcePath: columnIndex,
+        fields: columnDesc,
+        tablePreview: (mapping: DeclarativeFlatMapping) => {
+          return (
+            <GoogleSpreadSheetTable
+              workSheet={workSheet}
+              columnIndicies={mapping.source.columns as number[]}
+            />
+          );
+        },
+      });
+    },
+    [columnIndex, workSheet, columnDesc],
+  );
 
-  }, []);
-  const handleOpenMapping = useCallback((mappingDecl: DeclarativeFlatMapping, rawMapping?: DeclarativeMatchBasedFlatMapping) => {
-    NiceModal.show(NiceMappingConfigurationDialog, {
-      mapping: mappingDecl,
-      rawMapping,
-      sourcePath: columnIndex,
-      fields: columnDesc,
-      tablePreview: (mapping: DeclarativeFlatMapping) => {
-        return <GoogleSpreadSheetTable workSheet={workSheet} columnIndicies={mapping.source.columns as number[]} />
-      }
-    })
-  }, [columnIndex, workSheet, columnDesc]);
-
-
-  return <>
-    <Chip
-      label={label}
-      color={columnMapping.length > 0 ? "primary" : undefined }
-      sx={{ margin: "0.2rem" }}
-      onClick={handleClick}
-    />
-    <Menu
-      id="lock-menu"
-      anchorEl={anchorEl}
-      open={open}
-      onClose={handleClose}
-      MenuListProps={{
-        'aria-labelledby': 'lock-button',
-        role: 'listbox',
-      }}
-    >
-        <MenuItem
-          key={'option1'}
-          onClick={handleAssignMapping}
-        >
+  return (
+    <>
+      <Chip
+        label={label}
+        color={columnMapping.length > 0 ? "primary" : undefined}
+        sx={{ margin: "0.2rem" }}
+        onClick={handleClick}
+      />
+      <Menu
+        id="lock-menu"
+        anchorEl={anchorEl}
+        open={open}
+        onClose={handleClose}
+        MenuListProps={{
+          "aria-labelledby": "lock-button",
+          role: "listbox",
+        }}
+      >
+        <MenuItem key={"option1"} onClick={handleAssignMapping}>
           {t("assign mapping")}
         </MenuItem>
         <Divider />
-      {columnMapping.map((mapping, index) => {
-        const raw = rawMapping?.find(rawMappingDecl => rawMappingDecl.id === mapping.id )
-        return <MenuItem
-          key={index}
-          onClick={() => handleOpenMapping(mapping, raw)}
-        >
-          {t("open Mapping", {index: index + 1})}
-        </MenuItem>
-      })
-      }
-    </Menu>
-  </>
-}
+        {columnMapping.map((mapping, index) => {
+          const raw = rawMapping?.find(
+            (rawMappingDecl) => rawMappingDecl.id === mapping.id,
+          );
+          return (
+            <MenuItem
+              key={index}
+              onClick={() => handleOpenMapping(mapping, raw)}
+            >
+              {t("open Mapping", { index: index + 1 })}
+            </MenuItem>
+          );
+        })}
+      </Menu>
+    </>
+  );
+};
 
 type MappedItemProps = {
-  path: string
-  index: number
-  spreadSheetMapping: DeclarativeFlatMappings
-  workSheet: CachedWorkSheet
-  crudOptions?: CRUDFunctions
-}
+  path: string;
+  index: number;
+  spreadSheetMapping: DeclarativeFlatMappings;
+  workSheet: CachedWorkSheet;
+  crudOptions?: CRUDFunctions;
+};
 
-const MappedItem = ({ path, index, spreadSheetMapping, workSheet, crudOptions}: MappedItemProps) => {
+const MappedItem = ({
+  path,
+  index,
+  spreadSheetMapping,
+  workSheet,
+  crudOptions,
+}: MappedItemProps) => {
   const mapData = useCallback(async () => {
-
     try {
       const targetData = {
-        "__index": index,
+        __index: index,
         "@id": `${slent().value}${uuidv4()}`,
         "@type": sladb.Exhibition.value,
       };
-      console.log("will map by config")
+      console.log("will map by config");
       const mappedData = await mapByConfigFlat(
         (col: number | string) => {
           const cell = workSheet.getCell(index, col as number);
@@ -334,24 +415,29 @@ const MappedItem = ({ path, index, spreadSheetMapping, workSheet, crudOptions}: 
           declarativeMappings,
         ),
       );
-      return mappedData
+      return mappedData;
     } catch (e) {
       console.warn("failed to map row", index, e);
     }
-    return null
-  }, [workSheet, crudOptions,  spreadSheetMapping, index])
+    return null;
+  }, [workSheet, crudOptions, spreadSheetMapping, index]);
 
-  const { data, isLoading } = useQuery(["mappedData", path], mapData,
-    {
-      enabled: workSheet.loaded && spreadSheetMapping.length > 0,
-      staleTime: 1000 * 60 * 2  // 2 minutes,
-    })
-  const { t } = useTranslation()
+  const { data, isLoading } = useQuery(["mappedData", path], mapData, {
+    enabled: workSheet.loaded && spreadSheetMapping.length > 0,
+    staleTime: 1000 * 60 * 2, // 2 minutes,
+  });
+  const { t } = useTranslation();
 
-  return  isLoading ? <CircularProgress title={t("calculate mapped data")}  /> : <List>
-    {data?.["@type"] && <TypedListItem index={index} data={data} disableLoad={true} />}
-  </List>
-}
+  return isLoading ? (
+    <CircularProgress title={t("calculate mapped data")} />
+  ) : (
+    <List>
+      {data?.["@type"] && (
+        <TypedListItem index={index} data={data} disableLoad={true} />
+      )}
+    </List>
+  );
+};
 
 export const index2letter = (index: number): string => {
   const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -367,11 +453,14 @@ export type SpreadSheetWorkSheetViewProps = {
 };
 const typeName = "Exhibition";
 const classIRI = sladb.Exhibition.value;
-const mappingsAvailable = Object.keys(spreadSheetMappings)
+const mappingsAvailable = Object.keys(spreadSheetMappings);
 export const GoogleSpeadSheetWorkSheetView: FC<
   SpreadSheetWorkSheetViewProps
 > = ({ workSheet: workSheetOriginal, selectedSheet }) => {
-  const workSheet = useCashedWorkSheet({workSheet: workSheetOriginal, autoCache: true})
+  const workSheet = useCashedWorkSheet({
+    workSheet: workSheetOriginal,
+    autoCache: true,
+  });
   const loaded = workSheet.loaded;
   const [_loaded, setLoaded] = useState<boolean>(false);
   const [pagination, setPagination] = useState({
@@ -389,80 +478,124 @@ export const GoogleSpeadSheetWorkSheetView: FC<
 
   const [rawMappedData, setRawMappedData] = useState<any[]>([]);
   const locale = useRouter().locale ?? "de";
-  const [selectedMapping, setSelectedMapping] = useState<string>(mappingsAvailable[0]);
+  const [selectedMapping, setSelectedMapping] = useState<string>(
+    mappingsAvailable[0],
+  );
   const { crudOptions } = useGlobalCRUDOptions();
   const spreadSheetMapping = useMemo(() => {
-    let final: {raw?: DeclarativeMatchBasedFlatMappings , mapping: DeclarativeFlatMappings} = {
-      mapping: []
-    }
+    let final: {
+      raw?: DeclarativeMatchBasedFlatMappings;
+      mapping: DeclarativeFlatMappings;
+    } = {
+      mapping: [],
+    };
     try {
-      const cSpreadSheetMapping =spreadSheetMappings[selectedMapping]
-      final = columnDesc.length <= 0 || !cSpreadSheetMapping  ? final : {raw: cSpreadSheetMapping.raw, mapping: cSpreadSheetMapping.fieldMapping(columnDesc)}
+      const cSpreadSheetMapping = spreadSheetMappings[selectedMapping];
+      final =
+        columnDesc.length <= 0 || !cSpreadSheetMapping
+          ? final
+          : {
+              raw: cSpreadSheetMapping.raw,
+              mapping: cSpreadSheetMapping.fieldMapping(columnDesc),
+            };
     } catch (e) {
-      console.error("failed to apply declarative mapping to column description", e)
+      console.error(
+        "failed to apply declarative mapping to column description",
+        e,
+      );
     }
-    return final
-  }, [columnDesc, selectedMapping])
+    return final;
+  }, [columnDesc, selectedMapping]);
 
   useEffect(() => {
     setReducedColumns(columns?.slice(0, maxColumns) || []);
   }, [columns, maxColumns, setReducedColumns]);
 
-  const calculateMapping = useCallback(
-    async () => {
-      if(!workSheet.loaded)
-        return
-      try {
-        const cells = [...Array(workSheet.columnCount)].map((_, index) => {
-          return workSheet.getCell(0, index);
-        });
-        const columnDesc_ = cells.map((googleSpreadSheetCell, index) => ({
-          index,
-          value: googleSpreadSheetCell?.value || null ,
-          letter: index2letter(index),
-        }));
-        setColumnDesc(columnDesc_);
-        const mappedCol = {
-          id: "-1",
-          header: "mapped Data",
+  const calculateMapping = useCallback(async () => {
+    if (!workSheet.loaded) return;
+    try {
+      const cells = [...Array(workSheet.columnCount)].map((_, index) => {
+        return workSheet.getCell(0, index);
+      });
+      const columnDesc_ = cells.map((googleSpreadSheetCell, index) => ({
+        index,
+        value: googleSpreadSheetCell?.value || null,
+        letter: index2letter(index),
+      }));
+      setColumnDesc(columnDesc_);
+      const mappedCol = {
+        id: "-1",
+        header: "mapped Data",
+        accessorFn: (originalRow, rowIndex) => {
+          return originalRow + 1;
+        },
+        Cell: ({ cell }) => {
+          const rowIndex = cell.getValue();
+          const pathSegments = [
+            workSheet.sheetId,
+            String(workSheet.index),
+            String(rowIndex),
+          ];
+
+          return (
+            <MappedItem
+              index={rowIndex}
+              workSheet={workSheet}
+              spreadSheetMapping={spreadSheetMapping.mapping}
+              path={pathSegments.join("/")}
+              crudOptions={crudOptions}
+              key={pathSegments.join("/")}
+            />
+          );
+        },
+      };
+      const cols = cells.map((cell, index) => {
+        return {
+          id: (cell.value ?? "").toString() + index,
+          header: (cell.value ?? "").toString(),
           accessorFn: (originalRow, rowIndex) => {
-            return originalRow + 1;
+            try {
+              const dataCell = workSheet.getCell(originalRow + 1, index);
+              return dataCell?.value ?? null;
+            } catch (e) {
+              return null;
+            }
           },
-          Cell: ({ cell }) => {
-            const rowIndex = cell.getValue();
-            const pathSegments = [workSheet.sheetId, String(workSheet.index), String(rowIndex)];
-
-            return  <MappedItem index={rowIndex} workSheet={workSheet} spreadSheetMapping={spreadSheetMapping.mapping} path={pathSegments.join("/") } crudOptions={crudOptions} key={pathSegments.join("/")}  />
-          }
-        }
-        const cols = cells.map((cell, index) => {
-          return {
-            id: (cell.value ?? "").toString() + index,
-            header: (cell.value ?? "").toString(),
-            accessorFn: (originalRow, rowIndex) => {
-              try {
-                const dataCell = workSheet.getCell( originalRow + 1  , index);
-                return dataCell?.value ?? null;
-              } catch (e) { return null }
-            },
-          };
-        });
-        setColumns([mappedCol, ...cols] as MRT_ColumnDef<any>[]);
-        const sheetTitle = workSheet.title;
-        if(mappingsAvailable.includes(sheetTitle)) {
-          setSelectedMapping(sheetTitle)
-        }
-      } catch (e) {
-        console.log(e);
+        };
+      });
+      setColumns([mappedCol, ...cols] as MRT_ColumnDef<any>[]);
+      const sheetTitle = workSheet.title;
+      if (mappingsAvailable.includes(sheetTitle)) {
+        setSelectedMapping(sheetTitle);
       }
-      setLoaded(true);
-    }, [workSheet, crudOptions,spreadSheetMapping.mapping , setLoaded, setColumnDesc, setSelectedMapping]);
+    } catch (e) {
+      console.log(e);
+    }
+    setLoaded(true);
+  }, [
+    workSheet,
+    crudOptions,
+    spreadSheetMapping.mapping,
+    setLoaded,
+    setColumnDesc,
+    setSelectedMapping,
+  ]);
 
-  const rowCount = useMemo(() => Math.ceil( workSheet.rowCount - 2), [workSheet.rowCount])
+  const rowCount = useMemo(
+    () => Math.ceil(workSheet.rowCount - 2),
+    [workSheet.rowCount],
+  );
   // needs to be just the right amount of rows: so full pageSize  but a the end the Rest of the rowCount divided by pageSize
-  const isLastRow = (rowCount - 2) <= (pagination.pageSize * pagination.pageIndex)
-  const amountOfFakeRows = rowCount <= 0 ? 0 : (isLastRow ? rowCount % pagination.pageSize : pagination.pageSize)
-  const fakeData = [...Array(amountOfFakeRows)].map((_, index) => index + (pagination.pageIndex * pagination.pageSize) );
+  const isLastRow = rowCount - 2 <= pagination.pageSize * pagination.pageIndex;
+  const amountOfFakeRows =
+    rowCount <= 0
+      ? 0
+      : isLastRow
+        ? rowCount % pagination.pageSize
+        : pagination.pageSize;
+  const fakeData = [...Array(amountOfFakeRows)].map(
+    (_, index) => index + pagination.pageIndex * pagination.pageSize,
+  );
 
   const materialTable = useMaterialReactTable({
     // @ts-ignore
@@ -490,7 +623,9 @@ export const GoogleSpeadSheetWorkSheetView: FC<
     true,
   );
   const handleMapAndImport = useCallback(async () => {
-    const rows = [...Array(pagination.pageSize)].map((_, index) => index + pagination.pageIndex + 2);
+    const rows = [...Array(pagination.pageSize)].map(
+      (_, index) => index + pagination.pageIndex + 2,
+    );
 
     setRawMappedData([]);
     for (const row of rows) {
@@ -568,33 +703,37 @@ export const GoogleSpeadSheetWorkSheetView: FC<
   ]);
 
   const handleMapping = useCallback(async () => {
-    const rows = [...Array(pagination.pageSize)].map((_, index) => index + 1 + (pagination.pageIndex * pagination.pageSize));
+    const rows = [...Array(pagination.pageSize)].map(
+      (_, index) => index + 1 + pagination.pageIndex * pagination.pageSize,
+    );
     const allMappedData = rawMappedData.slice();
     for (const row of rows) {
-      let mappedData = allMappedData.find((data) => data["__index"] === row - 1 )
-      if(!mappedData) {
+      let mappedData = allMappedData.find(
+        (data) => data["__index"] === row - 1,
+      );
+      if (!mappedData) {
         try {
-        const targetData = {
-          "__index": row - 1,
-          "@id": `${slent().value}${uuidv4()}`,
-          "@type": sladb.Exhibition.value,
-        };
-        mappedData = await mapByConfigFlat(
-          (col: number | string) => {
-            const cell = workSheet.getCell(row, col as number);
-            return cell.value as string;
-          },
-          targetData,
-          spreadSheetMapping.mapping,
-          makeDefaultMappingStrategyContext(
-            crudOptions?.selectFetch,
-            declarativeMappings,
-          ),
-        );
-        allMappedData.push(mappedData);
-          } catch (e) {
-            console.warn("failed to map row", row, e);
-          }
+          const targetData = {
+            __index: row - 1,
+            "@id": `${slent().value}${uuidv4()}`,
+            "@type": sladb.Exhibition.value,
+          };
+          mappedData = await mapByConfigFlat(
+            (col: number | string) => {
+              const cell = workSheet.getCell(row, col as number);
+              return cell.value as string;
+            },
+            targetData,
+            spreadSheetMapping.mapping,
+            makeDefaultMappingStrategyContext(
+              crudOptions?.selectFetch,
+              declarativeMappings,
+            ),
+          );
+          allMappedData.push(mappedData);
+        } catch (e) {
+          console.warn("failed to map row", row, e);
+        }
       }
     }
     setRawMappedData(allMappedData);
@@ -607,8 +746,6 @@ export const GoogleSpeadSheetWorkSheetView: FC<
     setRawMappedData,
     spreadSheetMapping,
   ]);
-
-
 
   return loaded ? (
     <Box sx={{ flex: 1 }}>
@@ -627,12 +764,16 @@ export const GoogleSpeadSheetWorkSheetView: FC<
         <Grid item>
           <FormControl>
             <Select
-              label={'Select Mapping'}
+              label={"Select Mapping"}
               value={selectedMapping}
               onChange={(e) => setSelectedMapping(e.target.value)}
             >
               {mappingsAvailable.map((mapping) => {
-                return <MenuItem key={mapping} value={mapping}>{mapping}</MenuItem>
+                return (
+                  <MenuItem key={mapping} value={mapping}>
+                    {mapping}
+                  </MenuItem>
+                );
               })}
             </Select>
           </FormControl>

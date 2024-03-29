@@ -327,8 +327,8 @@ export const locationDeclarativeMapping: DeclarativeMappings = [
     },
     target: {
       path: "idAuthority.@id",
-    }
-  }
+    },
+  },
 ];
 
 export const event2exhibitionSeriesDeclarativeMapping: DeclarativeMappings = [
@@ -338,7 +338,7 @@ export const event2exhibitionSeriesDeclarativeMapping: DeclarativeMappings = [
     },
     target: {
       path: "title",
-    }
+    },
   },
   {
     source: {
@@ -346,7 +346,7 @@ export const event2exhibitionSeriesDeclarativeMapping: DeclarativeMappings = [
     },
     target: {
       path: "idAuthority.@id",
-    }
+    },
   },
   {
     source: {
@@ -360,9 +360,9 @@ export const event2exhibitionSeriesDeclarativeMapping: DeclarativeMappings = [
         id: "concatenate",
         options: {
           separator: "\n",
-        }
-      }
-    }
+        },
+      },
+    },
   },
   {
     source: {
@@ -371,7 +371,7 @@ export const event2exhibitionSeriesDeclarativeMapping: DeclarativeMappings = [
     target: {
       path: "location",
     },
-    mapping:{
+    mapping: {
       strategy: {
         id: "createEntity",
         options: {
@@ -399,9 +399,9 @@ export const event2exhibitionSeriesDeclarativeMapping: DeclarativeMappings = [
           },
         },
       },
-    }
-  }
-]
+    },
+  },
+];
 
 export const occupationDeclarativeMapping: DeclarativeMappings = [
   {
@@ -551,8 +551,8 @@ export const personDeclarativeMapping: DeclarativeMappings = [
     },
     target: {
       path: "idAuthority.@id",
-    }
-  }
+    },
+  },
 ];
 
 export const corporateBody2PlaceDeclarativeMapping: DeclarativeMappings = [
@@ -573,7 +573,7 @@ export const corporateBody2PlaceDeclarativeMapping: DeclarativeMappings = [
     },
     target: {
       path: "idAuthority.@id",
-    }
+    },
   },
   {
     source: {
@@ -604,14 +604,14 @@ export const corporateBody2PlaceDeclarativeMapping: DeclarativeMappings = [
                 },
                 target: {
                   path: "idAuthority.@id",
-                }
-              }
-            ]
-          }
-        }
-      }
-    }
-  }
+                },
+              },
+            ],
+          },
+        },
+      },
+    },
+  },
 ];
 export const corporateBodyDeclarativeMapping: DeclarativeMappings = [
   {

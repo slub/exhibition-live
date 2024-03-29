@@ -13,7 +13,7 @@ import { PrimaryFieldResults } from "../../utils/types";
 import { EntityDetailCard } from "./EntityDetailCard";
 import { useTypeIRIFromEntity } from "../../state";
 import { useTranslation } from "next-i18next";
-import {PrimaryField} from "@slub/edb-core-types";
+import { PrimaryField } from "@slub/edb-core-types";
 
 type EntityDetailElementProps = {
   typeIRI: string | undefined;

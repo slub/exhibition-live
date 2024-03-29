@@ -24,7 +24,11 @@ import {
 } from "@jsonforms/core";
 import { withJsonFormsControlProps } from "@jsonforms/react";
 import { primaryFields, typeIRItoTypeName } from "../config";
-import {useGlobalSearch, useKeyEventForSimilarityFinder, useRightDrawerState} from "../state";
+import {
+  useGlobalSearch,
+  useKeyEventForSimilarityFinder,
+  useRightDrawerState,
+} from "../state";
 
 interface MuiTextInputProps {
   muiInputProps?: InputProps["inputProps"];
@@ -80,15 +84,21 @@ export const PrimaryFieldText = React.memo(
       borderRadius: "50%",
     };
 
-    const { setOpen: setRightDrawerOpen } = useRightDrawerState()
+    const { setOpen: setRightDrawerOpen } = useRightDrawerState();
 
     const { setPath, setTypeName } = useGlobalSearch();
     const handleFocus = useCallback(() => {
       if (!config?.typeIRI || !config.formsPath) return;
       setPath(config.formsPath);
       setTypeName(typeIRItoTypeName(config.typeIRI as string));
-      setRightDrawerOpen(true)
-    }, [config?.typeIRI, config?.formsPath, setPath, setTypeName, setRightDrawerOpen]);
+      setRightDrawerOpen(true);
+    }, [
+      config?.typeIRI,
+      config?.formsPath,
+      setPath,
+      setTypeName,
+      setRightDrawerOpen,
+    ]);
 
     const handleKeyUp = useKeyEventForSimilarityFinder();
 
@@ -106,7 +116,11 @@ export const PrimaryFieldText = React.memo(
           autoFocus={appliedUiSchemaOptions.focus}
           multiline={appliedUiSchemaOptions.multi}
           fullWidth={!appliedUiSchemaOptions.trim || maxLength === undefined}
-          inputProps={{ ...inputProps, onFocus: handleFocus, onKeyUp: handleKeyUp }}
+          inputProps={{
+            ...inputProps,
+            onFocus: handleFocus,
+            onKeyUp: handleKeyUp,
+          }}
           error={!isValid}
           onPointerEnter={onPointerEnter}
           onPointerLeave={onPointerLeave}

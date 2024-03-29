@@ -1,20 +1,24 @@
-import {Resolve} from "@jsonforms/core";
-import {Check, NoteAdd, Storage as KnowledgebaseIcon} from "@mui/icons-material";
+import { Resolve } from "@jsonforms/core";
 import {
-    Badge,
-    Box,
-    Button,
-    Divider,
-    Grid,
-    Hidden,
-    IconButton,
-    List,
-    Stack,
-    TextField,
-    TextFieldProps
+  Check,
+  NoteAdd,
+  Storage as KnowledgebaseIcon,
+} from "@mui/icons-material";
+import {
+  Badge,
+  Box,
+  Button,
+  Divider,
+  Grid,
+  Hidden,
+  IconButton,
+  List,
+  Stack,
+  TextField,
+  TextFieldProps,
 } from "@mui/material";
 import ClassicResultListWrapper from "./result/ClassicResultListWrapper";
-import {JSONSchema7} from "json-schema";
+import { JSONSchema7 } from "json-schema";
 import * as React from "react";
 import {
   FunctionComponent,
@@ -23,37 +27,48 @@ import {
   useMemo,
   useState,
 } from "react";
-import {v4 as uuidv4} from "uuid";
+import { v4 as uuidv4 } from "uuid";
 
-import {declarativeMappings} from "../config/lobidMappings";
-import {useSettings} from "../state/useLocalSettings";
-import {Img} from "../utils/image/Img";
-import {mapByConfig} from "../utils/mapping/mapByConfig";
+import { declarativeMappings } from "../config/lobidMappings";
+import { useSettings } from "../state/useLocalSettings";
+import { Img } from "../utils/image/Img";
+import { mapByConfig } from "../utils/mapping/mapByConfig";
 import {
   DeclarativeMapping,
   StrategyContext,
 } from "../utils/mapping/mappingStrategies";
-import {defaultPrefix, sladb, slent} from "./formConfigs";
-import {gndEntryFromSuggestion, gndEntryWithMainInfo} from "./lobid/LobidSearchTable";
-import {findEntityByAuthorityIRI, findEntityByClass} from "../utils/discover";
-import {useGlobalCRUDOptions} from "../state/useGlobalCRUDOptions";
-import {mapAbstractDataUsingAI, mapDataUsingAI} from "../utils/ai";
-import {useGlobalSearch, useLoadQuery, useModalRegistry, useSimilarityFinderState} from "../state";
-import {useTranslation} from "next-i18next";
-import {searchEntityByLabel} from "../utils/discover/searchEntityByLabel";
-import {primaryFields, typeIRItoTypeName} from "../config";
+import { defaultPrefix, sladb, slent } from "./formConfigs";
+import {
+  gndEntryFromSuggestion,
+  gndEntryWithMainInfo,
+} from "./lobid/LobidSearchTable";
+import { findEntityByAuthorityIRI, findEntityByClass } from "../utils/discover";
+import { useGlobalCRUDOptions } from "../state/useGlobalCRUDOptions";
+import { mapAbstractDataUsingAI, mapDataUsingAI } from "../utils/ai";
+import {
+  useGlobalSearch,
+  useLoadQuery,
+  useModalRegistry,
+  useSimilarityFinderState,
+} from "../state";
+import { useTranslation } from "next-i18next";
+import { searchEntityByLabel } from "../utils/discover/searchEntityByLabel";
+import { primaryFields, typeIRItoTypeName } from "../config";
 import NiceModal from "@ebay/nice-modal-react";
-import {EditEntityModal} from "./edit/EditEntityModal";
-import {PrimaryField} from "../utils/types";
+import { EditEntityModal } from "./edit/EditEntityModal";
+import { PrimaryField } from "../utils/types";
 import ClassicResultListItem from "./result/ClassicResultListItem";
-import {EntityDetailElement} from "./show";
-import {findEntityWithinLobid, findEntityWithinLobidByIRI} from "../utils/lobid/findEntityWithinLobid";
+import { EntityDetailElement } from "./show";
+import {
+  findEntityWithinLobid,
+  findEntityWithinLobidByIRI,
+} from "../utils/lobid/findEntityWithinLobid";
 import LobidAllPropTable from "./lobid/LobidAllPropTable";
 import WikidataAllPropTable from "./wikidata/WikidataAllPropTable";
 import ClassicEntityCard from "./lobid/ClassicEntityCard";
-import {debounce} from "lodash";
-import {filterUndefOrNull} from "@slub/edb-core-utils";
-import {useQuery, useQueryClient} from "@tanstack/react-query";
+import { debounce } from "lodash";
+import { filterUndefOrNull } from "@slub/edb-core-utils";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import useExtendedSchema from "../state/useExtendedSchema";
 
 // @ts-ignore
@@ -76,7 +91,7 @@ type SelectedEntity = {
   source: KnowledgeSources;
 };
 const getDefaultLabelKey = (typeIRI?: string) => {
-  const typeName = typeIRItoTypeName(typeIRI)
+  const typeName = typeIRItoTypeName(typeIRI);
   const fieldDefinitions = primaryFields[typeName] as PrimaryField | undefined;
   return fieldDefinitions?.label || "title";
 };
@@ -118,7 +133,7 @@ type FindOptions = {
   page?: number;
   offset?: number;
   pageSize?: number;
-}
+};
 
 type KnowledgeBaseDescription = {
   id: KnowledgeSources;
@@ -126,276 +141,361 @@ type KnowledgeBaseDescription = {
   label: string;
   description: string;
   icon: string | React.ReactNode;
-  find: (searchString: string, typeIRI: string, findOptions?: FindOptions) => Promise<any[]>;
+  find: (
+    searchString: string,
+    typeIRI: string,
+    findOptions?: FindOptions,
+  ) => Promise<any[]>;
   detailRenderer?: (id: string) => React.ReactNode;
-  listItemRenderer?: (entry: any, idx: number, typeIRI: string, selected: boolean, onSelect?: (id: string, index: number) => void, onAccept?: (id: string, entry: any) => void) => React.ReactNode;
-
-}
+  listItemRenderer?: (
+    entry: any,
+    idx: number,
+    typeIRI: string,
+    selected: boolean,
+    onSelect?: (id: string, index: number) => void,
+    onAccept?: (id: string, entry: any) => void,
+  ) => React.ReactNode;
+};
 
 const SearchFieldWithBadges = ({
-                                 searchString,
-                                 typeIRI,
-                                 onSearchStringChange,
-                                 selectedKnowledgeSources,
-                                 toggleKnowledgeSource,
-                                 knowledgeBases,
-                                 ...rest
-                               }: {
-  searchString: string,
-  typeIRI: string,
-  onSearchStringChange: (value: string) => void,
-  knowledgeBases: KnowledgeBaseDescription[],
-  selectedKnowledgeSources: string[],
-  toggleKnowledgeSource?: (source: string) => void
+  searchString,
+  typeIRI,
+  onSearchStringChange,
+  selectedKnowledgeSources,
+  toggleKnowledgeSource,
+  knowledgeBases,
+  ...rest
+}: {
+  searchString: string;
+  typeIRI: string;
+  onSearchStringChange: (value: string) => void;
+  knowledgeBases: KnowledgeBaseDescription[];
+  selectedKnowledgeSources: string[];
+  toggleKnowledgeSource?: (source: string) => void;
 } & Partial<TextFieldProps>) => {
-  const typeName = useMemo(() => typeIRItoTypeName(typeIRI), [typeIRI])
-  const {t} = useTranslation()
-  return <Grid
-    container
-    spacing={2}
-    sx={{
-      m: 2,
-      px: 2,
-      py: 1,
-      width: "auto",
-      border: 1,
-      borderColor: "primary.main",
-      borderRadius: "4px",
-    }}
-  >
-    <Box sx={{flexGrow: 1}}>
-      <TextField
-        variant={"standard"}
-        fullWidth={true}
-        value={searchString || ""}
-        onChange={(e) =>
-          onSearchStringChange(e.currentTarget.value)
-        }
-        label={`Suche in ${selectedKnowledgeSources.join(",")} nach ${t(
-          typeName,
-        )} `}
-        {...rest}
-      />
-    </Box>
-    <Box
+  const typeName = useMemo(() => typeIRItoTypeName(typeIRI), [typeIRI]);
+  const { t } = useTranslation();
+  return (
+    <Grid
+      container
+      spacing={2}
       sx={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
+        m: 2,
+        px: 2,
+        py: 1,
+        width: "auto",
+        border: 1,
+        borderColor: "primary.main",
+        borderRadius: "4px",
       }}
     >
-      <Divider sx={{height: 28, m: 0.5}} orientation="vertical"/>
-      {
-        knowledgeBases.map(({id, label, icon}) => {
-          return <Badge
-            key={id}
-            color="primary"
-            sx={{m: 0.5}}
-            anchorOrigin={{
-              vertical: "bottom",
-              horizontal: "right",
-            }}
-            variant="dot"
-            overlap="circular"
-            invisible={!selectedKnowledgeSources?.includes(id)}
-          >
-            {icon}
-          </Badge>
-        })
-      }
-    </Box>
-  </Grid>
-}
+      <Box sx={{ flexGrow: 1 }}>
+        <TextField
+          variant={"standard"}
+          fullWidth={true}
+          value={searchString || ""}
+          onChange={(e) => onSearchStringChange(e.currentTarget.value)}
+          label={`Suche in ${selectedKnowledgeSources.join(",")} nach ${t(
+            typeName,
+          )} `}
+          {...rest}
+        />
+      </Box>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
+        {knowledgeBases.map(({ id, label, icon }) => {
+          return (
+            <Badge
+              key={id}
+              color="primary"
+              sx={{ m: 0.5 }}
+              anchorOrigin={{
+                vertical: "bottom",
+                horizontal: "right",
+              }}
+              variant="dot"
+              overlap="circular"
+              invisible={!selectedKnowledgeSources?.includes(id)}
+            >
+              {icon}
+            </Badge>
+          );
+        })}
+      </Box>
+    </Grid>
+  );
+};
 
 type ListItemRendererProps = {
-    data: any
-    idx: number
-    typeIRI: string
-    selected: boolean
-    onSelect?: (id: string, index: number) => void
-    onAccept?: (id: string, data: any) => void
-}
+  data: any;
+  idx: number;
+  typeIRI: string;
+  selected: boolean;
+  onSelect?: (id: string, index: number) => void;
+  onAccept?: (id: string, data: any) => void;
+};
 
-const GNDListItemRenderer = ({data: initialData, idx, typeIRI, selected , onSelect, onAccept}: ListItemRendererProps) => {
-    const { id } = initialData
-    const queryClient = useQueryClient()
-    const { data} = useQuery(['entityDetail', id], async () => {
-        const rawEntry = await findEntityWithinLobidByIRI(id);
-        return {
-            ...gndEntryWithMainInfo(rawEntry),
-            secondary: initialData.secondary,
-        }
-    }, {
-        initialData,
-        enabled: selected
-    } )
+const GNDListItemRenderer = ({
+  data: initialData,
+  idx,
+  typeIRI,
+  selected,
+  onSelect,
+  onAccept,
+}: ListItemRendererProps) => {
+  const { id } = initialData;
+  const queryClient = useQueryClient();
+  const { data } = useQuery(
+    ["entityDetail", id],
+    async () => {
+      const rawEntry = await findEntityWithinLobidByIRI(id);
+      return {
+        ...gndEntryWithMainInfo(rawEntry),
+        secondary: initialData.secondary,
+      };
+    },
+    {
+      initialData,
+      enabled: selected,
+    },
+  );
 
-    const handleAccept = useCallback(async () => {
-        const finalData = await queryClient.fetchQuery(['entityDetail', id], async () => gndEntryWithMainInfo(await findEntityWithinLobidByIRI(id)))
-        onAccept && onAccept(id, finalData)
-    }, [onAccept, id, queryClient]);
+  const handleAccept = useCallback(async () => {
+    const finalData = await queryClient.fetchQuery(
+      ["entityDetail", id],
+      async () => gndEntryWithMainInfo(await findEntityWithinLobidByIRI(id)),
+    );
+    onAccept && onAccept(id, finalData);
+  }, [onAccept, id, queryClient]);
 
-    const {label, avatar, secondary} = data;
-    return <ClassicResultListItem
-        key={id}
-        id={id}
-        index={idx}
-        onSelected={onSelect}
-        label={label}
-        secondary={secondary}
-        avatar={avatar}
-        altAvatar={String(idx)}
-        selected={selected}
-        onEnter={handleAccept}
-        listItemProps={{
-            secondaryAction: (
-                <Stack direction="row" spacing={1}>
-                    <IconButton onClick={handleAccept}>
-                        <Check/>
-                    </IconButton>
-                </Stack>)
-        }}
-        popperChildren={
-            <ClassicEntityCard
-                sx={{
-                    maxWidth: "30em",
-                    maxHeight: "80vh",
-                    overflow: "auto",
-                }}
-                id={id}
-                data={data}
-                onAcceptItem={handleAccept}
-                acceptTitle={"Eintrag übernehmen"}
-                detailView={
-                    <>
-                        <LobidAllPropTable
-                            allProps={data.allProps}
-                            disableContextMenu
-                        />
-                        {(data.allProps?.sameAs || [])
-                            .filter(({id}) =>
-                                id.startsWith("http://www.wikidata.org/entity/"),
-                            )
-                            .map(({id}) => (
-                                <WikidataAllPropTable key={id} thingIRI={id}/>
-                            ))}
-                    </>
-                }
-            />
-        }
+  const { label, avatar, secondary } = data;
+  return (
+    <ClassicResultListItem
+      key={id}
+      id={id}
+      index={idx}
+      onSelected={onSelect}
+      label={label}
+      secondary={secondary}
+      avatar={avatar}
+      altAvatar={String(idx)}
+      selected={selected}
+      onEnter={handleAccept}
+      listItemProps={{
+        secondaryAction: (
+          <Stack direction="row" spacing={1}>
+            <IconButton onClick={handleAccept}>
+              <Check />
+            </IconButton>
+          </Stack>
+        ),
+      }}
+      popperChildren={
+        <ClassicEntityCard
+          sx={{
+            maxWidth: "30em",
+            maxHeight: "80vh",
+            overflow: "auto",
+          }}
+          id={id}
+          data={data}
+          onAcceptItem={handleAccept}
+          acceptTitle={"Eintrag übernehmen"}
+          detailView={
+            <>
+              <LobidAllPropTable allProps={data.allProps} disableContextMenu />
+              {(data.allProps?.sameAs || [])
+                .filter(({ id }) =>
+                  id.startsWith("http://www.wikidata.org/entity/"),
+                )
+                .map(({ id }) => (
+                  <WikidataAllPropTable key={id} thingIRI={id} />
+                ))}
+            </>
+          }
+        />
+      }
     />
-}
+  );
+};
 
-const KBListItemRenderer = ({data, idx, typeIRI, selected, onSelect, onAccept}: ListItemRendererProps) => {
+const KBListItemRenderer = ({
+  data,
+  idx,
+  typeIRI,
+  selected,
+  onSelect,
+  onAccept,
+}: ListItemRendererProps) => {
+  const { id, label, avatar, secondary } = data;
 
-    const {id, label, avatar, secondary} = data;
-
-
-    const { crudOptions } = useGlobalCRUDOptions();
-    const typeName = useMemo(() => typeIRItoTypeName(typeIRI), [typeIRI]);
-    const loadedSchema = useExtendedSchema({ typeName, classIRI: typeIRI });
-    const loadEntity = useLoadQuery(defaultPrefix, crudOptions, "load");
-    const handleAccept = useCallback(async () => {
-        const finalData = (await loadEntity(id, typeIRI, loadedSchema))?.document
-        if (!finalData) {
-            console.warn("could not load entity")
-            return
-        }
-        onAccept && onAccept(id, finalData)
-    }, [onAccept, id, loadEntity, typeIRI, loadedSchema]);
-
-    return <ClassicResultListItem
-        key={id}
-        id={id}
-        index={idx}
-        onSelected={onSelect}
-        label={label}
-        secondary={secondary}
-        avatar={avatar}
-        altAvatar={String(idx)}
-        selected={selected}
-        onEnter={handleAccept}
-        listItemProps={{
-            secondaryAction: (
-                <Stack direction="row" spacing={1}>
-                    <IconButton onClick={handleAccept}>
-                        <Check/>
-                    </IconButton>
-                </Stack>)
-        }}
-        popperChildren={
-            <EntityDetailElement
-                sx={{
-                    maxWidth: "30em",
-                    maxHeight: "80vh",
-                    overflow: "auto",
-                }}
-                entityIRI={id}
-                typeIRI={typeIRI}
-                data={undefined}
-                cardActionChildren={null}
-                readonly
-            />
-        }
-    />
-}
-const useKnowledgeBases = () => {
-  const {crudOptions} = useGlobalCRUDOptions();
-  const kbs: KnowledgeBaseDescription[] = useMemo(() => [
-      {
-          id: "kb",
-          label: "Lokale Datenbank",
-          description: "Datenbank der Ausstellung",
-          icon: <KnowledgebaseIcon/>,
-          find: async (searchString: string, typeIRI, findOptions?: FindOptions) => {
-              return (await findEntityByClass(searchString, typeIRI, crudOptions.selectFetch, findOptions?.limit || 10))
-                  .map(({name = "", value}: { name: string; value: string }) => {
-                      return {
-                          label: name,
-                          id: value,
-                      };
-                  })
-          },
-          listItemRenderer: (entry: any, idx: number, typeIRI: string, selected, onSelect, onAccept) =>
-              <KBListItemRenderer data={entry} idx={idx} typeIRI={typeIRI} selected={selected} onSelect={onSelect}
-                                  onAccept={onAccept}/>
-      }, {
-      id: "gnd",
-      authorityIRI: "http://d-nb.info/gnd",
-      label: "GND",
-      description: "Gemeinsame Normdatei",
-      icon: <Img
-        alt={"gnd logo"}
-        width={24}
-        height={24}
-        src={"Icons/gnd-logo.png"}
-      />,
-      find: async (searchString: string, typeIRI, findOptions?: FindOptions) => {
-        return filterUndefOrNull(await findEntityWithinLobid(searchString, typeIRItoTypeName(typeIRI), findOptions?.limit || 10, "json:suggest"))?.map(
-          (allProps: any) => gndEntryFromSuggestion(allProps),
-        )
-      },
-      listItemRenderer: (data: any, idx: number, typeIRI: string, selected, onSelect, onAccept) =>
-          <GNDListItemRenderer data={data} idx={idx} typeIRI={typeIRI} selected={selected} onSelect={onSelect} onAccept={onAccept}/>
+  const { crudOptions } = useGlobalCRUDOptions();
+  const typeName = useMemo(() => typeIRItoTypeName(typeIRI), [typeIRI]);
+  const loadedSchema = useExtendedSchema({ typeName, classIRI: typeIRI });
+  const loadEntity = useLoadQuery(defaultPrefix, crudOptions, "load");
+  const handleAccept = useCallback(async () => {
+    const finalData = (await loadEntity(id, typeIRI, loadedSchema))?.document;
+    if (!finalData) {
+      console.warn("could not load entity");
+      return;
     }
-  ], [crudOptions?.selectFetch])
-  return kbs
-}
+    onAccept && onAccept(id, finalData);
+  }, [onAccept, id, loadEntity, typeIRI, loadedSchema]);
 
+  return (
+    <ClassicResultListItem
+      key={id}
+      id={id}
+      index={idx}
+      onSelected={onSelect}
+      label={label}
+      secondary={secondary}
+      avatar={avatar}
+      altAvatar={String(idx)}
+      selected={selected}
+      onEnter={handleAccept}
+      listItemProps={{
+        secondaryAction: (
+          <Stack direction="row" spacing={1}>
+            <IconButton onClick={handleAccept}>
+              <Check />
+            </IconButton>
+          </Stack>
+        ),
+      }}
+      popperChildren={
+        <EntityDetailElement
+          sx={{
+            maxWidth: "30em",
+            maxHeight: "80vh",
+            overflow: "auto",
+          }}
+          entityIRI={id}
+          typeIRI={typeIRI}
+          data={undefined}
+          cardActionChildren={null}
+          readonly
+        />
+      }
+    />
+  );
+};
+const useKnowledgeBases = () => {
+  const { crudOptions } = useGlobalCRUDOptions();
+  const kbs: KnowledgeBaseDescription[] = useMemo(
+    () => [
+      {
+        id: "kb",
+        label: "Lokale Datenbank",
+        description: "Datenbank der Ausstellung",
+        icon: <KnowledgebaseIcon />,
+        find: async (
+          searchString: string,
+          typeIRI,
+          findOptions?: FindOptions,
+        ) => {
+          return (
+            await findEntityByClass(
+              searchString,
+              typeIRI,
+              crudOptions.selectFetch,
+              findOptions?.limit || 10,
+            )
+          ).map(({ name = "", value }: { name: string; value: string }) => {
+            return {
+              label: name,
+              id: value,
+            };
+          });
+        },
+        listItemRenderer: (
+          entry: any,
+          idx: number,
+          typeIRI: string,
+          selected,
+          onSelect,
+          onAccept,
+        ) => (
+          <KBListItemRenderer
+            data={entry}
+            idx={idx}
+            typeIRI={typeIRI}
+            selected={selected}
+            onSelect={onSelect}
+            onAccept={onAccept}
+          />
+        ),
+      },
+      {
+        id: "gnd",
+        authorityIRI: "http://d-nb.info/gnd",
+        label: "GND",
+        description: "Gemeinsame Normdatei",
+        icon: (
+          <Img
+            alt={"gnd logo"}
+            width={24}
+            height={24}
+            src={"Icons/gnd-logo.png"}
+          />
+        ),
+        find: async (
+          searchString: string,
+          typeIRI,
+          findOptions?: FindOptions,
+        ) => {
+          return filterUndefOrNull(
+            await findEntityWithinLobid(
+              searchString,
+              typeIRItoTypeName(typeIRI),
+              findOptions?.limit || 10,
+              "json:suggest",
+            ),
+          )?.map((allProps: any) => gndEntryFromSuggestion(allProps));
+        },
+        listItemRenderer: (
+          data: any,
+          idx: number,
+          typeIRI: string,
+          selected,
+          onSelect,
+          onAccept,
+        ) => (
+          <GNDListItemRenderer
+            data={data}
+            idx={idx}
+            typeIRI={typeIRI}
+            selected={selected}
+            onSelect={onSelect}
+            onAccept={onAccept}
+          />
+        ),
+      },
+    ],
+    [crudOptions?.selectFetch],
+  );
+  return kbs;
+};
 
 const SimilarityFinder: FunctionComponent<Props> = ({
-                                                      finderId,
-                                                      data,
-                                                      classIRI: preselectedClassIRI,
-                                                      onEntityIRIChange,
-                                                      onExistingEntityAccepted,
-                                                      onMappedDataAccepted,
-                                                      searchOnDataPath,
-                                                      search,
-                                                      jsonSchema,
-                                                      hideFooter
-                                                    }) => {
-  const {openai} = useSettings();
+  finderId,
+  data,
+  classIRI: preselectedClassIRI,
+  onEntityIRIChange,
+  onExistingEntityAccepted,
+  onMappedDataAccepted,
+  searchOnDataPath,
+  search,
+  jsonSchema,
+  hideFooter,
+}) => {
+  const { openai } = useSettings();
   const [selectedKnowledgeSources, setSelectedKnowledgeSources] = useState<
     KnowledgeSources[]
   >(["kb", "gnd"]);
@@ -407,16 +507,24 @@ const SimilarityFinder: FunctionComponent<Props> = ({
     setSearch,
   } = useGlobalSearch();
 
-  const {resetElementIndex, elementIndex, setElementCount, setElementIndex, activeFinderIds, addActiveFinder, removeActiveFinder} = useSimilarityFinderState();
+  const {
+    resetElementIndex,
+    elementIndex,
+    setElementCount,
+    setElementIndex,
+    activeFinderIds,
+    addActiveFinder,
+    removeActiveFinder,
+  } = useSimilarityFinderState();
   useEffect(() => {
     resetElementIndex();
-    addActiveFinder(finderId)
+    addActiveFinder(finderId);
     return () => {
-        removeActiveFinder(finderId)
-    }
+      removeActiveFinder(finderId);
+    };
   }, [resetElementIndex, addActiveFinder, removeActiveFinder, finderId]);
 
-  const {t} = useTranslation();
+  const { t } = useTranslation();
   const handleSearchStringChange = useCallback(
     (value: string) => {
       setSearch(value);
@@ -433,30 +541,54 @@ const SimilarityFinder: FunctionComponent<Props> = ({
   );
   const knowledgeBases: KnowledgeBaseDescription[] = useKnowledgeBases();
 
-  const [searchResults, setSearchResults] = useState<Record<KnowledgeSources, any[]>>(
-    Object.fromEntries(knowledgeBases.map(kb => [kb.id, []])) as Record<KnowledgeSources, any[]>
-  )
+  const [searchResults, setSearchResults] = useState<
+    Record<KnowledgeSources, any[]>
+  >(
+    Object.fromEntries(knowledgeBases.map((kb) => [kb.id, []])) as Record<
+      KnowledgeSources,
+      any[]
+    >,
+  );
 
   /* eslint-disable react-hooks/exhaustive-deps */
-  const searchAll = useCallback(debounce((searchString: string, typeIRI: string, findOptions?: FindOptions) => {
-      return Promise.all(knowledgeBases.map(async (kb) => {
-        return {
-          [kb.id]: selectedKnowledgeSources.includes(kb.id) ? await kb.find(searchString, typeIRI, findOptions) : []
-        }
-      })).then((results) => {
-        const searchResults = (Object.assign({}, ...results)) as Record<KnowledgeSources, any[]>
-        setSearchResults(searchResults)
-        const resultCount = Object.values(searchResults).reduce((acc, list = []) => acc + list.length, 0)
-        setElementCount(resultCount)
-      })
-    }, 500)
-    , [knowledgeBases, selectedKnowledgeSources, setSearchResults, setElementCount])
+  const searchAll = useCallback(
+    debounce(
+      (searchString: string, typeIRI: string, findOptions?: FindOptions) => {
+        return Promise.all(
+          knowledgeBases.map(async (kb) => {
+            return {
+              [kb.id]: selectedKnowledgeSources.includes(kb.id)
+                ? await kb.find(searchString, typeIRI, findOptions)
+                : [],
+            };
+          }),
+        ).then((results) => {
+          const searchResults = Object.assign({}, ...results) as Record<
+            KnowledgeSources,
+            any[]
+          >;
+          setSearchResults(searchResults);
+          const resultCount = Object.values(searchResults).reduce(
+            (acc, list = []) => acc + list.length,
+            0,
+          );
+          setElementCount(resultCount);
+        });
+      },
+      500,
+    ),
+    [
+      knowledgeBases,
+      selectedKnowledgeSources,
+      setSearchResults,
+      setElementCount,
+    ],
+  );
 
   useEffect(() => {
     if (!searchString || searchString.length < 1) return;
-    searchAll(searchString, preselectedClassIRI, {limit: 10})
+    searchAll(searchString, preselectedClassIRI, { limit: 10 });
   }, [searchString, preselectedClassIRI, searchAll]);
-
 
   const [typeName, setTypeName] = useState(
     typeIRItoTypeName(preselectedClassIRI),
@@ -473,13 +605,13 @@ const SimilarityFinder: FunctionComponent<Props> = ({
     (id: string | undefined, source: KnowledgeSources) => {
       !selectedKnowledgeSources?.includes(source)
         ? setSelectedKnowledgeSources(
-          (before) => [...before, source] as KnowledgeSources[],
-        )
+            (before) => [...before, source] as KnowledgeSources[],
+          )
         : setSelectedKnowledgeSources(
-          (before) => before.filter((s) => s != source) as KnowledgeSources[],
-        );
+            (before) => before.filter((s) => s != source) as KnowledgeSources[],
+          );
     },
-    [ setSelectedKnowledgeSources, selectedKnowledgeSources],
+    [setSelectedKnowledgeSources, selectedKnowledgeSources],
   );
   const handleMapAbstractAndDescUsingAI = useCallback(
     async (id: string | undefined, entryData: any) => {
@@ -501,11 +633,17 @@ const SimilarityFinder: FunctionComponent<Props> = ({
     },
     [typeName, onMappedDataAccepted, jsonSchema, openai],
   );
-  const {crudOptions} = useGlobalCRUDOptions();
+  const { crudOptions } = useGlobalCRUDOptions();
   const handleManuallyMapData = useCallback(
-    async (id: string | undefined, entryData: any, source: KnowledgeSources) => {
+    async (
+      id: string | undefined,
+      entryData: any,
+      source: KnowledgeSources,
+    ) => {
       if (!id || !entryData?.allProps) return;
-      const knowledgeBaseDescription = knowledgeBases.find(kb => kb.id === source)
+      const knowledgeBaseDescription = knowledgeBases.find(
+        (kb) => kb.id === source,
+      );
       const mappingConfig = declarativeMappings[typeName];
       if (!mappingConfig) {
         console.warn(`no mapping config for ${typeName}`);
@@ -515,8 +653,12 @@ const SimilarityFinder: FunctionComponent<Props> = ({
         const mappingContext = makeDefaultMappingStrategyContext(
           crudOptions?.selectFetch,
           declarativeMappings,
-        )
-        const existingEntry = await mappingContext.getPrimaryIRIBySecondaryIRI(id, knowledgeBaseDescription?.authorityIRI || "urn:local", classIRI)
+        );
+        const existingEntry = await mappingContext.getPrimaryIRIBySecondaryIRI(
+          id,
+          knowledgeBaseDescription?.authorityIRI || "urn:local",
+          classIRI,
+        );
         const dataFromGND = await mapByConfig(
           entryData.allProps,
           {},
@@ -525,7 +667,8 @@ const SimilarityFinder: FunctionComponent<Props> = ({
         );
         if (existingEntry) {
           onEntityIRIChange && onEntityIRIChange(existingEntry);
-          onExistingEntityAccepted && onExistingEntityAccepted(existingEntry, dataFromGND);
+          onExistingEntityAccepted &&
+            onExistingEntityAccepted(existingEntry, dataFromGND);
           return;
         }
 
@@ -537,14 +680,21 @@ const SimilarityFinder: FunctionComponent<Props> = ({
           lastNormUpdate: new Date().toISOString(),
         };
         onMappedDataAccepted &&
-        onMappedDataAccepted({...dataFromGND, ...inject});
+          onMappedDataAccepted({ ...dataFromGND, ...inject });
       } catch (e) {
         console.error("could not map from authority", e);
       }
     },
-    [classIRI, typeName, onMappedDataAccepted, onExistingEntityAccepted, onEntityIRIChange, crudOptions?.selectFetch, knowledgeBases],
+    [
+      classIRI,
+      typeName,
+      onMappedDataAccepted,
+      onExistingEntityAccepted,
+      onEntityIRIChange,
+      crudOptions?.selectFetch,
+      knowledgeBases,
+    ],
   );
-
 
   const handleEntityChange = useCallback(
     (id: string | undefined, data: any) => {
@@ -566,11 +716,15 @@ const SimilarityFinder: FunctionComponent<Props> = ({
         }
       }
     },
-    [handleManuallyMapData, handleMapUsingAI, handleEntityChange, selectedKnowledgeSources],
+    [
+      handleManuallyMapData,
+      handleMapUsingAI,
+      handleEntityChange,
+      selectedKnowledgeSources,
+    ],
   );
 
-
-  const {cycleThroughElements} = useSimilarityFinderState();
+  const { cycleThroughElements } = useSimilarityFinderState();
   const handleKeyUp = useCallback(
     (ev: React.KeyboardEvent<HTMLInputElement>) => {
       if (ev.key === "ArrowUp" || ev.key === "ArrowDown") {
@@ -581,33 +735,32 @@ const SimilarityFinder: FunctionComponent<Props> = ({
     [cycleThroughElements],
   );
   const [margin, setMargin] = useState(0);
-  const [ref, setRef] = useState<any | undefined>()
+  const [ref, setRef] = useState<any | undefined>();
   useEffect(() => {
     if (ref) {
       setMargin(ref.clientHeight);
     }
   }, [ref]);
-  const { registerModal } = useModalRegistry()
+  const { registerModal } = useModalRegistry();
 
   const showEditDialog = useCallback(() => {
     const defaultLabelKey = getDefaultLabelKey(preselectedClassIRI);
-      const newItem = {
-          "@id": slent(uuidv4()).value,
-          "@type": preselectedClassIRI,
-          [defaultLabelKey]: searchString,
-      }
-    const modalID = `edit-${newItem["@type"]}-${newItem["@id"]}`
-    registerModal(modalID, EditEntityModal)
+    const newItem = {
+      "@id": slent(uuidv4()).value,
+      "@type": preselectedClassIRI,
+      [defaultLabelKey]: searchString,
+    };
+    const modalID = `edit-${newItem["@type"]}-${newItem["@id"]}`;
+    registerModal(modalID, EditEntityModal);
     NiceModal.show(modalID, {
       entityIRI: newItem["@id"],
       typeIRI: newItem["@type"],
       data: newItem,
-      disableLoad: true
-    }).then(({entityIRI, data}) => {
-      handleEntityChange(entityIRI, data)
-    })
-  }, [registerModal, preselectedClassIRI, searchString, handleEntityChange])
-
+      disableLoad: true,
+    }).then(({ entityIRI, data }) => {
+      handleEntityChange(entityIRI, data);
+    });
+  }, [registerModal, preselectedClassIRI, searchString, handleEntityChange]);
 
   /**
    * in order to give each element an index across all knowledge sources we need to
@@ -615,81 +768,117 @@ const SimilarityFinder: FunctionComponent<Props> = ({
    * */
   const resultsWithIndex = useMemo(() => {
     let idx = 0;
-    const intermediate = Object.entries(searchResults).reduce((acc, [key, value]) =>
-        [...acc, ...value.map((entry) => {
-            idx++;
-            return {entry, idx, key}
-        })], [])
-    return Object.fromEntries( Object.keys(searchResults).map(kb => [kb, intermediate.filter(({key}) => key === kb)]))
-  }, [searchResults])
+    const intermediate = Object.entries(searchResults).reduce(
+      (acc, [key, value]) => [
+        ...acc,
+        ...value.map((entry) => {
+          idx++;
+          return { entry, idx, key };
+        }),
+      ],
+      [],
+    );
+    return Object.fromEntries(
+      Object.keys(searchResults).map((kb) => [
+        kb,
+        intermediate.filter(({ key }) => key === kb),
+      ]),
+    );
+  }, [searchResults]);
 
-  const finderIsActive = useMemo(() => activeFinderIds.includes(finderId) && activeFinderIds[activeFinderIds.length - 1] === finderId, [activeFinderIds, finderId]  );
+  const finderIsActive = useMemo(
+    () =>
+      activeFinderIds.includes(finderId) &&
+      activeFinderIds[activeFinderIds.length - 1] === finderId,
+    [activeFinderIds, finderId],
+  );
 
-  return finderIsActive && <div style={{overflow: 'hidden'}}>
-    <Grid container alignItems="center" direction={"column"} spacing={2}
-          style={{overflowY: "auto", marginBottom: margin}}>
-      <Grid item sx={{width: "100%"}}>
-        <SearchFieldWithBadges
-          disabled={Boolean(dataPathSearch)}
-          searchString={searchString || ""}
-          typeIRI={classIRI}
-          onSearchStringChange={handleSearchStringChange}
-          selectedKnowledgeSources={selectedKnowledgeSources}
-          knowledgeBases={knowledgeBases}
-          onKeyUp={handleKeyUp}
-        />
-      </Grid>
-      <Grid
-        item
-        sx={{
-          width: "100%",
-          height: `calc(100vh - 150px)`,
-          display: "flex",
-          flexDirection: "column" /* flexWrap: 'wrap'*/,
-        }}
-      >
-          {knowledgeBases.map((kb) => {
-              const entries = resultsWithIndex[kb.id] || []
-              return <ClassicResultListWrapper
-                key={kb.id}
-                label={kb.label}
-                selected={selectedKnowledgeSources?.includes(kb.id)}
-                hitCount={entries.length}>
+  return (
+    finderIsActive && (
+      <div style={{ overflow: "hidden" }}>
+        <Grid
+          container
+          alignItems="center"
+          direction={"column"}
+          spacing={2}
+          style={{ overflowY: "auto", marginBottom: margin }}
+        >
+          <Grid item sx={{ width: "100%" }}>
+            <SearchFieldWithBadges
+              disabled={Boolean(dataPathSearch)}
+              searchString={searchString || ""}
+              typeIRI={classIRI}
+              onSearchStringChange={handleSearchStringChange}
+              selectedKnowledgeSources={selectedKnowledgeSources}
+              knowledgeBases={knowledgeBases}
+              onKeyUp={handleKeyUp}
+            />
+          </Grid>
+          <Grid
+            item
+            sx={{
+              width: "100%",
+              height: `calc(100vh - 150px)`,
+              display: "flex",
+              flexDirection: "column" /* flexWrap: 'wrap'*/,
+            }}
+          >
+            {knowledgeBases.map((kb) => {
+              const entries = resultsWithIndex[kb.id] || [];
+              return (
+                <ClassicResultListWrapper
+                  key={kb.id}
+                  label={kb.label}
+                  selected={selectedKnowledgeSources?.includes(kb.id)}
+                  hitCount={entries.length}
+                >
                   {searchString && (
-                      <List>{entries.map(({entry, idx}) => kb.listItemRenderer(
+                    <List>
+                      {entries.map(({ entry, idx }) =>
+                        kb.listItemRenderer(
                           entry,
                           idx,
                           classIRI,
                           elementIndex === idx,
                           () => setElementIndex(idx),
-                          (id, data) => handleAccept(id, data, kb.id)))}
-                      </List>
+                          (id, data) => handleAccept(id, data, kb.id),
+                        ),
+                      )}
+                    </List>
                   )}
-          </ClassicResultListWrapper>
-        })}
-      </Grid>
-    </Grid>
-    <Hidden xsUp={hideFooter}>
-      <Grid
-        container
-        ref={setRef}
-        alignItems="center"
-        justifyContent="center"
-        direction={"column"}
-        sx={{
-          position: "absolute",
-          bottom: 0,
-          right: 0,
-          left: 0,
-          backgroundColor: "white"
-        }}
-      >
-        <Button variant="contained" color={"primary"} startIcon={<NoteAdd/>} onClick={showEditDialog}>
-          {t("create new", {item: t(typeName)})}
-        </Button>
-      </Grid>
-    </Hidden>
-  </div>
+                </ClassicResultListWrapper>
+              );
+            })}
+          </Grid>
+        </Grid>
+        <Hidden xsUp={hideFooter}>
+          <Grid
+            container
+            ref={setRef}
+            alignItems="center"
+            justifyContent="center"
+            direction={"column"}
+            sx={{
+              position: "absolute",
+              bottom: 0,
+              right: 0,
+              left: 0,
+              backgroundColor: "white",
+            }}
+          >
+            <Button
+              variant="contained"
+              color={"primary"}
+              startIcon={<NoteAdd />}
+              onClick={showEditDialog}
+            >
+              {t("create new", { item: t(typeName) })}
+            </Button>
+          </Grid>
+        </Hidden>
+      </div>
+    )
+  );
 };
 
 export default SimilarityFinder;

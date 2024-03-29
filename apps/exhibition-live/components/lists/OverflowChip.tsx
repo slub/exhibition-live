@@ -12,7 +12,11 @@ type OverflowContainerProps = {
 const OverflowText = ({ children }: { children: string }) => {
   return <Typography noWrap>{children}</Typography>;
 };
-export const OverflowChip = ({ label, entityIRI, secondary }: OverflowContainerProps) => {
+export const OverflowChip = ({
+  label,
+  entityIRI,
+  secondary,
+}: OverflowContainerProps) => {
   const [tooltipEnabled, setTooltipEnabled] = useState(false);
 
   const showDetailModal = useCallback(

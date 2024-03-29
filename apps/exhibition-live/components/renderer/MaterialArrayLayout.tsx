@@ -32,7 +32,13 @@ import {
   Resolve,
 } from "@jsonforms/core";
 import merge from "lodash/merge";
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 
 import { ArrayLayoutToolbar } from "./ArrayToolbar";
 import { useJsonForms } from "@jsonforms/react";
@@ -56,8 +62,8 @@ import { useGlobalCRUDOptions } from "../state/useGlobalCRUDOptions";
 import { useCRUDWithQueryClient } from "../state/useCRUDWithQueryClient";
 import { useSnackbar } from "notistack";
 import { ErrorObject } from "ajv";
-import {bringDefinitionToTop} from "@slub/json-schema-utils";
-import {Pulse} from "../form/utils";
+import { bringDefinitionToTop } from "@slub/json-schema-utils";
+import { Pulse } from "../form/utils";
 
 type OwnProps = {
   removeItems(path: string, toDelete: number[]): () => void;
@@ -177,8 +183,8 @@ const MaterialArrayLayoutComponent = (props: ArrayLayoutProps & {}) => {
   );
 
   useEffect(() => {
-    setFormData( irisToData(slent(uuidv4()).value, typeIRI))
-  }, [formsPath, typeIRI,setFormData]);
+    setFormData(irisToData(slent(uuidv4()).value, typeIRI));
+  }, [formsPath, typeIRI, setFormData]);
 
   return (
     <div>
@@ -275,7 +281,9 @@ const MaterialArrayLayoutComponent = (props: ArrayLayoutProps & {}) => {
                   index={index}
                   count={count}
                   path={childPath}
-                  elementDetailItemPath={appliedUiSchemaOptions.elementDetailItemPath}
+                  elementDetailItemPath={
+                    appliedUiSchemaOptions.elementDetailItemPath
+                  }
                   childLabelTemplate={
                     appliedUiSchemaOptions.elementLabelTemplate
                   }

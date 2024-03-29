@@ -1,4 +1,4 @@
-import {create} from "zustand";
+import { create } from "zustand";
 
 export type UseSimilarityFinderState = {
   elementIndex: number;
@@ -7,9 +7,9 @@ export type UseSimilarityFinderState = {
   resetElementIndex: () => void;
   setElementCount: (count: number) => void;
   setElementIndex: (index: number) => void;
-  activeFinderIds: string[]
-  addActiveFinder: (id: string) => void
-  removeActiveFinder: (id: string) => void
+  activeFinderIds: string[];
+  addActiveFinder: (id: string) => void;
+  removeActiveFinder: (id: string) => void;
 };
 
 export const useSimilarityFinderState = create<UseSimilarityFinderState>(
@@ -20,7 +20,7 @@ export const useSimilarityFinderState = create<UseSimilarityFinderState>(
     cycleThroughElements: (offset: number) => {
       const { elementIndex, elementCount } = get();
       if (elementIndex === 0 && offset < 0) return;
-      if(elementIndex === elementCount && offset > 0) return;
+      if (elementIndex === elementCount && offset > 0) return;
       const newIndex = (elementIndex + offset) % (elementCount + 1);
       set({ elementIndex: newIndex });
     },
@@ -28,11 +28,15 @@ export const useSimilarityFinderState = create<UseSimilarityFinderState>(
     setElementCount: (count: number) => set({ elementCount: count }),
     setElementIndex: (index: number) => set({ elementIndex: index }),
     addActiveFinder: (id: string) => {
-        if(get().activeFinderIds.includes(id)) return;
-        const newActiveFinderIds = [...get().activeFinderIds, id]
-        set({activeFinderIds: newActiveFinderIds})
+      if (get().activeFinderIds.includes(id)) return;
+      const newActiveFinderIds = [...get().activeFinderIds, id];
+      set({ activeFinderIds: newActiveFinderIds });
     },
-    removeActiveFinder: (id: string) => set({ activeFinderIds: get().activeFinderIds.filter(finderId => finderId !== id) }),
+    removeActiveFinder: (id: string) =>
+      set({
+        activeFinderIds: get().activeFinderIds.filter(
+          (finderId) => finderId !== id,
+        ),
+      }),
   }),
 );
-

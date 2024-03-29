@@ -25,8 +25,8 @@ import { defaultJsonldContext, defaultPrefix } from "../form/formConfigs";
 import get from "lodash/get";
 import NiceModal from "@ebay/nice-modal-react";
 import { EntityDetailModal } from "../form/show";
-import {bringDefinitionToTop} from "@slub/json-schema-utils";
-import {withEllipsis} from "../utils/typography";
+import { bringDefinitionToTop } from "@slub/json-schema-utils";
+import { withEllipsis } from "../utils/typography";
 
 type SimpleExpandPanelRendererProps = {
   data: any;
@@ -56,7 +56,7 @@ export const SimpleExpandPanelRenderer = (
     count,
     childLabelTemplate,
     elementLabelProp,
-    elementDetailItemPath
+    elementDetailItemPath,
   } = props;
   const typeIRI = schema.properties?.["@type"]?.const;
   const typeName = useMemo(
@@ -95,7 +95,10 @@ export const SimpleExpandPanelRenderer = (
     return label || data?.__label;
   }, [childLabelTemplate, elementLabelProp, data, label]);
 
-  const elementDetailItem = useMemo(() => elementDetailItemPath ?  get(data, elementDetailItemPath) : null, [elementDetailItemPath, data]);
+  const elementDetailItem = useMemo(
+    () => (elementDetailItemPath ? get(data, elementDetailItemPath) : null),
+    [elementDetailItemPath, data],
+  );
 
   const { crudOptions } = useGlobalCRUDOptions();
   const { loadQuery, saveMutation } = useCRUDWithQueryClient(
@@ -126,10 +129,20 @@ export const SimpleExpandPanelRenderer = (
   }, [saveMutation, data]);
 
   const showDetailModal = useCallback(() => {
-    if(elementDetailItem?.["@id"] && elementDetailItem?.["@type"]) {
-        NiceModal.show(EntityDetailModal, { typeIRI: elementDetailItem["@type"], entityIRI: elementDetailItem["@id"], data: elementDetailItem, inlineEditing: true  });
+    if (elementDetailItem?.["@id"] && elementDetailItem?.["@type"]) {
+      NiceModal.show(EntityDetailModal, {
+        typeIRI: elementDetailItem["@type"],
+        entityIRI: elementDetailItem["@id"],
+        data: elementDetailItem,
+        inlineEditing: true,
+      });
     } else {
-      NiceModal.show(EntityDetailModal, {typeIRI, entityIRI, data, inlineEditing: true });
+      NiceModal.show(EntityDetailModal, {
+        typeIRI,
+        entityIRI,
+        data,
+        inlineEditing: true,
+      });
     }
   }, [typeIRI, entityIRI, data, elementDetailItem]);
 

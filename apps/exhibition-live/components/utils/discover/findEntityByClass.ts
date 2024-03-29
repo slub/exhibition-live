@@ -10,7 +10,12 @@ export function fixSparqlOrder(sparqlQuery) {
   const regex = /(ORDER BY\s+[^ ]+)(\s*)GROUP BY\s+\(([^\)]+)\)/gm;
   return sparqlQuery.replace(regex, "GROUP BY $3 $2\n$1");
 }
-export const findEntityByClass: (searchString: (string | null), typeIRI: string, doQuery: (query: string) => Promise<any>, limit?: number) => Promise<any> = async (
+export const findEntityByClass: (
+  searchString: string | null,
+  typeIRI: string,
+  doQuery: (query: string) => Promise<any>,
+  limit?: number,
+) => Promise<any> = async (
   searchString: string | null,
   typeIRI: string,
   doQuery: (query: string) => Promise<any>,

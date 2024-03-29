@@ -33,7 +33,10 @@ import ClassicEntityCard from "../lobid/ClassicEntityCard";
 import ClassicResultListItem from "../result/ClassicResultListItem";
 import { fabio, geonames, radatana } from "./marc2rdfMappingDeclaration";
 import { kxp, mapDatafieldToQuads } from "./marcxml2rdf";
-import {NodePropertyTree, nodeToPropertyTree} from "@slub/edb-graph-traversal";
+import {
+  NodePropertyTree,
+  nodeToPropertyTree,
+} from "@slub/edb-graph-traversal";
 
 type Props = {
   searchString: string;
@@ -175,7 +178,7 @@ const K10PlusSearchTable: FunctionComponent<Props> = ({
             key={entry.id}
             id={String(entry.id)}
             index={idx}
-            onSelected={(id) =>handleSelect(id)}
+            onSelected={(id) => handleSelect(id)}
             label={
               entry.properties[dcterms.title.value]?.[0]?.value ||
               String(entry.id)

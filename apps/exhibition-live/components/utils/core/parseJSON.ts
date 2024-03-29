@@ -7,7 +7,7 @@
  *     'null' -> false
  *     '"I'm a string"' -> false
  */
-export const parseJSONObject = jsonString => {
+export const parseJSONObject = (jsonString) => {
   try {
     let o = JSON.parse(jsonString);
 
@@ -18,8 +18,7 @@ export const parseJSONObject = jsonString => {
     if (o && typeof o === "object") {
       return o;
     }
-  }
-  catch (e) { }
+  } catch (e) {}
 
   return false;
-};;
+};

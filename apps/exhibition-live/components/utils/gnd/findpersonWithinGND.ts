@@ -3,7 +3,7 @@ import { BindingsStream } from "@comunica/types";
 import { Literal, NamedNode } from "@rdfjs/types";
 
 import { gndPrefixes } from "./prefixes";
-import {prefixes2sparqlPrefixDeclaration} from "@slub/sparql-schema";
+import { prefixes2sparqlPrefixDeclaration } from "@slub/sparql-schema";
 
 export type GNDSearchResultEntry = {
   gndid: string;

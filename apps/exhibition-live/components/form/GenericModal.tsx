@@ -68,7 +68,7 @@ const modalContent = [
     title: "Daten vorher speichern",
     text: "Es wurden nicht gespeicherte Änderungen vorgenommen. Möchten Sie die Änderungen speichern?",
     action: "Speichern",
-  }
+  },
 ];
 
 const GenericModal = NiceModal.create(

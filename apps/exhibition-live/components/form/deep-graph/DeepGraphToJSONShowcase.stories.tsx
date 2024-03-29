@@ -17,5 +17,5 @@ export const DeepGraphToJSONShowcasePrimary: Story = {
     maxRecursion: 5,
     maxRecursionEachRef: 2,
     skipAtLevel: 2,
-  }
-}
+  },
+};

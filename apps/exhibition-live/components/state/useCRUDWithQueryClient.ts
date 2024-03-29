@@ -11,8 +11,15 @@ import {
 import { useQueryKeyResolver } from "./useQueryKeyResolver";
 import { JsonLdContext } from "jsonld-context-parser";
 import { filterUndefOrNull } from "../utils/core";
-import {NamedAndTypedEntity} from "@slub/edb-core-types";
-import {cleanJSONLD, exists, load, LoadResult, remove, save} from "@slub/sparql-schema";
+import { NamedAndTypedEntity } from "@slub/edb-core-types";
+import {
+  cleanJSONLD,
+  exists,
+  load,
+  LoadResult,
+  remove,
+  save,
+} from "@slub/sparql-schema";
 
 export const useCRUDWithQueryClient = (
   entityIRI: string | undefined,

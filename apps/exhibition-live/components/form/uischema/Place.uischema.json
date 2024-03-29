@@ -11,21 +11,21 @@
       "elements": [
         {
           "type": "HorizontalLayout",
-            "elements": [
-              {
-                "type": "Control",
-                "scope": "#/properties/title",
-                "label": "Bezeichnung",
-                "options": {
-                  "focus": true
-                }
-              },
-              {
-                "type": "Control",
-                "scope": "#/properties/titleVariants",
-                "label": "Alternative Bezeichnungen"
+          "elements": [
+            {
+              "type": "Control",
+              "scope": "#/properties/title",
+              "label": "Bezeichnung",
+              "options": {
+                "focus": true
               }
-            ]
+            },
+            {
+              "type": "Control",
+              "scope": "#/properties/titleVariants",
+              "label": "Alternative Bezeichnungen"
+            }
+          ]
         },
         {
           "type": "Control",

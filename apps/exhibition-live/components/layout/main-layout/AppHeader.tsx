@@ -20,7 +20,11 @@ type AppHeaderProps = {
   toolbar?: React.ReactNode;
 };
 
-export const AppHeader = ({ drawerOpen, toggleDrawer, toolbar}: AppHeaderProps) => {
+export const AppHeader = ({
+  drawerOpen,
+  toggleDrawer,
+  toolbar,
+}: AppHeaderProps) => {
   const theme = useTheme();
 
   return (
@@ -32,7 +36,7 @@ export const AppHeader = ({ drawerOpen, toggleDrawer, toolbar}: AppHeaderProps) 
         color: theme.palette.text.primary,
       }}
     >
-      <Toolbar sx={{justifyContent: "space-between"}}>
+      <Toolbar sx={{ justifyContent: "space-between" }}>
         <ButtonBase
           sx={{
             borderRadius: "12px",

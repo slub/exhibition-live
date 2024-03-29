@@ -5,7 +5,7 @@ import { sladb } from "../../form/formConfigs";
 import { SELECT } from "@tpluscode/sparql-builder";
 import { Variable } from "@rdfjs/types";
 import df from "@rdfjs/data-model";
-import {SparqlBuildOptions} from "@slub/edb-core-types";
+import { SparqlBuildOptions } from "@slub/edb-core-types";
 
 type FieldIriWithVar = {
   predicate: string;

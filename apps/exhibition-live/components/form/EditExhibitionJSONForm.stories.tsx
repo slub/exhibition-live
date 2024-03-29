@@ -12,7 +12,7 @@ import {
   slent,
 } from "./formConfigs";
 import NewSemanticJsonForm from "./SemanticJsonForm";
-import {oxigraphCrudOptions} from "@slub/remote-query-implementations";
+import { oxigraphCrudOptions } from "@slub/remote-query-implementations";
 
 export const queryClient = new QueryClient();
 
@@ -65,4 +65,4 @@ export const SemanticJsonFormExhibition = () => {
 export default {
   title: "form/exhibition/EditExhibitionJSONForm",
   component: NewSemanticJsonForm,
-}
+};

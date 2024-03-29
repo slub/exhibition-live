@@ -18,7 +18,7 @@ import {
   Hidden,
   TextField,
 } from "@mui/material";
-import {getDatePart, getPaddedDatePart, leftpad} from "@slub/edb-core-utils";
+import { getDatePart, getPaddedDatePart, leftpad } from "@slub/edb-core-utils";
 import React, { useCallback } from "react";
 
 const getDatePartAsString = (date: number, part: "day" | "month" | "year") => {
@@ -56,8 +56,8 @@ export const AdbSpecialDateControl = (props: ControlProps) => {
   const firstFormHelperText = showDescription
     ? description
     : !isValid
-    ? errors
-    : null;
+      ? errors
+      : null;
   const secondFormHelperText = showDescription && !isValid ? errors : null;
 
   const handleTextFieldChange = useCallback(

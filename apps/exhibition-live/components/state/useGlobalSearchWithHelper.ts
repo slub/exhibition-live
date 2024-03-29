@@ -13,7 +13,7 @@ import GenericModal from "../form/GenericModal";
 import { v4 as uuidv4 } from "uuid";
 import get from "lodash/get";
 import { primaryFields } from "../config";
-import {useRightDrawerState} from "./useRightDrawerState";
+import { useRightDrawerState } from "./useRightDrawerState";
 
 export const useGlobalSearchWithHelper = (
   typeName: string,
@@ -34,7 +34,7 @@ export const useGlobalSearchWithHelper = (
     },
     [setSearchString, setSearch],
   );
-  const { keepMounted, setOpen } = useRightDrawerState()
+  const { keepMounted, setOpen } = useRightDrawerState();
 
   const { crudOptions } = useGlobalCRUDOptions();
   const { saveMutation } = useCRUDWithQueryClient(
@@ -51,19 +51,19 @@ export const useGlobalSearchWithHelper = (
 
   const handleMappedData = useCallback(
     (newData: any) => {
-        const prefix = schema.title || slent[""].value;
-        const newIRI = `${prefix}${uuidv4()}`;
-        saveMutation.mutate({
-          ...newData,
+      const prefix = schema.title || slent[""].value;
+      const newIRI = `${prefix}${uuidv4()}`;
+      saveMutation.mutate({
+        ...newData,
+        "@id": newIRI,
+        "@type": typeIRI,
+      });
+      const label = get(newData, primaryFields[typeName]?.label);
+      onDataAccepted &&
+        onDataAccepted({
           "@id": newIRI,
-          "@type": typeIRI,
+          __label: label,
         });
-        const label = get(newData, primaryFields[typeName]?.label);
-        onDataAccepted &&
-          onDataAccepted({
-            "@id": newIRI,
-            __label: label,
-          });
     },
     [onDataAccepted, saveMutation, schema, typeIRI, typeName],
   );
@@ -72,8 +72,17 @@ export const useGlobalSearchWithHelper = (
     setTypeName(typeName);
     setPath(formsPath);
     setSearch(searchString);
-    if(keepMounted) setOpen(true)
-  }, [searchString, setSearch, setTypeName, typeName, setPath, formsPath, keepMounted, setOpen]);
+    if (keepMounted) setOpen(true);
+  }, [
+    searchString,
+    setSearch,
+    setTypeName,
+    typeName,
+    setPath,
+    formsPath,
+    keepMounted,
+    setOpen,
+  ]);
 
   return {
     ...globalSearch,

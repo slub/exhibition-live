@@ -1,11 +1,25 @@
-import {defaultPrefix, defaultQueryBuilderOptions, sladb, slent,} from "../../form/formConfigs";
+import {
+  defaultPrefix,
+  defaultQueryBuilderOptions,
+  sladb,
+  slent,
+} from "../../form/formConfigs";
 import * as React from "react";
-import {useCallback, useEffect, useMemo, useRef, useState} from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import schema from "../../../public/schema/Exhibition.schema.json";
-import {v4 as uuidv4} from "uuid";
-import {useGlobalCRUDOptions} from "../../state/useGlobalCRUDOptions";
-import {jsonSchema2Select,} from "../../utils/sparql";
-import {Backdrop, Box, CircularProgress, IconButton, ListItemIcon, Menu, MenuItem, Skeleton,} from "@mui/material";
+import { v4 as uuidv4 } from "uuid";
+import { useGlobalCRUDOptions } from "../../state/useGlobalCRUDOptions";
+import { jsonSchema2Select } from "../../utils/sparql";
+import {
+  Backdrop,
+  Box,
+  CircularProgress,
+  IconButton,
+  ListItemIcon,
+  Menu,
+  MenuItem,
+  Skeleton,
+} from "@mui/material";
 import {
   MaterialReactTable,
   MRT_ColumnDef,
@@ -19,31 +33,38 @@ import {
   MRT_VisibilityState,
   useMaterialReactTable,
 } from "material-react-table";
-import { MRT_Localization_EN } from 'material-react-table/locales/en';
-import { MRT_Localization_DE } from 'material-react-table/locales/de';
+import { MRT_Localization_EN } from "material-react-table/locales/en";
+import { MRT_Localization_DE } from "material-react-table/locales/de";
 
-import {JSONSchema7} from "json-schema";
-import {Delete, DeleteForever, Edit, FileDownload, NoteAdd, OpenInNew,} from "@mui/icons-material";
-import {primaryFields} from "../../config";
-import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
-import {SemanticFormsModal} from "../../renderer/SemanticFormsModal";
+import { JSONSchema7 } from "json-schema";
+import {
+  Delete,
+  DeleteForever,
+  Edit,
+  FileDownload,
+  NoteAdd,
+  OpenInNew,
+} from "@mui/icons-material";
+import { primaryFields } from "../../config";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { SemanticFormsModal } from "../../renderer/SemanticFormsModal";
 import NiceModal from "@ebay/nice-modal-react";
 import GenericModal from "../../form/GenericModal";
-import {useSnackbar} from "notistack";
-import {JsonSchema} from "@jsonforms/core";
+import { useSnackbar } from "notistack";
+import { JsonSchema } from "@jsonforms/core";
 import useExtendedSchema from "../../state/useExtendedSchema";
 import Button from "@mui/material/Button";
-import {download, generateCsv, mkConfig} from "export-to-csv";
-import {useModifiedRouter} from "../../basic";
-import {SparqlEndpoint, useSettings} from "../../state/useLocalSettings";
-import {EntityDetailModal} from "../../form/show";
-import {useTranslation} from "next-i18next";
-import {moveToTrash, remove, withDefaultPrefix} from "@slub/sparql-schema";
-import {SPARQLFlavour} from "@slub/edb-core-types";
-import {bringDefinitionToTop} from "@slub/json-schema-utils";
-import {computeColumns} from "./listHelper";
+import { download, generateCsv, mkConfig } from "export-to-csv";
+import { useModifiedRouter } from "../../basic";
+import { SparqlEndpoint, useSettings } from "../../state/useLocalSettings";
+import { EntityDetailModal } from "../../form/show";
+import { useTranslation } from "next-i18next";
+import { moveToTrash, remove, withDefaultPrefix } from "@slub/sparql-schema";
+import { SPARQLFlavour } from "@slub/edb-core-types";
+import { bringDefinitionToTop } from "@slub/json-schema-utils";
+import { computeColumns } from "./listHelper";
 import { tableConfig } from "../../config/tableConfig";
-import {encodeIRI, filterUndefOrNull } from "@slub/edb-core-utils";
+import { encodeIRI, filterUndefOrNull } from "@slub/edb-core-utils";
 
 type Props = {
   typeName: string;
@@ -70,7 +91,7 @@ const csvConfig = mkConfig({
   useKeysAsHeaders: true,
 });
 
-const ExportMenuButton = ({children}: {children: React.ReactNode}) => {
+const ExportMenuButton = ({ children }: { children: React.ReactNode }) => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -79,22 +100,26 @@ const ExportMenuButton = ({children}: {children: React.ReactNode}) => {
     setAnchorEl(null);
   };
   const open = Boolean(anchorEl);
-  return <>
-    <IconButton onClick={handleClick}>
-      <FileDownload />
-    </IconButton>
-    <Menu
-      id="export-menu"
-      anchorEl={anchorEl}
-      open={open}
-      onClose={handleClose}
-      MenuListProps={{
-        'aria-labelledby': 'export-button',
-        role: 'listbox',
-      }}
-    >{children}</Menu>
-  </>
-}
+  return (
+    <>
+      <IconButton onClick={handleClick}>
+        <FileDownload />
+      </IconButton>
+      <Menu
+        id="export-menu"
+        anchorEl={anchorEl}
+        open={open}
+        onClose={handleClose}
+        MenuListProps={{
+          "aria-labelledby": "export-button",
+          role: "listbox",
+        }}
+      >
+        {children}
+      </Menu>
+    </>
+  );
+};
 
 export const TypedList = ({ typeName }: Props) => {
   const typeIRI = useMemo(() => {
@@ -163,23 +188,29 @@ export const TypedList = ({ typeName }: Props) => {
     [resultListData],
   );
 
-  const conf = useMemo(() =>  tableConfig[typeName] || tableConfig.default, [typeName] )
-
-  const displayColumns = useMemo<MRT_ColumnDef<any>[]>(
-    () => {
-      const cols =  computeColumns(loadedSchema, typeName, t2, conf?.matcher);
-      //const entries = Object.fromEntries(cols.map(c => [c.header, ""]))
-      //console.log(JSON.stringify(entries, null, 2))
-      return cols
-    },
-    [loadedSchema, typeName, t2, conf?.matcher],
+  const conf = useMemo(
+    () => tableConfig[typeName] || tableConfig.default,
+    [typeName],
   );
 
-  const columnOrder = useMemo(() => ["mrt-row-select", ...displayColumns.map((col) => col.id)], [displayColumns]);
+  const displayColumns = useMemo<MRT_ColumnDef<any>[]>(() => {
+    const cols = computeColumns(loadedSchema, typeName, t2, conf?.matcher);
+    //const entries = Object.fromEntries(cols.map(c => [c.header, ""]))
+    //console.log(JSON.stringify(entries, null, 2))
+    return cols;
+  }, [loadedSchema, typeName, t2, conf?.matcher]);
+
+  const columnOrder = useMemo(
+    () => ["mrt-row-select", ...displayColumns.map((col) => col.id)],
+    [displayColumns],
+  );
 
   const router = useModifiedRouter();
-  const locale = ( router.query.locale || "en") as string;
-  const localization = useMemo(() => locale === "de" ? MRT_Localization_DE : MRT_Localization_EN, [locale])
+  const locale = (router.query.locale || "en") as string;
+  const localization = useMemo(
+    () => (locale === "de" ? MRT_Localization_DE : MRT_Localization_EN),
+    [locale],
+  );
   const editEntry = useCallback(
     (id: string) => {
       router.push(`/create/${typeName}?encID=${encodeIRI(id)}`);
@@ -203,16 +234,10 @@ export const TypedList = ({ typeName }: Props) => {
       async (id: string | string[]) => {
         if (!id || !crudOptions.updateFetch)
           throw new Error("entityIRI or updateFetch is not defined");
-        return moveToTrash(
-          id,
-          typeIRI,
-          loadedSchema,
-          crudOptions.updateFetch,
-          {
-            defaultPrefix,
-            queryBuildOptions: defaultQueryBuilderOptions,
-          },
-        );
+        return moveToTrash(id, typeIRI, loadedSchema, crudOptions.updateFetch, {
+          defaultPrefix,
+          queryBuildOptions: defaultQueryBuilderOptions,
+        });
       },
       {
         onSuccess: async () => {
@@ -318,9 +343,9 @@ export const TypedList = ({ typeName }: Props) => {
     [setColumnFilters],
   );
 
-
-  const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>(conf.columnVisibility || tableConfig.default.columnVisibility);
-
+  const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>(
+    conf.columnVisibility || tableConfig.default.columnVisibility,
+  );
 
   const handleChangeColumnVisibility = useCallback(
     (s: any) => {
@@ -442,7 +467,7 @@ export const TypedList = ({ typeName }: Props) => {
     manualSorting: true,
     onSortingChange: handleColumnOrderChange,
     onColumnVisibilityChange: handleChangeColumnVisibility,
-    columnFilterDisplayMode: 'popover',
+    columnFilterDisplayMode: "popover",
     initialState: {
       columnVisibility: conf.columnVisibility,
       pagination: { pageIndex: 0, pageSize: 100 },
@@ -465,8 +490,15 @@ export const TypedList = ({ typeName }: Props) => {
     },
     renderTopToolbarCustomActions: ({ table }) => (
       <Box sx={{ display: "flex", gap: "1rem" }}>
-        <Button variant="contained" color={"primary"} startIcon={<NoteAdd/>} onClick={() => {editEntry(slent(uuidv4()).value)}}>
-          {t("create new", {item: t(typeName)})}
+        <Button
+          variant="contained"
+          color={"primary"}
+          startIcon={<NoteAdd />}
+          onClick={() => {
+            editEntry(slent(uuidv4()).value);
+          }}
+        >
+          {t("create new", { item: t(typeName) })}
         </Button>
         <ExportMenuButton>
           <MenuItem onClick={handleExportData}>
@@ -477,7 +509,8 @@ export const TypedList = ({ typeName }: Props) => {
           </MenuItem>
           <MenuItem
             disabled={table.getRowModel().rows.length === 0}
-            onClick={() => handleExportRows(table.getRowModel().rows)}>
+            onClick={() => handleExportRows(table.getRowModel().rows)}
+          >
             <ListItemIcon>
               <FileDownload />
             </ListItemIcon>
@@ -487,9 +520,7 @@ export const TypedList = ({ typeName }: Props) => {
             disabled={
               !table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected()
             }
-            onClick={() =>
-              handleExportRows(table.getSelectedRowModel().rows)
-            }
+            onClick={() => handleExportRows(table.getSelectedRowModel().rows)}
           >
             <ListItemIcon>
               <FileDownload />
@@ -523,10 +554,10 @@ export const TypedList = ({ typeName }: Props) => {
       slent(uuidv4()).value,
     displayColumnDefOptions: {
       "mrt-row-actions": {
-        header: ""
+        header: "",
       },
     },
-    renderRowActionMenuItems: ({row}) => {
+    renderRowActionMenuItems: ({ row }) => {
       return [
         <MenuItem
           key="show"
@@ -582,11 +613,11 @@ export const TypedList = ({ typeName }: Props) => {
     },
   });
 
-  const [typeLoaded, setTypeLoaded] = useState(null)
+  const [typeLoaded, setTypeLoaded] = useState(null);
 
   useEffect(() => {
     if (typeName && typeLoaded !== typeName) {
-      setTypeLoaded(typeName)
+      setTypeLoaded(typeName);
       enqueueSnackbar(t("loading typename", { typeName: t(typeName) }), {
         variant: "info",
       });

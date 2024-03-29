@@ -39,7 +39,13 @@ const Main = styled("main", {
   };
 });
 
-export const MainLayout = ({ children, toolbar }: { children: React.ReactNode, toolbar?: React.ReactNode }) => {
+export const MainLayout = ({
+  children,
+  toolbar,
+}: {
+  children: React.ReactNode;
+  toolbar?: React.ReactNode;
+}) => {
   const theme = useTheme();
 
   const [leftDrawerOpened, setLeftDrawerOpened] = useState<boolean>(true);

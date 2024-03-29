@@ -12,7 +12,7 @@ import { materialCustomAnyOfControlTester } from "./MaterialCustomAnyOfRenderer"
 export default {
   title: "form/exhibition/MarkdownTextFieldRenderer",
   component: MarkdownTextFieldRenderer,
-}
+};
 
 const schema = {
   $schema: "http://json-schema.org/draft-07/schema#",

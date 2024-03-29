@@ -1,5 +1,5 @@
 import namespace from "@rdfjs/namespace";
-import {GenJSONLDSemanticPropertiesFunction} from "@slub/json-schema-utils";
+import { GenJSONLDSemanticPropertiesFunction } from "@slub/json-schema-utils";
 
 export const sladb = namespace("http://ontologies.slub-dresden.de/exhibition#");
 export const slent = namespace(
@@ -25,8 +25,8 @@ const makeGenSlubJSONLDSemanticProperties: (
         "@id": {
           title: "IRI",
           type: "string",
-        }
-      }
+        },
+      },
     },
   });
 

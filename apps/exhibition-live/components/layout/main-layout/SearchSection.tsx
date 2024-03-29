@@ -1,8 +1,4 @@
-import {
-  Avatar,
-  OutlinedInput,
-  Popper,
-} from "@mui/material";
+import { Avatar, OutlinedInput, Popper } from "@mui/material";
 // material-ui
 import { styled } from "@mui/material/styles";
 import { shouldForwardProp } from "@mui/system";

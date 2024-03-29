@@ -13,7 +13,7 @@ import {
   CommonPropertyValues,
   getCommonPropsFromWikidata,
 } from "../../utils/wikidata";
-import {OverflowContainer} from "../../lists";
+import { OverflowContainer } from "../../lists";
 
 interface OwnProps {
   thingIRI?: string;
@@ -37,14 +37,22 @@ const WikidataAllPropTable: FunctionComponent<Props> = ({ thingIRI }) => {
   return (
     <TableContainer component={Container}>
       {typeof allProps === "object" ? (
-        <Table sx={{ minWidth: "100%", tableLayout: "fixed" }} aria-label="custom table">
+        <Table
+          sx={{ minWidth: "100%", tableLayout: "fixed" }}
+          aria-label="custom table"
+        >
           <TableBody>
             {Object.entries(allProps).map(([key, value]) => (
               <TableRow key={key}>
                 <TableCell
-                  style={{ width: "20%", overflow: "hidden", textOverflow: "ellipsis" }}
+                  style={{
+                    width: "20%",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                  }}
                   component="th"
-                  scope="row">
+                  scope="row"
+                >
                   <OverflowContainer>{value.label}</OverflowContainer>
                 </TableCell>
                 <TableCell align="right">

@@ -9,7 +9,7 @@ type ExhibitionPrimaryFieldDeclaration = {
 type ExhibitionPrimaryFieldExtractDeclaration = {
   //typeof keys of exhibitionSchema.$defs
   [typeName in keyof typeof exhibitionSchema.$defs]: PrimaryFieldExtract<any>;
-}
+};
 
 const defaultMapping: PrimaryField = {
   label: "title",
@@ -47,31 +47,32 @@ export const primaryFields: Partial<ExhibitionPrimaryFieldDeclaration> = {
   ExhibitionCategory: {
     ...defaultMapping,
     label: "name",
-  }
+  },
 };
 
-export const primaryFieldExtracts: Partial<ExhibitionPrimaryFieldExtractDeclaration> = {
-  ...primaryFields,
-  InvolvedPerson: {
-    label: {
-      path: "person.name",
+export const primaryFieldExtracts: Partial<ExhibitionPrimaryFieldExtractDeclaration> =
+  {
+    ...primaryFields,
+    InvolvedPerson: {
+      label: {
+        path: "person.name",
+      },
+      description: {
+        path: "role.title",
+      },
+      image: {
+        path: "person.image",
+      },
     },
-    description: {
-      path: "role.title",
+    InvolvedCorporation: {
+      label: {
+        path: "corporation.name",
+      },
+      description: {
+        path: "role.title",
+      },
+      image: {
+        path: "corporation.image",
+      },
     },
-    image: {
-      path: "person.image",
-    }
-  },
-  InvolvedCorporation: {
-    label: {
-      path: "corporation.name",
-    },
-    description: {
-      path: "role.title",
-    },
-    image: {
-      path: "corporation.image",
-    }
-  }
-}
+  };

@@ -1,6 +1,6 @@
-import {Box, Toolbar} from "@mui/material";
+import { Box, Toolbar } from "@mui/material";
 import React, { useCallback, useState } from "react";
-import {FloatingButton} from "./menu";
+import { FloatingButton } from "./menu";
 import MuiDrawer from "@mui/material/Drawer";
 import { useRightDrawerState } from "../../state";
 
@@ -9,20 +9,15 @@ type SearchbarProps = {
   open: boolean;
 } & SearchbarWithFloatingButtonProps;
 
-export const Searchbar = ({
-                            open,
-                            drawerWidth,
-                            children,
-                          }: SearchbarProps) => {
+export const Searchbar = ({ open, drawerWidth, children }: SearchbarProps) => {
   try {
-
     return (
-      <Box sx={{position: "absolute"}}>
+      <Box sx={{ position: "absolute" }}>
         <MuiDrawer
           variant="persistent"
           anchor="right"
           open={open}
-          ModalProps={{keepMounted: true}}
+          ModalProps={{ keepMounted: true }}
           sx={{
             width: open ? drawerWidth : 0,
             flexShrink: 0,
@@ -32,7 +27,7 @@ export const Searchbar = ({
             },
           }}
         >
-          <Toolbar/>
+          <Toolbar />
           <Box>{children}</Box>
         </MuiDrawer>
       </Box>
@@ -42,7 +37,6 @@ export const Searchbar = ({
     return null;
   }
 };
-
 
 type SearchbarWithFloatingButtonProps = {
   children?: React.ReactNode;
@@ -67,10 +61,7 @@ export const SearchbarWithFloatingButton = ({
         drawerWidth={rightDrawerWidth}
         toggleDrawer={toggleRightDrawer}
       />
-      <Searchbar
-        open={rightDrawerOpened}
-        drawerWidth={rightDrawerWidth}
-      >
+      <Searchbar open={rightDrawerOpened} drawerWidth={rightDrawerWidth}>
         {rightDrawerOpened && children ? children : null}
       </Searchbar>
     </>

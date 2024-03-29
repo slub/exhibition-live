@@ -13,7 +13,7 @@ import MaterialCustomAnyOfRenderer, {
 export default {
   title: "form/exhibition/MaterialCustomAnyOfRenderer",
   component: MaterialCustomAnyOfRenderer,
-}
+};
 
 const schema = {
   $schema: "http://json-schema.org/draft-07/schema#",

@@ -7,7 +7,7 @@ import WikidateAllPropTable from "./WikidataAllPropTable";
 export default {
   title: "form/wikidata/WikidataThingCard",
   component: WikidataThingCard,
-}
+};
 
 export const WikidataThingCardDefault = () => (
   <WikidataThingCard thingIRI={"http://www.wikidata.org/entity/Q3"} />

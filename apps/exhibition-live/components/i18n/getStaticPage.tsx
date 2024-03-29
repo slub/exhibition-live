@@ -1,8 +1,8 @@
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 const locales = ["en", "de"];
-import 'dayjs/locale/de';
-import 'dayjs/locale/en';
-import  dayjs from "dayjs";
+import "dayjs/locale/de";
+import "dayjs/locale/en";
+import dayjs from "dayjs";
 export const getI18nPaths = () =>
   locales.map((lng) => ({
     params: {

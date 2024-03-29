@@ -47,7 +47,7 @@ import {
   primaryTextFieldControlTester,
   PrimaryTextFieldRenderer,
 } from "../renderer/PrimaryFieldTextRenderer";
-import {useGlobalSearch, useRightDrawerState} from "../state";
+import { useGlobalSearch, useRightDrawerState } from "../state";
 import MaterialArrayOfLinkedItemChipsRenderer, {
   materialArrayLayoutChipsTester,
 } from "../renderer/MaterialArrayOfLinkedItemChipsRenderer";
@@ -201,7 +201,7 @@ export const SemanticJsonFormNoOps: FunctionComponent<
     [onChange, onError],
   );
 
-  const { closeDrawer } = useRightDrawerState()
+  const { closeDrawer } = useRightDrawerState();
 
   const handleMappedData = useCallback(
     (newData: any) => {
@@ -213,7 +213,7 @@ export const SemanticJsonFormNoOps: FunctionComponent<
             ? "confirm save mapping"
             : "confirm mapping",
       }).then(() => {
-        closeDrawer()
+        closeDrawer();
         onChange(
           (data: any) => ({
             ...newData,
@@ -230,8 +230,8 @@ export const SemanticJsonFormNoOps: FunctionComponent<
   const handleEntityIRIChange = useCallback(
     (iri) => {
       onEntityDataChange &&
-      onEntityDataChange({"@id": iri, "@type": typeIRI});
-      closeDrawer()
+        onEntityDataChange({ "@id": iri, "@type": typeIRI });
+      closeDrawer();
     },
     [onEntityDataChange, typeIRI, closeDrawer],
   );

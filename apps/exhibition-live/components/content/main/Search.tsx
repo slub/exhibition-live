@@ -31,7 +31,7 @@ import {
 import { useTranslation } from "next-i18next";
 import NiceModal from "@ebay/nice-modal-react";
 import { EntityDetailModal } from "../../form/show";
-import {withDefaultPrefix} from "@slub/sparql-schema";
+import { withDefaultPrefix } from "@slub/sparql-schema";
 
 const makeFilterUNION2 = (searchString: string, length: number) => {
   const filterUNION = [];

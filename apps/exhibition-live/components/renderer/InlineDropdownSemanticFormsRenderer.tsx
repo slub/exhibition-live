@@ -4,7 +4,7 @@ import {
   Resolve,
   resolveSchema,
 } from "@jsonforms/core";
-import {useJsonForms, withJsonFormsControlProps} from "@jsonforms/react";
+import { useJsonForms, withJsonFormsControlProps } from "@jsonforms/react";
 import {
   Box,
   FormControl,
@@ -15,25 +15,25 @@ import {
   Typography,
 } from "@mui/material";
 import merge from "lodash/merge";
-import React, {useCallback, useEffect, useMemo, useState} from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 
 import DiscoverAutocompleteInput from "../form/discover/DiscoverAutocompleteInput";
-import {primaryFields, typeIRItoTypeName} from "../config";
-import {AutocompleteSuggestion} from "../form/DebouncedAutoComplete";
-import {extractFieldIfString} from "../utils/mapping/simpleFieldExtractor";
-import {PrimaryField} from "../utils/types";
+import { primaryFields, typeIRItoTypeName } from "../config";
+import { AutocompleteSuggestion } from "../form/DebouncedAutoComplete";
+import { extractFieldIfString } from "../utils/mapping/simpleFieldExtractor";
+import { PrimaryField } from "../utils/types";
 import {
   useGlobalSearchWithHelper,
   useRightDrawerState,
   useKeyEventForSimilarityFinder,
 } from "../state";
-import {makeFormsPath} from "../utils/core";
-import {SearchbarWithFloatingButton} from "../layout/main-layout/Searchbar";
+import { makeFormsPath } from "../utils/core";
+import { SearchbarWithFloatingButton } from "../layout/main-layout/Searchbar";
 import SimilarityFinder from "../form/SimilarityFinder";
-import {JSONSchema7} from "json-schema";
-import {useRouter} from "next/router";
-import {useTranslation} from "next-i18next";
-import {EntityDetailListItem} from "../form/show";
+import { JSONSchema7 } from "json-schema";
+import { useRouter } from "next/router";
+import { useTranslation } from "next-i18next";
+import { EntityDetailListItem } from "../form/show";
 
 const InlineDropdownSemanticFormsRenderer = (props: ControlProps) => {
   const {
@@ -50,7 +50,7 @@ const InlineDropdownSemanticFormsRenderer = (props: ControlProps) => {
     label,
   } = props;
   const appliedUiSchemaOptions = merge({}, config, uischema.options);
-  const {$ref, typeIRI} = appliedUiSchemaOptions.context || {};
+  const { $ref, typeIRI } = appliedUiSchemaOptions.context || {};
   const typeName = useMemo(
     () => typeIRI && typeIRItoTypeName(typeIRI),
     [typeIRI],
@@ -64,8 +64,8 @@ const InlineDropdownSemanticFormsRenderer = (props: ControlProps) => {
   const selected = useMemo(
     () =>
       data
-        ? {value: data || null, label: realLabel}
-        : {value: null, label: null},
+        ? { value: data || null, label: realLabel }
+        : { value: null, label: null },
     [data, realLabel],
   );
   const subSchema = useMemo(() => {
@@ -89,12 +89,12 @@ const InlineDropdownSemanticFormsRenderer = (props: ControlProps) => {
     if (!data) setRealLabel("");
   }, [data, setRealLabel]);
 
-  const { closeDrawer } = useRightDrawerState()
+  const { closeDrawer } = useRightDrawerState();
   const handleSelectedChange = useCallback(
     (v: AutocompleteSuggestion) => {
       if (!v) {
         handleChange(path, undefined);
-        closeDrawer()
+        closeDrawer();
         return;
       }
       if (v.value !== data) handleChange(path, v.value);
@@ -127,11 +127,10 @@ const InlineDropdownSemanticFormsRenderer = (props: ControlProps) => {
         value: entityIRI,
         label: data.label || entityIRI,
       });
-      closeDrawer()
+      closeDrawer();
     },
     [handleSelectedChange, closeDrawer],
   );
-
 
   const router = useRouter();
   const locale = router.query.locale || "";
@@ -146,7 +145,6 @@ const InlineDropdownSemanticFormsRenderer = (props: ControlProps) => {
     return fieldDecl?.label || "title";
   }, [typeName]);
 
-
   const handleMappedDataAccepted = useCallback(
     (newData: any) => {
       const newIRI = newData["@id"];
@@ -158,7 +156,7 @@ const InlineDropdownSemanticFormsRenderer = (props: ControlProps) => {
     },
     [handleSelectedChange],
   );
-  const {open: sidebarOpen} = useRightDrawerState();
+  const { open: sidebarOpen } = useRightDrawerState();
   const {
     path: globalPath,
     searchString,
@@ -174,19 +172,20 @@ const InlineDropdownSemanticFormsRenderer = (props: ControlProps) => {
     handleMappedDataAccepted,
   );
 
-  const handleMappedDataIntermediate = useCallback((d: any) => {
-    handleMappedData(d)
-    closeDrawer()
-  }, [handleMappedData, closeDrawer])
+  const handleMappedDataIntermediate = useCallback(
+    (d: any) => {
+      handleMappedData(d);
+      closeDrawer();
+    },
+    [handleMappedData, closeDrawer],
+  );
 
-
-  const {t} = useTranslation();
+  const { t } = useTranslation();
 
   const showAsFocused = useMemo(
     () => isActive && sidebarOpen,
     [isActive, sidebarOpen],
   );
-
 
   const handleClear = useCallback(() => {
     handleSelectedChange(null);
@@ -207,7 +206,7 @@ const InlineDropdownSemanticFormsRenderer = (props: ControlProps) => {
 
   return (
     <Hidden xsUp={!visible}>
-      <Box sx={{position: "relative"}}>
+      <Box sx={{ position: "relative" }}>
         <Typography
           variant={"h5"}
           sx={{
@@ -228,24 +227,24 @@ const InlineDropdownSemanticFormsRenderer = (props: ControlProps) => {
             id={id}
             variant={"standard"}
           >
-              <DiscoverAutocompleteInput
-                loadOnStart={true}
-                readonly={Boolean(ctx.readonly)}
-                typeIRI={typeIRI}
-                typeName={typeName || ""}
-                selected={selected}
-                title={label || ""}
-                onSelectionChange={handleSelectedChange}
-                onSearchValueChange={handleSearchStringChange}
-                searchString={searchString || ""}
-                inputProps={{
-                  onFocus: handleFocus,
-                  ...(showAsFocused && {focused: true}),
-                }}
-              />
+            <DiscoverAutocompleteInput
+              loadOnStart={true}
+              readonly={Boolean(ctx.readonly)}
+              typeIRI={typeIRI}
+              typeName={typeName || ""}
+              selected={selected}
+              title={label || ""}
+              onSelectionChange={handleSelectedChange}
+              onSearchValueChange={handleSearchStringChange}
+              searchString={searchString || ""}
+              inputProps={{
+                onFocus: handleFocus,
+                ...(showAsFocused && { focused: true }),
+              }}
+            />
           </FormControl>
         ) : (
-          <List sx={{marginTop: "1em"}} dense>
+          <List sx={{ marginTop: "1em" }} dense>
             <EntityDetailListItem
               entityIRI={selected.value}
               typeIRI={typeIRI}

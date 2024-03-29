@@ -26,8 +26,10 @@
   "private": true,
   "scripts": {
     "build": "turbo run build",
+    "build:packages": "turbo run build --filter=@slub/*",
     "build:pages": "turbo run build:pages",
     "dev": "turbo run dev --parallel",
+    "dev:packages": "turbo run dev --parallel --filter='./packages/*'",
     "test": "turbo run test",
     "lint": "turbo run lint",
     "lint:fix": "turbo run lint:fix",
@@ -40,11 +42,11 @@
     "manifestation/*"
   ],
   "devDependencies": {
-    "@turbo/gen": "^1.10.16",
+    "@turbo/gen": "^1.13.0",
     "eslint": "^8.57.0",
     "prettier": "^3.2.5",
     "tsup": "^8.0.2",
-    "turbo": "^1.10.16",
+    "turbo": "^1.13.0",
     "typescript": "^5"
   }
 }

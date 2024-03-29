@@ -1,8 +1,7 @@
-import { ArrowBack, ExpandLess, ExpandMore } from "@mui/icons-material";
+import { ArrowBack } from "@mui/icons-material";
 import {
   Box,
   BoxProps,
-  Button,
   Card,
   CardActions,
   CardContent,
@@ -10,7 +9,7 @@ import {
   IconButton,
   Typography,
 } from "@mui/material";
-import React, { FunctionComponent, useCallback, useState } from "react";
+import React, { FunctionComponent } from "react";
 
 export type EntityCardData = Partial<{
   id: string;
@@ -26,18 +25,16 @@ type Props = {
   data: EntityCardData;
   id: string;
   onBack?: () => void;
-  onAcceptItem?: (id: string | undefined, data: any) => void;
   detailView?: React.ReactNode;
-  acceptTitle: string;
+  cardActionChildren?: React.ReactNode;
 };
 
 const ClassicEntityCard: FunctionComponent<Props & Partial<BoxProps>> = ({
   data,
   id,
   onBack,
-  onAcceptItem,
+  cardActionChildren,
   detailView,
-  acceptTitle,
   ...rest
 }) => {
   const _label = data.label || data.title || data.name || id;
@@ -66,18 +63,7 @@ const ClassicEntityCard: FunctionComponent<Props & Partial<BoxProps>> = ({
             {data.description}
           </Typography>
         </CardContent>
-        <CardActions>
-          {onAcceptItem && (
-            <Button
-              size="small"
-              color="primary"
-              variant="contained"
-              onClick={() => onAcceptItem(data?.id, data)}
-            >
-              {acceptTitle}
-            </Button>
-          )}
-        </CardActions>
+        {cardActionChildren && <CardActions>{cardActionChildren}</CardActions>}
         {detailView || null}
       </Card>
     </Box>

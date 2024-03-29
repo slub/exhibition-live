@@ -22,6 +22,7 @@ import {
 } from "../../state";
 import { Check } from "@mui/icons-material";
 import { OverflowContainer } from "../../lists";
+import { OverflowChip } from "../../lists/OverflowChip";
 
 type OwnProps = {
   id: string;
@@ -30,6 +31,7 @@ type OwnProps = {
   avatar?: string;
   label: string;
   secondary?: string;
+  category?: string;
   altAvatar?: string;
   popperChildren?: React.ReactNode;
   listItemProps?: Partial<ListItemProps>;
@@ -45,6 +47,7 @@ const ClassicResultListItem: FunctionComponent<Props> = ({
   avatar,
   label,
   secondary,
+  category,
   altAvatar,
   selected,
   popperChildren,
@@ -125,6 +128,7 @@ const ClassicResultListItem: FunctionComponent<Props> = ({
               useParentTarget
               sx={{ ...theme.typography.caption }}
             >
+              {category && <OverflowChip label={category} />}
               {secondary}
             </OverflowContainer>
           }

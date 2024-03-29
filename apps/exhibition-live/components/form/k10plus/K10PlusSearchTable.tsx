@@ -37,6 +37,7 @@ import {
   NodePropertyTree,
   nodeToPropertyTree,
 } from "@slub/edb-graph-traversal";
+import { useTranslation } from "next-i18next";
 
 type Props = {
   searchString: string;
@@ -86,6 +87,7 @@ const K10PlusSearchTable: FunctionComponent<Props> = ({
   onSelect,
   onAcceptItem,
 }) => {
+  const { t } = useTranslation();
   const [resultTable, setResultTable] = useState<KXPEntry[] | undefined>();
   const { history, pushHistory, popHistory } = useLocalHistory();
   const [selectedId, setSelectedId] = useState<string | undefined>();
@@ -165,8 +167,16 @@ const K10PlusSearchTable: FunctionComponent<Props> = ({
               ),
             }}
             onBack={() => handleSelect(popHistory(), false)}
-            onAcceptItem={handleAccept}
-            acceptTitle={"Eintrag übernehmen"}
+            cardActionChildren={
+              <Button
+                size="small"
+                color="primary"
+                variant="contained"
+                onClick={() => handleAccept(selectedId)}
+              >
+                {t("accept entity")}
+              </Button>
+            }
             id={selectedId}
             detailView={<KXPAllPropTable entry={selectedEntry} />}
           />

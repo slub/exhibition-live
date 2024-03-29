@@ -1,4 +1,4 @@
-import { List, useControlled } from "@mui/material";
+import { Button, List, useControlled } from "@mui/material";
 import React, {
   FunctionComponent,
   useCallback,
@@ -26,6 +26,8 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { typeIRItoTypeName } from "../../config";
 import Ajv from "ajv";
+import { useTranslation } from "next-i18next";
+import { BasicThingInformation } from "@slub/edb-core-types";
 
 type Props = {
   searchString: string;
@@ -107,7 +109,9 @@ const suggestResponseSchema = {
   required: ["id", "label", "category"],
 };
 
-export const gndEntryFromSuggestion = (allProps: any) => {
+export const gndEntryFromSuggestion: (
+  allProps: any,
+) => null | BasicThingInformation = (allProps: any) => {
   const ajv = new Ajv();
   if (!ajv.validate(suggestResponseSchema, allProps)) {
     console.error("Invalid GND Suggestion Response", allProps);
@@ -117,22 +121,18 @@ export const gndEntryFromSuggestion = (allProps: any) => {
   const labelParts = label.split(" | ");
   const [primary, ...secondary] = labelParts;
 
-  //return dummy data
   return {
     id,
     label: primary,
     secondary: secondary.join(" | "),
+    category,
     avatar: image,
-    allProps: {},
+    allProps,
   };
 };
-export const gndEntryWithMainInfo: (allProps: any) => {
-  secondary: string;
-  allProps: any;
-  id: any;
-  label: string;
-  avatar: string;
-} = (allProps: any) => {
+export const gndEntryWithMainInfo: (allProps: any) => BasicThingInformation = (
+  allProps: any,
+) => {
   const { id, type } = allProps;
   const primaryFieldDeclaration =
     getFirstMatchingFieldDeclaration(type, gndPrimaryFields) ||
@@ -158,6 +158,7 @@ const LobidSearchTable: FunctionComponent<Props> = ({
   onAcceptItem,
   selectedId: selectedIdProp,
 }) => {
+  const { t } = useTranslation();
   const [resultTable, setResultTable] = useState<LobIDEntry[] | undefined>();
   const [selectedId, setSelectedId] = useControlled<string | undefined>({
     name: "selectedId",
@@ -230,10 +231,19 @@ const LobidSearchTable: FunctionComponent<Props> = ({
                   id={id}
                   data={data}
                   onBack={() => handleSelect(undefined)}
-                  onAcceptItem={(id) =>
-                    onAcceptItem && onAcceptItem(id, selectedEntry)
+                  cardActionChildren={
+                    <Button
+                      size="small"
+                      color="primary"
+                      variant="contained"
+                      disabled={!onAcceptItem || !selectedEntry}
+                      onClick={() =>
+                        onAcceptItem && onAcceptItem(id, selectedEntry)
+                      }
+                    >
+                      {t("accept entity")}
+                    </Button>
                   }
-                  acceptTitle={"Eintrag übernehmen"}
                   detailView={
                     <>
                       <LobidAllPropTable

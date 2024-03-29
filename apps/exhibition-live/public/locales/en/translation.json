@@ -80,5 +80,6 @@
   "delete permanently": "delete permanently",
   "export all data": "export all data",
   "export page only": "export page only",
-  "export selected rows only": "export selected rows only"
+  "export selected rows only": "export selected rows only",
+  "accept entity": "accept entity"
 }

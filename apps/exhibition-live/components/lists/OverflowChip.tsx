@@ -6,7 +6,7 @@ import { EntityDetailModal } from "../form/show/EntityDetailModal";
 type OverflowContainerProps = {
   label: React.ReactNode;
   secondary?: React.ReactNode;
-  entityIRI: string;
+  entityIRI?: string;
 };
 
 const OverflowText = ({ children }: { children: string }) => {
@@ -21,6 +21,7 @@ export const OverflowChip = ({
 
   const showDetailModal = useCallback(
     (e: MouseEvent) => {
+      if (!entityIRI) return;
       e.preventDefault();
       NiceModal.show(EntityDetailModal, { entityIRI, data: {} });
     },

@@ -76,5 +76,6 @@
   "delete permanently": "endgültig löschen",
   "export all data": "alle Daten exportieren",
   "export page only": "nur die aktuelle Seite exportieren",
-  "export selected rows only": "nur ausgewählte Zeilen exportieren"
+  "export selected rows only": "nur ausgewählte Zeilen exportieren",
+  "accept entity": "Eintrag übernehmen"
 }

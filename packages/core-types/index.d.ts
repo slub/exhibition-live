@@ -111,3 +111,12 @@ export type QueryOptions = {
   defaultPrefix: string;
   queryBuildOptions: SparqlBuildOptions;
 };
+
+export type BasicThingInformation = {
+  id: string;
+  label: string;
+  secondary?: string;
+  avatar?: string;
+  category?: string;
+  allProps?: Record<string, any>;
+};

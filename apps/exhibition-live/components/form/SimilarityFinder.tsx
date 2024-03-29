@@ -70,6 +70,7 @@ import { debounce } from "lodash";
 import { filterUndefOrNull } from "@slub/edb-core-utils";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import useExtendedSchema from "../state/useExtendedSchema";
+import { BasicThingInformation } from "@slub/edb-core-types";
 
 // @ts-ignore
 type Props = {
@@ -145,7 +146,7 @@ type KnowledgeBaseDescription = {
     searchString: string,
     typeIRI: string,
     findOptions?: FindOptions,
-  ) => Promise<any[]>;
+  ) => Promise<BasicThingInformation[]>;
   detailRenderer?: (id: string) => React.ReactNode;
   listItemRenderer?: (
     entry: any,
@@ -233,7 +234,7 @@ const SearchFieldWithBadges = ({
 };
 
 type ListItemRendererProps = {
-  data: any;
+  data: BasicThingInformation;
   idx: number;
   typeIRI: string;
   selected: boolean;
@@ -249,13 +250,17 @@ const GNDListItemRenderer = ({
   onSelect,
   onAccept,
 }: ListItemRendererProps) => {
+  const { t } = useTranslation();
   const { id } = initialData;
   const queryClient = useQueryClient();
-  const { data } = useQuery(
+  const { data } = useQuery<BasicThingInformation>(
     ["entityDetail", id],
     async () => {
       const rawEntry = await findEntityWithinLobidByIRI(id);
+      const { category, secondary, avatar } = initialData;
       return {
+        category,
+        avatar,
         ...gndEntryWithMainInfo(rawEntry),
         secondary: initialData.secondary,
       };
@@ -274,7 +279,7 @@ const GNDListItemRenderer = ({
     onAccept && onAccept(id, finalData);
   }, [onAccept, id, queryClient]);
 
-  const { label, avatar, secondary } = data;
+  const { label, avatar, secondary, category } = data;
   return (
     <ClassicResultListItem
       key={id}
@@ -287,6 +292,7 @@ const GNDListItemRenderer = ({
       altAvatar={String(idx)}
       selected={selected}
       onEnter={handleAccept}
+      category={category}
       listItemProps={{
         secondaryAction: (
           <Stack direction="row" spacing={1}>
@@ -305,8 +311,16 @@ const GNDListItemRenderer = ({
           }}
           id={id}
           data={data}
-          onAcceptItem={handleAccept}
-          acceptTitle={"Eintrag übernehmen"}
+          cardActionChildren={
+            <Button
+              size="small"
+              color="primary"
+              variant="contained"
+              onClick={handleAccept}
+            >
+              {t("accept entity")}
+            </Button>
+          }
           detailView={
             <>
               <LobidAllPropTable allProps={data.allProps} disableContextMenu />

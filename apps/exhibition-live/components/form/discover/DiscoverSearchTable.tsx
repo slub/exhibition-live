@@ -9,8 +9,6 @@ import React, {
 import { useGlobalCRUDOptions } from "../../state/useGlobalCRUDOptions";
 import { findEntityByClass } from "../../utils/discover";
 import { sladb } from "../formConfigs";
-import ClassicEntityCard from "../lobid/ClassicEntityCard";
-import LobidAllPropTable from "../lobid/LobidAllPropTable";
 import ClassicResultListItem from "../result/ClassicResultListItem";
 import { EntityDetailElement } from "../show";
 

@@ -56,10 +56,15 @@ jobs:
         run: rm -f pnpm-lock.yaml
       - name: Install dependencies
         run: bun install
-      - name: Build with Next.js
+      - name: create env file
         env:
           NEXT_PUBLIC_GAPI_OAUTH_CLIENT_ID: ${{ secrets.NEXT_PUBLIC_GAPI_OAUTH_CLIENT_ID }}
           NEXT_PUBLIC_BASE_PATH:  /${{ github.event.repository.name }}
+        run: |
+          touch .env
+          echo EXT_PUBLIC_GAPI_OAUTH_CLIENT_ID="${{ secrets.NEXT_PUBLIC_GAPI_OAUTH_CLIENT_ID  }}" >> .env
+          echo NEXT_PUBLIC_BASE_PATH="/${{ github.event.repository.name }}"
+      - name: Build with Next.js
         run: bun run build
       - name: Static HTML export with Next.js
         run: bun run build:pages

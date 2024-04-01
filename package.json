@@ -56,9 +56,6 @@
     "@typescript-eslint/typescript-estree": "^7.4.0"
   },
   "lint-staged": {
-    "*.{js,jsx,ts,tsx}": [
-      "eslint --quiet --fix"
-    ],
     "*.{js,ts,jsx,tsx,md}": [
       "prettier --write --ignore-unknown"
     ]

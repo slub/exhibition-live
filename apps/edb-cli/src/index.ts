@@ -10,8 +10,13 @@ import {
   string,
   subcommands,
 } from "cmd-ts";
-import { listAll, loadEntity, typeNameToTypeIRI } from "./loader";
 import { filterJSONLD } from "./filterJSONLD";
+import { dataStore } from "./dataStore";
+
+const formatResult = (result: any, pretty?: boolean, noJsonLD?: boolean) => {
+  const res = noJsonLD ? filterJSONLD(result) : result;
+  return pretty ? JSON.stringify(res, null, 2) : JSON.stringify(res);
+};
 
 const get = command({
   name: "edb-cli get",
@@ -43,14 +48,8 @@ const get = command({
     if (!type) {
       throw new Error("Loading an entity without type currently not supported");
     }
-    const typeIRI = typeNameToTypeIRI(type);
-    const item = await loadEntity(type, entityIRI, typeIRI);
-    const result = noJsonld ? filterJSONLD(item) : item;
-    if (pretty) {
-      console.log(JSON.stringify(result, null, 2));
-    } else {
-      console.log(JSON.stringify(result));
-    }
+    const item = await dataStore.loadDocument(type, entityIRI);
+    console.log(formatResult(item, pretty, noJsonld));
   },
 });
 
@@ -87,19 +86,10 @@ const list = command({
     }),
   },
   handler: ({ type, amount = 1, search, pretty, noJsonld }) => {
-    listAll(
-      (item) => {
-        const result = noJsonld ? filterJSONLD(item) : item;
-        if (pretty) {
-          console.log(JSON.stringify(result, null, 2));
-        } else {
-          console.log(JSON.stringify(result));
-        }
-      },
-      type,
-      amount,
-      search,
-    );
+    dataStore.findDocuments(type, { search }, amount, (item) => {
+      console.log(formatResult(item, pretty, noJsonld));
+      return Promise.resolve();
+    });
   },
 });
 

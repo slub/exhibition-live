@@ -7,25 +7,37 @@ import { yoga } from "@elysiajs/graphql-yoga";
 import { FieldNode, SelectionSetNode } from "graphql";
 import { IExecutableSchemaDefinition } from "@graphql-tools/schema";
 import { IFieldResolver } from "@graphql-tools/utils";
-import { findEntities, loadEntity, typeNameToTypeIRI } from "./loader";
-import loadedSchema from "@slub/exhibition-schema/schemas/jsonschema/Exhibition2.schema.json";
+import loadedSchema from "@slub/exhibition-schema/schemas/jsonschema/Exhibition.schema.json";
+import { defsToDefinitions } from "./defsToDefinitions";
+import { dataStore } from "./dataStore";
+import { extendSchema } from "./extendSchema";
+import { replaceJSONLD } from "./replaceJSONLD";
 
-const exhibitionSchema = loadedSchema as JSONSchema7;
+const exhibitionSchema = extendSchema(loadedSchema as JSONSchema7);
 
 const reader = getJsonSchemaReader();
 const writer = getGraphQLWriter();
 
-const converter = makeConverter(reader, writer);
+const convertDefs = <T extends object>(schema: T) => {
+  if (!schema["$defs"]) return schema;
+  const { $defs: definitions, ...rest } = defsToDefinitions(schema);
+  return {
+    ...rest,
+    definitions,
+  } as T;
+};
 
+const converter = makeConverter(reader, writer);
 const { data: graphqlTypeDefsUnfiltered } = await converter.convert({
-  data: JSON.stringify(exhibitionSchema, null, 2),
+  data: JSON.stringify(convertDefs(exhibitionSchema), null, 2),
 });
 
 const graphqlTypeDefs = graphqlTypeDefsUnfiltered
   .split("\n")
-  .filter((line) => !new RegExp("_").test(line))
+  .filter((line) => !new RegExp("[a-zA-Z]_").test(line))
   .join("\n");
 
+//console.log(graphqlTypeDefsUnfiltered);
 const getTypeDefs = (schema: JSONSchema7) => {
   const definitions = defs(schema);
   const allDefinitions = Object.keys(definitions)
@@ -51,15 +63,14 @@ const getFieldResolvers = (schema: JSONSchema7) => {
         `get${typeName}`,
         async (parent, args, context, info) => {
           const { id } = args;
-          const typeIRI = typeNameToTypeIRI(typeName);
-          const entity = await loadEntity(typeName, typeIRI, id, schema);
-          return entity;
+          const result = await dataStore.loadDocument(typeName, id);
+          return replaceJSONLD(result);
         },
       ],
       [
         `list${typeName}`,
         async (parent, args, context, info) => {
-          return await findEntities(typeName, 10, schema);
+          return replaceJSONLD(await dataStore.listDocuments(typeName, 10));
         },
       ],
     ];
@@ -98,7 +109,7 @@ const graphqlAPI = yoga({
   },
   // If context is a function on this doesn't present
   // for some reason it won't infer context type
-  useContext(_) {},
+  useContext(_: any) {},
   resolvers: gqlSchema.resolvers,
 } as any);
 
@@ -109,5 +120,5 @@ const app = new Elysia()
   .listen(3001);
 
 console.log(
-  `🦊 Elysia powerered SLUB EDB is running at ${app.server?.hostname}:${app.server?.port}`,
+  `🦊 Elysia powered SLUB EDB is running at ${app.server?.hostname}:${app.server?.port}`,
 );

@@ -1,5 +1,8 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "SLUB Exhibition Database Schema",
+  "description": "Schema für die SLUB Ausstellungsdatenbank",
+  "id": "https://schema.adb.arthistoricum.net/exhibition",
   "$defs": {
     "Tag": {
       "type": "object",
@@ -16,6 +19,7 @@
           "format": "uri"
         },
         "parent": {
+          "title": "Übergeordnetes Schlagwort",
           "$ref": "#/$defs/Tag"
         }
       }
@@ -31,6 +35,7 @@
           "type": "string"
         },
         "parent": {
+          "title": "Übergeordneter Beruf",
           "$ref": "#/$defs/Occupation"
         }
       }
@@ -58,6 +63,7 @@
           "type": "string"
         },
         "parent": {
+          "title": "Übergeordnete Ausstellungsreihe",
           "$ref": "#/$defs/ExhibitionSeries"
         },
         "seriesType": {
@@ -182,6 +188,7 @@
           "type": "string"
         },
         "parent": {
+          "title": "Übergeordneter Ort",
           "$ref": "#/$defs/Location"
         }
       }
@@ -228,6 +235,7 @@
           "$ref": "#/$defs/Location"
         },
         "parent": {
+          "title": "Übergeordnete Stätte",
           "$ref": "#/$defs/Place"
         },
         "image": {
@@ -271,6 +279,7 @@
           }
         },
         "parent": {
+          "title": "Übergeordnete Organisation",
           "$ref": "#/$defs/Corporation"
         },
         "location": {
@@ -331,9 +340,6 @@
     "ExponatsAndPersons": {
       "type": "object",
       "properties": {
-        "exponat": {
-          "$ref": "#/$defs/ExhibitionExponat"
-        },
         "person": {
           "$ref": "#/$defs/Person"
         },
@@ -345,9 +351,6 @@
     "ExponatsAndCorporations": {
       "type": "object",
       "properties": {
-        "exponat": {
-          "$ref": "#/$defs/ExhibitionExponat"
-        },
         "corporation": {
           "$ref": "#/$defs/Corporation"
         },
@@ -374,7 +377,7 @@
           "type": "string",
           "maxLength": 200
         },
-        "fromDate": {
+        "startDate": {
           "type": "object",
           "properties": {
             "dateValue": {
@@ -401,7 +404,7 @@
             }
           }
         },
-        "toDate": {
+        "endDate": {
           "type": "object",
           "properties": {
             "dateValue": {
@@ -474,33 +477,6 @@
         }
       }
     },
-    "OtherDate": {
-      "type": "object",
-      "properties": {
-        "dateValue": {
-          "type": "integer",
-          "title": "Datumswert",
-          "maxLength": 8
-        },
-        "dateType": {
-          "type": "integer",
-          "oneOf": [
-            {
-              "const": 1,
-              "title": "Vernissage"
-            },
-            {
-              "const": 2,
-              "title": "Midissage"
-            },
-            {
-              "const": 3,
-              "title": "Finissage"
-            }
-          ]
-        }
-      }
-    },
     "InvolvedPerson": {
       "type": "object",
       "properties": {
@@ -549,35 +525,6 @@
           "maxLength": 200
         },
         "description": {
-          "type": "string"
-        },
-        "subtitle": {
-          "type": "string",
-          "maxLength": 200
-        },
-        "originalTitle": {
-          "type": "string",
-          "maxLength": 200
-        },
-        "exhibitionSeries": {
-          "$ref": "#/$defs/ExhibitionSeries"
-        },
-        "exhibitionCategory": {
-          "$ref": "#/$defs/ExhibitionCategory"
-        },
-        "exhibitionGenre": {
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/Genre"
-          }
-        },
-        "sourceCorporation": {
-          "$ref": "#/$defs/Corporation"
-        },
-        "fromDateDisplay": {
-          "type": "string"
-        },
-        "toDateDisplay": {
           "type": "string"
         },
         "startDate": {
@@ -632,6 +579,26 @@
                 }
               ]
             }
+          }
+        },
+        "subtitle": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "originalTitle": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "exhibitionSeries": {
+          "$ref": "#/$defs/ExhibitionSeries"
+        },
+        "exhibitionCategory": {
+          "$ref": "#/$defs/ExhibitionCategory"
+        },
+        "exhibitionGenre": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Genre"
           }
         },
         "externalId": {
@@ -712,16 +679,10 @@
             }
           }
         },
-        "exponatsAndPersons": {
+        "exponats": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/ExponatsAndPersons"
-          }
-        },
-        "exponatsAndCorporations": {
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/ExponatsAndCorporations"
+             "$ref": "#/$defs/ExhibitionExponat"
           }
         },
         "resources": {

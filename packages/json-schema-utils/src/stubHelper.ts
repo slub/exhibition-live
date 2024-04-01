@@ -133,6 +133,26 @@ export const definitionsToStubDefinitions = (
     };
   }, {}) as JSONSchema7["definitions"];
 
+export const withJSONLDProperties: (
+  name: string,
+  schema: JSONSchema7,
+  genJSONLDSemanticProperties?: GenJSONLDSemanticPropertiesFunction,
+  requiredProperties?: GenRequiredPropertiesFunction,
+) => JSONSchema7 = (
+  name,
+  schema,
+  genJSONLDSemanticProperties,
+  requiredProperties,
+) =>
+  ({
+    ...schema,
+    properties: {
+      ...schema.properties,
+      ...(genJSONLDSemanticProperties ? genJSONLDSemanticProperties(name) : {}),
+    },
+    required: requiredProperties ? requiredProperties(name) : undefined,
+  }) as JSONSchema7;
+
 export const prepareStubbedSchema = (
   schema: JSONSchema7,
   genJSONLDSemanticProperties?: GenJSONLDSemanticPropertiesFunction,
@@ -140,21 +160,6 @@ export const prepareStubbedSchema = (
   options?: RefAppendOptions,
 ) => {
   const definitionsKey = getDefintitionKey(schema);
-
-  const withJSONLDProperties: (
-    name: string,
-    schema: JSONSchema7,
-  ) => JSONSchema7 = (name: string, schema: JSONSchema7) =>
-    ({
-      ...schema,
-      properties: {
-        ...schema.properties,
-        ...(genJSONLDSemanticProperties
-          ? genJSONLDSemanticProperties(name)
-          : {}),
-      },
-      required: requiredProperties ? requiredProperties(name) : undefined,
-    }) as JSONSchema7;
 
   const stubDefinitions = definitionsToStubDefinitions(defs(schema), options);
   const schemaWithRefStub = recursivelyFindRefsAndAppendStub(
@@ -179,7 +184,12 @@ export const prepareStubbedSchema = (
       ? { ...acc, [key]: value }
       : {
           ...acc,
-          [key]: withJSONLDProperties(key, value as JSONSchema7),
+          [key]: withJSONLDProperties(
+            key,
+            value as JSONSchema7,
+            genJSONLDSemanticProperties,
+            requiredProperties,
+          ),
         };
   }, {}) as JSONSchema7["definitions"];
 

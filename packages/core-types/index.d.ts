@@ -69,6 +69,7 @@ export type CRUDFunctions = {
 export type SPARQLCRUDOptions = {
   queryBuildOptions?: SparqlBuildOptions;
   defaultPrefix: string;
+  maxRecursion?: number;
 };
 
 export type CRUDFunctions = {

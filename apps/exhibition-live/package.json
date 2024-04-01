@@ -21,7 +21,7 @@
     "deploy-storybook": "storybook-to-ghpages",
     "codegen": "graphql-codegen",
     "codegen:watch": "graphql-codegen --watch",
-    "lint:fix": "fomat:fix && next lint --fix && eslint --fix ./components ./pages",
+    "lint:fix": "next lint --fix && eslint --fix ./components ./pages",
     "lint:check": "next lint && eslint ./components ./pages",
     "docker:build": "docker build -t adb-next .",
     "docker:run": "docker run -p 3000:3000 adb-next"

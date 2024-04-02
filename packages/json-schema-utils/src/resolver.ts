@@ -1,8 +1,9 @@
 import isEmpty from "lodash/isEmpty";
 import get from "lodash/get";
-import { JsonSchema } from "./types";
 import { decode } from "./jsonPointer";
-import { JSONSchema7 } from "json-schema";
+import { JSONSchema4, JSONSchema7 } from "json-schema";
+
+type JsonSchema = JSONSchema7 | JSONSchema4;
 
 const invalidSegment = (pathSegment: string) =>
   pathSegment === "#" || pathSegment === undefined || pathSegment === "";

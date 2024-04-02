@@ -4,9 +4,12 @@ import { Dataset } from "@rdfjs/types";
 import { rdf } from "@tpluscode/rdf-ns-builders";
 import clownface from "clownface";
 import { JSONSchema7, JSONSchema7Definition } from "json-schema";
-import { isJSONSchema, isJSONSchemaDefinition } from "@slub/json-schema-utils";
+import {
+  isJSONSchema,
+  isJSONSchemaDefinition,
+  resolveSchema,
+} from "@slub/json-schema-utils";
 import { filterUndefOrNull } from "@slub/edb-core-utils";
-import { resolveSchema } from "./resolver";
 import { JsonSchema, WalkerOptions } from "./types";
 
 const isNil = (val: any) => val === undefined || val === null;

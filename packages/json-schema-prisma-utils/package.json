@@ -34,6 +34,8 @@
     "typescript": "^5.3.3"
   },
   "dependencies": {
+    "@slub/json-schema-utils": "workspace:*",
+    "@slub/edb-core-utils": "workspace:*",
     "json-schema": "^0.4.0"
   }
 }

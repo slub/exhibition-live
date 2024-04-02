@@ -4,8 +4,8 @@ import {
   isJSONSchema,
   isJSONSchemaDefinition,
   isPrimitive,
+  resolveSchema,
 } from "@slub/json-schema-utils";
-import { resolveSchema } from "@slub/edb-graph-traversal";
 import { filterUndefOrNull } from "@slub/edb-core-utils";
 
 type JsonSchema2PrismaSelectOptions = {

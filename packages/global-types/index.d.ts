@@ -31,6 +31,23 @@ export type InitDatastoreFunction<T extends DatastoreBaseConfig> = (
   dataStoreConfig: T,
 ) => AbstractDatastore;
 
+export type CountAndIterable = {
+  amount: number;
+  iterable: AsyncIterable<any>;
+};
+
+export type AbstractDatastoreIterable = {
+  listDocuments: (
+    typeName: string,
+    limit?: number,
+  ) => Promise<CountAndIterable>;
+  findDocuments: (
+    typeName: string,
+    query: QueryType,
+    limit?: number,
+  ) => Promise<CountAndIterable>;
+};
+
 export type AbstractDatastore = {
   loadDocument: (typeName: string, entityIRI: string) => Promise<any>;
   upsertDocument: (
@@ -49,4 +66,5 @@ export type AbstractDatastore = {
     limit?: number,
     cb?: (document: any) => Promise<any>,
   ) => Promise<any[]>;
+  iterableImplementation?: AbstractDatastoreIterable;
 };

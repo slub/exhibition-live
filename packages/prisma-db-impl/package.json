@@ -13,15 +13,10 @@
     }
   },
   "scripts": {
-    "build": "tsup",
     "build:model": "bun src/createModel.ts > schema.prisma",
     "format:model": "prisma format",
-    "dev": "tsup --watch",
     "lint": "eslint \"**/*.ts*\"",
-    "lint-fix": "eslint --fix \"**/*.ts*\"",
-    "test": "NODE_OPTIONS=--experimental-vm-modules jest --passWithNoTests --color",
-    "test:watch": "NODE_OPTIONS=--experimental-vm-modules jest --watch --color",
-    "test:coverage": "NODE_OPTIONS=--experimental-vm-modules jest --coverage"
+    "lint-fix": "eslint --fix \"**/*.ts*\""
   },
   "devDependencies": {
     "@slub/edb-build-helper": "workspace:*",

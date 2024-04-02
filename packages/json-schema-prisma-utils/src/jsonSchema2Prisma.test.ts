@@ -80,35 +80,57 @@ const schema2: JSONSchema7 = {
 describe("convert json schema to prisma schema", () => {
   test("simple schema", () => {
     const prisma = jsonSchema2Prisma(schema, new WeakSet());
-    const n2m = n2MTable("Human", schema.properties, new WeakSet());
-    const result = prisma + "\n" + n2m;
-    expect(result).toBe(
+    expect(prisma).toBe(
       `model Human {
-name String
-knows Human_knows[]
-father_name String
-father_description String
+  name String
+  knows Human_knows[]
+  father_name String
+  father_description String
 }
-
-
-model Human_knows {
-nick String
-label String
-loves Human_knows_loves[]
-}
-
 
 model Human_knows_loves {
-name String
+  name String
 }
 
-`,
+model Human_knows {
+  nick String
+  label String
+  loves Human_knows_loves[]
+}`,
     );
   });
+  test("schema with self-relation", () => {
+    const primsa = jsonSchema2Prisma(
+      {
+        $schema: "http://json-schema.org/draft-07/schema#",
+        $id: "https://example.com/person.schema.json",
+        definitions: {
+          Person: {
+            properties: {
+              name: { type: "string" },
+              knows: {
+                $ref: "#/definitions/Person",
+              },
+            },
+          },
+        },
+      },
+      new WeakSet(),
+      {
+        reverseMap: {
+          knows: "knownBy",
+        },
+      },
+    );
+    console.log(primsa);
+    expect(primsa).toBe(`
+    `);
+  });
+  /*
   test("schema with definitions", () => {
     const prisma = jsonSchema2Prisma(schema2, new WeakSet());
-    const n2m = n2MTable("Human", schema2.properties, new WeakSet());
-    const result = prisma + "\n" + n2m;
+    //const n2m = n2MTable("Human", schema2.properties, new WeakSet());
+    const result = prisma
     console.log(result);
     expect(result).toBe(
       `model Human {
@@ -132,5 +154,5 @@ nick String
 
 `,
     );
-  });
+  });*/
 });

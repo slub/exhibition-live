@@ -12,27 +12,75 @@
               "type": "HorizontalLayout",
               "elements": [
                 {
-                  "type": "Control",
-                  "label": "Name",
-                  "scope": "#/properties/name",
-                  "options": {
-                    "focus": true
-                  }
+                  "type": "VerticalLayout",
+                  "elements": [
+                    {
+                      "type": "Control",
+                      "label": "Name",
+                      "scope": "#/properties/name",
+                      "options": {
+                        "focus": true
+                      }
+                    },
+                    {
+                      "type": "Control",
+                      "label": "Kurzbeschreibung",
+                      "scope": "#/properties/description",
+                      "options": {
+                        "multi": true
+                      }
+                    },
+                    {
+                      "type": "HorizontalLayout",
+                      "elements": [
+                        {
+                          "type": "Control",
+                          "label": "Geschlecht",
+                          "scope": "#/properties/gender"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "Group",
+                      "label": "Lebensdaten",
+                      "elements": [
+                        {
+                          "type": "HorizontalLayout",
+                          "elements": [
+                            {
+                              "type": "Control",
+                              "label": "Geburtstag",
+                              "scope": "#/properties/birthDate"
+                            },
+                            {
+                              "type": "Control",
+                              "label": "Sterbedatum",
+                              "scope": "#/properties/deathDate",
+                              "rule": {
+                                "effect": "SHOW",
+                                "condition": {
+                                  "scope": "#/properties/personDeceased",
+                                  "schema": {
+                                    "const": true
+                                  }
+                                }
+                              }
+                            },
+                            {
+                              "type": "Control",
+                              "label": "verstorben",
+                              "scope": "#/properties/personDeceased"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
                 },
                 {
                   "type": "Control",
                   "label": "Bild",
                   "scope": "#/properties/image"
-                }
-              ]
-            },
-            {
-              "type": "HorizontalLayout",
-              "elements": [
-                {
-                  "type": "Control",
-                  "label": "Geschlecht",
-                  "scope": "#/properties/gender"
                 }
               ]
             },
@@ -43,48 +91,6 @@
               "options": {
                 "elementLabelProp": "title"
               }
-            },
-            {
-              "type": "Control",
-              "label": "Kurzbeschreibung",
-              "scope": "#/properties/description",
-              "options": {
-                "multi": true
-              }
-            },
-            {
-              "type": "HorizontalLayout",
-              "elements": [
-                {
-                  "type": "VerticalLayout",
-                  "elements": [
-                    {
-                      "type": "Control",
-                      "label": "Geburtstag",
-                      "scope": "#/properties/birthDate"
-                    },
-                    {
-                      "type": "Control",
-                      "label": "verstorben",
-                      "scope": "#/properties/personDeceased"
-                    }
-                  ]
-                },
-                {
-                  "type": "Control",
-                  "label": "Sterbedatum",
-                  "scope": "#/properties/deathDate",
-                  "rule": {
-                    "effect": "SHOW",
-                    "condition": {
-                      "scope": "#/properties/personDeceased",
-                      "schema": {
-                        "const": true
-                      }
-                    }
-                  }
-                }
-              ]
             }
           ]
         }

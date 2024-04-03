@@ -13,12 +13,18 @@ import {
   subcommands,
 } from "cmd-ts";
 import { prismaStore } from "./prismaStore";
-import { filterJSONLD } from "./filterJSONLD";
 import { defs } from "@slub/json-schema-utils";
 import { JSONSchema7 } from "json-schema";
-import { importAllDocuments, importSingleDocument } from "./import";
+import { dataStore as sparqlStore } from "./dataStore";
+import { extendSchema } from "./extendSchema";
+import { PrismaClient } from "@prisma/client";
+import { primaryFields } from "./primaryFields";
+import { filterJSONLD } from "@slub/edb-core-utils";
 
-const dataStore = prismaStore;
+const importStore = sparqlStore;
+const prisma = new PrismaClient();
+const rootSchema = extendSchema(schema as JSONSchema7);
+const dataStore = prismaStore(prisma, rootSchema, primaryFields);
 
 const allTypes = Object.keys(defs(schema as JSONSchema7));
 const importCommand = command({
@@ -44,9 +50,9 @@ const importCommand = command({
   },
   handler: async ({ entityIRI, typeName, limit }) => {
     if (entityIRI) {
-      importSingleDocument(typeName, entityIRI);
+      await dataStore.importDocument(typeName, entityIRI, importStore);
     } else {
-      importAllDocuments(typeName, limit);
+      await dataStore.importDocuments(typeName, importStore, limit || 10);
     }
   },
 });
@@ -122,8 +128,8 @@ const list = command({
       long: "no-jsonld",
     }),
   },
-  handler: ({ type, amount = 1, search, pretty, noJsonld }) => {
-    dataStore.findDocuments(type, { search }, amount, (item) => {
+  handler: async ({ type, amount = 1, search, pretty, noJsonld }) => {
+    await dataStore.findDocuments(type, { search }, amount, (item) => {
       console.log(formatResult(item, pretty, noJsonld));
       return Promise.resolve();
     });

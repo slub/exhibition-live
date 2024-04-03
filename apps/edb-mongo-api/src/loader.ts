@@ -1,9 +1,9 @@
-import config from "@slub/edb-cli/src/config";
-import { QueryOptions } from "@slub/edb-global-types";
 import { oxigraphCrudOptions } from "@slub/remote-query-implementations";
 import { bringDefinitionToTop } from "@slub/json-schema-utils";
 import { JSONSchema7 } from "json-schema";
 import { findEntityByClass, load } from "@slub/sparql-schema";
+import { QueryOptions } from "@slub/edb-core-types";
+import config from "./config";
 
 const {
   BASE_IRI,
@@ -52,8 +52,8 @@ export const findEntities = async (
     search || null,
     typeIRI,
     selectFetch,
-    amount,
     { queryBuildOptions: defaultQueryBuilderOptions, defaultPrefix },
+    amount,
   );
   return await Promise.all(
     items.map(({ value }: { value: string }) => {

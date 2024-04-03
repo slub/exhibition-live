@@ -1,12 +1,12 @@
 import { PrimaryField, PrimaryFieldExtract } from "@slub/edb-core-types";
 import exhibitionSchema from "@slub/exhibition-schema/schemas/jsonschema/Exhibition.schema.json";
 
-type ExhibitionPrimaryFieldDeclaration = {
+export type PrimaryFieldDeclaration = {
   //typeof keys of exhibitionSchema.$defs
   [typeName in keyof typeof exhibitionSchema.$defs]: PrimaryField;
 };
 
-type ExhibitionPrimaryFieldExtractDeclaration = {
+export type PrimaryFieldExtractDeclaration = {
   //typeof keys of exhibitionSchema.$defs
   [typeName in keyof typeof exhibitionSchema.$defs]: PrimaryFieldExtract<any>;
 };
@@ -22,7 +22,7 @@ const defaultMappingWithImg: PrimaryField = {
   image: "image",
 };
 
-export const primaryFields: Partial<ExhibitionPrimaryFieldDeclaration> = {
+export const primaryFields: Partial<PrimaryFieldDeclaration> = {
   Exhibition: defaultMappingWithImg,
   Tag: defaultMappingWithImg,
   Person: {
@@ -50,29 +50,28 @@ export const primaryFields: Partial<ExhibitionPrimaryFieldDeclaration> = {
   },
 };
 
-export const primaryFieldExtracts: Partial<ExhibitionPrimaryFieldExtractDeclaration> =
-  {
-    ...primaryFields,
-    InvolvedPerson: {
-      label: {
-        path: "person.name",
-      },
-      description: {
-        path: "role.title",
-      },
-      image: {
-        path: "person.image",
-      },
+export const primaryFieldExtracts: Partial<PrimaryFieldExtractDeclaration> = {
+  ...primaryFields,
+  InvolvedPerson: {
+    label: {
+      path: "person.name",
     },
-    InvolvedCorporation: {
-      label: {
-        path: "corporation.name",
-      },
-      description: {
-        path: "role.title",
-      },
-      image: {
-        path: "corporation.image",
-      },
+    description: {
+      path: "role.title",
     },
-  };
+    image: {
+      path: "person.image",
+    },
+  },
+  InvolvedCorporation: {
+    label: {
+      path: "corporation.name",
+    },
+    description: {
+      path: "role.title",
+    },
+    image: {
+      path: "corporation.image",
+    },
+  },
+};

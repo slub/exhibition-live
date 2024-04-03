@@ -1,12 +1,8 @@
 import { Elysia, t } from "elysia";
-import { JSONSchema7 } from "json-schema";
 import { cors } from "@elysiajs/cors";
-import loadedSchema from "@slub/exhibition-schema/schemas/jsonschema/Exhibition.schema.json";
 import { closeConnection, database } from "./connect";
 import { swagger } from "@elysiajs/swagger";
 import { Collection } from "mongodb";
-
-const exhibitionSchema = loadedSchema as JSONSchema7;
 
 const ensureIndex = (collection: Collection<any>) => {
   if (!collection.indexExists("@id")) collection.createIndex({ "@id": 1 });
@@ -58,6 +54,7 @@ export const app = new Elysia()
       }),
     },
   )
+  // @ts-ignore
   .use(swagger())
   .listen(3002);
 

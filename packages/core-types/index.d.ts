@@ -5,6 +5,10 @@ export type Prefixes = {
   [k: string]: string;
 };
 
+export type NamespaceBuilderPrefixes = {
+  prefixes: Record<string, NamespaceBuilder>;
+};
+
 export type FieldExtractDeclaration<T = any> =
   | string
   | ((entry: T) => string)

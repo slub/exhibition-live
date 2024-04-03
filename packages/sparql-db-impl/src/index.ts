@@ -1,6 +1,14 @@
 import { bringDefinitionToTop } from "@slub/json-schema-utils";
 import { JSONSchema7 } from "json-schema";
-import { findEntityByClass, load } from "@slub/sparql-schema";
+import {
+  findEntityByClass,
+  load,
+  save,
+  remove,
+  moveToTrash,
+  restoreFromTrash,
+  exists,
+} from "@slub/sparql-schema";
 import { CRUDFunctions, SparqlBuildOptions } from "@slub/edb-core-types";
 import { WalkerOptions } from "@slub/edb-graph-traversal";
 import {
@@ -8,7 +16,6 @@ import {
   CountAndIterable,
   DatastoreBaseConfig,
   InitDatastoreFunction,
-  QueryType,
 } from "@slub/edb-global-types";
 
 type SPARQLDataStoreConfig = {
@@ -28,7 +35,12 @@ export const initSPARQLStore: InitDatastoreFunction<SPARQLDataStoreConfig> = (
     typeNameToTypeIRI,
     queryBuildOptions,
     walkerOptions,
-    sparqlQueryFunctions: { constructFetch, selectFetch },
+    sparqlQueryFunctions: {
+      constructFetch,
+      selectFetch,
+      updateFetch,
+      askFetch,
+    },
     defaultLimit,
   } = dataStoreConfig;
   const loadDocument = async (typeName: string, entityIRI: string) => {
@@ -73,7 +85,7 @@ export const initSPARQLStore: InitDatastoreFunction<SPARQLDataStoreConfig> = (
     typeName: string,
     limit?: number,
     searchString?: string | null,
-  ) => Promise<CountAndIterable> = async (
+  ) => Promise<CountAndIterable<any>> = async (
     typeName: string,
     limit?: number,
     searchString?: string | null,
@@ -107,10 +119,41 @@ export const initSPARQLStore: InitDatastoreFunction<SPARQLDataStoreConfig> = (
     };
   };
   return {
-    loadDocument,
-    upsertDocument: async (typeName, entityIRI, document) => {
+    typeNameToTypeIRI,
+    typeIRItoTypeName: (iri: string) => iri.replace(defaultPrefix, ""),
+    importDocument: async (typeName, entityIRI, importStore) => {
       throw new Error("Not implemented");
     },
+    importDocuments: async (typeName, importStore, limit) => {
+      throw new Error("Not implemented");
+    },
+    loadDocument,
+    existsDocument: async (typeName, entityIRI) => {
+      return await exists(entityIRI, typeNameToTypeIRI(typeName), askFetch);
+    },
+    removeDocument: async (typeName, entityIRI) => {
+      return await remove(
+        entityIRI,
+        typeNameToTypeIRI(typeName),
+        dataStoreConfig.schema,
+        updateFetch,
+        {
+          defaultPrefix,
+          queryBuildOptions,
+        },
+      );
+    },
+    upsertDocument: (typeName, entityIRI, document) =>
+      save(
+        {
+          "@id": entityIRI,
+          "@type": typeNameToTypeIRI(typeName),
+          ...document,
+        },
+        dataStoreConfig.schema,
+        constructFetch,
+        { defaultPrefix, queryBuildOptions },
+      ),
     listDocuments: async (typeName, limit, cb) =>
       findDocuments(typeName, limit, null, cb),
     findDocuments: async (typeName, query, limit, cb) =>

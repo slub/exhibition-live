@@ -31,40 +31,65 @@ export type InitDatastoreFunction<T extends DatastoreBaseConfig> = (
   dataStoreConfig: T,
 ) => AbstractDatastore;
 
-export type CountAndIterable = {
+export type CountAndIterable<DocumentResult> = {
   amount: number;
-  iterable: AsyncIterable<any>;
+  iterable: AsyncIterable<DocumentResult>;
 };
 
-export type AbstractDatastoreIterable = {
+export type AbstractDatastoreIterable<DocumentResult> = {
   listDocuments: (
     typeName: string,
     limit?: number,
-  ) => Promise<CountAndIterable>;
+  ) => Promise<CountAndIterable<DocumentResult>>;
   findDocuments: (
     typeName: string,
     query: QueryType,
     limit?: number,
-  ) => Promise<CountAndIterable>;
+  ) => Promise<CountAndIterable<DocumentResult>>;
 };
 
-export type AbstractDatastore = {
-  loadDocument: (typeName: string, entityIRI: string) => Promise<any>;
+export type AbstractDatastore<
+  UpsertResult = any,
+  LoadResult = any,
+  FindResult = any[],
+  RemoveResult = any,
+  DocumentResult = LoadResult,
+  ImportResult = any,
+  BulkImportResult = any,
+> = {
+  typeNameToTypeIRI: (typeName: string) => string;
+  typeIRItoTypeName: (iri: string) => string;
+  removeDocument: (
+    typeName: string,
+    entityIRI: string,
+  ) => Promise<RemoveResult>;
+  importDocument: (
+    typeName: string,
+    entityIRI: any,
+    importStore: AbstractDatastore,
+  ) => Promise<ImportResult>;
+  importDocuments: (
+    typeName: string,
+    importStore: AbstractDatastore,
+    limit: number,
+  ) => Promise<BulkImportResult>;
+  loadDocument: (typeName: string, entityIRI: string) => Promise<LoadResult>;
+  existsDocument: (typeName: string, entityIRI: string) => Promise<boolean>;
   upsertDocument: (
     typeName: string,
     entityIRI: string,
     document: any,
-  ) => Promise<any>;
+  ) => Promise<UpsertResult>;
   listDocuments: (
     typeName: string,
     limit?: number,
     cb?: (document: any) => Promise<any>,
-  ) => Promise<any[]>;
+  ) => Promise<FindResult>;
   findDocuments: (
     typeName: string,
     query: QueryType,
     limit?: number,
-    cb?: (document: any) => Promise<any>,
-  ) => Promise<any[]>;
-  iterableImplementation?: AbstractDatastoreIterable;
+    cb?: (document: any) => Promise<DocumentResult>,
+  ) => Promise<FindResult>;
+  iterableImplementation?: AbstractDatastoreIterable<DocumentResult>;
 };

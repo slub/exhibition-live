@@ -8,10 +8,11 @@ import { defaultQueryBuilderOptions } from "../form/formConfigs";
 
 export const useLoadQuery = (
   defaultPrefix: string,
-  crudOptionsPart: Partial<CRUDOptions> = {},
   queryKey: string = "load",
+  crudOptionsPart: Partial<CRUDOptions> = {},
 ) => {
-  const { crudOptions } = useGlobalCRUDOptions();
+  const { crudOptions: globalCRUDOptions } = useGlobalCRUDOptions();
+  const crudOptions = { ...globalCRUDOptions, ...crudOptionsPart };
   const { constructFetch } = crudOptions || {};
   const queryClient = useQueryClient();
 

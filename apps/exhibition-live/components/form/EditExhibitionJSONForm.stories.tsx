@@ -27,8 +27,6 @@ const exampleData = {
 
 const SemanticJsonFormOneShot = () => {
   const [data, setData] = useState<any>(exampleData);
-  const { activeEndpoint } = useSettings();
-  const crudOptions = activeEndpoint && oxigraphCrudOptions(activeEndpoint);
   const typeName = "Exhibition";
   const loadedSchema = useExtendedSchema({ typeName, classIRI });
 
@@ -38,7 +36,6 @@ const SemanticJsonFormOneShot = () => {
       onChange={setData}
       entityIRI={data["@id"]}
       typeIRI={classIRI}
-      crudOptions={crudOptions}
       defaultPrefix={defaultPrefix}
       searchText={""}
       shouldLoadInitially

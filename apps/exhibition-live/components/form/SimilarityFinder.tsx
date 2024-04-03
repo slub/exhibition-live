@@ -378,10 +378,9 @@ const KBListItemRenderer = ({
 }: ListItemRendererProps) => {
   const { id, label, avatar, secondary } = data;
 
-  const { crudOptions } = useGlobalCRUDOptions();
   const typeName = useMemo(() => typeIRItoTypeName(typeIRI), [typeIRI]);
   const loadedSchema = useExtendedSchema({ typeName, classIRI: typeIRI });
-  const loadEntity = useLoadQuery(defaultPrefix, crudOptions, "load");
+  const loadEntity = useLoadQuery(defaultPrefix, "load");
   const { resetElementIndex } = useSimilarityFinderState();
   const handleAccept = useCallback(async () => {
     const finalData = (await loadEntity(id, typeIRI, loadedSchema))?.document;

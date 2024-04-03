@@ -125,9 +125,6 @@ const MaterialArrayLayoutComponent = (props: ArrayLayoutProps & {}) => {
     entityIRI,
     typeIRI,
     subSchema as JSONSchema7,
-    defaultPrefix,
-    crudOptions,
-    defaultJsonldContext,
     { enabled: false },
   );
 

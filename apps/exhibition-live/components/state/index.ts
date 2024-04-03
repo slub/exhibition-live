@@ -15,3 +15,5 @@ export * from "./useSimilarityFinderState";
 export * from "./useLoadQuery";
 export * from "./useKeyEventForSimilarityFinder";
 export * from "./useModalRegistry";
+export * from "./useGlobalSettings";
+export * from "./useDataStore";

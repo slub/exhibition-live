@@ -2,13 +2,9 @@ import { JsonSchema } from "@jsonforms/core";
 import { JSONSchema7 } from "json-schema";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 
-import DiscoverAutocompleteInput from "../form/discover/DiscoverAutocompleteInput";
-import { defaultJsonldContext, defaultPrefix } from "../form/formConfigs";
 import { useUISchemaForType } from "../form/uischemaForType";
 import { uischemas } from "../form/uischemas";
 import MuiEditDialog from "./MuiEditDialog";
-import { useGlobalCRUDOptions } from "../state/useGlobalCRUDOptions";
-import { BASE_IRI } from "../config";
 import { useControlled } from "@mui/material";
 import { useCRUDWithQueryClient } from "../state/useCRUDWithQueryClient";
 import { useSnackbar } from "notistack";
@@ -59,14 +55,10 @@ export const SemanticFormsModal = (props: SemanticFormsModalProps) => {
 
   const uischemaExternal = typeIRI && useUISchemaForType(typeIRI);
 
-  const { crudOptions } = useGlobalCRUDOptions();
   const { loadQuery, saveMutation, removeMutation } = useCRUDWithQueryClient(
     entityIRI,
     typeIRI,
     schema as JSONSchema7,
-    defaultPrefix,
-    crudOptions,
-    defaultJsonldContext,
     { enabled: true },
   );
   const { data: remoteData } = loadQuery;

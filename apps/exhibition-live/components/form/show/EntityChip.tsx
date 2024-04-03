@@ -1,14 +1,8 @@
 import { useTypeIRIFromEntity } from "../../state";
 import React, { MouseEvent, useCallback, useMemo, useState } from "react";
-import {
-  primaryFieldExtracts,
-  primaryFields,
-  typeIRItoTypeName,
-} from "../../config";
+import { primaryFieldExtracts, typeIRItoTypeName } from "../../config";
 import useExtendedSchema from "../../state/useExtendedSchema";
-import { useGlobalCRUDOptions } from "../../state/useGlobalCRUDOptions";
 import { useCRUDWithQueryClient } from "../../state/useCRUDWithQueryClient";
-import { defaultJsonldContext, defaultPrefix } from "../formConfigs";
 import { useTranslation } from "next-i18next";
 import { PrimaryFieldResults } from "../../utils/types";
 import {
@@ -40,16 +34,12 @@ export const EntityChip = ({
   const classIRI: string | undefined = typeIRI || typeIRIs?.[0];
   const typeName = useMemo(() => typeIRItoTypeName(classIRI), [classIRI]);
   const loadedSchema = useExtendedSchema({ typeName, classIRI });
-  const { crudOptions } = useGlobalCRUDOptions();
   const {
     loadQuery: { data: rawData },
   } = useCRUDWithQueryClient(
     entityIRI,
     classIRI,
     loadedSchema,
-    defaultPrefix,
-    crudOptions,
-    defaultJsonldContext,
     { enabled: true, refetchOnWindowFocus: true },
     "show",
   );

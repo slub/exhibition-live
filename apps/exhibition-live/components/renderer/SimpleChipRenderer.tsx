@@ -8,7 +8,7 @@ import React, {
   useState,
 } from "react";
 
-import { BASE_IRI, primaryFieldExtracts, primaryFields } from "../config";
+import { BASE_IRI, primaryFieldExtracts } from "../config";
 import {
   applyToEachField,
   extractFieldIfString,
@@ -17,8 +17,6 @@ import { JSONSchema7 } from "json-schema";
 import { useJsonForms } from "@jsonforms/react";
 import dot from "dot";
 import { useCRUDWithQueryClient } from "../state/useCRUDWithQueryClient";
-import { useGlobalCRUDOptions } from "../state/useGlobalCRUDOptions";
-import { defaultJsonldContext, defaultPrefix } from "../form/formConfigs";
 import get from "lodash/get";
 import { useModifiedRouter } from "../basic";
 import NiceModal from "@ebay/nice-modal-react";
@@ -95,20 +93,11 @@ export const SimpleChipRenderer = (
     return label || data?.__label;
   }, [childLabelTemplate, elementLabelProp, data, label]);
 
-  const { crudOptions } = useGlobalCRUDOptions();
-  const { loadQuery, saveMutation } = useCRUDWithQueryClient(
-    entityIRI,
-    typeIRI,
-    subSchema,
-    defaultPrefix,
-    crudOptions,
-    defaultJsonldContext,
-    {
-      enabled: !data?.__draft && !data?.__label,
-      initialData: data,
-      refetchOnWindowFocus: true,
-    },
-  );
+  const { loadQuery } = useCRUDWithQueryClient(entityIRI, typeIRI, subSchema, {
+    enabled: !data?.__draft && !data?.__label,
+    initialData: data,
+    refetchOnWindowFocus: true,
+  });
   //const draft = data?.__draft && !saveMutation.isSuccess;
   const { data: loadedData } = loadQuery;
   useEffect(() => {

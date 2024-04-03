@@ -57,6 +57,7 @@
     "@slub/edb-graph-traversal": "workspace:*",
     "@slub/remote-query-implementations": "workspace:*",
     "@slub/sparql-schema": "workspace:*",
+    "@slub/sparql-db-impl": "workspace:*",
     "@tabler/icons": "^2.38.0",
     "@tanstack/react-query": "^4.24.6",
     "@tanstack/react-query-devtools": "^5.8.2",

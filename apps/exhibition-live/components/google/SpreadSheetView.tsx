@@ -47,12 +47,7 @@ import { encodeIRI, filterUndefOrNull } from "../utils/core";
 import { useQuery } from "@tanstack/react-query";
 import { OwnColumnDesc } from "./types";
 import TypedListItem from "../content/list/TypedListItem";
-import {
-  defaultJsonldContext,
-  defaultPrefix,
-  sladb,
-  slent,
-} from "../form/formConfigs";
+import { sladb, slent } from "../form/formConfigs";
 import HorizontalNonLinearStepper from "../form/wizard/HorizontalNonLinearStepper";
 import { useCRUDWithQueryClient } from "../state/useCRUDWithQueryClient";
 import useExtendedSchema from "../state/useExtendedSchema";
@@ -615,11 +610,9 @@ export const GoogleSpeadSheetWorkSheetView: FC<
     undefined,
     undefined,
     loadedSchema as JSONSchema7,
-    defaultPrefix,
-    crudOptions,
-    defaultJsonldContext,
     { enabled: false },
     "importsave",
+    undefined,
     true,
   );
   const handleMapAndImport = useCallback(async () => {

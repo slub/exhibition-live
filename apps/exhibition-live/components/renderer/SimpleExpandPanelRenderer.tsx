@@ -20,8 +20,6 @@ import { JSONSchema7 } from "json-schema";
 import { useJsonForms } from "@jsonforms/react";
 import dot from "dot";
 import { useCRUDWithQueryClient } from "../state/useCRUDWithQueryClient";
-import { useGlobalCRUDOptions } from "../state/useGlobalCRUDOptions";
-import { defaultJsonldContext, defaultPrefix } from "../form/formConfigs";
 import get from "lodash/get";
 import NiceModal from "@ebay/nice-modal-react";
 import { EntityDetailModal } from "../form/show";
@@ -100,14 +98,10 @@ export const SimpleExpandPanelRenderer = (
     [elementDetailItemPath, data],
   );
 
-  const { crudOptions } = useGlobalCRUDOptions();
   const { loadQuery, saveMutation } = useCRUDWithQueryClient(
     entityIRI,
     typeIRI,
     subSchema,
-    defaultPrefix,
-    crudOptions,
-    defaultJsonldContext,
     {
       enabled: !data?.__draft && !data?.__label,
       initialData: data,

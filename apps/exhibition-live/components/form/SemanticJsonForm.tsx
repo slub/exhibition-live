@@ -46,7 +46,6 @@ export interface SemanticJsonFormsProps {
   onEntityChange?: (entityIRI: string | undefined) => void;
   onEntityDataChange?: (entityData: any) => void;
   defaultPrefix: string;
-  crudOptions: Partial<CRUDOptions>;
   hideToolbar?: boolean;
   forceEditMode?: boolean;
   defaultEditMode?: boolean;
@@ -98,7 +97,6 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> = ({
   defaultEditMode,
   toolbarChildren,
   defaultPrefix,
-  crudOptions,
   ...rest
 }) => {
   const { t } = useTranslation();
@@ -114,14 +112,11 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> = ({
     entityIRI,
     typeIRI,
     schema,
-    defaultPrefix,
-    crudOptions,
-    jsonldContext,
     { enabled: false },
     "rootLoad",
   );
 
-  const loadEntity = useLoadQuery(defaultPrefix, crudOptions, "rootLoad");
+  const loadEntity = useLoadQuery(defaultPrefix, "rootLoad");
 
   const { updateSourceToTargets, removeSource } = useQueryKeyResolver();
   const [isSaving, setIsSaving] = useState(false);

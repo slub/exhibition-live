@@ -1,13 +1,8 @@
 import NiceModal, { useModal } from "@ebay/nice-modal-react";
 import { useTypeIRIFromEntity } from "../../state";
 import { useCallback, useMemo, useState } from "react";
-import {
-  primaryFieldExtracts,
-  primaryFields,
-  typeIRItoTypeName,
-} from "../../config";
+import { primaryFieldExtracts, typeIRItoTypeName } from "../../config";
 import useExtendedSchema from "../../state/useExtendedSchema";
-import { useGlobalCRUDOptions } from "../../state/useGlobalCRUDOptions";
 import { useCRUDWithQueryClient } from "../../state/useCRUDWithQueryClient";
 import { defaultJsonldContext, defaultPrefix } from "../formConfigs";
 import { useTranslation } from "next-i18next";
@@ -16,7 +11,7 @@ import {
   applyToEachField,
   extractFieldIfString,
 } from "../../utils/mapping/simpleFieldExtractor";
-import { Button } from "@mui/material";
+import { Button, Stack } from "@mui/material";
 import { JSONSchema7 } from "json-schema";
 import { uischemata } from "../uischemaForType";
 import { uischemas } from "../uischemas";
@@ -44,16 +39,10 @@ export const EditEntityModal = NiceModal.create(
     const classIRI: string | undefined = typeIRI || typeIRIs?.[0];
     const typeName = useMemo(() => typeIRItoTypeName(classIRI), [classIRI]);
     const loadedSchema = useExtendedSchema({ typeName, classIRI });
-    const { crudOptions } = useGlobalCRUDOptions();
-    const {
-      loadQuery: { data: rawData },
-    } = useCRUDWithQueryClient(
+    const { loadQuery, saveMutation } = useCRUDWithQueryClient(
       entityIRI,
       classIRI,
       loadedSchema,
-      defaultPrefix,
-      crudOptions,
-      defaultJsonldContext,
       {
         enabled: !disableLoad,
         refetchOnWindowFocus: true,
@@ -64,7 +53,7 @@ export const EditEntityModal = NiceModal.create(
     const { t } = useTranslation();
     const [firstTimeSaved, setFirstTimeSaved] = useState(false);
     const [isStale, setIsStale] = useState(false);
-    const data = rawData?.document || defaultData;
+    const data = loadQuery.data?.document || defaultData;
     const cardInfo = useMemo<PrimaryFieldResults<string>>(() => {
       const fieldDecl = primaryFieldExtracts[typeName];
       if (data && fieldDecl)
@@ -83,19 +72,11 @@ export const EditEntityModal = NiceModal.create(
     );
     const { enqueueSnackbar } = useSnackbar();
 
-    const { loadQuery, saveMutation, removeMutation } = useCRUDWithQueryClient(
-      entityIRI,
-      typeIRI,
-      loadedSchema,
-      defaultPrefix,
-      crudOptions,
-      defaultJsonldContext,
-      { enabled: true },
-    );
     const handleSaveSuccess = useCallback(() => {
       setFirstTimeSaved(true);
       setIsStale(false);
     }, [setFirstTimeSaved, setIsStale]);
+
     const handleSave = useCallback(
       async (saveSuccess?: () => void) => {
         saveMutation
@@ -116,29 +97,31 @@ export const EditEntityModal = NiceModal.create(
     );
 
     const handleAccept = useCallback(() => {
-      const acceptCallback = () => {
-        cleanJSONLD(formData, loadedSchema, {
+      const acceptCallback = async () => {
+        let cleanedData = await cleanJSONLD(formData, loadedSchema, {
           jsonldContext: defaultJsonldContext,
           defaultPrefix,
           keepContext: true,
-        }).then((cleanedData) => {
-          modal.resolve({
-            entityIRI: formData["@id"],
-            data: cleanedData,
-          });
-          modal.remove();
         });
+        modal.resolve({
+          entityIRI: formData["@id"],
+          data: cleanedData,
+        });
+        modal.remove();
       };
       if (isStale) {
-        NiceModal.show(GenericModal, {
+        return NiceModal.show(GenericModal, {
           type: "save before proceed",
-        }).then(() => {
-          handleSave(acceptCallback);
-        });
+        }).then(() => handleSave(acceptCallback));
       } else {
-        acceptCallback();
+        return acceptCallback();
       }
     }, [formData, loadedSchema, handleSave, modal, isStale]);
+
+    const handleSaveAndAccept = useCallback(async () => {
+      //await handleSave(handleAccept);
+      await handleAccept();
+    }, [handleAccept]);
 
     const handleFormDataChange = useCallback(
       async (data: any) => {
@@ -156,12 +139,12 @@ export const EditEntityModal = NiceModal.create(
         title={cardInfo.label}
         editMode={true}
         actions={
-          <>
+          <Stack>
             <Button onClick={handleAccept} disabled={!firstTimeSaved}>
-              {t("accept")}
+              {isStale || !firstTimeSaved ? t("save and accept") : t("accept")}
             </Button>
             <Button onClick={() => modal.remove()}>{t("cancel")}</Button>
-          </>
+          </Stack>
         }
       >
         <SemanticJsonFormNoOps

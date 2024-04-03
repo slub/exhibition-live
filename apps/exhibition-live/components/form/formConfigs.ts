@@ -1,4 +1,5 @@
 import namespace from "@rdfjs/namespace";
+import { NamespaceBuilderPrefixes } from "@slub/edb-core-types";
 
 export const sladb = namespace("http://ontologies.slub-dresden.de/exhibition#");
 export const slent = namespace(
@@ -13,6 +14,6 @@ export const defaultJsonldContext = {
   },
 };
 
-export const defaultQueryBuilderOptions = {
+export const defaultQueryBuilderOptions: NamespaceBuilderPrefixes = {
   prefixes: { [""]: sladb, slent: slent },
 };

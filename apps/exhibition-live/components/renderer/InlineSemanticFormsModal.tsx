@@ -1,19 +1,12 @@
 import { JsonSchema, resolveSchema, UISchemaElement } from "@jsonforms/core";
 import { JSONSchema7 } from "json-schema";
-import merge from "lodash/merge";
 import React, { useCallback, useMemo, useState } from "react";
 
 import DiscoverAutocompleteInput from "../form/discover/DiscoverAutocompleteInput";
-import {
-  defaultJsonldContext,
-  defaultPrefix,
-  defaultQueryBuilderOptions,
-} from "../form/formConfigs";
-import { CRUDOpsType, SemanticJsonFormsProps } from "../form/SemanticJsonForm";
+import { SemanticJsonFormsProps } from "../form/SemanticJsonForm";
 import { useUISchemaForType } from "../form/uischemaForType";
 import { uischemas } from "../form/uischemas";
 import MuiEditDialog from "./MuiEditDialog";
-import { useGlobalCRUDOptions } from "../state/useGlobalCRUDOptions";
 import { BASE_IRI } from "../config";
 import { SemanticJsonFormNoOps } from "../form/SemanticJsonFormNoOps";
 import { useCRUDWithQueryClient } from "../state/useCRUDWithQueryClient";
@@ -51,7 +44,6 @@ export const InlineSemanticFormsModal = (
   } = props;
   const { $ref, typeIRI } = uischema.options?.context || {};
   const [formData, setFormData] = useState(irisToData(data, typeIRI));
-  const { crudOptions } = useGlobalCRUDOptions();
   const [editMode, setEditMode] = useState(true);
   const [searchText, setSearchText] = useState<string | undefined>();
 
@@ -94,15 +86,7 @@ export const InlineSemanticFormsModal = (
   );
 
   const { loadQuery, existsQuery, saveMutation, removeMutation } =
-    useCRUDWithQueryClient(
-      data,
-      typeIRI,
-      subSchema,
-      defaultPrefix,
-      crudOptions,
-      defaultJsonldContext,
-      { enabled: false },
-    );
+    useCRUDWithQueryClient(data, typeIRI, subSchema, { enabled: false });
 
   const { enqueueSnackbar } = useSnackbar();
   const handleSave = useCallback(async () => {

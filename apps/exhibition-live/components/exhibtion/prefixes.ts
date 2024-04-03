@@ -1,4 +1,4 @@
-import { Prefixes } from "../utils/types";
+import { Prefixes } from "@slub/edb-core-types";
 
 export const exhibitionPrefixes: Prefixes = {
   sladb: "http://ontologies.slub-dresden.de/exhibition#",

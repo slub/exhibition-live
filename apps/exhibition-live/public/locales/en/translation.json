@@ -2,6 +2,8 @@
   "database_name": "Exhibitions",
   "edit": "edit",
   "show": "show",
+  "accept": "accept",
+  "save and accept": "save & accept",
   "edit inline": "edit inline",
   "cancel": "cancel",
   "settings": "settings",

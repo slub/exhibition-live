@@ -18,11 +18,7 @@ import { SemanticFormsModal } from "./SemanticFormsModal";
 import { BASE_IRI } from "../config";
 import { irisToData, makeFormsPath } from "../utils/core";
 import { JSONSchema7 } from "json-schema";
-import {
-  defaultJsonldContext,
-  defaultPrefix,
-  slent,
-} from "../form/formConfigs";
+import { defaultJsonldContext, slent } from "../form/formConfigs";
 import { v4 as uuidv4 } from "uuid";
 import { Box, Grid, IconButton, List, Stack } from "@mui/material";
 import { SemanticFormsInline } from "./SemanticFormsInline";
@@ -81,9 +77,6 @@ const MaterialArrayChipsLayoutComponent = (props: ArrayLayoutProps & {}) => {
     entityIRI,
     typeIRI,
     subSchema as JSONSchema7,
-    defaultPrefix,
-    crudOptions,
-    defaultJsonldContext,
     { enabled: false },
   );
 

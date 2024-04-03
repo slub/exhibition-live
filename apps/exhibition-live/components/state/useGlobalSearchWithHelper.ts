@@ -1,15 +1,8 @@
 import { useGlobalSearch } from "./useGlobalSearch";
 import { useCallback, useState } from "react";
-import { useGlobalCRUDOptions } from "./useGlobalCRUDOptions";
 import { useCRUDWithQueryClient } from "./useCRUDWithQueryClient";
 import { JSONSchema7 } from "json-schema";
-import {
-  defaultJsonldContext,
-  defaultPrefix,
-  slent,
-} from "../form/formConfigs";
-import NiceModal from "@ebay/nice-modal-react";
-import GenericModal from "../form/GenericModal";
+import { slent } from "../form/formConfigs";
 import { v4 as uuidv4 } from "uuid";
 import get from "lodash/get";
 import { primaryFields } from "../config";
@@ -36,15 +29,12 @@ export const useGlobalSearchWithHelper = (
   );
   const { keepMounted, setOpen } = useRightDrawerState();
 
-  const { crudOptions } = useGlobalCRUDOptions();
   const { saveMutation } = useCRUDWithQueryClient(
     null,
     typeIRI,
     schema,
-    defaultPrefix,
-    crudOptions,
-    defaultJsonldContext,
     { enabled: false },
+    undefined,
     undefined,
     true,
   );

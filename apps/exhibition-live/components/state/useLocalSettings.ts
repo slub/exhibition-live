@@ -17,7 +17,8 @@ export type SparqlEndpoint = {
     | "worker"
     | "blazegraph"
     | "virtuoso"
-    | "qlever";
+    | "qlever"
+    | "rest";
 };
 
 type Features = {

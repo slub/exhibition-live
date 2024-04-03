@@ -49,7 +49,7 @@ const workerProvider: Record<
   <T = Record<string, any>>(
     endpointConfig: SparqlEndpoint,
     options?: T,
-  ) => CRUDFunctions
+  ) => CRUDFunctions | null
 > = {
   oxigraph: oxigraphCrudOptions,
   allegro: allegroCrudOptions,
@@ -57,6 +57,7 @@ const workerProvider: Record<
   qlever: qleverCrudOptions,
   virtuoso: oxigraphCrudOptions,
   blazegraph: oxigraphCrudOptions,
+  rest: null,
 };
 
 const getProviderOrDefault = (endpoint: SparqlEndpoint) =>

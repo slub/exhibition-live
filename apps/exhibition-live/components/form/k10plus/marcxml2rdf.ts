@@ -9,11 +9,11 @@ import {
   Datafield,
   SubfieldElement,
 } from "../../utils/k10plus/searchRetrieveResponse-types";
-import { Prefixes } from "../../utils/types";
 import {
   mappingSkeleton,
   marcMappingPrefixes,
 } from "./marc2rdfMappingDeclaration";
+import { Prefixes } from "@slub/edb-core-types";
 
 const findMappingForSubfield = (tag: string) => {
   const tagMappingKey: string | undefined = Object.keys(

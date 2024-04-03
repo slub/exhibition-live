@@ -4,7 +4,7 @@ import dayjs from "dayjs";
 export const specialDate2LocalDate = (date: number, locale: string) => {
   const { year, month, day } = getDateParts(date);
   const jsdate = numeric2JSDate(date);
-  if (!year) {
+  if (!year && month && day) {
     return dayjs(jsdate).format("MM.DD.");
   }
   if (!day && month && year) {

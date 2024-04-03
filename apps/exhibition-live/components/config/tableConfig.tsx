@@ -22,16 +22,16 @@ const dateColDef: (
     header: t(p([...path, key])),
     id: p([...path, key, "single"]),
     accessorFn: mkAccessor(`${p([...path, key, "single"])}.value`, "", (v) =>
-      specialDate2LocalDate(v, "de"),
+      typeof v === "string" || (typeof v === "number" && String(v).length === 8)
+        ? specialDate2LocalDate(Number(v), "de")
+        : String(v),
     ),
     filterVariant: "date",
     filterFn: "betweenInclusive",
     sortingFn: "datetime",
     Cell: ({ cell }) => {
-      const val = cell.getValue<Date>();
-      return val && typeof val.toLocaleDateString === "function"
-        ? val.toLocaleDateString()
-        : "";
+      const val = cell.getValue<string>();
+      return val || "";
     },
     Header: ({ column }) => <em>{column.columnDef.header}</em>,
     muiFilterTextFieldProps: {

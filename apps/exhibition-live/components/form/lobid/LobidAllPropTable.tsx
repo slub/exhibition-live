@@ -3,6 +3,7 @@ import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
+  Box,
   Button,
   Checkbox,
   Container,
@@ -35,6 +36,8 @@ import { OverflowContainer } from "../../lists";
 import { specialDate2LocalDate } from "../../utils/specialDate2LocalDate";
 import { useTranslation } from "next-i18next";
 import isNil from "lodash/isNil";
+import { isValidUrl } from "@slub/edb-core-utils";
+import { Image } from "mui-image";
 
 interface OwnProps {
   allProps?: any;
@@ -78,6 +81,10 @@ const LabledLink = ({
       {label || urlSuffix}
     </Link>
   );
+};
+
+const isImageUrl = (url: string) => {
+  return url.match(/\.(jpeg|jpg|gif|png)?\?.*$/) != null;
 };
 
 const useMenuState = () => {
@@ -251,6 +258,20 @@ const PropertyItem = ({
         ) : typeof value === "string" || typeof value === "number" ? (
           property.toLowerCase().includes("date") ? (
             specialDate2LocalDate(value as number, locale)
+          ) : isValidUrl(value as string) ? (
+            isImageUrl(value as string) ? (
+              <Box sx={{ display: "flex", justifyContent: "end" }}>
+                <Link href={value as string} target="_blank">
+                  <Image
+                    src={value as string}
+                    alt={value as string}
+                    width={100}
+                  />
+                </Link>
+              </Box>
+            ) : (
+              <LabledLink uri={value as string} />
+            )
           ) : (
             value.toLocaleString()
           )

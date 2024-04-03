@@ -73,6 +73,7 @@
     "rehype-parse": "latest",
     "rehype-mermaid": "latest",
     "rehype-video": "latest",
+    "rehype-sanitize": "latest",
     "remark-rehype": "latest",
     "rehype-document": "latest",
     "remark-math": "^6.0.0",

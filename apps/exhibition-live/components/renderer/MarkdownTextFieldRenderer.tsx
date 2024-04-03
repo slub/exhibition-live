@@ -10,7 +10,6 @@ import {
 } from "@mui/material";
 import merge from "lodash/merge";
 import React, { useCallback, useMemo, useState } from "react";
-import { PluggableList } from "react-markdown/lib/react-markdown";
 import rehypeExternalLinks from "rehype-external-links";
 import rehypeSanitize from "rehype-sanitize";
 
@@ -39,7 +38,7 @@ const MarkdownTextFieldRenderer = (props: ControlProps) => {
     },
     [path, handleChange],
   );
-  const rehypePlugins = useMemo<PluggableList>(
+  const rehypePlugins = useMemo(
     () => [[rehypeSanitize], [rehypeExternalLinks, { target: "_blank" }]],
     [],
   );
@@ -78,7 +77,7 @@ const MarkdownTextFieldRenderer = (props: ControlProps) => {
             value={data as string}
             onChange={handleChange_}
             previewOptions={{
-              rehypePlugins: rehypePlugins,
+              rehypePlugins: rehypePlugins as any,
             }}
             commandsFilter={(cmd) =>
               cmd?.name && /(divider|code|image|checked)/.test(cmd.name)
@@ -89,7 +88,7 @@ const MarkdownTextFieldRenderer = (props: ControlProps) => {
         ) : (
           <MDEditorMarkdown
             source={data as string}
-            rehypePlugins={rehypePlugins}
+            rehypePlugins={rehypePlugins as any}
           />
         )}
       </FormControl>

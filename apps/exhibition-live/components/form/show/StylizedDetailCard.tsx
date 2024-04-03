@@ -13,13 +13,22 @@ type StyledCardProps = {
 
 const StyledAnimatedCard = styled(Box)<StyledCardProps>(
   ({ theme, palette }) => ({
-    "& h1.heading": { fontSize: "2em", textAlign: "center", color: "white" },
+    "& h1.heading": {
+      fontSize: "2em",
+      textAlign: "center",
+      color: "white",
+      animation: "pop 0.7s",
+      padding: 20,
+      textOverflow: "ellipsis",
+    },
+    "&:hover h1.heading": { background: theme.palette.secondary.dark },
     "& h1": { fontSize: "2em", color: "black" },
     "& p": {
-      fontSize: "max(10pt, 2.5vmin)",
+      fontSize: "1em",
       lineHeight: 1.4,
       color: theme.palette.primary.dark,
       marginBottom: "1.5rem",
+      textAlign: "justify",
     },
     "& .wrap": {
       display: "flex",
@@ -42,6 +51,9 @@ const StyledAnimatedCard = styled(Box)<StyledCardProps>(
       background: theme.palette.secondary.dark,
       transition: "0.4s ease-in-out",
       zIndex: 1,
+    },
+    "& .active .overlay": {
+      width: 0,
     },
     "& .overlay-content": {
       display: "flex",
@@ -93,14 +105,22 @@ const StyledAnimatedCard = styled(Box)<StyledCardProps>(
       position: "absolute",
       top: "0",
       right: "0",
-      width: "60%",
+      width: "50%",
       height: "100%",
       padding: "3vmin 4vmin",
-      background: theme.palette.primary.light,
+      background: theme.palette.background.paper,
       overflowY: "auto",
     },
+    "& .text.active": {
+      width: "100%",
+      transition: "0.3s ease-in-out",
+    },
+    "& .active.wrap .overlay": { width: 0, opacity: 0 },
+    "& .active.wrap .overlay-content": { width: 0, opacity: 0 },
+    "& .active.wrap .image-content": { width: 0, opacity: 0 },
     "& .wrap:hover .overlay": { width: "50%" },
-    "& .wrap:hover .image-content": { width: "40vmin" },
+    "&. .wrap:hover .text": { width: "0%" },
+    "& .wrap:hover .image-content": { width: "40em" },
     "& .wrap:hover .overlay-content": {
       border: "none",
       transitionDelay: "0.2s",
@@ -146,6 +166,7 @@ const StyledAnimatedCard = styled(Box)<StyledCardProps>(
 
 export const StylizedDetailCard = ({ cardInfo }: EntityDetailCardProps) => {
   const imgRef = useRef<HTMLImageElement>();
+  const [activated, setActivated] = useState(false);
   const [colorPalette, setColorPalette] = useState([]);
   useEffect(() => {
     const ct = new ColorThief({ crossOrigin: true });
@@ -173,8 +194,11 @@ export const StylizedDetailCard = ({ cardInfo }: EntityDetailCardProps) => {
     }
   }, [cardInfo.image, setColorPalette]);
   return (
-    <StyledAnimatedCard palette={colorPalette}>
-      <div className="wrap animate pop">
+    <StyledAnimatedCard
+      palette={colorPalette}
+      onClick={() => setActivated((prev) => !prev)}
+    >
+      <div className={`wrap animate pop ${activated ? "active" : ""}`}>
         <div className="overlay">
           <div className="overlay-content animate slide-left delay-2">
             <h1 className="animate slide-left pop delay-4 heading">
@@ -185,6 +209,7 @@ export const StylizedDetailCard = ({ cardInfo }: EntityDetailCardProps) => {
               className="animate slide-left pop delay-5"
               sx={{ color: "white", marginBottom: "2.5rem" }}
             >
+              <pre>{JSON.stringify(colorPalette, null, 2)}</pre>
               {cardInfo.label}
             </Typography>
           </div>
@@ -194,6 +219,7 @@ export const StylizedDetailCard = ({ cardInfo }: EntityDetailCardProps) => {
           >
             <img
               ref={imgRef}
+              alt={cardInfo.label}
               src={cardInfo.image}
               style={{ display: "block", height: "1px" }}
             />
@@ -204,8 +230,7 @@ export const StylizedDetailCard = ({ cardInfo }: EntityDetailCardProps) => {
             <div className="dot animate slide-up delay-8"></div>
           </div>
         </div>
-        <div className="text">
-          <pre>{JSON.stringify(colorPalette, null, 2)}</pre>
+        <div className={`text ${activated ? "active" : ""}`}>
           {<MarkdownContent mdDocument={cardInfo.description} />}
         </div>
       </div>

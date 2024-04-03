@@ -83,5 +83,10 @@
   "export all data": "export all data",
   "export page only": "export page only",
   "export selected rows only": "export selected rows only",
-  "accept entity": "accept entity"
+  "accept entity": "accept entity",
+  "image url": "image url",
+  "merge-or-replace": "merge or replace",
+  "confirm-mapping-dialog-message": "You can accept the data from the mapping into the database. Decide if you want to overwrite the already entered data or merge it intelligently.",
+  "merge data": "merge data",
+  "replace data": "overwrite data"
 }

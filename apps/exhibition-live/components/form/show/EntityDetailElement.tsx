@@ -12,6 +12,7 @@ import { EntityDetailCard } from "./EntityDetailCard";
 import { useTypeIRIFromEntity } from "../../state";
 import { useTranslation } from "next-i18next";
 import { PrimaryField } from "@slub/edb-core-types";
+import { filterUndefOrNull } from "@slub/edb-core-utils";
 
 type EntityDetailElementProps = {
   typeIRI: string | undefined;
@@ -47,16 +48,24 @@ export const EntityDetailElement = ({
   );
   const { t } = useTranslation();
   const data = initialData || rawData?.document;
+  const fieldDeclaration = useMemo(
+    () => primaryFields[typeName] as PrimaryField,
+    [typeName],
+  );
   const cardInfo = useMemo<PrimaryFieldResults<string>>(() => {
-    const fieldDecl = primaryFields[typeName] as PrimaryField | undefined;
-    if (data && fieldDecl)
-      return applyToEachField(data, fieldDecl, extractFieldIfString);
+    if (data && fieldDeclaration)
+      return applyToEachField(data, fieldDeclaration, extractFieldIfString);
     return {
       label: null,
       description: null,
       image: null,
     };
-  }, [typeName, data]);
+  }, [fieldDeclaration, data]);
+
+  const disabledProperties = useMemo(
+    () => filterUndefOrNull(Object.values(fieldDeclaration)),
+    [fieldDeclaration],
+  );
 
   return (
     <Box sx={{ p: 2, ...(rest.sx || {}) }} {...rest}>
@@ -68,6 +77,7 @@ export const EntityDetailElement = ({
         cardActionChildren={cardActionChildren}
         inlineEditing={inlineEditing}
         readonly={readonly}
+        tableProps={{ disabledProperties }}
       />
     </Box>
   );

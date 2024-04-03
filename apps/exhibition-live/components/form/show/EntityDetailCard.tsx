@@ -20,20 +20,10 @@ import { useSettings } from "../../state/useLocalSettings";
 import NiceModal from "@ebay/nice-modal-react";
 import { EditEntityModal } from "../edit/EditEntityModal";
 import { useModalRegistry } from "../../state";
+import { EntityDetailCardProps } from "./EntityDetailCardProps";
+import { StylizedDetailCard } from "./StylizedDetailCard";
 
-interface OwnProps {
-  typeIRI: string;
-  entityIRI: string;
-  cardInfo: PrimaryFieldResults<string>;
-  cardActionChildren?: React.ReactNode;
-  data: any;
-  readonly?: boolean;
-  inlineEditing?: boolean;
-  onEditClicked?: () => void;
-}
-
-type Props = OwnProps;
-export const EntityDetailCard: FunctionComponent<Props> = ({
+export const EntityDetailCard: FunctionComponent<EntityDetailCardProps> = ({
   typeIRI,
   entityIRI,
   cardInfo,
@@ -42,6 +32,7 @@ export const EntityDetailCard: FunctionComponent<Props> = ({
   readonly,
   inlineEditing,
   onEditClicked,
+  tableProps = {},
 }) => {
   const { t } = useTranslation();
 
@@ -78,45 +69,55 @@ export const EntityDetailCard: FunctionComponent<Props> = ({
 
   return (
     <>
-      <Card>
-        <CardActionArea>
-          {cardInfo.image && (
-            <CardMedia
-              component="img"
-              sx={{ maxHeight: "24em", objectFit: "contain" }}
-              image={cardInfo.image}
-              alt={cardInfo.label}
-            />
-          )}
-          <CardContent>
-            <Typography gutterBottom variant="h5" component="div">
-              {cardInfo.label}
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              {cardInfo.description}
-            </Typography>
-          </CardContent>
-        </CardActionArea>
-        {cardActionChildren !== null && (
-          <CardActions>
-            {typeof cardActionChildren !== "undefined" ? (
-              cardActionChildren
-            ) : (
-              <>
-                {!readonly && (
-                  <Button size="small" color="primary" onClick={editEntry}>
-                    {inlineEditing ? t("edit inline") : t("edit")}
-                  </Button>
-                )}
-              </>
+      {cardInfo.image && cardInfo.description ? (
+        <StylizedDetailCard
+          typeIRI={typeIRI}
+          entityIRI={entityIRI}
+          cardInfo={cardInfo}
+          data={data}
+        />
+      ) : (
+        <Card>
+          <CardActionArea>
+            {cardInfo.image && (
+              <CardMedia
+                component="img"
+                sx={{ maxHeight: "24em", objectFit: "contain" }}
+                image={cardInfo.image}
+                alt={cardInfo.label}
+              />
             )}
-          </CardActions>
-        )}
-      </Card>
+            <CardContent>
+              <Typography gutterBottom variant="h5" component="div">
+                {cardInfo.label}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                {cardInfo.description}
+              </Typography>
+            </CardContent>
+          </CardActionArea>
+          {cardActionChildren !== null && (
+            <CardActions>
+              {typeof cardActionChildren !== "undefined" ? (
+                cardActionChildren
+              ) : (
+                <>
+                  {!readonly && (
+                    <Button size="small" color="primary" onClick={editEntry}>
+                      {inlineEditing ? t("edit inline") : t("edit")}
+                    </Button>
+                  )}
+                </>
+              )}
+            </CardActions>
+          )}
+        </Card>
+      )}
       <LobidAllPropTable
         allProps={data}
         disableContextMenu
         inlineEditing={true}
+        {...tableProps}
       />
       {enableDebug && (
         <>

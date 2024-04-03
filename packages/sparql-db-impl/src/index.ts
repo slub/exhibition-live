@@ -151,7 +151,7 @@ export const initSPARQLStore: InitDatastoreFunction<SPARQLDataStoreConfig> = (
           ...document,
         },
         dataStoreConfig.schema,
-        constructFetch,
+        updateFetch,
         { defaultPrefix, queryBuildOptions },
       ),
     listDocuments: async (typeName, limit, cb) =>

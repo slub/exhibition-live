@@ -140,7 +140,7 @@ export const EditEntityModal = NiceModal.create(
         editMode={true}
         actions={
           <Stack>
-            <Button onClick={handleAccept} disabled={!firstTimeSaved}>
+            <Button onClick={handleAccept}>
               {isStale || !firstTimeSaved ? t("save and accept") : t("accept")}
             </Button>
             <Button onClick={() => modal.remove()}>{t("cancel")}</Button>

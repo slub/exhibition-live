@@ -41,7 +41,7 @@ export const useGlobalSearchWithHelper = (
 
   const handleMappedData = useCallback(
     (newData: any) => {
-      const prefix = schema.title || slent[""].value;
+      const prefix = slent[""].value;
       const newIRI = `${prefix}${uuidv4()}`;
       saveMutation.mutate({
         ...newData,

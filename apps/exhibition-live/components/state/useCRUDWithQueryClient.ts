@@ -58,8 +58,9 @@ export const useCRUDWithQueryClient = (
   const removeMutation = useMutation(
     ["remove", entityIRI],
     async () => {
-      if (!entityIRI || !ready)
+      if (!entityIRI || !ready) {
         throw new Error("entityIRI or updateFetch is not defined");
+      }
       const typeName = dataStore.typeIRItoTypeName(typeIRI);
       return await dataStore.removeDocument(typeName, entityIRI);
     },
@@ -79,9 +80,11 @@ export const useCRUDWithQueryClient = (
     async (data: Record<string, any>) => {
       if (!Boolean(allowUnsafeSourceIRIs)) {
         if (!entityIRI || !typeIRI || !ready)
-          throw new Error(
+          console.warn("entryIRI or typeIRI not defined, will continue anyway");
+        console.log({ entityIRI, typeIRI, ready, data });
+        /*throw new Error(
             "entityIRI or typeIRI or  updateFetch is not defined",
-          );
+          );*/
       }
       const dataWithId: NamedAndTypedEntity = {
         ...data,

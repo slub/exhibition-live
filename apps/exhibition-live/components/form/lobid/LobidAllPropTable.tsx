@@ -39,14 +39,15 @@ import isNil from "lodash/isNil";
 import { isValidUrl } from "@slub/edb-core-utils";
 import { Image } from "mui-image";
 
-interface OwnProps {
+export interface AllPropTableProps {
   allProps?: any;
   onEntityChange?: (uri: string) => void;
   disableContextMenu?: boolean;
   inlineEditing?: boolean;
+  disabledProperties?: string[];
 }
 
-type Props = OwnProps;
+type Props = AllPropTableProps;
 
 const camelCaseToTitleCase = (str: string) => {
   return str.replace(/([A-Z])/g, " $1").replace(/^./, function (str) {
@@ -288,6 +289,7 @@ const LobidAllPropTable: FunctionComponent<Props> = ({
   allProps,
   disableContextMenu,
   inlineEditing,
+  disabledProperties,
 }) => {
   const gndIRI = useMemo(() => {
     const gndIRI_ = allProps?.idAuthority?.["@id"] || allProps?.idAuthority;
@@ -312,6 +314,7 @@ const LobidAllPropTable: FunctionComponent<Props> = ({
               Object.entries(allProps)
                 .filter(
                   ([key, value]) =>
+                    disabledProperties?.includes(key) !== true &&
                     !key.startsWith("@") &&
                     (typeof value === "string" ||
                       typeof value === "number" ||

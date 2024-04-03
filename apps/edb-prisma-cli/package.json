@@ -8,7 +8,7 @@
     "start": "tsx src/index.ts",
     "dev": "tsx watch src/index.ts",
     "model:format": "prisma format",
-    "prisma:init": "prisma init --datasource-provider sqlite",
+    "prisma:init": "prisma init --datasource-provider postgresql",
     "prisma:migrate": "prisma migrate dev --name init",
     "start:debug": "node --inspect  --loader tsx 'src/index.ts'"
   },
@@ -29,6 +29,7 @@
     "@slub/exhibition-schema": "workspace:*",
     "@slub/edb-core-utils": "workspace:*",
     "@slub/edb-graph-traversal": "workspace:*",
+    "@slub/json-schema-utils": "workspace:*",
     "@slub/json-schema-prisma-utils": "workspace:*",
     "@slub/remote-query-implementations": "workspace:*",
     "@slub/sparql-schema": "workspace:*",

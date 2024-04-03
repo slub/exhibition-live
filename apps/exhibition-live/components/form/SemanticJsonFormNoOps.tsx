@@ -18,7 +18,7 @@ import {
 import { JsonForms, JsonFormsInitStateProps } from "@jsonforms/react";
 import { Card, CardContent, Grid } from "@mui/material";
 import { JSONSchema7 } from "json-schema";
-import { isEmpty } from "lodash";
+import { isEmpty, mixin, merge, assign } from "lodash";
 import React, { FunctionComponent, useCallback, useMemo } from "react";
 
 import AdbSpecialDateRenderer, {
@@ -53,6 +53,8 @@ import MaterialArrayOfLinkedItemChipsRenderer, {
 } from "../renderer/MaterialArrayOfLinkedItemChipsRenderer";
 import InlineDropdownRenderer from "../renderer/InlineDropdownRenderer";
 import { ErrorObject } from "ajv";
+import { OptionsModal } from "./OptionsModal";
+import { useTranslation } from "next-i18next";
 
 export type CRUDOpsType = {
   load: () => Promise<void>;
@@ -202,29 +204,48 @@ export const SemanticJsonFormNoOps: FunctionComponent<
   );
 
   const { closeDrawer } = useRightDrawerState();
+  const { t } = useTranslation();
 
   const handleMappedData = useCallback(
     (newData: any) => {
       if (!newData) return;
       //avoid overriding of id and type by mapped data
-      NiceModal.show(GenericModal, {
-        type:
-          newData["@type"] !== typeIRI
-            ? "confirm save mapping"
-            : "confirm mapping",
-      }).then(() => {
+      NiceModal.show(OptionsModal, {
+        id: "confirm-mapping-dialog",
+        content: {
+          title: t("merge-or-replace"),
+          text: t("confirm-mapping-dialog-message"),
+        },
+        options: [
+          {
+            title: t("replace data"),
+            value: "replace",
+          },
+          {
+            title: t("merge data"),
+            value: "merge",
+          },
+        ],
+      }).then((decision: string) => {
         closeDrawer();
-        onChange(
-          (data: any) => ({
+        onChange((data: any) => {
+          console.log({ data, newData, decision });
+          if (decision === "replace") {
+            return {
+              ...newData,
+              "@id": data["@id"],
+              "@type": data["@type"],
+            };
+          }
+          return merge(data, {
             ...newData,
             "@id": data["@id"],
             "@type": data["@type"],
-          }),
-          "mapping",
-        );
+          });
+        }, "mapping");
       });
     },
-    [onChange, typeIRI, closeDrawer],
+    [onChange, closeDrawer, t],
   );
 
   const handleEntityIRIChange = useCallback(

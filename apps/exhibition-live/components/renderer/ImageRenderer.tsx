@@ -11,6 +11,7 @@ import {
 import { Image } from "mui-image";
 import merge from "lodash/merge";
 import React, { useCallback, useState } from "react";
+import { useTranslation } from "next-i18next";
 
 const ImageRenderer = (props: ControlProps) => {
   const {
@@ -26,6 +27,7 @@ const ImageRenderer = (props: ControlProps) => {
     path,
   } = props;
   const isValid = errors.length === 0;
+  const { t } = useTranslation();
   const appliedUiSchemaOptions = merge({}, config, uischema.options);
   const [editMode, setEditMode] = useState(false);
 
@@ -55,7 +57,7 @@ const ImageRenderer = (props: ControlProps) => {
           {editMode && (
             <Grid item>
               <TextField
-                label={schema.title || "image url"}
+                label={schema.title || t("image url")}
                 variant={"standard"}
                 onChange={(e) => handleChange_(e.target.value)}
                 value={data}

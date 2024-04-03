@@ -13,6 +13,7 @@ import {
 } from "@mui/material";
 import { Close as CloseIcon } from "@mui/icons-material";
 import NiceModal, { useModal } from "@ebay/nice-modal-react";
+import { useTranslation } from "next-i18next";
 
 type GenericModalProps = {
   type: string;
@@ -74,6 +75,7 @@ const modalContent = [
 const GenericModal = NiceModal.create(
   ({ type, id, extraMessage }: GenericModalProps) => {
     const modal = useModal();
+    const { t } = useTranslation();
 
     const content = modalContent
       .filter(({ modalType }) => modalType == type)
@@ -120,7 +122,7 @@ const GenericModal = NiceModal.create(
           >
             {content.action}
           </Button>
-          <Button onClick={() => modal.remove()}>Abbrechen</Button>
+          <Button onClick={() => modal.remove()}>{t("cancel")}</Button>
         </DialogActions>
       </Dialog>
     );

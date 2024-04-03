@@ -18,6 +18,25 @@ export const getDatePart = (date: number, part: "day" | "month" | "year") => {
   }
 };
 
+const nanToNull = (value: number) => (isNaN(value) ? null : value);
+
+export type DateParts = {
+  year: number | null;
+  month: number | null;
+  day: number | null;
+};
+export const getDateParts = (date: number) => {
+  const strDate = leftpad(date, 8);
+  const year = Number(strDate.substring(0, 4)),
+    month = Number(strDate.substring(4, 6)),
+    day = Number(strDate.substring(6, 8));
+  return {
+    year: nanToNull(year),
+    month: nanToNull(month),
+    day: nanToNull(day),
+  };
+};
+
 /**
  * Returns a specified part of the date from a given numeric date representation, padded with leading zeros if necessary.
  *

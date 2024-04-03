@@ -163,7 +163,6 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
     handleSearchStringChange,
     handleMappedData,
     handleFocus,
-    isActive,
   } = useGlobalSearchWithHelper(
     typeName,
     typeIRI,
@@ -179,14 +178,6 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
     },
     [handleMappedData, closeDrawer],
   );
-
-  const { t } = useTranslation();
-
-  const showAsFocused = useMemo(
-    () => isActive && sidebarOpen,
-    [isActive, sidebarOpen],
-  );
-  const isValid = errors.length === 0;
 
   const handleKeyUp = useKeyEventForSimilarityFinder();
 

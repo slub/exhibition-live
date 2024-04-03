@@ -104,6 +104,7 @@
           "label": "Arbeitsorte",
           "scope": "#/properties/workplace",
           "options": {
+            "imagePath": "location.image",
             "elementLabelTemplate": "{{=it.location?.title || ''}} ({{=it.fromDate || ''}} - {{=it.toDate || ''}})",
             "isReifiedStatement": true
           }

@@ -104,11 +104,13 @@ export const ArrayLayoutToolbar = memo(
 
     const handleExistingEntityAccepted = useCallback(
       (iri: string, data: any) => {
+        console.log("onExistingEntityAccepted", { iri, data });
         const label = data[getDefaultLabelKey(typeIRI)] || data.label || iri;
-        handleSelectedChange({ value: iri, label });
+        //handleSelectedChange({ value: iri, label });
+        addItem(path, data)();
         inputRef.current?.focus();
       },
-      [handleSelectedChange, typeIRI],
+      [addItem, typeIRI],
     );
 
     const handleMappedDataAccepted = useCallback(

@@ -1,9 +1,10 @@
-import { MoreVert as MoreVertIcon } from "@mui/icons-material";
+import { Check, MoreVert as MoreVertIcon } from "@mui/icons-material";
 import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
   Button,
+  Checkbox,
   Container,
   Link,
   Menu,
@@ -31,6 +32,9 @@ import { useQuery } from "@tanstack/react-query";
 import { findEntityWithinLobidByIRI } from "../../utils/lobid/findEntityWithinLobid";
 import WikidataAllPropTable from "../wikidata/WikidataAllPropTable";
 import { OverflowContainer } from "../../lists";
+import { specialDate2LocalDate } from "../../utils/specialDate2LocalDate";
+import { useTranslation } from "next-i18next";
+import isNil from "lodash/isNil";
 
 interface OwnProps {
   allProps?: any;
@@ -146,6 +150,10 @@ const PropertyItem = ({
       ? [originalValue]
       : originalValue;
   }, [originalValue]);
+  const {
+    t,
+    i18n: { language: locale, exists },
+  } = useTranslation("table");
   return (
     <TableRow>
       <TableCell
@@ -155,7 +163,9 @@ const PropertyItem = ({
       >
         {disableContextMenu ? (
           <OverflowContainer variant="body2">
-            {camelCaseToTitleCase(property)}
+            {exists(property, { ns: "table" })
+              ? t(property)
+              : camelCaseToTitleCase(property)}
           </OverflowContainer>
         ) : (
           <>
@@ -170,7 +180,7 @@ const PropertyItem = ({
               aria-label={"mapping"}
               onClick={handleMenuClick}
             >
-              {camelCaseToTitleCase(property)}
+              {exists(property) ? t(property) : camelCaseToTitleCase(property)}
             </Button>
             <Menu
               id="basic-menu"
@@ -238,12 +248,16 @@ const PropertyItem = ({
               }
             })}
           </Stack>
-        ) : typeof value === "string" ||
-          typeof value === "number" ||
-          typeof value === "boolean" ? (
-          value.toString()
+        ) : typeof value === "string" || typeof value === "number" ? (
+          property.toLowerCase().includes("date") ? (
+            specialDate2LocalDate(value as number, locale)
+          ) : (
+            value.toLocaleString()
+          )
+        ) : typeof value === "boolean" ? (
+          <Checkbox checked={value} disabled={true} />
         ) : (
-          ""
+          t("unknown")
         )}
       </TableCell>
     </TableRow>

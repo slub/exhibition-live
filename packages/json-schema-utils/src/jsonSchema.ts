@@ -145,8 +145,9 @@ export const bringDefinitionToTop: (
 ) => JSONSchema7 = (schema, name) => {
   const definitions = defs(schema);
   const specificModel = (definitions?.[name] as object | undefined) || {};
+  const { title, description, ...rest } = schema;
   return {
-    ...schema,
+    ...rest,
     ...specificModel,
   } as JSONSchema7;
 };

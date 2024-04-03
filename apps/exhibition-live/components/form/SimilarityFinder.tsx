@@ -459,12 +459,26 @@ const useKnowledgeBases = () => {
               crudOptions.selectFetch,
               findOptions?.limit || 10,
             )
-          ).map(({ name = "", value }: { name: string; value: string }) => {
-            return {
-              label: name,
-              id: value,
-            };
-          });
+          ).map(
+            ({
+              name = "",
+              value,
+              image,
+              description,
+            }: {
+              name: string;
+              value: string;
+              image: string;
+              description: string;
+            }) => {
+              return {
+                label: name,
+                id: value,
+                avatar: image,
+                secondary: description,
+              };
+            },
+          );
         },
         listItemRenderer: (
           entry: any,

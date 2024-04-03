@@ -1,8 +1,9 @@
 import { VisibilityState } from "@tanstack/table-core";
 import { ColumnDefMatcher, mkAccessor } from "../content/list/listHelper";
 import { MRT_ColumnDef } from "material-react-table";
-import { getJSDate } from "@slub/edb-core-utils";
+import { numeric2JSDate } from "@slub/edb-core-utils";
 import { TFunction } from "i18next";
+import { specialDate2LocalDate } from "../utils/specialDate2LocalDate";
 export type ListConfigType = {
   columnVisibility: VisibilityState;
   matcher: ColumnDefMatcher;
@@ -12,15 +13,6 @@ export type TableConfigRegistry = {
   [typeName: string]: Partial<ListConfigType>;
 };
 const p = (path: string[]) => path.join("_");
-
-const numeric2JSDate = (value: number | string) => {
-  const numericDate = typeof value === "string" ? parseInt(value) : value;
-  if (isNaN(numericDate)) {
-    return 0;
-  }
-  return getJSDate(numericDate);
-};
-
 const dateColDef: (
   key: string,
   t: TFunction,
@@ -29,10 +21,8 @@ const dateColDef: (
   const columnDef: MRT_ColumnDef<any> = {
     header: t(p([...path, key])),
     id: p([...path, key, "single"]),
-    accessorFn: mkAccessor(
-      `${p([...path, key, "single"])}.value`,
-      "",
-      numeric2JSDate,
+    accessorFn: mkAccessor(`${p([...path, key, "single"])}.value`, "", (v) =>
+      specialDate2LocalDate(v, "de"),
     ),
     filterVariant: "date",
     filterFn: "betweenInclusive",

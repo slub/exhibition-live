@@ -55,7 +55,7 @@ export const useGlobalSearchWithHelper = (
           __label: label,
         });
     },
-    [onDataAccepted, saveMutation, schema, typeIRI, typeName],
+    [onDataAccepted, saveMutation, typeIRI, typeName],
   );
 
   const handleFocus = useCallback(() => {

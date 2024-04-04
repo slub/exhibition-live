@@ -35,7 +35,9 @@
     "lint:fix": "turbo run lint:fix",
     "format": "prettier --write \"**/*.{js,ts,tsx,jsx,md}\"",
     "precommit": "bun run lint-staged",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "changeset:init": "changeset init",
+    "changeset": "changeset"
   },
   "workspaces": [
     "apps/*",
@@ -50,6 +52,7 @@
     "prettier": "^3.2.5",
     "tsup": "^8.0.2",
     "turbo": "^1.13.0",
+    "@changesets/cli": "^2.27.1",
     "typescript": "^5"
   },
   "overrides": {

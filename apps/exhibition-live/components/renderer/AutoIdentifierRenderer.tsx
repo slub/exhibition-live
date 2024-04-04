@@ -12,6 +12,7 @@ import merge from "lodash/merge";
 import React, { useCallback, useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { useSettings } from "../state/useLocalSettings";
+import { slent } from "../form/formConfigs";
 
 const AutoIdentifierRenderer = (props: ControlProps) => {
   const {
@@ -39,7 +40,8 @@ const AutoIdentifierRenderer = (props: ControlProps) => {
 
   useEffect(() => {
     if (!data && schema.title) {
-      const newURI = `${schema.title}${uuidv4()}`;
+      const prefix = slent[""].value;
+      const newURI = `${prefix}${uuidv4()}`;
       handleChange_(newURI);
     }
   }, [schema, data, handleChange_]);

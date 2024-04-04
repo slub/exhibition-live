@@ -32,7 +32,13 @@ import {
   Resolve,
 } from "@jsonforms/core";
 import merge from "lodash/merge";
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 
 import { ArrayLayoutToolbar } from "./ArrayToolbar";
 import { useJsonForms } from "@jsonforms/react";
@@ -56,8 +62,8 @@ import { useGlobalCRUDOptions } from "../state/useGlobalCRUDOptions";
 import { useCRUDWithQueryClient } from "../state/useCRUDWithQueryClient";
 import { useSnackbar } from "notistack";
 import { ErrorObject } from "ajv";
-import {bringDefinitionToTop} from "@slub/json-schema-utils";
-import {Pulse} from "../form/utils";
+import { bringDefinitionToTop } from "@slub/json-schema-utils";
+import { Pulse } from "../form/utils";
 
 type OwnProps = {
   removeItems(path: string, toDelete: number[]): () => void;
@@ -119,9 +125,6 @@ const MaterialArrayLayoutComponent = (props: ArrayLayoutProps & {}) => {
     entityIRI,
     typeIRI,
     subSchema as JSONSchema7,
-    defaultPrefix,
-    crudOptions,
-    defaultJsonldContext,
     { enabled: false },
   );
 
@@ -157,6 +160,7 @@ const MaterialArrayLayoutComponent = (props: ArrayLayoutProps & {}) => {
   }, [setModalIsOpen, addItem, formData, setFormData, typeIRI]);
 
   const isReifiedStatement = Boolean(appliedUiSchemaOptions.isReifiedStatement);
+  const autoFocusOnValid = Boolean(appliedUiSchemaOptions.autoFocusOnValid);
   const [inlineErrors, setInlineErrors] = useState<ErrorObject[] | null>(null);
   const handleErrors = useCallback(
     (err: ErrorObject[]) => {
@@ -166,10 +170,14 @@ const MaterialArrayLayoutComponent = (props: ArrayLayoutProps & {}) => {
   );
 
   useEffect(() => {
-    if (inlineErrors?.length === 0 && addButtonRef.current) {
+    if (
+      inlineErrors?.length === 0 &&
+      addButtonRef.current &&
+      autoFocusOnValid
+    ) {
       addButtonRef.current.focus();
     }
-  }, [inlineErrors]);
+  }, [inlineErrors, autoFocusOnValid]);
 
   const formsPath = useMemo(
     () => makeFormsPath(config?.formsPath, path),
@@ -177,8 +185,8 @@ const MaterialArrayLayoutComponent = (props: ArrayLayoutProps & {}) => {
   );
 
   useEffect(() => {
-    setFormData( irisToData(slent(uuidv4()).value, typeIRI))
-  }, [formsPath, typeIRI,setFormData]);
+    setFormData(irisToData(slent(uuidv4()).value, typeIRI));
+  }, [formsPath, typeIRI, setFormData]);
 
   return (
     <div>
@@ -275,7 +283,10 @@ const MaterialArrayLayoutComponent = (props: ArrayLayoutProps & {}) => {
                   index={index}
                   count={count}
                   path={childPath}
-                  elementDetailItemPath={appliedUiSchemaOptions.elementDetailItemPath}
+                  imagePath={appliedUiSchemaOptions.imagePath}
+                  elementDetailItemPath={
+                    appliedUiSchemaOptions.elementDetailItemPath
+                  }
                   childLabelTemplate={
                     appliedUiSchemaOptions.elementLabelTemplate
                   }

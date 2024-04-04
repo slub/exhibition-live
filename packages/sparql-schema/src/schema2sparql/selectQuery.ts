@@ -91,8 +91,8 @@ export const sparqlSelectFieldsQuery = (
          ${uri} ${v.predicateURI} ?${k} .` + v.includeLabel
             ? `?${k} rdfs:label ?${k}Label .`
             : "" + v.includeDescription
-            ? `?${k} schema:description ?${k}Description .`
-            : "" + `${after}`;
+              ? `?${k} schema:description ?${k}Description .`
+              : "" + `${after}`;
       } else {
         where += `${uri} ${v.predicateURI} ?${k} .`;
       }

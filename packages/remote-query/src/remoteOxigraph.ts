@@ -2,8 +2,7 @@ import { QueryEngine } from "@comunica/query-sparql";
 import { IDataSource } from "@comunica/types";
 import datasetFactory from "@rdfjs/dataset";
 import N3 from "n3";
-import {CRUDFunctions, SparqlEndpoint} from "@slub/edb-core-types";
-
+import { CRUDFunctions, SparqlEndpoint } from "@slub/edb-core-types";
 
 const cFetch = (query: string, endpoint: string) =>
   fetch(endpoint, {

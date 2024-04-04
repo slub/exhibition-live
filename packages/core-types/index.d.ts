@@ -1,8 +1,12 @@
-import {Bindings, DatasetCore, Quad, ResultStream} from "@rdfjs/types";
-import {NamespaceBuilder} from "@rdfjs/namespace";
+import { Bindings, DatasetCore, Quad, ResultStream } from "@rdfjs/types";
+import { NamespaceBuilder } from "@rdfjs/namespace";
 
 export type Prefixes = {
   [k: string]: string;
+};
+
+export type NamespaceBuilderPrefixes = {
+  prefixes: Record<string, NamespaceBuilder>;
 };
 
 export type FieldExtractDeclaration<T = any> =
@@ -33,7 +37,6 @@ export type PrimaryFieldResults<T> = {
   description: T | null;
   image: T | null;
 };
-
 
 export type NamedEntityData = {
   "@id": string;
@@ -70,6 +73,7 @@ export type CRUDFunctions = {
 export type SPARQLCRUDOptions = {
   queryBuildOptions?: SparqlBuildOptions;
   defaultPrefix: string;
+  maxRecursion?: number;
 };
 
 export type CRUDFunctions = {
@@ -87,7 +91,6 @@ export type CRUDFunctions = {
   selectFetch: (query: string, options?: SelectFetchOptions) => Promise<any>;
   askFetch: (query: string) => Promise<boolean>;
 };
-
 
 export type SparqlEndpoint = {
   label?: string;
@@ -109,5 +112,16 @@ export type SparqlEndpoint = {
 
 export type SPARQLFlavour = "default" | "oxigraph" | "blazegraph" | "allegro";
 
-export type QueryOptions =  { defaultPrefix: string, queryBuildOptions: SparqlBuildOptions}
+export type QueryOptions = {
+  defaultPrefix: string;
+  queryBuildOptions: SparqlBuildOptions;
+};
 
+export type BasicThingInformation = {
+  id: string;
+  label: string;
+  secondary?: string;
+  avatar?: string;
+  category?: string;
+  allProps?: Record<string, any>;
+};

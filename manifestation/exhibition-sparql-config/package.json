@@ -1,0 +1,38 @@
+{
+  "name": "@slub/exhibition-sparql-config",
+  "description": "Semantic Namespace and SPARQL endpoint configuration for the SLUB exhibitions project",
+  "version": "1.1.0",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs",
+      "default": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "lint": "eslint \"**/*.ts*\"",
+    "lint-fix": "eslint --fix \"**/*.ts*\""
+  },
+  "keywords": [],
+  "author": "Sebastian Tilsch <sebastian.tilsch@slub-dresden.de>",
+  "license": "MIT",
+  "devDependencies": {
+    "@slub/edb-tsconfig": "workspace:*",
+    "@slub/edb-global-types": "workspace:*",
+    "@tsconfig/node18": "^18.2.2",
+    "tsx": "^4.7.1",
+    "typescript": "^5.4.2"
+  },
+  "dependencies": {
+    "@rdfjs/data-model": "^2.0.2",
+    "@rdfjs/namespace": "^2.0.1",
+    "@slub/exhibition-schema": "workspace:*"
+  }
+}

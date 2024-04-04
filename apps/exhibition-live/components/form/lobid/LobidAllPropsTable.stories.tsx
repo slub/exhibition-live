@@ -5,7 +5,7 @@ import LobidAllPropTable from "./LobidAllPropTable";
 export default {
   title: "presentation/lobid/LobidAllPropsTable",
   component: LobidAllPropTable,
-}
+};
 
 const exampleAllProps = {
   dateOfConferenceOrEvent: ["18.06.2022-25.09.2022"],

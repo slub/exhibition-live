@@ -179,10 +179,12 @@
           "label": "Künstler",
           "scope": "#/properties/involvedPersons",
           "options": {
+            "imagePath": "person.image",
             "elementLabelTemplate": "{{=it.person?.name || ''}} ({{=it.role?.title || ''}})",
             "elementDetailItemPath": "person",
             "detail": "GENERATED",
-            "isReifiedStatement": true
+            "isReifiedStatement": true,
+            "autoFocusOnValid": true
           }
         },
         {
@@ -190,10 +192,12 @@
           "label": "Institutionen",
           "scope": "#/properties/involvedCorporations",
           "options": {
+            "elementImagePath": "corporation.image",
             "elementLabelTemplate": "{{=it.corporation?.name || ''}} ({{=it.role?.title || ''}})",
             "elementDetailItemPath": "corporation",
             "detail": "GENERATED",
-            "isReifiedStatement": true
+            "isReifiedStatement": true,
+            "autoFocusOnValid": true
           }
         }
       ]

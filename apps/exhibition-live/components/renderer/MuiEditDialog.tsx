@@ -137,14 +137,16 @@ export default function MuiEditDialog({
                 )}
               </>
             )}
-            {onEdit && <IconButton
-              size="large"
-              aria-label="toggle edit mode"
-              onClick={onEdit}
-              color="inherit"
-            >
-              {editMode ? <EditOffIcon /> : <EditIcon />}
-            </IconButton>}
+            {onEdit && (
+              <IconButton
+                size="large"
+                aria-label="toggle edit mode"
+                onClick={onEdit}
+                color="inherit"
+              >
+                {editMode ? <EditOffIcon /> : <EditIcon />}
+              </IconButton>
+            )}
             {onReload && (
               <IconButton
                 size="large"
@@ -190,18 +192,20 @@ export default function MuiEditDialog({
       <DialogContent>{children}</DialogContent>
       <Hidden mdDown={true}>
         <DialogActions>
-          {actions || <>
-            {onCancel && (
+          {actions || (
+            <>
+              {onCancel && (
                 <Button autoFocus onClick={onCancel}>
                   abbrechen
                 </Button>
-            )}
-            {onSave && (
+              )}
+              {onSave && (
                 <Button onClick={onSave} autoFocus>
                   speichern
                 </Button>
-            )}
-          </>}
+              )}
+            </>
+          )}
         </DialogActions>
       </Hidden>
     </Dialog>

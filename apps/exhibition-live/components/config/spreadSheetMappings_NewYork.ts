@@ -1,13 +1,13 @@
-import {DeclarativeFlatMappings} from "../utils/mapping/mappingStrategies";
-import {sladb} from "../form/formConfigs";
-import {OwnColumnDesc} from "../google/types";
-import {gndBaseIRI} from "../utils/gnd/prefixes";
+import { DeclarativeFlatMappings } from "../utils/mapping/mappingStrategies";
+import { sladb } from "../form/formConfigs";
+import { OwnColumnDesc } from "../google/types";
+import { gndBaseIRI } from "../utils/gnd/prefixes";
 import {
   DeclarativeMatchBasedFlatMappings,
   indexFromTitle,
-  matchBased2DeclarativeFlatMapping
+  matchBased2DeclarativeFlatMapping,
 } from "../utils/mapping/mapMatchBasedByConfig";
-import {filterUndefOrNull} from "@slub/edb-core-utils";
+import { filterUndefOrNull } from "@slub/edb-core-utils";
 
 /*
 B:Name Kiste
@@ -215,18 +215,17 @@ HU:Ressource
 
  */
 
-
 export const matchBasedSpreadsheetMappings_NewYork = [
   {
     id: "Ausstellungstitel",
     source: {
       columns: {
-        title: ["Ausstellungstitel 1"]
-      }
+        title: ["Ausstellungstitel 1"],
+      },
     },
     target: {
-      path: "title"
-    }
+      path: "title",
+    },
   },
   {
     id: "Genre",
@@ -234,11 +233,11 @@ export const matchBasedSpreadsheetMappings_NewYork = [
       columns: {
         titlePattern: "Genre {{=it.i + 1}}",
         amount: 5,
-        includeRightNeighbours: 1
-      }
+        includeRightNeighbours: 1,
+      },
     },
     target: {
-      path: "genre"
+      path: "genre",
     },
     mapping: {
       strategy: {
@@ -247,14 +246,14 @@ export const matchBasedSpreadsheetMappings_NewYork = [
           typeIRI: sladb("Genre").value,
           typeName: "Genre",
           mainProperty: {
-            offset: 0
+            offset: 0,
           },
           authorityFields: [
             {
               offset: 1,
-              authorityLinkPrefix: gndBaseIRI
-            }
-          ]
+              authorityLinkPrefix: gndBaseIRI,
+            },
+          ],
         },
       },
     },
@@ -265,11 +264,11 @@ export const matchBasedSpreadsheetMappings_NewYork = [
       columns: {
         titlePattern: "Ort der Ausstellung (geografisch) {{=it.i + 1}}",
         amount: 4,
-        includeRightNeighbours: 1
-      }
+        includeRightNeighbours: 1,
+      },
     },
     target: {
-      path: "location"
+      path: "location",
     },
     mapping: {
       strategy: {
@@ -278,14 +277,14 @@ export const matchBasedSpreadsheetMappings_NewYork = [
           typeIRI: sladb("Location").value,
           typeName: "Location",
           mainProperty: {
-            offset: 0
+            offset: 0,
           },
           authorityFields: [
             {
               offset: 1,
-              authorityLinkPrefix: gndBaseIRI
-            }
-          ]
+              authorityLinkPrefix: gndBaseIRI,
+            },
+          ],
         },
       },
     },
@@ -295,11 +294,11 @@ export const matchBasedSpreadsheetMappings_NewYork = [
     source: {
       columns: {
         titlePattern: "Ort der Ausstellung (Institution) {{=it.i + 1}}",
-        amount: 7
-      }
+        amount: 7,
+      },
     },
     target: {
-      path: "place"
+      path: "place",
     },
     mapping: {
       strategy: {
@@ -308,14 +307,14 @@ export const matchBasedSpreadsheetMappings_NewYork = [
           typeIRI: sladb("Place").value,
           typeName: "Place",
           mainProperty: {
-            offset: 0
+            offset: 0,
           },
           authorityFields: [
             {
               offset: 1,
-              authorityLinkPrefix: gndBaseIRI
-            }
-          ]
+              authorityLinkPrefix: gndBaseIRI,
+            },
+          ],
         },
       },
     },
@@ -326,11 +325,11 @@ export const matchBasedSpreadsheetMappings_NewYork = [
       columns: {
         titlePattern: "Beteiligte Person {{=it.i + 3}}",
         amount: 22,
-        includeRightNeighbours: 1
-      }
+        includeRightNeighbours: 1,
+      },
     },
     target: {
-      path: "involvedPersons"
+      path: "involvedPersons",
     },
     mapping: {
       strategy: {
@@ -367,8 +366,8 @@ export const matchBasedSpreadsheetMappings_NewYork = [
             },
           ],
         },
-      }
-    }
+      },
+    },
   },
   {
     id: "Beteiligte Person GND",
@@ -376,11 +375,11 @@ export const matchBasedSpreadsheetMappings_NewYork = [
       columns: {
         titlePattern: "Beteiligte Person {{=it.i + 1}} (Name)",
         amount: 4,
-        includeRightNeighbours: 3
-      }
+        includeRightNeighbours: 3,
+      },
     },
     target: {
-      path: "involvedPersons"
+      path: "involvedPersons",
     },
     mapping: {
       strategy: {
@@ -397,15 +396,15 @@ export const matchBasedSpreadsheetMappings_NewYork = [
                   typeIRI: sladb("Person").value,
                   typeName: "Person",
                   mainProperty: {
-                    offset: 0
+                    offset: 0,
                   },
                   authorityFields: [
                     {
                       offset: 1,
-                      authorityLinkPrefix: gndBaseIRI
-                    }
-                  ]
-                }
+                      authorityLinkPrefix: gndBaseIRI,
+                    },
+                  ],
+                },
               },
             },
           },
@@ -425,59 +424,64 @@ export const matchBasedSpreadsheetMappings_NewYork = [
             },
           ],
         },
-      }
-    }
+      },
+    },
   },
   {
     id: "Beteiligte Körperschaft",
     source: {
-        columns: {
-            titlePattern: "Beteiligte Körperschaft {{=it.i + 3}}",
-              amount: 6,
-          includeRightNeighbours: 1
-        }
+      columns: {
+        titlePattern: "Beteiligte Körperschaft {{=it.i + 3}}",
+        amount: 6,
+        includeRightNeighbours: 1,
+      },
     },
     target: {
-        path: "involvedCorporations"
+      path: "involvedCorporations",
     },
     mapping: {
-        strategy: {
-            id: "createEntityWithReificationFromString",
-            options: {
-                typeIRI: sladb("InvolvedCorporation").value,
-                typeName: "InvolvedCorporation",
-                mainProperty: {
-                    property: "corporation",
+      strategy: {
+        id: "createEntityWithReificationFromString",
+        options: {
+          typeIRI: sladb("InvolvedCorporation").value,
+          typeName: "InvolvedCorporation",
+          mainProperty: {
+            property: "corporation",
+          },
+          statementProperties: [
+            {
+              property: "role",
+              mapping: {
+                strategy: {
+                  id: "createEntityFromString",
+                  options: {
+                    typeIRI: sladb("CorporationRole").value,
+                    typeName: "CorporationRole",
+                  },
                 },
-                statementProperties: [
-                    {
-                        property: "role",
-                        mapping: {
-                            strategy: {
-                                id: "createEntityFromString",
-                                options: {
-                                    typeIRI: sladb("CorporationRole").value,
-                                    typeName: "CorporationRole",
-                                },
-                            }
-                        }
-                    }
-                    ]
-            }
-        }
-    }
-  }
+              },
+            },
+          ],
+        },
+      },
+    },
+  },
 ] as DeclarativeMatchBasedFlatMappings;
-
 
 export const spreadSheetMappings_NewYork: (
   fields: OwnColumnDesc[],
-) => DeclarativeFlatMappings = (fields) => filterUndefOrNull(matchBasedSpreadsheetMappings_NewYork.map(mapping => {
-  let declarativeFlatMapping = null;
-  try {
-    declarativeFlatMapping = matchBased2DeclarativeFlatMapping(fields, mapping);
-  } catch (e) {
-    console.error(`Error while creating mapping for ${mapping.id}`, e);
-  }
-  return declarativeFlatMapping;
-}));
+) => DeclarativeFlatMappings = (fields) =>
+  filterUndefOrNull(
+    matchBasedSpreadsheetMappings_NewYork.map((mapping) => {
+      let declarativeFlatMapping = null;
+      try {
+        declarativeFlatMapping = matchBased2DeclarativeFlatMapping(
+          fields,
+          mapping,
+        );
+      } catch (e) {
+        console.error(`Error while creating mapping for ${mapping.id}`, e);
+      }
+      return declarativeFlatMapping;
+    }),
+  );

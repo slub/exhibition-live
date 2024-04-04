@@ -25,7 +25,6 @@ import {
 } from "@mui/material";
 import isEmpty from "lodash/isEmpty";
 import React, { useMemo } from "react";
-import { PluggableList } from "react-markdown/lib/react-markdown";
 import rehypeExternalLinks from "rehype-external-links";
 import rehypeSanitize from "rehype-sanitize";
 
@@ -72,7 +71,7 @@ const GroupComponent = memo(
         `${path}.${groupLayout.label}`,
         resolvedSchema,
       );
-    const rehypePlugins = useMemo<PluggableList>(
+    const rehypePlugins = useMemo<any>(
       () => [[rehypeSanitize], [rehypeExternalLinks, { target: "_blank" }]],
       [],
     );

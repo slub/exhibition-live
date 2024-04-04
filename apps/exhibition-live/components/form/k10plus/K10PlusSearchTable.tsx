@@ -33,7 +33,11 @@ import ClassicEntityCard from "../lobid/ClassicEntityCard";
 import ClassicResultListItem from "../result/ClassicResultListItem";
 import { fabio, geonames, radatana } from "./marc2rdfMappingDeclaration";
 import { kxp, mapDatafieldToQuads } from "./marcxml2rdf";
-import {NodePropertyTree, nodeToPropertyTree} from "@slub/edb-graph-traversal";
+import {
+  NodePropertyTree,
+  nodeToPropertyTree,
+} from "@slub/edb-graph-traversal";
+import { useTranslation } from "next-i18next";
 
 type Props = {
   searchString: string;
@@ -83,6 +87,7 @@ const K10PlusSearchTable: FunctionComponent<Props> = ({
   onSelect,
   onAcceptItem,
 }) => {
+  const { t } = useTranslation();
   const [resultTable, setResultTable] = useState<KXPEntry[] | undefined>();
   const { history, pushHistory, popHistory } = useLocalHistory();
   const [selectedId, setSelectedId] = useState<string | undefined>();
@@ -162,8 +167,16 @@ const K10PlusSearchTable: FunctionComponent<Props> = ({
               ),
             }}
             onBack={() => handleSelect(popHistory(), false)}
-            onAcceptItem={handleAccept}
-            acceptTitle={"Eintrag übernehmen"}
+            cardActionChildren={
+              <Button
+                size="small"
+                color="primary"
+                variant="contained"
+                onClick={() => handleAccept(selectedId)}
+              >
+                {t("accept entity")}
+              </Button>
+            }
             id={selectedId}
             detailView={<KXPAllPropTable entry={selectedEntry} />}
           />
@@ -175,7 +188,7 @@ const K10PlusSearchTable: FunctionComponent<Props> = ({
             key={entry.id}
             id={String(entry.id)}
             index={idx}
-            onSelected={(id) =>handleSelect(id)}
+            onSelected={(id) => handleSelect(id)}
             label={
               entry.properties[dcterms.title.value]?.[0]?.value ||
               String(entry.id)

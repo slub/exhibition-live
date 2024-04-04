@@ -20,7 +20,7 @@ import { encodeIRI, irisToData } from "../../utils/core";
 import NewSemanticJsonForm from "../../form/SemanticJsonForm";
 import { useModifiedRouter } from "../../basic";
 import { EntityDetailElement } from "../../form/show";
-import {RootFormProvider} from "../../provider";
+import { RootFormProvider } from "../../provider";
 
 type Props = {
   children: React.ReactChild;
@@ -85,7 +85,6 @@ export type MainFormProps = {
 const TypedForm = ({ typeName, entityIRI, classIRI }: MainFormProps) => {
   //const { formData: data, setFormData: setData } = useFormData();
   const [data, setData] = useState(irisToData(entityIRI, classIRI));
-  const { crudOptions } = useGlobalCRUDOptions();
   const { search: searchText } = useGlobalSearch();
   const router = useModifiedRouter();
 
@@ -143,7 +142,6 @@ const TypedForm = ({ typeName, entityIRI, classIRI }: MainFormProps) => {
               shouldLoadInitially
               typeIRI={classIRI}
               onEntityDataChange={handleChange}
-              crudOptions={crudOptions}
               defaultPrefix={defaultPrefix}
               jsonldContext={defaultJsonldContext}
               schema={loadedSchema as JSONSchema7}

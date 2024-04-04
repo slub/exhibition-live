@@ -20,13 +20,13 @@ import { JSONSchema7 } from "json-schema";
 import { useJsonForms } from "@jsonforms/react";
 import dot from "dot";
 import { useCRUDWithQueryClient } from "../state/useCRUDWithQueryClient";
-import { useGlobalCRUDOptions } from "../state/useGlobalCRUDOptions";
-import { defaultJsonldContext, defaultPrefix } from "../form/formConfigs";
 import get from "lodash/get";
 import NiceModal from "@ebay/nice-modal-react";
 import { EntityDetailModal } from "../form/show";
-import {bringDefinitionToTop} from "@slub/json-schema-utils";
-import {withEllipsis} from "../utils/typography";
+import { bringDefinitionToTop } from "@slub/json-schema-utils";
+import { withEllipsis } from "../utils/typography";
+import { specialDate2LocalDate } from "../utils/specialDate2LocalDate";
+import { useTranslation } from "next-i18next";
 
 type SimpleExpandPanelRendererProps = {
   data: any;
@@ -41,6 +41,7 @@ type SimpleExpandPanelRendererProps = {
   childLabelTemplate?: string;
   elementDetailItemPath?: string;
   elementLabelProp?: string;
+  imagePath?: string;
   formsPath?: string;
 };
 export const SimpleExpandPanelRenderer = (
@@ -55,8 +56,9 @@ export const SimpleExpandPanelRenderer = (
     onRemove,
     count,
     childLabelTemplate,
+    imagePath,
     elementLabelProp,
-    elementDetailItemPath
+    elementDetailItemPath,
   } = props;
   const typeIRI = schema.properties?.["@type"]?.const;
   const typeName = useMemo(
@@ -68,12 +70,29 @@ export const SimpleExpandPanelRenderer = (
   }, []);
   // @ts-ignore
   const { label, description, image } = useMemo(() => {
+    let imageUrl = null;
+    if (imagePath) {
+      imageUrl = get(data, imagePath);
+    }
     if (!typeName) return {};
     const fieldDecl = primaryFields[typeName];
-    if (data && fieldDecl)
-      return applyToEachField(data, fieldDecl, extractFieldIfString);
-    return {};
+    if (data && fieldDecl) {
+      const extratedInfo = applyToEachField(
+        data,
+        fieldDecl,
+        extractFieldIfString,
+      );
+      return {
+        image: imageUrl || extratedInfo.image,
+        ...extratedInfo,
+      };
+    }
+    return { image: imageUrl };
   }, [data, typeName, entityIRI]);
+
+  const {
+    i18n: { language: locale },
+  } = useTranslation();
 
   const subSchema = useMemo(
     () =>
@@ -84,7 +103,19 @@ export const SimpleExpandPanelRenderer = (
     if (childLabelTemplate) {
       try {
         const template = dot.template(childLabelTemplate);
-        return template(data);
+        //we would need a middleware but it is hard to get the date converted correctly here
+        const modifiedData = Object.fromEntries(
+          Object.entries(data).map(([key, value]: [string, any]) => {
+            if (
+              key.toLowerCase().includes("date") &&
+              typeof value === "number"
+            ) {
+              return [key, specialDate2LocalDate(value, locale)];
+            }
+            return [key, value];
+          }),
+        );
+        return template(modifiedData);
       } catch (e) {
         console.warn("could not render childLabelTemplate", e);
       }
@@ -93,18 +124,17 @@ export const SimpleExpandPanelRenderer = (
       if (label_) return label_;
     }
     return label || data?.__label;
-  }, [childLabelTemplate, elementLabelProp, data, label]);
+  }, [childLabelTemplate, elementLabelProp, data, label, locale]);
 
-  const elementDetailItem = useMemo(() => elementDetailItemPath ?  get(data, elementDetailItemPath) : null, [elementDetailItemPath, data]);
+  const elementDetailItem = useMemo(
+    () => (elementDetailItemPath ? get(data, elementDetailItemPath) : null),
+    [elementDetailItemPath, data],
+  );
 
-  const { crudOptions } = useGlobalCRUDOptions();
   const { loadQuery, saveMutation } = useCRUDWithQueryClient(
     entityIRI,
     typeIRI,
     subSchema,
-    defaultPrefix,
-    crudOptions,
-    defaultJsonldContext,
     {
       enabled: !data?.__draft && !data?.__label,
       initialData: data,
@@ -120,16 +150,25 @@ export const SimpleExpandPanelRenderer = (
   }, [loadedData, onData]);
 
   const handleSave = useCallback(async () => {
-    console.log({ saveMutation });
     if (!saveMutation) return;
     saveMutation.mutate(data);
   }, [saveMutation, data]);
 
   const showDetailModal = useCallback(() => {
-    if(elementDetailItem?.["@id"] && elementDetailItem?.["@type"]) {
-        NiceModal.show(EntityDetailModal, { typeIRI: elementDetailItem["@type"], entityIRI: elementDetailItem["@id"], data: elementDetailItem, inlineEditing: true  });
+    if (elementDetailItem?.["@id"] && elementDetailItem?.["@type"]) {
+      NiceModal.show(EntityDetailModal, {
+        typeIRI: elementDetailItem["@type"],
+        entityIRI: elementDetailItem["@id"],
+        data: elementDetailItem,
+        inlineEditing: true,
+      });
     } else {
-      NiceModal.show(EntityDetailModal, {typeIRI, entityIRI, data, inlineEditing: true });
+      NiceModal.show(EntityDetailModal, {
+        typeIRI,
+        entityIRI,
+        data,
+        inlineEditing: true,
+      });
     }
   }, [typeIRI, entityIRI, data, elementDetailItem]);
 

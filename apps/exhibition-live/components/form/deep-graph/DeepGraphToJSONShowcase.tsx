@@ -8,22 +8,28 @@ import dsExt from "rdf-dataset-ext";
 import React, { FunctionComponent, useEffect, useState } from "react";
 import { JsonView } from "react-json-view-lite";
 import stringToStream from "string-to-stream";
-import { WalkerOptions } from "@slub/edb-graph-traversal"
+import { WalkerOptions } from "@slub/edb-graph-traversal";
 
-import {
-  jsonSchemaGraphInfuser,
-} from "../../utils/graph/jsonSchemaGraphInfuser";
+import { jsonSchemaGraphInfuser } from "../../utils/graph/jsonSchemaGraphInfuser";
 import { addressSchema } from "../../../fixtures/schema";
 // @ts-ignore
 import tbbt from "tbbt-ld/dist/tbbt.nq";
-import {Grid, Typography} from "@mui/material";
+import { Grid, Typography } from "@mui/material";
 import { bringDefinitionToTop } from "@slub/json-schema-utils";
 
-type EntityIRIs = "http://localhost:8080/data/person/leonard-hofstadter" | "http://localhost:8080/data/person/mary-cooper" | "http://localhost:8080/data/person/bernadette-rostenkowski" | "http://localhost:8080/data/person/amy-farrah-fowler" | "http://localhost:8080/data/person/penny" | "http://localhost:8080/data/person/sheldon-cooper" | "http://localhost:8080/data/person/howard-wolowitz" | "http://localhost:8080/data/person/rajesh-koothrappali";
+type EntityIRIs =
+  | "http://localhost:8080/data/person/leonard-hofstadter"
+  | "http://localhost:8080/data/person/mary-cooper"
+  | "http://localhost:8080/data/person/bernadette-rostenkowski"
+  | "http://localhost:8080/data/person/amy-farrah-fowler"
+  | "http://localhost:8080/data/person/penny"
+  | "http://localhost:8080/data/person/sheldon-cooper"
+  | "http://localhost:8080/data/person/howard-wolowitz"
+  | "http://localhost:8080/data/person/rajesh-koothrappali";
 type OwnProps = {
   entityIRI: EntityIRIs;
   baseIRI: string;
-}
+};
 
 type Props = OwnProps & WalkerOptions;
 
@@ -31,16 +37,15 @@ const schema = bringDefinitionToTop(addressSchema, "Person");
 
 async function sampleDataset() {
   //const filename = path.join(path.dirname(require.resolve('tbbt-ld')), 'dist/tbbt.nq')
-  const input = await fetch(tbbt).then((t) =>
-    t.text(),
-  );
+  const input = await fetch(tbbt).then((t) => t.text());
   const parser = new N3Parser();
   return {
     raw: input,
     ds: await dsExt.fromStream(
       datasetFactory.dataset(),
       parser.import(stringToStream(input)),
-  )};
+    ),
+  };
 }
 
 const DeepGraphToJSONShowcase: FunctionComponent<Props> = ({
@@ -54,10 +59,10 @@ const DeepGraphToJSONShowcase: FunctionComponent<Props> = ({
 }) => {
   const [jsonFromGraph, setJsonFromGraph] = useState<any>({});
   const [dataset, setDataset] = useState<Dataset | null>(null);
-  const [rawTriples, setRawTriples] = useState("")
+  const [rawTriples, setRawTriples] = useState("");
 
   useEffect(() => {
-    sampleDataset().then(({ds, raw}) => {
+    sampleDataset().then(({ ds, raw }) => {
       setDataset(ds as Dataset);
       setRawTriples(raw);
     });
@@ -94,22 +99,22 @@ const DeepGraphToJSONShowcase: FunctionComponent<Props> = ({
 
   return (
     <Grid container direction={"row"} wrap={"nowrap"} justifyContent={"center"}>
-      <Grid item flex={1} sx={{maxHeight: "70vh", overflow: "auto"}}>
-      <Typography variant={"h5"}>Schema</Typography>
-      <JsonView data={schema} shouldInitiallyExpand={(lvl) => lvl < 5} />
+      <Grid item flex={1} sx={{ maxHeight: "70vh", overflow: "auto" }}>
+        <Typography variant={"h5"}>Schema</Typography>
+        <JsonView data={schema} shouldInitiallyExpand={(lvl) => lvl < 5} />
       </Grid>
-      <Grid item flex={1}  sx={{maxHeight: "70vh", overflow: "auto"}}>
-      <Typography variant={"h5"}>Dataset</Typography>
+      <Grid item flex={1} sx={{ maxHeight: "70vh", overflow: "auto" }}>
+        <Typography variant={"h5"}>Dataset</Typography>
         <code>
           <pre>{rawTriples}</pre>
         </code>
       </Grid>
-      <Grid item flex={1} sx={{maxHeight: "70vh", overflow: "auto"}}>
-      <Typography variant={"h5"}>extracted JSON</Typography>
-      <JsonView
-        data={jsonFromGraph}
-        shouldInitiallyExpand={(lvl) => lvl < 10}
-      />
+      <Grid item flex={1} sx={{ maxHeight: "70vh", overflow: "auto" }}>
+        <Typography variant={"h5"}>extracted JSON</Typography>
+        <JsonView
+          data={jsonFromGraph}
+          shouldInitiallyExpand={(lvl) => lvl < 10}
+        />
       </Grid>
     </Grid>
   );

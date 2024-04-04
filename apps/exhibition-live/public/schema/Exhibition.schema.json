@@ -1,5 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://schema.adb.arthistoricum.net/exhibition",
   "$defs": {
     "Tag": {
       "type": "object",
@@ -183,6 +184,10 @@
         },
         "description": {
           "type": "string"
+        },
+        "image": {
+          "type": "string",
+          "format": "uri"
         },
         "parent": {
           "title": "Übergeordneter Ort",

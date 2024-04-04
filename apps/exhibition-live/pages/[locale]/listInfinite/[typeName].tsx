@@ -33,7 +33,7 @@ export async function getStaticProps(ctx) {
 export default (props: Props) => {
   const router = useRouter();
   const { typeName } = props;
-  const title = `Ausstellungserfassung - ${typeName}`
+  const title = `Ausstellungserfassung - ${typeName}`;
 
   return (
     <>

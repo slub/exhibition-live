@@ -1,27 +1,40 @@
-import {describe, expect, test} from "@jest/globals";
+import { describe, expect, test } from "@jest/globals";
 import fs from "fs";
-import {JSONSchema7} from "json-schema";
+import { JSONSchema7 } from "json-schema";
 import dsExt from "rdf-dataset-ext";
 
 import datasetFactory from "@rdfjs/dataset";
 import N3Parser from "@rdfjs/parser-n3";
-import {Dataset} from "@rdfjs/types";
+import { Dataset } from "@rdfjs/types";
 //import * as tbbt from "tbbt-ld/dist/tbbt.nq";
 //@ts-ignore
 //import testResult01 from "fixture/test_01.json";
-import { fileURLToPath } from 'url';
-import { resolve, dirname } from 'path';
-import {traverseGraphExtractBySchema} from "./traverseGraphExtractBySchema";
+import { fileURLToPath } from "url";
+import { resolve, dirname } from "path";
+import { traverseGraphExtractBySchema } from "./traverseGraphExtractBySchema";
 
 // Mimic __filename and __dirname
 // @ts-ignore
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const testResult01 = JSON.parse( fs.readFileSync(resolve(__dirname,  'fixture', 'test_01.json', ), 'utf-8'));
+const testResult01 = JSON.parse(
+  fs.readFileSync(resolve(__dirname, "fixture", "test_01.json"), "utf-8"),
+);
 
 function sampleDataset() {
-  const input = fs.createReadStream(resolve( __dirname, '..','..', '..','node_modules', 'tbbt-ld', "dist", "tbbt.nq"));
+  const input = fs.createReadStream(
+    resolve(
+      __dirname,
+      "..",
+      "..",
+      "..",
+      "node_modules",
+      "tbbt-ld",
+      "dist",
+      "tbbt.nq",
+    ),
+  );
   const parser = new N3Parser();
 
   return dsExt.fromStream(datasetFactory.dataset(), parser.import(input));
@@ -80,7 +93,7 @@ describe("can get data via json schema", () => {
 
   const baseIRI = "http://schema.org/";
   test("get from test schema", async () => {
-    const schema = {...schemaStub, ...schemaStub.$defs.Person};
+    const schema = { ...schemaStub, ...schemaStub.$defs.Person };
     const ds = await sampleDataset();
     const data = traverseGraphExtractBySchema(
       baseIRI,

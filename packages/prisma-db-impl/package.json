@@ -1,0 +1,45 @@
+{
+  "name": "@slub/prisma-db-impl",
+  "version": "1.1.0",
+  "description": "a set of store specific implementations of PRISMA query builders",
+  "type": "module",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "default": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build:model": "bun src/createModel.ts > schema.prisma",
+    "format:model": "prisma format",
+    "lint": "eslint \"**/*.ts*\"",
+    "lint-fix": "eslint --fix \"**/*.ts*\""
+  },
+  "devDependencies": {
+    "@slub/edb-build-helper": "workspace:*",
+    "@slub/edb-tsconfig": "workspace:*",
+    "@slub/edb-tsup-config": "workspace:*",
+    "@slub/json-schema-prisma-utils": "workspace:*",
+    "@types/jest": "^29.5.12",
+    "@types/json-schema": "^7.0.14",
+    "eslint-config-edb": "workspace:*",
+    "typescript": "^5.3.3",
+    "prisma": "^5.11.0"
+  },
+  "dependencies": {
+    "@slub/json-schema-utils": "workspace:*",
+    "@slub/sparql-schema": "workspace:*",
+    "@slub/edb-graph-traversal": "workspace:*",
+    "@slub/edb-core-types": "workspace:*",
+    "@slub/edb-global-types": "workspace:*",
+    "@slub/exhibition-schema": "workspace:*",
+    "@slub/remote-query-implementations": "workspace:*",
+    "@slub/exhibition-sparql-config": "workspace:*",
+    "@prisma/client": "^5.11.0",
+    "json-schema": "^0.4.0",
+    "uuid": "^9.0.1"
+  }
+}

@@ -50,8 +50,8 @@ export const MaterialDateControl = (props: ControlProps) => {
   const firstFormHelperText = showDescription
     ? description
     : !isValid
-    ? errors
-    : null;
+      ? errors
+      : null;
   const secondFormHelperText = showDescription && !isValid ? errors : null;
   const onChange = useMemo(
     () => createOnChangeHandler(path, handleChange, saveFormat),

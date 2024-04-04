@@ -1,8 +1,8 @@
-import {OwnColumnDesc} from "../../google/types";
-import {AnyFlatStrategy, DeclarativeFlatMapping} from "./mappingStrategies";
+import { OwnColumnDesc } from "../../google/types";
+import { AnyFlatStrategy, DeclarativeFlatMapping } from "./mappingStrategies";
 import flatten from "lodash/flatten";
 import uniq from "lodash/uniq";
-import {JsonSchema} from "@jsonforms/core";
+import { JsonSchema } from "@jsonforms/core";
 import dot from "dot";
 
 export const indexFromLetter = (
@@ -27,53 +27,68 @@ export const indexFromTitle = (
 };
 type MatchByTitle = {
   title: string[];
-}
+};
 type MatchNColumnsByTitlePattern = {
   titlePattern: string;
   amount: number;
   includeRightNeighbours?: number;
-}
-export type FlexibleColumnMatchingDefinition = MatchByTitle | MatchNColumnsByTitlePattern;
-export const isTitlePattern = (definition: FlexibleColumnMatchingDefinition): definition is MatchNColumnsByTitlePattern => {
+};
+export type FlexibleColumnMatchingDefinition =
+  | MatchByTitle
+  | MatchNColumnsByTitlePattern;
+export const isTitlePattern = (
+  definition: FlexibleColumnMatchingDefinition,
+): definition is MatchNColumnsByTitlePattern => {
   return (definition as MatchNColumnsByTitlePattern).titlePattern !== undefined;
-}
+};
 const resolveTitlePattern = (pattern: string, data: any): string => {
   const template = dot.template(pattern);
   return template(data);
-}
+};
 
-const columnMatcherImplementation = (fields: OwnColumnDesc[], definition: FlexibleColumnMatchingDefinition): number[] => {
+const columnMatcherImplementation = (
+  fields: OwnColumnDesc[],
+  definition: FlexibleColumnMatchingDefinition,
+): number[] => {
   if (isTitlePattern(definition)) {
-    return flatten([...Array(definition.amount)].map((_, i) => {
-      const title = resolveTitlePattern(definition.titlePattern, {i});
-      return indexFromTitle(title, fields);
-    }).map(firstIndex => {
-      if (typeof definition.includeRightNeighbours === "number") {
-        if (definition.includeRightNeighbours <= 0) {
-          throw new Error("includeRightNeighbours must be greater than 0");
-        }
-        return [...Array(definition.includeRightNeighbours + 1)].map((_, i) => firstIndex + i);
-      } else {
-        return [firstIndex];
-      }
-    }))
+    return flatten(
+      [...Array(definition.amount)]
+        .map((_, i) => {
+          const title = resolveTitlePattern(definition.titlePattern, { i });
+          return indexFromTitle(title, fields);
+        })
+        .map((firstIndex) => {
+          if (typeof definition.includeRightNeighbours === "number") {
+            if (definition.includeRightNeighbours <= 0) {
+              throw new Error("includeRightNeighbours must be greater than 0");
+            }
+            return [...Array(definition.includeRightNeighbours + 1)].map(
+              (_, i) => firstIndex + i,
+            );
+          } else {
+            return [firstIndex];
+          }
+        }),
+    );
   } else {
     return definition.title.map((title) => indexFromTitle(title, fields));
   }
-}
+};
 /**
  * Returns the indices of the columns that match the given definition
  * @param fields The column description fields
  * @param definition  The definition of the columns to match (either by title or by title pattern)
  * @returns {number[]}   The indices of the columns that match the given definition
  */
-const columnMatcher = (fields: OwnColumnDesc[], definition: FlexibleColumnMatchingDefinition): number[] =>
-  uniq(columnMatcherImplementation(fields, definition))
+const columnMatcher = (
+  fields: OwnColumnDesc[],
+  definition: FlexibleColumnMatchingDefinition,
+): number[] => uniq(columnMatcherImplementation(fields, definition));
 
 export type FlatSourceMatchBased = {
   columns: FlexibleColumnMatchingDefinition;
   expectedSchema?: JsonSchema;
-}
+};
 export type DeclarativeMatchBasedFlatMapping = {
   id: string;
   source: FlatSourceMatchBased;
@@ -84,13 +99,17 @@ export type DeclarativeMatchBasedFlatMapping = {
     strategy: AnyFlatStrategy;
   };
 };
-export type DeclarativeMatchBasedFlatMappings = DeclarativeMatchBasedFlatMapping[];
-export const matchBased2DeclarativeFlatMapping = (fields: OwnColumnDesc[], mapping: DeclarativeMatchBasedFlatMapping): DeclarativeFlatMapping => {
+export type DeclarativeMatchBasedFlatMappings =
+  DeclarativeMatchBasedFlatMapping[];
+export const matchBased2DeclarativeFlatMapping = (
+  fields: OwnColumnDesc[],
+  mapping: DeclarativeMatchBasedFlatMapping,
+): DeclarativeFlatMapping => {
   return {
     ...mapping,
     source: {
       columns: columnMatcher(fields, mapping.source.columns),
-      expectedSchema: mapping.source.expectedSchema
+      expectedSchema: mapping.source.expectedSchema,
     },
-  }
-}
+  };
+};

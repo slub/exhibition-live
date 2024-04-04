@@ -5,8 +5,12 @@ import { useCallback, useMemo } from "react";
 
 import { SparqlEndpoint, useSettings } from "./useLocalSettings";
 import { useOxigraph } from "./useOxigraph";
-import {CRUDFunctions} from "@slub/edb-core-types";
-import {allegroCrudOptions, oxigraphCrudOptions, qleverCrudOptions} from "@slub/remote-query-implementations";
+import { CRUDFunctions } from "@slub/edb-core-types";
+import {
+  allegroCrudOptions,
+  oxigraphCrudOptions,
+  qleverCrudOptions,
+} from "@slub/remote-query-implementations";
 
 type UseGlobalCRUDOptions = () => {
   crudOptions?: CRUDFunctions;
@@ -45,7 +49,7 @@ const workerProvider: Record<
   <T = Record<string, any>>(
     endpointConfig: SparqlEndpoint,
     options?: T,
-  ) => CRUDFunctions
+  ) => CRUDFunctions | null
 > = {
   oxigraph: oxigraphCrudOptions,
   allegro: allegroCrudOptions,
@@ -53,6 +57,7 @@ const workerProvider: Record<
   qlever: qleverCrudOptions,
   virtuoso: oxigraphCrudOptions,
   blazegraph: oxigraphCrudOptions,
+  rest: null,
 };
 
 const getProviderOrDefault = (endpoint: SparqlEndpoint) =>

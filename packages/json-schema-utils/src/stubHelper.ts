@@ -1,6 +1,6 @@
-import {JSONSchema7, JSONSchema7Definition} from "json-schema";
+import { JSONSchema7, JSONSchema7Definition } from "json-schema";
 import isObject from "lodash/isObject";
-import {defs, getDefintitionKey} from "./jsonSchema";
+import { defs, getDefintitionKey } from "./jsonSchema";
 
 export type GenRequiredPropertiesFunction = (modelName: string) => string[];
 export type GenJSONLDSemanticPropertiesFunction = (
@@ -39,7 +39,7 @@ export const recursivelyFindRefsAndAppendStub: (
   if (options?.excludeField?.includes(field)) {
     return schema;
   }
-  const definitionsKey = getDefintitionKey(rootSchema)
+  const definitionsKey = getDefintitionKey(rootSchema);
   if (schema.$ref) {
     if (
       options?.excludeType?.includes(
@@ -133,6 +133,26 @@ export const definitionsToStubDefinitions = (
     };
   }, {}) as JSONSchema7["definitions"];
 
+export const withJSONLDProperties: (
+  name: string,
+  schema: JSONSchema7,
+  genJSONLDSemanticProperties?: GenJSONLDSemanticPropertiesFunction,
+  requiredProperties?: GenRequiredPropertiesFunction,
+) => JSONSchema7 = (
+  name,
+  schema,
+  genJSONLDSemanticProperties,
+  requiredProperties,
+) =>
+  ({
+    ...schema,
+    properties: {
+      ...schema.properties,
+      ...(genJSONLDSemanticProperties ? genJSONLDSemanticProperties(name) : {}),
+    },
+    required: requiredProperties ? requiredProperties(name) : undefined,
+  }) as JSONSchema7;
+
 export const prepareStubbedSchema = (
   schema: JSONSchema7,
   genJSONLDSemanticProperties?: GenJSONLDSemanticPropertiesFunction,
@@ -140,21 +160,6 @@ export const prepareStubbedSchema = (
   options?: RefAppendOptions,
 ) => {
   const definitionsKey = getDefintitionKey(schema);
-
-  const withJSONLDProperties: (
-    name: string,
-    schema: JSONSchema7,
-  ) => JSONSchema7 = (name: string, schema: JSONSchema7) =>
-    ({
-      ...schema,
-      properties: {
-        ...schema.properties,
-        ...(genJSONLDSemanticProperties
-          ? genJSONLDSemanticProperties(name)
-          : {}),
-      },
-      required: requiredProperties ? requiredProperties(name) : undefined,
-    }) as JSONSchema7;
 
   const stubDefinitions = definitionsToStubDefinitions(defs(schema), options);
   const schemaWithRefStub = recursivelyFindRefsAndAppendStub(
@@ -179,7 +184,12 @@ export const prepareStubbedSchema = (
       ? { ...acc, [key]: value }
       : {
           ...acc,
-          [key]: withJSONLDProperties(key, value as JSONSchema7),
+          [key]: withJSONLDProperties(
+            key,
+            value as JSONSchema7,
+            genJSONLDSemanticProperties,
+            requiredProperties,
+          ),
         };
   }, {}) as JSONSchema7["definitions"];
 

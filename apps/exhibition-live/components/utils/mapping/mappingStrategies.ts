@@ -5,7 +5,11 @@ import customParseFormat from "dayjs/plugin/customParseFormat";
 import { mapByConfig } from "./mapByConfig";
 import isNil from "lodash/isNil";
 import { findEntityWithinLobidByIRI } from "../lobid/findEntityWithinLobid";
-import {declarativeMappings, primaryFields, typeIRItoTypeName} from "../../config";
+import {
+  declarativeMappings,
+  primaryFields,
+  typeIRItoTypeName,
+} from "../../config";
 import set from "lodash/set";
 import get from "lodash/get";
 import { getPaddedDate } from "@slub/edb-core-utils";
@@ -115,10 +119,10 @@ type StatementProperty = {
 };
 
 type AuthorityFieldInformation = {
-  offset: number,
-  authorityIRI?: string
-  authorityLinkPrefix?: string
-}
+  offset: number;
+  authorityIRI?: string;
+  authorityLinkPrefix?: string;
+};
 
 type CreateEntityWithAuthoritativeLink = Strategy & {
   id: "createEntityWithAuthoritativeLink";
@@ -128,9 +132,9 @@ type CreateEntityWithAuthoritativeLink = Strategy & {
     mainProperty: {
       offset?: number;
     };
-    authorityFields: AuthorityFieldInformation[]
-  }
-}
+    authorityFields: AuthorityFieldInformation[];
+  };
+};
 
 /**
  * Creates an entity with an authoritative link
@@ -144,15 +148,14 @@ export const createEntityWithAuthoritativeLink = async (
   sourceData: any,
   _targetData: any,
   options?: CreateEntityWithAuthoritativeLink["options"],
-  context?: StrategyContext
+  context?: StrategyContext,
 ): Promise<any> => {
   if (!context) throw new Error("No context provided");
   const { typeIRI, mainProperty, authorityFields } = options || {};
   if (!Array.isArray(sourceData))
     throw new Error("Source data is not an array");
 
-
-  const amount =  authorityFields.length + 1
+  const amount = authorityFields.length + 1;
   if (sourceData.length % amount !== 0)
     console.warn(
       `Source data length ${sourceData.length} is not a multiple of ${amount}`,
@@ -166,56 +169,64 @@ export const createEntityWithAuthoritativeLink = async (
     groupedSourceData.push(sourceData.slice(i, i + amount));
   }
 
-  console.log(groupedSourceData)
+  console.log(groupedSourceData);
 
-  const { searchEntityByLabel, getPrimaryIRIBySecondaryIRI, authorityIRI,newIRI } = context;
-  const sourceDataArray =  sourceData
+  const {
+    searchEntityByLabel,
+    getPrimaryIRIBySecondaryIRI,
+    authorityIRI,
+    newIRI,
+  } = context;
+  const sourceDataArray = sourceData;
   const newDataElements = [];
   for (const sourceDataGroupElement of groupedSourceData) {
-    const sourceDataElement = sourceDataGroupElement[0]
+    const sourceDataElement = sourceDataGroupElement[0];
     if (authorityFields.length > 1) {
-      console.warn('only one authority field is supported at the moment. Will use the first one.')
+      console.warn(
+        "only one authority field is supported at the moment. Will use the first one.",
+      );
     }
-    const authorityOptions = authorityFields[0]
-    const authIRI = authorityOptions.authorityIRI || authorityIRI
-    const authLinkPrefix = authorityOptions.authorityLinkPrefix || ''
-    const sourceDataAuthority = sourceDataGroupElement[1]
-    const secondaryIRI = typeof sourceDataAuthority === 'string' && sourceDataAuthority.trim().length > 0 ? `${authLinkPrefix}${sourceDataAuthority}` : null
+    const authorityOptions = authorityFields[0];
+    const authIRI = authorityOptions.authorityIRI || authorityIRI;
+    const authLinkPrefix = authorityOptions.authorityLinkPrefix || "";
+    const sourceDataAuthority = sourceDataGroupElement[1];
+    const secondaryIRI =
+      typeof sourceDataAuthority === "string" &&
+      sourceDataAuthority.trim().length > 0
+        ? `${authLinkPrefix}${sourceDataAuthority}`
+        : null;
     const sourceDataLabel = sourceDataElement?.trim();
 
-    let primaryIRI: string | null = null
+    let primaryIRI: string | null = null;
     if (secondaryIRI) {
-      console.log(`will look for ${secondaryIRI} within own database`)
+      console.log(`will look for ${secondaryIRI} within own database`);
       primaryIRI = await getPrimaryIRIBySecondaryIRI(
         secondaryIRI,
         authIRI,
-        typeIRI
-      )
-      if (primaryIRI) {
-        console.log(`found ${secondaryIRI} as ${primaryIRI} within own database`)
-      }
-    } else if (sourceDataLabel) {
-      primaryIRI = await searchEntityByLabel(
-        sourceDataLabel,
         typeIRI,
       );
+      if (primaryIRI) {
+        console.log(
+          `found ${secondaryIRI} as ${primaryIRI} within own database`,
+        );
+      }
+    } else if (sourceDataLabel) {
+      primaryIRI = await searchEntityByLabel(sourceDataLabel, typeIRI);
     }
 
     const typeName = typeIRItoTypeName(typeIRI);
     const primaryField = primaryFields[typeName];
     const labelField = primaryField?.label || "label";
-    let targetData: any = {}
+    let targetData: any = {};
     if (!primaryIRI && secondaryIRI) {
-      console.log('not yet implemented look form id within external database')
+      console.log("not yet implemented look form id within external database");
       //TODO: we will hardcode lobid search here but this should be taken out of the context and linked with properties from options
       const lobidData = await findEntityWithinLobidByIRI(secondaryIRI);
       if (lobidData) {
         const mappingConfig = declarativeMappings[typeName];
         if (!mappingConfig) {
           console.warn(`no mapping config for ${typeName}`);
-
         } else {
-
           try {
             const dataFromGND = await mapByConfig(
               lobidData,
@@ -228,7 +239,7 @@ export const createEntityWithAuthoritativeLink = async (
               "@type": typeIRI,
               lastNormUpdate: new Date().toISOString(),
             };
-            targetData = {...dataFromGND, ...inject}
+            targetData = { ...dataFromGND, ...inject };
           } catch (e) {
             console.error(e);
           }
@@ -249,8 +260,8 @@ export const createEntityWithAuthoritativeLink = async (
       }
     }
   }
-  return  newDataElements
-}
+  return newDataElements;
+};
 
 type CreateEntityWithReificationFromString = Strategy & {
   id: "createEntityWithReificationFromString";
@@ -294,7 +305,10 @@ export const createEntityWithReificationFromString = async (
   for (const sourceDataElements of groupedSourceData) {
     const newData = {};
 
-    const mainSourceDataElement = typeof mainProperty.offset === "number" ? sourceDataElements[mainProperty.offset] : sourceDataElements;
+    const mainSourceDataElement =
+      typeof mainProperty.offset === "number"
+        ? sourceDataElements[mainProperty.offset]
+        : sourceDataElements;
     if (
       typeof mainSourceDataElement !== "string" ||
       mainSourceDataElement.length === 0
@@ -323,14 +337,17 @@ export const createEntityWithReificationFromString = async (
     }
 
     for (const statementProperty of statementProperties) {
-      const sourceDataElement = typeof mainProperty.offset === "number" ? sourceDataElements[mainProperty.offset] : sourceDataElements;
+      const sourceDataElement =
+        typeof mainProperty.offset === "number"
+          ? sourceDataElements[mainProperty.offset]
+          : sourceDataElements;
       if (
         typeof sourceDataElement !== "string" ||
         sourceDataElement.length === 0
       ) {
         continue;
       }
-      const trimmedSourceDataElement = sourceDataElement.trim()
+      const trimmedSourceDataElement = sourceDataElement.trim();
       const strategy = statementProperty.mapping?.strategy;
       if (!strategy) {
         set(newData, statementProperty.property, trimmedSourceDataElement);
@@ -607,8 +624,9 @@ export const dateRangeStringToSpecialInt = (
   if (!data) return null;
   const [start, end] = data.split("-");
   const extractedElement = extractElement === "start" ? start : end;
-  if(!extractedElement) return null
-  if(extractedElement.length === 4) return dayJsDateToSpecialInt(dayjs(extractedElement, "YYYY"), true);
+  if (!extractedElement) return null;
+  if (extractedElement.length === 4)
+    return dayJsDateToSpecialInt(dayjs(extractedElement, "YYYY"), true);
   return dayJsDateToSpecialInt(
     dayjs(extractElement === "start" ? start : end, "DD.MM.YYYY"),
   );

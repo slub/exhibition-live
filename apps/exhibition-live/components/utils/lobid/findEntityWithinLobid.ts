@@ -19,13 +19,13 @@ const lobidSearchURL = "https://lobid.org/gnd/search";
 const lobidURL = "https://lobid.org/gnd/";
 
 const mapTypeName = (typeName: string) => {
-    const gndType =  lobidTypemap[typeName] || typeName;
-    return Array.isArray(gndType) ? gndType : [gndType]
+  const gndType = lobidTypemap[typeName] || typeName;
+  return Array.isArray(gndType) ? gndType : [gndType];
 };
 
 const makeTypeFilter = (gndTypes: string[]) => {
-    return gndTypes.map(gndType => `type:${gndType}`).join(' OR ')
-}
+  return gndTypes.map((gndType) => `type:${gndType}`).join(" OR ");
+};
 const gndIRIToID = (iri: string) => iri.substring(gndBaseIRI.length);
 export const findEntityWithinLobid = async (
   searchString: string,
@@ -39,7 +39,7 @@ export const findEntityWithinLobid = async (
         "?" +
         new URLSearchParams({
           q: searchString,
-          filter: makeTypeFilter( mapTypeName(typeName)),
+          filter: makeTypeFilter(mapTypeName(typeName)),
           size: (limit || 10).toString(),
           format: format || "json",
         }).toString(),

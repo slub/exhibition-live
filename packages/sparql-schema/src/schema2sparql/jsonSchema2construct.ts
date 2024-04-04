@@ -25,11 +25,13 @@ export const jsonSchema2construct: (
   rootSchema: JSONSchema7,
   stopSymbols?: string[],
   excludedProperties?: string[],
+  maxRecursion?: number,
 ) => { whereRequired: string; whereOptionals: string; construct: string } = (
   subjectURI,
   rootSchema,
   stopSymbols = [],
   excludedProperties = [],
+  maxRecursion = MAX_RECURSION,
 ) => {
   let construct = "",
     whereOptionals = "",
@@ -43,7 +45,7 @@ export const jsonSchema2construct: (
     subSchema: JSONSchema7,
     level: number,
   ) => {
-    if (level > MAX_RECURSION) {
+    if (level > maxRecursion) {
       return;
     }
     if (

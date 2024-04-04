@@ -11,7 +11,7 @@ export const makeSPARQLConstructQuery = (
   schema: JSONSchema7,
   options: SPARQLCRUDOptions,
 ) => {
-  const { defaultPrefix, queryBuildOptions } = options;
+  const { defaultPrefix, queryBuildOptions, maxRecursion } = options;
   const subjectV = df.variable("subject");
   const wherePart = makeSPARQLWherePart(entityIRI, typeIRI, subjectV);
   const { construct, whereRequired, whereOptionals } = jsonSchema2construct(
@@ -19,6 +19,7 @@ export const makeSPARQLConstructQuery = (
     schema,
     [],
     ["@id", "@type"],
+    maxRecursion,
   );
   if (wherePart + whereRequired + whereOptionals === "") {
     throw new Error("makeSPARQLConstructQuery:empty WHERE clause");

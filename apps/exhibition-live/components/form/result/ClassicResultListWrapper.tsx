@@ -6,7 +6,7 @@ import {
   Grid,
 } from "@mui/material";
 import { FunctionComponent, useCallback, useState } from "react";
-import {useTranslation} from "next-i18next";
+import { useTranslation } from "next-i18next";
 
 type Props = {
   label?: string;
@@ -43,7 +43,11 @@ const ClassicResultListWrapper: FunctionComponent<Props> = ({
                 mb: "2px",
               }}
               secondary={
-                selected ? (hitCount > 0 ? t("found hits", {count: hitCount})  : t("no hits") ) : t("datasource disabled")
+                selected
+                  ? hitCount > 0
+                    ? t("found hits", { count: hitCount })
+                    : t("no hits")
+                  : t("datasource disabled")
               }
               secondaryTypographyProps={{
                 noWrap: true,

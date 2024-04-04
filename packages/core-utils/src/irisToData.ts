@@ -12,4 +12,3 @@ export const irisToData = (
   ...(entityIRI ? { "@id": entityIRI } : {}),
   ...(typeIRI ? { "@type": typeIRI } : {}),
 });
-

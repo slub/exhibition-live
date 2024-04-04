@@ -1,4 +1,4 @@
-import { List, useControlled } from "@mui/material";
+import { Button, List, useControlled } from "@mui/material";
 import React, {
   FunctionComponent,
   useCallback,
@@ -24,8 +24,10 @@ import {
   extractFieldIfString,
 } from "../../utils/mapping/simpleFieldExtractor";
 import { useQuery } from "@tanstack/react-query";
-import {typeIRItoTypeName} from "../../config";
+import { typeIRItoTypeName } from "../../config";
 import Ajv from "ajv";
+import { useTranslation } from "next-i18next";
+import { BasicThingInformation } from "@slub/edb-core-types";
 
 type Props = {
   searchString: string;
@@ -81,54 +83,56 @@ const defaultPrimaryFields: PrimaryFieldExtract<any> = {
 };
 
 type GNDSuggestResponse = {
-    id: string;
-    label: string;
-    category: string;
-    image?: string;
-}
+  id: string;
+  label: string;
+  category: string;
+  image?: string;
+};
 
-const suggestResponseSchema =   {
-  "$schema": "http://json-schema.org/draft-07/schema#",
-    "type": "object",
-    "properties": {
-        "id": {
-            "type": "string"
-        },
-        "label": {
-            "type": "string"
-        },
-        "category": {
-            "type": "string"
-        },
-        "image": {
-            "type": "string"
-        }
+const suggestResponseSchema = {
+  $schema: "http://json-schema.org/draft-07/schema#",
+  type: "object",
+  properties: {
+    id: {
+      type: "string",
     },
-    "required": [ "id", "label", "category" ]
-}
+    label: {
+      type: "string",
+    },
+    category: {
+      type: "string",
+    },
+    image: {
+      type: "string",
+    },
+  },
+  required: ["id", "label", "category"],
+};
 
-export const gndEntryFromSuggestion = (allProps: any) => {
+export const gndEntryFromSuggestion: (
+  allProps: any,
+) => null | BasicThingInformation = (allProps: any) => {
   const ajv = new Ajv();
-  if(!ajv.validate(suggestResponseSchema, allProps)) {
-    console.error("Invalid GND Suggestion Response", allProps)
+  if (!ajv.validate(suggestResponseSchema, allProps)) {
+    console.error("Invalid GND Suggestion Response", allProps);
     return null;
   }
-  const {id, label, category, image}: GNDSuggestResponse = allProps;
+  const { id, label, category, image }: GNDSuggestResponse = allProps;
   const labelParts = label.split(" | ");
   const [primary, ...secondary] = labelParts;
 
-
-  //return dummy data
   return {
     id,
     label: primary,
     secondary: secondary.join(" | "),
+    category,
     avatar: image,
-    allProps: {}
-  }
-
-}
-export const gndEntryWithMainInfo: (allProps: any) => { secondary: string; allProps: any; id: any; label: string; avatar: string } = (allProps: any) => {
+    allProps,
+  };
+};
+export const gndEntryWithMainInfo: (allProps: any) => BasicThingInformation = (
+  allProps: any,
+) => {
   const { id, type } = allProps;
   const primaryFieldDeclaration =
     getFirstMatchingFieldDeclaration(type, gndPrimaryFields) ||
@@ -154,6 +158,7 @@ const LobidSearchTable: FunctionComponent<Props> = ({
   onAcceptItem,
   selectedId: selectedIdProp,
 }) => {
+  const { t } = useTranslation();
   const [resultTable, setResultTable] = useState<LobIDEntry[] | undefined>();
   const [selectedId, setSelectedId] = useControlled<string | undefined>({
     name: "selectedId",
@@ -165,9 +170,13 @@ const LobidSearchTable: FunctionComponent<Props> = ({
   const fetchData = useCallback(async () => {
     if (!searchString || searchString.length < 1) return;
     setResultTable(
-      (await findEntityWithinLobid(searchString, typeIRItoTypeName(typeIRI), 10))?.member?.map(
-        (allProps: any) => gndEntryWithMainInfo(allProps),
-      ),
+      (
+        await findEntityWithinLobid(
+          searchString,
+          typeIRItoTypeName(typeIRI),
+          10,
+        )
+      )?.member?.map((allProps: any) => gndEntryWithMainInfo(allProps)),
     );
   }, [searchString, typeIRI]);
 
@@ -198,53 +207,64 @@ const LobidSearchTable: FunctionComponent<Props> = ({
 
   return (
     <>
-        <List>
-          {// @ts-ignore
-          resultTable?.map((data, idx) => {
-            const { id, label, avatar, secondary } = data
-            return (
-              <ClassicResultListItem
-                key={id}
-                id={id}
-                index={idx}
-                onSelected={handleSelect}
-                label={label}
-                secondary={secondary}
-                avatar={avatar}
-                altAvatar={String(idx + 1)}
-                popperChildren={
-                  <ClassicEntityCard
-                    sx={{
-                      maxWidth: "30em",
-                      maxHeight: "80vh",
-                      overflow: "auto",
-                    }}
-                    id={id}
-                    data={data}
-                    onBack={() => handleSelect(undefined)}
-                    onAcceptItem={(id) => onAcceptItem && onAcceptItem(id, selectedEntry)}
-                    acceptTitle={"Eintrag übernehmen"}
-                    detailView={
-                      <>
-                        <LobidAllPropTable
-                          allProps={data.allProps}
-                          onEntityChange={handleSelect}
-                        />
-                        {(data.allProps?.sameAs || [])
-                          .filter(({ id }) =>
-                            id.startsWith("http://www.wikidata.org/entity/"),
-                          )
-                          .map(({ id }) => (
-                            <WikidataAllPropTable key={id} thingIRI={id} />
-                          ))}
-                      </>
-                    }
-                  />
-                }
-              />
-            );
-          })}
-        </List>
+      <List>
+        {// @ts-ignore
+        resultTable?.map((data, idx) => {
+          const { id, label, avatar, secondary } = data;
+          return (
+            <ClassicResultListItem
+              key={id}
+              id={id}
+              index={idx}
+              onSelected={handleSelect}
+              label={label}
+              secondary={secondary}
+              avatar={avatar}
+              altAvatar={String(idx + 1)}
+              popperChildren={
+                <ClassicEntityCard
+                  sx={{
+                    maxWidth: "30em",
+                    maxHeight: "80vh",
+                    overflow: "auto",
+                  }}
+                  id={id}
+                  data={data}
+                  onBack={() => handleSelect(undefined)}
+                  cardActionChildren={
+                    <Button
+                      size="small"
+                      color="primary"
+                      variant="contained"
+                      disabled={!onAcceptItem || !selectedEntry}
+                      onClick={() =>
+                        onAcceptItem && onAcceptItem(id, selectedEntry)
+                      }
+                    >
+                      {t("accept entity")}
+                    </Button>
+                  }
+                  detailView={
+                    <>
+                      <LobidAllPropTable
+                        allProps={data.allProps}
+                        onEntityChange={handleSelect}
+                      />
+                      {(data.allProps?.sameAs || [])
+                        .filter(({ id }) =>
+                          id.startsWith("http://www.wikidata.org/entity/"),
+                        )
+                        .map(({ id }) => (
+                          <WikidataAllPropTable key={id} thingIRI={id} />
+                        ))}
+                    </>
+                  }
+                />
+              }
+            />
+          );
+        })}
+      </List>
     </>
   );
 };

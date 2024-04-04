@@ -6,7 +6,7 @@
  */
 export const leftpad = (number: number, length: number, char: string = "0") => {
   let str = number.toString();
-  if(char.length > length)
+  if (char.length > length)
     throw new Error(`Char ${char} is too long for length ${length}`);
   if (str.length > length)
     throw new Error(`Number ${number} is too long for length ${length}`);

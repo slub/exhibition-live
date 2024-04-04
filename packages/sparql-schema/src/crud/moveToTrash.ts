@@ -1,6 +1,6 @@
 import { JSONSchema7 } from "json-schema";
 import { makeSPARQLToTrashQuery } from "./makeSPARQLToTrashQuery";
-import {SPARQLCRUDOptions} from "@slub/edb-core-types";
+import { SPARQLCRUDOptions } from "@slub/edb-core-types";
 
 export const moveToTrash = async (
   entityIRI: string | string[],

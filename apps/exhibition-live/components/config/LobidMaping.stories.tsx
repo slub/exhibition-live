@@ -14,7 +14,7 @@ import { useGlobalCRUDOptions } from "../state/useGlobalCRUDOptions";
 import { JsonView } from "react-json-view-lite";
 import { Grid, List, TextField } from "@mui/material";
 import ClassicResultListItem from "../form/result/ClassicResultListItem";
-import {sladb} from "../form/formConfigs";
+import { sladb } from "../form/formConfigs";
 
 export default {
   title: "forms/mapping/LobidMapping",

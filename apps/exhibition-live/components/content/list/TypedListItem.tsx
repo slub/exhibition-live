@@ -1,5 +1,9 @@
 import React, { FunctionComponent, useCallback, useMemo } from "react";
-import {primaryFieldExtracts, primaryFields, typeIRItoTypeName} from "../../config";
+import {
+  primaryFieldExtracts,
+  primaryFields,
+  typeIRItoTypeName,
+} from "../../config";
 import {
   applyToEachField,
   extractFieldIfString,
@@ -13,7 +17,7 @@ import {
 } from "@mui/material";
 import NiceModal from "@ebay/nice-modal-react";
 import { EntityDetailModal } from "../../form/show/EntityDetailModal";
-import {useRootFormContext} from "../../provider";
+import { useRootFormContext } from "../../provider";
 
 interface OwnProps {
   index: number;
@@ -23,7 +27,11 @@ interface OwnProps {
 
 type Props = OwnProps;
 
-const TypedListItem: FunctionComponent<Props> = ({ index, data, disableLoad }) => {
+const TypedListItem: FunctionComponent<Props> = ({
+  index,
+  data,
+  disableLoad,
+}) => {
   const typeIRI = data["@type"] as string;
   const entityIRI = data["@id"] as string;
   const typeName = typeIRItoTypeName(typeIRI);
@@ -35,9 +43,15 @@ const TypedListItem: FunctionComponent<Props> = ({ index, data, disableLoad }) =
     [data, primaryFieldDesc],
   );
 
-  const { isWithinRootForm } = useRootFormContext()
+  const { isWithinRootForm } = useRootFormContext();
   const showDetailModal = useCallback(() => {
-    NiceModal.show(EntityDetailModal, { typeIRI, entityIRI, data, disableLoad, inlineEditing: isWithinRootForm });
+    NiceModal.show(EntityDetailModal, {
+      typeIRI,
+      entityIRI,
+      data,
+      disableLoad,
+      inlineEditing: isWithinRootForm,
+    });
   }, [typeIRI, entityIRI, data, disableLoad, isWithinRootForm]);
 
   return (

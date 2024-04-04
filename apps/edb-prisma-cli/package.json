@@ -1,0 +1,44 @@
+{
+  "name": "@slub/edb-prisma-cli",
+  "description": "Client tools to interact with EDB and prisma orm schemata from the command line",
+  "version": "1.1.0",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start": "tsx src/index.ts",
+    "dev": "tsx watch src/index.ts",
+    "model:format": "prisma format",
+    "prisma:init": "prisma init --datasource-provider postgresql",
+    "prisma:migrate": "prisma migrate dev --name init",
+    "start:debug": "node --inspect  --loader tsx 'src/index.ts'"
+  },
+  "keywords": [],
+  "author": "Sebastian Tilsch <sebastian.tilsch@slub-dresden.de>",
+  "license": "MIT",
+  "devDependencies": {
+    "@slub/edb-tsconfig": "workspace:*",
+    "@slub/edb-global-types": "workspace:*",
+    "@tsconfig/node18": "^18.2.2",
+    "@types/cli-progress": "^3",
+    "tsx": "^4.7.1",
+    "typescript": "^5.4.2"
+  },
+  "dependencies": {
+    "@rdfjs/data-model": "^2.0.2",
+    "@rdfjs/namespace": "^2.0.1",
+    "@slub/exhibition-schema": "workspace:*",
+    "@slub/edb-core-utils": "workspace:*",
+    "@slub/edb-graph-traversal": "workspace:*",
+    "@slub/json-schema-utils": "workspace:*",
+    "@slub/json-schema-prisma-utils": "workspace:*",
+    "@slub/remote-query-implementations": "workspace:*",
+    "@slub/sparql-schema": "workspace:*",
+    "@tpluscode/sparql-builder": "^0.3.31",
+    "cmd-ts": "^0.13.0",
+    "json-schema": "^0.4.0",
+    "@prisma/client": "^5.11.0",
+    "uuid": "^9.0.1",
+    "lodash": "^4.17.21",
+    "cli-progress": "^3"
+  }
+}

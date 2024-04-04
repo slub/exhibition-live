@@ -14,18 +14,20 @@ import DiscoverAutocompleteInput from "../form/discover/DiscoverAutocompleteInpu
 import { useCallback, useMemo } from "react";
 import { JsonSchema7 } from "@jsonforms/core";
 import { slent } from "../form/formConfigs";
-import {BASE_IRI, primaryFields, typeIRItoTypeName} from "../config";
+import { BASE_IRI, primaryFields, typeIRItoTypeName } from "../config";
 import { memo } from "./config";
 import {
-    useGlobalSearchWithHelper, useKeyEventForSimilarityFinder,
-    useRightDrawerState,
+  useGlobalSearchWithHelper,
+  useKeyEventForSimilarityFinder,
+  useRightDrawerState,
+  useSimilarityFinderState,
 } from "../state";
 import { SearchbarWithFloatingButton } from "../layout/main-layout/Searchbar";
 import SimilarityFinder from "../form/SimilarityFinder";
 import { JSONSchema7 } from "json-schema";
 import { AutocompleteSuggestion } from "../form/DebouncedAutoComplete";
 import { NoteAdd } from "@mui/icons-material";
-import {PrimaryField} from "../utils/types";
+import { PrimaryField } from "../utils/types";
 
 export interface ArrayLayoutToolbarProps {
   label: string;
@@ -43,7 +45,7 @@ export interface ArrayLayoutToolbarProps {
 }
 
 const getDefaultLabelKey = (typeIRI?: string) => {
-  const typeName = typeIRItoTypeName(typeIRI)
+  const typeName = typeIRItoTypeName(typeIRI);
   const fieldDefinitions = primaryFields[typeName] as PrimaryField | undefined;
   return fieldDefinitions?.label || "title";
 };
@@ -102,11 +104,13 @@ export const ArrayLayoutToolbar = memo(
 
     const handleExistingEntityAccepted = useCallback(
       (iri: string, data: any) => {
+        console.log("onExistingEntityAccepted", { iri, data });
         const label = data[getDefaultLabelKey(typeIRI)] || data.label || iri;
-        handleSelectedChange({ value: iri, label });
+        //handleSelectedChange({ value: iri, label });
+        addItem(path, data)();
         inputRef.current?.focus();
       },
-      [handleSelectedChange, typeIRI],
+      [addItem, typeIRI],
     );
 
     const handleMappedDataAccepted = useCallback(

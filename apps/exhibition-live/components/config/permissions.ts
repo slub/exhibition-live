@@ -36,5 +36,5 @@ export const editorPermissions: Partial<ExhibitionPermissionDeclaration> = {
   Place: fullPermission,
   Location: fullPermission,
   ExhibitionSeries: fullPermission,
-  Resource: fullPermission
+  Resource: fullPermission,
 };

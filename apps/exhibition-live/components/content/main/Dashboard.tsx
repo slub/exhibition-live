@@ -144,7 +144,7 @@ export const Dashboard = (props) => {
       }}
     >
       <Box sx={{ marginBottom: "4rem", marginTop: "1em" }}>
-        <HeaderTitle>{t('database_name')}</HeaderTitle>
+        <HeaderTitle>{t("database_name")}</HeaderTitle>
       </Box>
       <Grid2
         container

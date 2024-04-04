@@ -1,13 +1,14 @@
 import {
-    Box, IconButton,
-    Paper,
-    Popper as MuiPopper,
-    PopperProps,
-    styled,
+  Box,
+  IconButton,
+  Paper,
+  Popper as MuiPopper,
+  PopperProps,
+  styled,
 } from "@mui/material";
 import { FunctionComponent } from "react";
 import * as React from "react";
-import {Close} from "@mui/icons-material";
+import { Close } from "@mui/icons-material";
 
 const Arrow = styled("div")({
   position: "absolute",
@@ -100,9 +101,10 @@ const Popper = styled(MuiPopper, {
 });
 
 export const ClassicResultPopperItem: FunctionComponent<
-  { children: React.ReactNode,
-      onClose?: () => void,
-    popperRef?: React.MutableRefObject<HTMLDivElement | null>
+  {
+    children: React.ReactNode;
+    onClose?: () => void;
+    popperRef?: React.MutableRefObject<HTMLDivElement | null>;
   } & PopperProps
 > = ({ children, popperRef, onClose, ...rest }) => {
   const [arrowRef, setArrowRef] = React.useState<HTMLElement>(null);
@@ -132,14 +134,17 @@ export const ClassicResultPopperItem: FunctionComponent<
           },
         ]}
       >
-        <Box ref={popperRef} >
-            <IconButton onClick={onClose} sx={{
-                position: "absolute",
-                top: 5,
-                right: 15,
-            }}>
-                <Close/>
-            </IconButton>
+        <Box ref={popperRef}>
+          <IconButton
+            onClick={onClose}
+            sx={{
+              position: "absolute",
+              top: 5,
+              right: 15,
+            }}
+          >
+            <Close />
+          </IconButton>
           <Arrow ref={setArrowRef} className="MuiPopper-arrow" />
           <Paper sx={{ p: 2, m: 2, paddingTop: 4 }} elevation={2}>
             {children}

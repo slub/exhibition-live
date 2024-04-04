@@ -3,7 +3,7 @@ import { useMemo } from "react";
 
 import schema from "../../public/schema/Exhibition.schema.json";
 import genSlubJSONLDSemanticProperties from "../form/genSlubJSONLDSemanticProperties";
-import {prepareStubbedSchema} from "@slub/json-schema-utils";
+import { prepareStubbedSchema } from "@slub/json-schema-utils";
 
 type UseExtendedSchemaProps = {
   typeName: string;

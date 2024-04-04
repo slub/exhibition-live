@@ -1,18 +1,25 @@
 import df from "@rdfjs/data-model";
 import { SELECT } from "@tpluscode/sparql-builder";
-import {QueryOptions} from "@slub/edb-core-types";
+import { QueryOptions } from "@slub/edb-core-types";
 
-
-export const fixSparqlOrder: (sparqlQuery: string) => string = sparqlQuery => {
+export const fixSparqlOrder: (sparqlQuery: string) => string = (
+  sparqlQuery,
+) => {
   const regex = /(ORDER BY\s+[^ ]+)(\s*)GROUP BY\s+\(([^\)]+)\)/gm;
   return sparqlQuery.replace(regex, "GROUP BY $3 $2\n$1");
 };
-export const findEntityByClass: (searchString: (string | null), typeIRI: string, doQuery: (query: string) => Promise<any>, limit: number, options: QueryOptions) => Promise<any> = async (
+export const findEntityByClass: (
   searchString: string | null,
   typeIRI: string,
   doQuery: (query: string) => Promise<any>,
-  limit: number,
-  options
+  options: QueryOptions,
+  limit?: number,
+) => Promise<any> = async (
+  searchString: string | null,
+  typeIRI: string,
+  doQuery: (query: string) => Promise<any>,
+  options,
+  limit?: number,
 ) => {
   const { queryBuildOptions, defaultPrefix } = options;
   const subjectV = df.variable("subject"),
@@ -44,12 +51,6 @@ export const findEntityByClass: (searchString: (string | null), typeIRI: string,
             FILTER isIRI(${subjectV})
             FILTER (strlen(${oneOfTitleV}) > 0)
         `
-          .LIMIT(limit)
-          .GROUP()
-          .BY(subjectV)
-          .ORDER()
-          .BY(firstOneOfTitleV)
-          .build(queryBuildOptions)
       : SELECT.DISTINCT` ${subjectV} (SAMPLE(${oneOfTitleV}) AS ${firstOneOfTitleV})`
           .WHERE`
           ${subjectV} a <${typeIRI}> .
@@ -59,18 +60,14 @@ export const findEntityByClass: (searchString: (string | null), typeIRI: string,
             BIND (COALESCE(${nameV}, ${titleV}, ${descriptionV}, "") AS ${oneOfTitleV})
             FILTER isIRI(${subjectV})
             FILTER (strlen(${oneOfTitleV}) > 0)
-        `
-          .LIMIT(limit)
-          .GROUP()
-          .BY(subjectV)
-          .ORDER()
-          .BY(firstOneOfTitleV)
-          .build(queryBuildOptions);
-  query = `PREFIX : <${defaultPrefix}>
-          ${fixSparqlOrder(query)}
+        `;
+  if (typeof limit === "number") query = query.LIMIT(limit);
+  query = query.GROUP().BY(subjectV).ORDER().BY(firstOneOfTitleV);
+  const queryString = `PREFIX : <${defaultPrefix}>
+          ${fixSparqlOrder(query.build(queryBuildOptions))}
           `;
   try {
-    const bindings = await doQuery(query);
+    const bindings = await doQuery(queryString);
     return bindings.map((binding: any) => ({
       name: binding[firstOneOfTitleV.value]?.value,
       value: binding[subjectV.value]?.value,

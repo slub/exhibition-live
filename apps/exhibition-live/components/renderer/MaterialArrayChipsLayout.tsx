@@ -8,7 +8,7 @@ import {
   Resolve,
 } from "@jsonforms/core";
 import merge from "lodash/merge";
-import React, {useCallback, useEffect, useMemo, useState} from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 
 import { ArrayLayoutToolbar } from "./ArrayToolbar";
 import { useJsonForms } from "@jsonforms/react";
@@ -18,11 +18,7 @@ import { SemanticFormsModal } from "./SemanticFormsModal";
 import { BASE_IRI } from "../config";
 import { irisToData, makeFormsPath } from "../utils/core";
 import { JSONSchema7 } from "json-schema";
-import {
-  defaultJsonldContext,
-  defaultPrefix,
-  slent,
-} from "../form/formConfigs";
+import { defaultJsonldContext, slent } from "../form/formConfigs";
 import { v4 as uuidv4 } from "uuid";
 import { Box, Grid, IconButton, List, Stack } from "@mui/material";
 import { SemanticFormsInline } from "./SemanticFormsInline";
@@ -31,7 +27,7 @@ import { useGlobalCRUDOptions } from "../state/useGlobalCRUDOptions";
 import { useCRUDWithQueryClient } from "../state/useCRUDWithQueryClient";
 import { useSnackbar } from "notistack";
 import { SimpleChipRenderer } from "./SimpleChipRenderer";
-import {bringDefinitionToTop} from "@slub/json-schema-utils";
+import { bringDefinitionToTop } from "@slub/json-schema-utils";
 
 type OwnProps = {
   removeItems(path: string, toDelete: number[]): () => void;
@@ -81,9 +77,6 @@ const MaterialArrayChipsLayoutComponent = (props: ArrayLayoutProps & {}) => {
     entityIRI,
     typeIRI,
     subSchema as JSONSchema7,
-    defaultPrefix,
-    crudOptions,
-    defaultJsonldContext,
     { enabled: false },
   );
 
@@ -126,8 +119,8 @@ const MaterialArrayChipsLayoutComponent = (props: ArrayLayoutProps & {}) => {
   );
 
   useEffect(() => {
-    setFormData( irisToData(slent(uuidv4()).value, typeIRI))
-  }, [formsPath, typeIRI,setFormData]);
+    setFormData(irisToData(slent(uuidv4()).value, typeIRI));
+  }, [formsPath, typeIRI, setFormData]);
 
   return (
     <Box

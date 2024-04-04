@@ -1,6 +1,6 @@
 {
   "name": "@slub/remote-query-implementations",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "a set of store specific implementations of SPARQL query builders",
   "type": "module",
   "main": "./dist/index.cjs",

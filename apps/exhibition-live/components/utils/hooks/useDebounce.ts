@@ -1,5 +1,5 @@
-import {useCallback} from "react";
-import {debounce} from "lodash";
+import { useCallback } from "react";
+import { debounce } from "lodash";
 
 export const useDebounce = (
   fnToDebounce: (...args: any) => any,

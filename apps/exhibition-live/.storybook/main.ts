@@ -1,37 +1,36 @@
-import {StorybookConfig} from "@storybook/nextjs";
+import { StorybookConfig } from "@storybook/nextjs";
 
 const config: StorybookConfig = {
-  "stories": [
+  stories: [
     "../components/**/*.mdx",
     "../components/**/*.stories.@(js|jsx|ts|tsx)",
   ],
 
-  "addons": [
+  addons: [
     "@storybook/addon-docs",
     "@storybook/addon-links",
     "@storybook/addon-essentials",
   ],
-  staticDirs: ['../public'],
+  staticDirs: ["../public"],
 
-  "framework": {
+  framework: {
     name: "@storybook/nextjs",
-    options: {}
+    options: {},
   },
   docs: {
-    autodocs: true
+    autodocs: true,
   },
   webpackFinal: async (config) => {
-    config.module.rules.push(
+    config.module.rules.push({
+      test: /\.(nq|ttl)$/i,
+      use: [
         {
-          test: /\.(nq|ttl)$/i,
-          use: [
-            {
-              loader: 'file-loader',
-            },
-          ],
-        })
+          loader: "file-loader",
+        },
+      ],
+    });
     return config;
-  }
+  },
   /*
   webpackFinal: async (config) => {
     // Remove existing mdx rule if any (but should be none)
@@ -44,6 +43,6 @@ const config: StorybookConfig = {
 
     return config
   },*/
-}
+};
 
 export default config;

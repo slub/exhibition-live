@@ -1,6 +1,6 @@
 import { AsyncOxigraph } from "async-oxigraph";
 import { create } from "zustand";
-import {PUBLIC_BASE_PATH} from "../config";
+import { PUBLIC_BASE_PATH } from "../config";
 
 const initAsyncOxigraph = async function () {
   const ao = new AsyncOxigraph(PUBLIC_BASE_PATH + "/worker.js");

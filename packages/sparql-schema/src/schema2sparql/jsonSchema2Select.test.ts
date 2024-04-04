@@ -69,7 +69,7 @@ describe("make select query", () => {
     //trim whitespace on each line
     const strippedQuery = query.replace(/^\s+|\s+$/gm, "");
     expect(strippedQuery).toEqual(
-      "SELECT DISTINCT ?entity  (SAMPLE(?name) AS ?name_single)  (COUNT(DISTINCT ?knows) AS ?knows_count)  (SAMPLE(?father_name) AS ?father_name_single)  (SAMPLE(?father_description) AS ?father_description_single)  WHERE {\n?entity a <http://example.com/person> .\n?entity :name ?name .  OPTIONAL {  ?entity :knows ?knows .\n}  ?entity :father ?father .\nOPTIONAL {  ?father :name ?father_name .  }  OPTIONAL {  ?father :description ?father_description .  }\n}\nGROUP BY ?entity"
+      "SELECT DISTINCT ?entity  (SAMPLE(?name) AS ?name_single)  (COUNT(DISTINCT ?knows) AS ?knows_count)  (SAMPLE(?father_name) AS ?father_name_single)  (SAMPLE(?father_description) AS ?father_description_single)  WHERE {\n?entity a <http://example.com/person> .\n?entity :name ?name .  OPTIONAL {  ?entity :knows ?knows .\n}  ?entity :father ?father .\nOPTIONAL {  ?father :name ?father_name .  }  OPTIONAL {  ?father :description ?father_description .  }\n}\nGROUP BY ?entity",
     );
   });
 });

@@ -1,12 +1,12 @@
 {
   "name": "@slub/edb-api",
   "description": "Simple API to interact with EDB",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "type": "module",
   "main": "index.js",
   "scripts": {
     "start": "tsx src/index.ts",
-    "start-graphiql": "docker run --name graphiql -p 4000:4000 -e API_URL=http://localhost:3001/graphql npalm/graphiql",
+    "start:graphiql": "docker run --name graphiql --rm -p 4000:4000 -e API_URL=http://localhost:3001/graphql npalm/graphiql",
     "dev": "tsx watch src/index.ts",
     "start:debug": "node --inspect  --loader tsx 'src/index.ts'"
   },
@@ -29,6 +29,8 @@
     "@rdfjs/data-model": "^2.0.2",
     "@rdfjs/namespace": "^2.0.1",
     "@slub/exhibition-schema": "workspace:*",
+    "@slub/exhibition-sparql-config": "workspace:*",
+    "@slub/sparql-db-impl": "workspace:*",
     "@slub/edb-core-utils": "workspace:*",
     "@slub/edb-graph-traversal": "workspace:*",
     "@slub/remote-query-implementations": "workspace:*",

@@ -210,7 +210,7 @@ const InlineTextFieldRenderer = (props: ControlProps) => {
   );
 
   const newURI = useCallback(() => {
-    const prefix = schema.title || slent[""].value;
+    const prefix = slent[""].value;
     const iri = `${prefix}${uuidv4()}`;
     const fieldDecl = primaryFields[typeName] as PrimaryField | undefined;
     const labelKey = fieldDecl?.label || "title";

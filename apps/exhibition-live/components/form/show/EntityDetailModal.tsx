@@ -23,6 +23,8 @@ import { PrimaryFieldResults } from "../../utils/types";
 import { EntityDetailCard } from "./EntityDetailCard";
 import { useTypeIRIFromEntity } from "../../state";
 import { useTranslation } from "next-i18next";
+import { filterUndefOrNull } from "@slub/edb-core-utils";
+import { PrimaryField } from "@slub/edb-core-types";
 
 type EntityDetailModalProps = {
   typeIRI: string | undefined;
@@ -80,6 +82,15 @@ export const EntityDetailModal = NiceModal.create(
       setTimeout(() => modal.remove(), 500);
     }, [modal, setAboutToRemove, aboutToRemove]);
 
+    const fieldDeclaration = useMemo(
+      () => primaryFields[typeName] as PrimaryField,
+      [typeName],
+    );
+    const disabledProperties = useMemo(
+      () => filterUndefOrNull(Object.values(fieldDeclaration || {})),
+      [fieldDeclaration],
+    );
+
     return (
       <Dialog
         open={modal.visible}
@@ -119,6 +130,7 @@ export const EntityDetailModal = NiceModal.create(
             inlineEditing={inlineEditing}
             readonly={readonly}
             onEditClicked={removeSlowly}
+            tableProps={{ disabledProperties }}
           />
         </DialogContent>
         <DialogActions>

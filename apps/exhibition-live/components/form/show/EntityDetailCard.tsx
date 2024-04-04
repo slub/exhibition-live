@@ -75,6 +75,20 @@ export const EntityDetailCard: FunctionComponent<EntityDetailCardProps> = ({
           entityIRI={entityIRI}
           cardInfo={cardInfo}
           data={data}
+          cardActionChildren={
+            typeof cardActionChildren !== "undefined"
+              ? cardActionChildren
+              : !readonly && (
+                  <Button
+                    size="small"
+                    color="primary"
+                    variant={"outlined"}
+                    onClick={editEntry}
+                  >
+                    {inlineEditing ? t("edit inline") : t("edit")}
+                  </Button>
+                )
+          }
         />
       ) : (
         <Card>

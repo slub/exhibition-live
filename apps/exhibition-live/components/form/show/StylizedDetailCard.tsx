@@ -1,8 +1,9 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { Box, styled, Typography } from "@mui/material";
+import { Box, Fab, styled, Typography } from "@mui/material";
 import { EntityDetailCardProps } from "./EntityDetailCardProps";
 import ColorThief from "color-thief-ts";
 import MarkdownContent from "./MarkdownContentNoSSR";
+import { ArrowLeft, ArrowRight } from "@mui/icons-material";
 
 type ColorArray = [number, number, number];
 
@@ -65,6 +66,12 @@ const StyledAnimatedCard = styled(Box)<StyledCardProps>(
       transition: "0.3s ease-in-out 0.2s",
       textAlign: "left",
       zIndex: 1,
+    },
+    "& .card-action": {
+      display: "flex",
+      justifyContent: "flex-start",
+      alignItems: "center",
+      padding: "0.5rem",
     },
     "& .image-content": {
       position: "absolute",
@@ -164,7 +171,10 @@ const StyledAnimatedCard = styled(Box)<StyledCardProps>(
   }),
 );
 
-export const StylizedDetailCard = ({ cardInfo }: EntityDetailCardProps) => {
+export const StylizedDetailCard = ({
+  cardInfo,
+  cardActionChildren,
+}: EntityDetailCardProps) => {
   const imgRef = useRef<HTMLImageElement>();
   const [activated, setActivated] = useState(false);
   const [colorPalette, setColorPalette] = useState([]);
@@ -194,11 +204,16 @@ export const StylizedDetailCard = ({ cardInfo }: EntityDetailCardProps) => {
     }
   }, [cardInfo.image, setColorPalette]);
   return (
-    <StyledAnimatedCard
-      palette={colorPalette}
-      onClick={() => setActivated((prev) => !prev)}
-    >
+    <StyledAnimatedCard palette={colorPalette}>
       <div className={`wrap animate pop ${activated ? "active" : ""}`}>
+        <Fab
+          color="primary"
+          aria-label="detail"
+          sx={{ position: "absolute", right: 30 }}
+          onClick={() => setActivated((a) => !a)}
+        >
+          {activated ? <ArrowRight /> : <ArrowLeft />}
+        </Fab>
         <div className="overlay">
           <div className="overlay-content animate slide-left delay-2">
             <h1 className="animate slide-left pop delay-4 heading">
@@ -234,6 +249,7 @@ export const StylizedDetailCard = ({ cardInfo }: EntityDetailCardProps) => {
           {<MarkdownContent mdDocument={cardInfo.description} />}
         </div>
       </div>
+      <div className="card-action">{cardActionChildren}</div>
     </StyledAnimatedCard>
   );
 };

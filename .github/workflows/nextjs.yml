@@ -24,10 +24,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v1
       - name: Setup Node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
       - uses: actions/cache@v4
         with:
           path: ~/.bun/install/cache
@@ -35,7 +37,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-${{ matrix.bun }}-bun-
       - name: Setup Pages
-        uses: actions/configure-pages@v2
+        uses: actions/configure-pages@v3
         with:
           # Automatically inject basePath in your Next.js configuration file and disable
           # server side image optimization (https://nextjs.org/docs/api-reference/next/image#unoptimized).

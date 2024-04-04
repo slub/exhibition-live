@@ -1,6 +1,6 @@
 {
   "name": "@slub/prisma-db-impl",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "a set of store specific implementations of PRISMA query builders",
   "type": "module",
   "module": "./dist/index.js",

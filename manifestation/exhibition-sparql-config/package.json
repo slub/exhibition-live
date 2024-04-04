@@ -1,7 +1,7 @@
 {
   "name": "@slub/exhibition-sparql-config",
   "description": "Semantic Namespace and SPARQL endpoint configuration for the SLUB exhibitions project",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",

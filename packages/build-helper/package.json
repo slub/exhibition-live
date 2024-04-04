@@ -1,12 +1,12 @@
 {
   "name": "@slub/edb-build-helper",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "private": true,
   "license": "MIT",
   "publishConfig": {
     "access": "public"
   },
   "bin": {
-    "make-package-json":  "./make-package-json.js"
+    "make-package-json": "./make-package-json.js"
   }
 }

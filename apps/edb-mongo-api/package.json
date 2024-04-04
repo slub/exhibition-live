@@ -1,7 +1,7 @@
 {
   "name": "@slub/edb-mongo-api",
   "description": "Simple API to interact with EDB on MongoDB",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "type": "module",
   "main": "index.js",
   "scripts": {
@@ -38,7 +38,7 @@
     "@slub/sparql-schema": "workspace:*",
     "@slub/json-schema-utils": "workspace:*",
     "@tpluscode/sparql-builder": "^0.3.31",
-    "@sinclair/typebox":  "^0.32.20",
+    "@sinclair/typebox": "^0.32.20",
     "cmd-ts": "^0.13.0",
     "elysia": "^1.0.10",
     "graphql": "^16.8.1",

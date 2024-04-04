@@ -1,0 +1,37 @@
+{
+  "name": "@slub/edb-solr-cli",
+  "description": "Client tools to interact with EDB and Solr from the command line",
+  "version": "1.1.0",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start": "tsx src/index.ts",
+    "dev": "tsx watch src/index.ts",
+    "start:debug": "node --inspect  --loader tsx 'src/index.ts'"
+  },
+  "keywords": [],
+  "author": "Sebastian Tilsch <sebastian.tilsch@slub-dresden.de>",
+  "license": "MIT",
+  "devDependencies": {
+    "@slub/edb-tsconfig": "workspace:*",
+    "@slub/edb-global-types": "workspace:*",
+    "@tsconfig/node18": "^18.2.2",
+    "tsx": "^4.7.1",
+    "typescript": "^5.4.2"
+  },
+  "dependencies": {
+    "@rdfjs/data-model": "^2.0.2",
+    "@rdfjs/namespace": "^2.0.1",
+    "@slub/sparql-db-impl": "workspace:*",
+    "@slub/exhibition-sparql-config": "workspace:*",
+    "@slub/exhibition-schema": "workspace:*",
+    "@slub/edb-core-utils": "workspace:*",
+    "@slub/edb-graph-traversal": "workspace:*",
+    "@slub/remote-query-implementations": "workspace:*",
+    "@slub/sparql-schema": "workspace:*",
+    "@tpluscode/sparql-builder": "^0.3.31",
+    "node-fetch": "^3.3.2",
+    "lodash": "^4.17.21",
+    "cmd-ts": "^0.13.0"
+  }
+}

@@ -1,9 +1,9 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Box, Fab, styled, Typography } from "@mui/material";
 import { EntityDetailCardProps } from "./EntityDetailCardProps";
-import ColorThief from "color-thief-ts";
 import MarkdownContent from "./MarkdownContentNoSSR";
 import { ArrowLeft, ArrowRight } from "@mui/icons-material";
+import {useQuery} from "@tanstack/react-query";
 
 type ColorArray = [number, number, number];
 
@@ -11,6 +11,8 @@ type StyledCardProps = {
   palette: ColorArray[];
   children: React.ReactNode;
 };
+
+const toColorString = (color: ColorArray | undefined, fallback?: any) => color ? `rgb(${color.join(", ")})`: fallback;
 
 const StyledAnimatedCard = styled(Box)<StyledCardProps>(
   ({ theme, palette }) => ({
@@ -22,7 +24,7 @@ const StyledAnimatedCard = styled(Box)<StyledCardProps>(
       padding: 20,
       textOverflow: "ellipsis",
     },
-    "&:hover h1.heading": { background: theme.palette.secondary.dark },
+    "&:hover h1.heading": { background: toColorString( palette[3], theme.palette.secondary.dark ) },
     "& h1": { fontSize: "2em", color: "black" },
     "& p": {
       fontSize: "1em",
@@ -49,7 +51,7 @@ const StyledAnimatedCard = styled(Box)<StyledCardProps>(
       width: "100%",
       height: "100%",
       padding: "1rem 0.75rem",
-      background: theme.palette.secondary.dark,
+      background: toColorString( palette[3], theme.palette.secondary.dark ),
       transition: "0.4s ease-in-out",
       zIndex: 1,
     },
@@ -168,8 +170,26 @@ const StyledAnimatedCard = styled(Box)<StyledCardProps>(
     "& .delay-6": { animationDelay: "1.8s" },
     "& .delay-7": { animationDelay: "2.1s" },
     "& .delay-8": { animationDelay: "2.4s" },
+
+    "& .circle": {
+      width: "20px",
+      height: "20px",
+      borderRadius: "50%",
+    }
   }),
 );
+
+const useColorPalette = (imgSrc: string) => {
+  const { data: palette } = useQuery(["colorPalette", imgSrc], async () => {
+    //TODO: put api call to facade and get things by settings and env
+    const result = await fetch(`http://localhost:3001/color-palette?imageUrl=${decodeURIComponent(imgSrc)}`);
+    return result.json();
+  }, {
+    enabled: !!imgSrc,
+    cacheTime: 1000 * 60 * 60,
+  })
+  return palette;
+}
 
 export const StylizedDetailCard = ({
   cardInfo,
@@ -177,34 +197,9 @@ export const StylizedDetailCard = ({
 }: EntityDetailCardProps) => {
   const imgRef = useRef<HTMLImageElement>();
   const [activated, setActivated] = useState(false);
-  const [colorPalette, setColorPalette] = useState([]);
-  useEffect(() => {
-    const ct = new ColorThief({ crossOrigin: true });
-    if (!imgRef.current) {
-      return;
-    }
-    if (imgRef.current.complete) {
-      console.log("will try to get palette from image");
-      try {
-        setColorPalette(ct.getPalette(imgRef.current, 3));
-      } catch (e) {
-        console.log("cannot get color palette");
-        console.error(e);
-      }
-    } else {
-      imgRef.current.addEventListener("load", () => {
-        console.log("will try to get palette from image");
-        try {
-          setColorPalette(ct.getPalette(imgRef.current, 3));
-        } catch (e) {
-          console.log("cannot get color palette");
-          console.error(e);
-        }
-      });
-    }
-  }, [cardInfo.image, setColorPalette]);
+  const palette = useColorPalette(cardInfo.image);
   return (
-    <StyledAnimatedCard palette={colorPalette}>
+    <StyledAnimatedCard palette={palette?.palette || []}>
       <div className={`wrap animate pop ${activated ? "active" : ""}`}>
         <Fab
           color="primary"
@@ -224,7 +219,6 @@ export const StylizedDetailCard = ({
               className="animate slide-left pop delay-5"
               sx={{ color: "white", marginBottom: "2.5rem" }}
             >
-              <pre>{JSON.stringify(colorPalette, null, 2)}</pre>
               {cardInfo.label}
             </Typography>
           </div>
@@ -246,6 +240,12 @@ export const StylizedDetailCard = ({
           </div>
         </div>
         <div className={`text ${activated ? "active" : ""}`}>
+          <div>
+            {palette?.palette?.map(
+              ([r, g, b]: [number, number, number], index: number) => {
+              return <span key={index} className="circle" style={{ backgroundColor: `rgb(${r}, ${g}, ${b})` }}></span>
+            })}
+          </div>
           {<MarkdownContent mdDocument={cardInfo.description} />}
         </div>
       </div>

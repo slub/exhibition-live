@@ -3,7 +3,6 @@ import { useRemark } from "react-remark";
 import { Container } from "@mui/material";
 import rehypeDocument from "rehype-document";
 import rehypeKatex from "rehype-katex";
-import remark2rehype from "remark-rehype";
 import rehypeParse from "rehype-parse";
 import rehypeStringify from "rehype-stringify";
 import rehypeMermaid from "rehype-mermaid";
@@ -17,7 +16,7 @@ const MarkdownContent = ({ mdDocument }: MarkdownContentProps) => {
   const [reactContent, setMarkdownSource] = useRemark({
     remarkPlugins: [remarkMath],
     rehypePlugins: [
-      [rehypeParse as any, { fragment: true }],
+    //  [rehypeParse as any, { fragment: true }],
       rehypeDocument as any,
       rehypeKatex as any,
       [

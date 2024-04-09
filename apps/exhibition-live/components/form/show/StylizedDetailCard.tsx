@@ -3,7 +3,7 @@ import { Box, Fab, styled, Typography } from "@mui/material";
 import { EntityDetailCardProps } from "./EntityDetailCardProps";
 import MarkdownContent from "./MarkdownContentNoSSR";
 import { ArrowLeft, ArrowRight } from "@mui/icons-material";
-import {useQuery} from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 
 type ColorArray = [number, number, number];
 
@@ -12,7 +12,8 @@ type StyledCardProps = {
   children: React.ReactNode;
 };
 
-const toColorString = (color: ColorArray | undefined, fallback?: any) => color ? `rgb(${color.join(", ")})`: fallback;
+const toColorString = (color: ColorArray | undefined, fallback?: any) =>
+  color ? `rgb(${color.join(", ")})` : fallback;
 
 const StyledAnimatedCard = styled(Box)<StyledCardProps>(
   ({ theme, palette }) => ({
@@ -24,12 +25,17 @@ const StyledAnimatedCard = styled(Box)<StyledCardProps>(
       padding: 20,
       textOverflow: "ellipsis",
     },
-    "&:hover h1.heading": { background: toColorString( palette[3], theme.palette.secondary.dark ) },
+    "&:hover h1.heading": {
+      background: toColorString(palette[3], theme.palette.secondary.dark),
+    },
     "& h1": { fontSize: "2em", color: "black" },
+    "&:hover .overlay p": {
+      backgroundColor: toColorString(palette[3], theme.palette.secondary.dark),
+    },
     "& p": {
       fontSize: "1em",
       lineHeight: 1.4,
-      color: theme.palette.primary.dark,
+      color: toColorString(palette[2], theme.palette.primary.dark),
       marginBottom: "1.5rem",
       textAlign: "justify",
     },
@@ -51,7 +57,7 @@ const StyledAnimatedCard = styled(Box)<StyledCardProps>(
       width: "100%",
       height: "100%",
       padding: "1rem 0.75rem",
-      background: toColorString( palette[3], theme.palette.secondary.dark ),
+      background: toColorString(palette[3], theme.palette.secondary.dark),
       transition: "0.4s ease-in-out",
       zIndex: 1,
     },
@@ -62,6 +68,7 @@ const StyledAnimatedCard = styled(Box)<StyledCardProps>(
       display: "flex",
       flexDirection: "column",
       justifyContent: "space-between",
+      alignItems: "start",
       width: "60%",
       height: "100%",
       padding: "0.5rem 0 0 0.5rem",
@@ -175,21 +182,27 @@ const StyledAnimatedCard = styled(Box)<StyledCardProps>(
       width: "20px",
       height: "20px",
       borderRadius: "50%",
-    }
+    },
   }),
 );
 
 const useColorPalette = (imgSrc: string) => {
-  const { data: palette } = useQuery(["colorPalette", imgSrc], async () => {
-    //TODO: put api call to facade and get things by settings and env
-    const result = await fetch(`http://localhost:3001/color-palette?imageUrl=${decodeURIComponent(imgSrc)}`);
-    return result.json();
-  }, {
-    enabled: !!imgSrc,
-    cacheTime: 1000 * 60 * 60,
-  })
+  const { data: palette } = useQuery(
+    ["colorPalette", imgSrc],
+    async () => {
+      //TODO: put api call to facade and get things by settings and env
+      const result = await fetch(
+        `http://localhost:3001/color-palette?imageUrl=${decodeURIComponent(imgSrc)}`,
+      );
+      return result.json();
+    },
+    {
+      enabled: !!imgSrc,
+      cacheTime: 1000 * 60 * 60,
+    },
+  );
   return palette;
-}
+};
 
 export const StylizedDetailCard = ({
   cardInfo,
@@ -243,8 +256,15 @@ export const StylizedDetailCard = ({
           <div>
             {palette?.palette?.map(
               ([r, g, b]: [number, number, number], index: number) => {
-              return <span key={index} className="circle" style={{ backgroundColor: `rgb(${r}, ${g}, ${b})` }}></span>
-            })}
+                return (
+                  <span
+                    key={index}
+                    className="circle"
+                    style={{ backgroundColor: `rgb(${r}, ${g}, ${b})` }}
+                  ></span>
+                );
+              },
+            )}
           </div>
           {<MarkdownContent mdDocument={cardInfo.description} />}
         </div>

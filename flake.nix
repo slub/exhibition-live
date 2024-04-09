@@ -17,6 +17,7 @@
             nodePackages_latest.prisma
             prisma-engines
             #jetbrains.idea-ultimate
+            cypress
             bun
             openssl
             appimage-run

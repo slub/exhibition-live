@@ -3,7 +3,6 @@ import { useRemark } from "react-remark";
 import { Container } from "@mui/material";
 import rehypeDocument from "rehype-document";
 import rehypeKatex from "rehype-katex";
-import remark2rehype from "remark-rehype";
 import rehypeParse from "rehype-parse";
 import rehypeStringify from "rehype-stringify";
 import rehypeMermaid from "rehype-mermaid";
@@ -38,6 +37,20 @@ const MarkdownContent = ({ mdDocument }: MarkdownContentProps) => {
       [rehypeMermaid as any, { strategy: "img-svg" }],
       rehypeStringify as any,
     ],
+    rehypeReactOptions: {
+      components: {
+        img: (props) => (
+          <img
+            style={{
+              ...(props.style || {}),
+              maxWidth: "100%",
+              maxHeight: "75vh",
+            }}
+            {...props}
+          />
+        ),
+      },
+    },
   });
 
   useEffect(() => {

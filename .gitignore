@@ -62,3 +62,19 @@ coverage
 
 out
 apps/exhibition-live/exhibition-live
+
+packages/icons/src/assets/svgs
+manifestation/exhibition/typebox
+apps/edb-prisma-cli/migrations
+apps/edb-prisma-cli/prisma
+apps/edb-prisma-cli/prisma
+apps/edb-solr-cli/solr
+apps/edb-solr-cli/elastic
+apps/edb-surreal-api/data
+apps/edb-surreal-api/*.AppImage
+apps/edb-prisma-cli/schema.prisma
+
+
+.env
+/apps/exhibition-live/public/exhibition-corpus-riot.ttl
+/apps/edb-solr-cli/export

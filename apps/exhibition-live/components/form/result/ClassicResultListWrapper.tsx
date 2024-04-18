@@ -10,7 +10,6 @@ import { useTranslation } from "next-i18next";
 
 type Props = {
   label?: string;
-  selected?: boolean;
   children?: React.ReactNode;
   handleClick?: (id: undefined) => void;
   hitCount?: number;
@@ -18,7 +17,6 @@ type Props = {
 
 const ClassicResultListWrapper: FunctionComponent<Props> = ({
   label,
-  selected,
   children,
   handleClick,
   hitCount,
@@ -34,7 +32,6 @@ const ClassicResultListWrapper: FunctionComponent<Props> = ({
             onClick={handleClick}
           >
             <ListItemText
-              disableTypography={!selected}
               primary={label}
               primaryTypographyProps={{
                 fontSize: 15,
@@ -43,11 +40,9 @@ const ClassicResultListWrapper: FunctionComponent<Props> = ({
                 mb: "2px",
               }}
               secondary={
-                selected
-                  ? hitCount > 0
-                    ? t("found hits", { count: hitCount })
-                    : t("no hits")
-                  : t("datasource disabled")
+                hitCount > 0
+                  ? t("found hits", { count: hitCount })
+                  : t("no hits")
               }
               secondaryTypographyProps={{
                 noWrap: true,
@@ -60,21 +55,19 @@ const ClassicResultListWrapper: FunctionComponent<Props> = ({
         </Grid>
         <Divider />
         <Grid item>
-          {selected && (
-            <>
-              <Paper
-                sx={{
-                  maxHeight: "100%",
-                  display: "block",
-                  flexGrow: 1,
-                  overflow: "auto",
-                }}
-              >
-                {children}
-              </Paper>
-              <Divider />
-            </>
-          )}
+          <>
+            <Paper
+              sx={{
+                maxHeight: "100%",
+                display: "block",
+                flexGrow: 1,
+                overflow: "auto",
+              }}
+            >
+              {children}
+            </Paper>
+            <Divider />
+          </>
         </Grid>
       </Grid>
     </Paper>

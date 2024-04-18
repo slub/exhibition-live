@@ -219,26 +219,24 @@ const SearchFieldWithBadges = ({
         }}
       >
         <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
-        {knowledgeBases
-          .filter(({ id }) => selectedKnowledgeSources.includes(id))
-          .map(({ id, label, icon }) => {
-            return (
-              <Badge
-                key={id}
-                color="primary"
-                sx={{ m: 0.5 }}
-                anchorOrigin={{
-                  vertical: "bottom",
-                  horizontal: "right",
-                }}
-                variant="dot"
-                overlap="circular"
-                invisible={!selectedKnowledgeSources?.includes(id)}
-              >
-                {icon}
-              </Badge>
-            );
-          })}
+        {knowledgeBases.map(({ id, label, icon }) => {
+          return (
+            <Badge
+              key={id}
+              color="primary"
+              sx={{ m: 0.5 }}
+              anchorOrigin={{
+                vertical: "bottom",
+                horizontal: "right",
+              }}
+              variant="dot"
+              overlap="circular"
+              invisible={!selectedKnowledgeSources?.includes(id)}
+            >
+              {icon}
+            </Badge>
+          );
+        })}
         {advancedConfigChildren && (
           <>
             <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
@@ -578,7 +576,6 @@ const useKnowledgeBases = () => {
             findOptions?.limit || 10,
             "marcxml",
           );
-          console.log({ test });
           return test || [];
         },
         listItemRenderer: (
@@ -680,7 +677,14 @@ const SimilarityFinder: FunctionComponent<Props> = ({
     () => dataPathSearch || globalSearch || search || null,
     [dataPathSearch, search, globalSearch],
   );
-  const knowledgeBases: KnowledgeBaseDescription[] = useKnowledgeBases();
+  const allKnowledgeBases: KnowledgeBaseDescription[] = useKnowledgeBases();
+  const knowledgeBases = useMemo(
+    () =>
+      allKnowledgeBases.filter(({ id }) =>
+        selectedKnowledgeSources.includes(id),
+      ),
+    [allKnowledgeBases, selectedKnowledgeSources],
+  );
 
   const [searchResults, setSearchResults] = useState<
     Record<KnowledgeSources, any[]>
@@ -691,19 +695,21 @@ const SimilarityFinder: FunctionComponent<Props> = ({
     >,
   );
 
+  const [lastSearched, setLastSearched] = useState<string | undefined>();
   /* eslint-disable react-hooks/exhaustive-deps */
   const searchAll = useCallback(
     debounce(
       (searchString: string, typeIRI: string, findOptions?: FindOptions) => {
+        if (lastSearched === searchString) return;
+        setLastSearched(searchString);
         return Promise.all(
           knowledgeBases.map(async (kb) => {
             return {
-              [kb.id]: selectedKnowledgeSources.includes(kb.id)
-                ? await kb.find(searchString, typeIRI, findOptions)
-                : [],
+              [kb.id]: await kb.find(searchString, typeIRI, findOptions),
             };
           }),
         ).then((results) => {
+          if (!results) return;
           const searchResults = Object.assign({}, ...results) as Record<
             KnowledgeSources,
             any[]
@@ -720,9 +726,10 @@ const SimilarityFinder: FunctionComponent<Props> = ({
     ),
     [
       knowledgeBases,
-      selectedKnowledgeSources,
       setSearchResults,
       setElementCount,
+      lastSearched,
+      setLastSearched,
     ],
   );
 
@@ -963,33 +970,31 @@ const SimilarityFinder: FunctionComponent<Props> = ({
               flexDirection: "column" /* flexWrap: 'wrap'*/,
             }}
           >
-            {knowledgeBases
-              .filter(({ id }) => selectedKnowledgeSources.includes(id))
-              .map((kb) => {
-                const entries = resultsWithIndex[kb.id] || [];
-                return (
-                  <ClassicResultListWrapper
-                    key={kb.id}
-                    label={kb.label}
-                    hitCount={entries.length}
-                  >
-                    {searchString && (
-                      <List>
-                        {entries.map(({ entry, idx }) =>
-                          kb.listItemRenderer(
-                            entry,
-                            idx,
-                            classIRI,
-                            elementIndex === idx,
-                            () => setElementIndex(idx),
-                            (id, data) => handleAccept(id, data, kb.id),
-                          ),
-                        )}
-                      </List>
-                    )}
-                  </ClassicResultListWrapper>
-                );
-              })}
+            {knowledgeBases.map((kb) => {
+              const entries = resultsWithIndex[kb.id] || [];
+              return (
+                <ClassicResultListWrapper
+                  key={kb.id}
+                  label={kb.label}
+                  hitCount={entries.length}
+                >
+                  {searchString && (
+                    <List>
+                      {entries.map(({ entry, idx }) =>
+                        kb.listItemRenderer(
+                          entry,
+                          idx,
+                          classIRI,
+                          elementIndex === idx,
+                          () => setElementIndex(idx),
+                          (id, data) => handleAccept(id, data, kb.id),
+                        ),
+                      )}
+                    </List>
+                  )}
+                </ClassicResultListWrapper>
+              );
+            })}
           </Grid>
         </Grid>
         <Hidden xsUp={hideFooter}>

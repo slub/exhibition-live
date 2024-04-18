@@ -38,7 +38,7 @@ export const findEntityWithinLobid = async (
       lobidSearchURL +
         "?" +
         new URLSearchParams({
-          q: searchString,
+          q: encodeURIComponent(searchString),
           filter: makeTypeFilter(mapTypeName(typeName)),
           size: (limit || 10).toString(),
           format: format || "json",

@@ -13,9 +13,9 @@
 // -- This is a parent command --
 // Cypress.Commands.add('login', (email, password) => { ... })
 //
-Cypress.Commands.add("getInput", (property: string) => {
-  cy.get(`#${CSS.escape(`#/properties/${property}-input`)}`);
-});
+//Cypress.Commands.add("getInput", (property: string) => {
+//  cy.get(`#${CSS.escape(`#/properties/${property}-input`)}`);
+//});
 //
 // -- This is a child command --
 // Cypress.Commands.add('drag', { prevSubject: 'element'}, (subject, options) => { ... })
@@ -28,7 +28,7 @@ Cypress.Commands.add("getInput", (property: string) => {
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 //
-declare global {
+/*declare global {
   namespace Cypress {
     interface Chainable {
       getInput(property: string): Chainable<Element>;
@@ -38,4 +38,4 @@ declare global {
       //       visit(originalFn: CommandOriginalFn, url: string, options: Partial<VisitOptions>): Chainable<Element>
     }
   }
-}
+}*/

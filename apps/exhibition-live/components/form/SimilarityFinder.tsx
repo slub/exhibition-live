@@ -72,7 +72,13 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import useExtendedSchema from "../state/useExtendedSchema";
 import { BasicThingInformation } from "@slub/edb-core-types";
 import { NumberInput } from "./NumberInput";
+import { findEntityWithinK10Plus } from "../utils/k10plus/findEntityWithinK10Plus";
+import { dcterms } from "@tpluscode/rdf-ns-builders";
+import { fabio } from "../utils/marc";
+import { findFirstInProps } from "./k10plus/K10PlusSearchTable";
+import { KXPEntry } from "../utils/k10plus/types";
 
+export type KnowledgeSources = "kb" | "gnd" | "wikidata" | "k10plus" | "ai";
 // @ts-ignore
 type Props = {
   finderId: string;
@@ -85,9 +91,9 @@ type Props = {
   searchOnDataPath?: string;
   search?: string;
   hideFooter?: boolean;
+  additionalKnowledgeSources?: KnowledgeSources[];
 };
 
-type KnowledgeSources = "kb" | "gnd" | "wikidata" | "k10plus" | "ai";
 type SelectedEntity = {
   id: string;
   source: KnowledgeSources;
@@ -137,7 +143,7 @@ type FindOptions = {
   pageSize?: number;
 };
 
-type KnowledgeBaseDescription = {
+type KnowledgeBaseDescription<T = any> = {
   id: KnowledgeSources;
   authorityIRI?: string;
   label: string;
@@ -147,7 +153,7 @@ type KnowledgeBaseDescription = {
     searchString: string,
     typeIRI: string,
     findOptions?: FindOptions,
-  ) => Promise<BasicThingInformation[]>;
+  ) => Promise<T[]>;
   detailRenderer?: (id: string) => React.ReactNode;
   listItemRenderer?: (
     entry: any,
@@ -213,24 +219,26 @@ const SearchFieldWithBadges = ({
         }}
       >
         <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
-        {knowledgeBases.map(({ id, label, icon }) => {
-          return (
-            <Badge
-              key={id}
-              color="primary"
-              sx={{ m: 0.5 }}
-              anchorOrigin={{
-                vertical: "bottom",
-                horizontal: "right",
-              }}
-              variant="dot"
-              overlap="circular"
-              invisible={!selectedKnowledgeSources?.includes(id)}
-            >
-              {icon}
-            </Badge>
-          );
-        })}
+        {knowledgeBases
+          .filter(({ id }) => selectedKnowledgeSources.includes(id))
+          .map(({ id, label, icon }) => {
+            return (
+              <Badge
+                key={id}
+                color="primary"
+                sx={{ m: 0.5 }}
+                anchorOrigin={{
+                  vertical: "bottom",
+                  horizontal: "right",
+                }}
+                variant="dot"
+                overlap="circular"
+                invisible={!selectedKnowledgeSources?.includes(id)}
+              >
+                {icon}
+              </Badge>
+            );
+          })}
         {advancedConfigChildren && (
           <>
             <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
@@ -260,10 +268,12 @@ const fetchBasicInformationFromGND: (
 ) => {
   const rawEntry = await findEntityWithinLobidByIRI(id);
   const { category, secondary, avatar } = initialData;
+  const entry = gndEntryWithMainInfo(rawEntry);
+  console.log({ entry });
   return {
     category,
     avatar,
-    ...gndEntryWithMainInfo(rawEntry),
+    ...entry,
     secondary: initialData.secondary,
   };
 };
@@ -544,6 +554,63 @@ const useKnowledgeBases = () => {
           />
         ),
       },
+      {
+        id: "k10plus",
+        label: "K10plus",
+        description: "K10plus",
+        icon: (
+          <Img
+            alt={"gnd logo"}
+            width={24}
+            height={24}
+            src={"Icons/k10plus-logo.png"}
+          />
+        ),
+        find: async (
+          searchString: string,
+          typeIRI,
+          findOptions?: FindOptions,
+        ) => {
+          const test = await findEntityWithinK10Plus(
+            searchString,
+            typeIRItoTypeName(typeIRI),
+            "http://sru.k10plus.de/gvk",
+            findOptions?.limit || 10,
+            "marcxml",
+          );
+          console.log({ test });
+          return test || [];
+        },
+        listItemRenderer: (
+          entry: any,
+          idx: number,
+          typeIRI: string,
+          selected,
+          onSelect,
+          onAccept,
+        ) => {
+          const data = entry as KXPEntry;
+          return (
+            <ClassicResultListItem
+              key={data.id}
+              id={String(data.id)}
+              index={idx}
+              onSelected={(id, index) => onSelect(id, index)}
+              label={
+                data.properties[dcterms.title.value]?.[0]?.value ||
+                String(data.id)
+              }
+              secondary={findFirstInProps(
+                data.properties,
+                fabio.hasSubtitle,
+                dcterms.description,
+                dcterms.abstract,
+              )}
+              altAvatar={String(idx + 1)}
+            />
+          );
+        },
+      },
     ],
     [crudOptions?.selectFetch],
   );
@@ -561,11 +628,13 @@ const SimilarityFinder: FunctionComponent<Props> = ({
   search,
   jsonSchema,
   hideFooter,
+  additionalKnowledgeSources = [],
 }) => {
   const { openai } = useSettings();
-  const [selectedKnowledgeSources, setSelectedKnowledgeSources] = useState<
-    KnowledgeSources[]
-  >(["kb", "gnd"]);
+  const selectedKnowledgeSources = useMemo(
+    () => ["kb", "gnd", ...additionalKnowledgeSources],
+    [additionalKnowledgeSources],
+  );
 
   const {
     search: globalSearch,
@@ -673,18 +742,6 @@ const SimilarityFinder: FunctionComponent<Props> = ({
     setTypeName(typeIRItoTypeName(preselectedClassIRI));
   }, [preselectedClassIRI, setTypeName]);
 
-  const handleToggle = useCallback(
-    (id: string | undefined, source: KnowledgeSources) => {
-      !selectedKnowledgeSources?.includes(source)
-        ? setSelectedKnowledgeSources(
-            (before) => [...before, source] as KnowledgeSources[],
-          )
-        : setSelectedKnowledgeSources(
-            (before) => before.filter((s) => s != source) as KnowledgeSources[],
-          );
-    },
-    [setSelectedKnowledgeSources, selectedKnowledgeSources],
-  );
   const handleMapAbstractAndDescUsingAI = useCallback(
     async (id: string | undefined, entryData: any) => {
       const newData = mapAbstractDataUsingAI(id, typeName, entryData, {
@@ -906,32 +963,33 @@ const SimilarityFinder: FunctionComponent<Props> = ({
               flexDirection: "column" /* flexWrap: 'wrap'*/,
             }}
           >
-            {knowledgeBases.map((kb) => {
-              const entries = resultsWithIndex[kb.id] || [];
-              return (
-                <ClassicResultListWrapper
-                  key={kb.id}
-                  label={kb.label}
-                  selected={selectedKnowledgeSources?.includes(kb.id)}
-                  hitCount={entries.length}
-                >
-                  {searchString && (
-                    <List>
-                      {entries.map(({ entry, idx }) =>
-                        kb.listItemRenderer(
-                          entry,
-                          idx,
-                          classIRI,
-                          elementIndex === idx,
-                          () => setElementIndex(idx),
-                          (id, data) => handleAccept(id, data, kb.id),
-                        ),
-                      )}
-                    </List>
-                  )}
-                </ClassicResultListWrapper>
-              );
-            })}
+            {knowledgeBases
+              .filter(({ id }) => selectedKnowledgeSources.includes(id))
+              .map((kb) => {
+                const entries = resultsWithIndex[kb.id] || [];
+                return (
+                  <ClassicResultListWrapper
+                    key={kb.id}
+                    label={kb.label}
+                    hitCount={entries.length}
+                  >
+                    {searchString && (
+                      <List>
+                        {entries.map(({ entry, idx }) =>
+                          kb.listItemRenderer(
+                            entry,
+                            idx,
+                            classIRI,
+                            elementIndex === idx,
+                            () => setElementIndex(idx),
+                            (id, data) => handleAccept(id, data, kb.id),
+                          ),
+                        )}
+                      </List>
+                    )}
+                  </ClassicResultListWrapper>
+                );
+              })}
           </Grid>
         </Grid>
         <Hidden xsUp={hideFooter}>

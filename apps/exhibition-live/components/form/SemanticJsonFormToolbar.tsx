@@ -9,6 +9,7 @@ import {
   Save,
 } from "@mui/icons-material";
 import React from "react";
+import { useTranslation } from "next-i18next";
 
 type SemanticJsonFormsToolbarProps = {
   editMode: boolean;
@@ -30,6 +31,7 @@ export const SemanticJsonFormToolbar = ({
   onShow,
   children,
 }: SemanticJsonFormsToolbarProps) => {
+  const { t } = useTranslation();
   return (
     <Toolbar>
       <IconButton onClick={onShow}>
@@ -41,22 +43,22 @@ export const SemanticJsonFormToolbar = ({
       {editMode && (
         <>
           {onSave && (
-            <IconButton onClick={onSave} aria-label="save">
+            <IconButton onClick={onSave} aria-label={t("save")}>
               <Save />
             </IconButton>
           )}
           {onRemove && (
-            <IconButton onClick={onRemove} aria-label="remove">
+            <IconButton onClick={onRemove} aria-label={t("delete permanently")}>
               <Delete />
             </IconButton>
           )}
           {onReload && (
-            <IconButton onClick={onReload} aria-label="reload from server">
+            <IconButton onClick={onReload} aria-label={t("reload")}>
               <Refresh />
             </IconButton>
           )}
           {onReset && (
-            <IconButton onClick={onReset} aria-label="full reload">
+            <IconButton onClick={onReset} aria-label={t("reset")}>
               <DangerousOutlined />
             </IconButton>
           )}

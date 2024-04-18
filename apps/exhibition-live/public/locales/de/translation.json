@@ -72,6 +72,7 @@
   "will move entries to trash": "{{count}} Einträge werden in den Papierkorb verschoben",
   "loading typename": "Lade {{typeName}}",
   "reloaded": "neu geladen",
+  "reload": "neu laden",
   "no hits": "keine Treffer",
   "no suggestions": "keine Vorschläge",
   "search delivered no results": "Die Suche ergab keine Treffer",

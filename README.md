@@ -18,10 +18,10 @@ You can get a live preview of the current `develop` branch here: [https://slub.g
 
 ## Getting Started
 
-First, run the development server:
+For a quick start install all dependencies initially build the packages and start the development server of the nextjs exhibition-live application.
 
 ```bash
-bun i && bun run dev
+bun i && bun build:packages && bun run dev:exhibition
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.

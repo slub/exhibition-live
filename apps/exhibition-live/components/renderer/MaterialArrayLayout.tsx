@@ -46,7 +46,7 @@ import { memo } from "./config";
 import { uniqBy, orderBy, isArray, isEqual } from "lodash";
 import { SimpleExpandPanelRenderer } from "./SimpleExpandPanelRenderer";
 import { SemanticFormsModal } from "./SemanticFormsModal";
-import { BASE_IRI } from "../config";
+import { BASE_IRI, primaryFieldExtracts } from "../config";
 import { irisToData, makeFormsPath } from "../utils/core";
 import { JSONSchema7 } from "json-schema";
 import {
@@ -64,6 +64,10 @@ import { useSnackbar } from "notistack";
 import { ErrorObject } from "ajv";
 import { bringDefinitionToTop } from "@slub/json-schema-utils";
 import { Pulse } from "../form/utils";
+import {
+  applyToEachField,
+  extractFieldIfString,
+} from "../utils/mapping/simpleFieldExtractor";
 
 type OwnProps = {
   removeItems(path: string, toDelete: number[]): () => void;
@@ -89,12 +93,24 @@ const MaterialArrayLayoutComponent = (props: ArrayLayoutProps & {}) => {
     removeItems,
   } = props;
   const appliedUiSchemaOptions = merge({}, config, props.uischema.options);
+  const fixedDataMixin = appliedUiSchemaOptions.fixedDataMixin;
   const { readonly, core } = useJsonForms();
   const realData = Resolve.data(core.data, path);
   const typeIRI = schema.properties?.["@type"]?.const;
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [formData, setFormData] = useState<any>(
-    irisToData(slent(uuidv4()).value, typeIRI),
+  const [formData, setFormDataProtected] = useState<any>({
+    ...irisToData(slent(uuidv4()).value, typeIRI),
+    ...(fixedDataMixin || {}),
+  });
+
+  const setFormData = useCallback(
+    (data: any) => {
+      setFormDataProtected({
+        ...data,
+        ...(fixedDataMixin || {}),
+      });
+    },
+    [setFormDataProtected, fixedDataMixin],
   );
 
   const addButtonRef = useRef<HTMLButtonElement>(null);
@@ -160,6 +176,7 @@ const MaterialArrayLayoutComponent = (props: ArrayLayoutProps & {}) => {
   }, [setModalIsOpen, addItem, formData, setFormData, typeIRI]);
 
   const isReifiedStatement = Boolean(appliedUiSchemaOptions.isReifiedStatement);
+  const orderByPropertyPath = appliedUiSchemaOptions.orderBy;
   const autoFocusOnValid = Boolean(appliedUiSchemaOptions.autoFocusOnValid);
   const [inlineErrors, setInlineErrors] = useState<ErrorObject[] | null>(null);
   const handleErrors = useCallback(
@@ -188,9 +205,40 @@ const MaterialArrayLayoutComponent = (props: ArrayLayoutProps & {}) => {
     setFormData(irisToData(slent(uuidv4()).value, typeIRI));
   }, [formsPath, typeIRI, setFormData]);
 
+  const orderedAndUniqueData = useMemo(() => {
+    return orderBy(
+      uniqBy(
+        realData?.map((childData, index) => {
+          const typeName = typeIRI.substring(BASE_IRI.length, typeIRI.length);
+          const fieldDecl = primaryFieldExtracts[typeName];
+          let label = childData.label || childData.__label || childData["@id"];
+          if (childData && fieldDecl) {
+            const extractedInfo = applyToEachField(
+              childData,
+              fieldDecl,
+              extractFieldIfString,
+            );
+            if (extractedInfo.label) {
+              label = extractedInfo.label;
+            }
+          }
+          return {
+            id: childData["@id"],
+            childData,
+            index,
+            label,
+          };
+        }),
+        "id",
+      ),
+      ["label", "asc"],
+    );
+  }, [realData, orderByPropertyPath, typeIRI]);
+
   return (
     <div>
       <ArrayLayoutToolbar
+        labelAsHeadline={appliedUiSchemaOptions.labelAsHeadline}
         label={computeLabel(
           label,
           Boolean(required),
@@ -205,6 +253,9 @@ const MaterialArrayLayoutComponent = (props: ArrayLayoutProps & {}) => {
         readonly={readonly}
         isReifiedStatement={isReifiedStatement}
         formsPath={makeFormsPath(config?.formsPath, path)}
+        additionalKnowledgeSources={
+          appliedUiSchemaOptions.additionalKnowledgeSources
+        }
       />
       {modalIsOpen && (
         <SemanticFormsModal
@@ -259,44 +310,36 @@ const MaterialArrayLayoutComponent = (props: ArrayLayoutProps & {}) => {
       )}
       <List dense>
         {data > 0
-          ? orderBy(
-              uniqBy(
-                realData?.map((childData, index) => ({
-                  id: childData["@id"],
-                  childData,
-                  index,
-                })),
-                "id",
-              ),
-              "id",
-            ).map(({ id: expandID, childData, index }: any, count) => {
-              const childPath = composePaths(path, `${index}`);
-              return (
-                <SimpleExpandPanelRenderer
-                  onRemove={removeItems(path, [index])}
-                  schema={schema}
-                  onChange={() => {}}
-                  rootSchema={rootSchema}
-                  entityIRI={expandID}
-                  data={childData}
-                  key={expandID}
-                  index={index}
-                  count={count}
-                  path={childPath}
-                  imagePath={appliedUiSchemaOptions.imagePath}
-                  elementDetailItemPath={
-                    appliedUiSchemaOptions.elementDetailItemPath
-                  }
-                  childLabelTemplate={
-                    appliedUiSchemaOptions.elementLabelTemplate
-                  }
-                  elementLabelProp={
-                    appliedUiSchemaOptions.elementLabelProp || "label"
-                  }
-                  formsPath={formsPath}
-                />
-              );
-            })
+          ? orderedAndUniqueData.map(
+              ({ id: expandID, childData, index }: any, count) => {
+                const childPath = composePaths(path, `${index}`);
+                return (
+                  <SimpleExpandPanelRenderer
+                    onRemove={removeItems(path, [index])}
+                    schema={schema}
+                    onChange={() => {}}
+                    rootSchema={rootSchema}
+                    entityIRI={expandID}
+                    data={childData}
+                    key={expandID}
+                    index={index}
+                    count={count}
+                    path={childPath}
+                    imagePath={appliedUiSchemaOptions.imagePath}
+                    elementDetailItemPath={
+                      appliedUiSchemaOptions.elementDetailItemPath
+                    }
+                    childLabelTemplate={
+                      appliedUiSchemaOptions.elementLabelTemplate
+                    }
+                    elementLabelProp={
+                      appliedUiSchemaOptions.elementLabelProp || "label"
+                    }
+                    formsPath={formsPath}
+                  />
+                );
+              },
+            )
           : null}
       </List>
     </div>

@@ -13,10 +13,8 @@ import {
   tooltipClasses,
   TooltipProps,
 } from "@mui/material";
-import datasetFactory from "@rdfjs/dataset";
 import { BlankNode, NamedNode } from "@rdfjs/types";
 import { dcterms, foaf, geo, rdfs, skos } from "@tpluscode/rdf-ns-builders";
-import clownface from "clownface";
 import React, {
   FunctionComponent,
   useCallback,
@@ -28,45 +26,18 @@ import React, {
 import { useLocalHistory } from "../../state";
 import { useSettings } from "../../state/useLocalSettings";
 import { findEntityWithinK10Plus } from "../../utils/k10plus/findEntityWithinK10Plus";
-import { RecordElement } from "../../utils/k10plus/searchRetrieveResponse-types";
 import ClassicEntityCard from "../lobid/ClassicEntityCard";
 import ClassicResultListItem from "../result/ClassicResultListItem";
-import { fabio, geonames, radatana } from "./marc2rdfMappingDeclaration";
-import { kxp, mapDatafieldToQuads } from "./marcxml2rdf";
-import {
-  NodePropertyTree,
-  nodeToPropertyTree,
-} from "@slub/edb-graph-traversal";
+import { NodePropertyTree } from "@slub/edb-graph-traversal";
 import { useTranslation } from "next-i18next";
+import { KXPEntry } from "../../utils/k10plus/types";
+import { fabio, geonames, radatana } from "../../utils/marc";
 
 type Props = {
   searchString: string;
   typeName?: string;
   onSelect?: (id: string | undefined) => void;
   onAcceptItem?: (id: string | undefined, data: any) => void;
-};
-
-type KXPEntry = {
-  id: string | number;
-  properties: NodePropertyTree;
-};
-
-const marcRecord2RDF: (record: RecordElement) => KXPEntry = (record) => {
-  //const mappedControlfields = record.recordData.record.controlfield.map(ds => mapControlfield(ds))
-  const id = record.recordData.record.controlfield.filter(
-    (cf) => cf["@_tag"] === "001",
-  )[0]["#text"];
-  const subjectNode = kxp("record/" + String(id));
-  const extractedKnowledge = record.recordData.record.datafield.flatMap((ds) =>
-    mapDatafieldToQuads(subjectNode, ds),
-  );
-  const dataset = datasetFactory.dataset(extractedKnowledge);
-  const tbbt = clownface({ dataset });
-  const properties = nodeToPropertyTree(subjectNode, tbbt);
-  return {
-    id,
-    properties,
-  };
 };
 
 export const findFirstInProps = (
@@ -101,17 +72,14 @@ const K10PlusSearchTable: FunctionComponent<Props> = ({
   const fetchData = useCallback(async () => {
     if (!searchString || searchString.length < 1) return;
 
-    const entities = await findEntityWithinK10Plus(
+    const mappedFields = await findEntityWithinK10Plus(
       searchString,
       typeName,
       k10PlusEndpointURL,
       10,
       externalAuthority.kxp?.recordSchema,
     );
-    if (!entities?.searchRetrieveResponse) return;
-    const mappedFields = entities.searchRetrieveResponse.records?.record?.map(
-      (record) => marcRecord2RDF(record),
-    );
+    if (!mappedFields) return;
     setResultTable(mappedFields);
   }, [
     searchString,

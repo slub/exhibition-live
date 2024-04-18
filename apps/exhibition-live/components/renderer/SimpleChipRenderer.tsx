@@ -44,6 +44,7 @@ export const SimpleChipRenderer = (
   const { dispatch } = useJsonForms();
   const {
     data,
+    index,
     entityIRI,
     schema,
     rootSchema,
@@ -51,6 +52,7 @@ export const SimpleChipRenderer = (
     count,
     childLabelTemplate,
     elementLabelProp,
+    formsPath,
     ...chipProps
   } = props;
   const typeIRI = schema.properties?.["@type"]?.const;
@@ -136,6 +138,7 @@ export const SimpleChipRenderer = (
     >
       <Chip
         {...chipProps}
+        data-testid={`chip-${formsPath}-${index}`}
         avatar={
           image ? (
             <Avatar alt={realLabel} src={image} />

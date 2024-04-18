@@ -236,6 +236,7 @@ const LobidSearchTable: FunctionComponent<Props> = ({
                       size="small"
                       color="primary"
                       variant="contained"
+                      className="accept-button"
                       disabled={!onAcceptItem || !selectedEntry}
                       onClick={() =>
                         onAcceptItem && onAcceptItem(id, selectedEntry)

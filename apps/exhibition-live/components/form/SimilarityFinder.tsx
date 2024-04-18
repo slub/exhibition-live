@@ -345,6 +345,7 @@ const GNDListItemRenderer = ({
               size="small"
               color="primary"
               variant="contained"
+              className="accept-button"
               onClick={handleAccept}
             >
               {t("accept entity")}

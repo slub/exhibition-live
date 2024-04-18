@@ -60,9 +60,19 @@
           }
         },
         {
-          "type": "Control",
-          "label": "Ausstellungsserie",
-          "scope": "#/properties/exhibitionSeries"
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "label": "Ausstellungsserie",
+              "scope": "#/properties/exhibitionSeries"
+            },
+            {
+              "type": "Control",
+              "label": "übergeordnete Ausstellung",
+              "scope": "#/properties/parent"
+            }
+          ]
         },
         {
           "type": "Control",
@@ -145,47 +155,59 @@
           "type": "VerticalLayout",
           "elements": [
             {
-              "type": "HorizontalLayout",
+              "type": "Group",
+              "label": "Ausstellungszeitraum",
               "elements": [
                 {
-                  "type": "Group",
+                  "type": "HorizontalLayout",
                   "elements": [
                     {
-                      "type": "Control",
-                      "label": "Beginn",
-                      "scope": "#/properties/startDate"
-                    }
-                  ]
-                },
-                {
-                  "type": "Group",
-                  "elements": [
+                      "type": "Group",
+                      "elements": [
+                        {
+                          "type": "Control",
+                          "label": "Beginn",
+                          "scope": "#/properties/startDate"
+                        }
+                      ]
+                    },
                     {
-                      "type": "Control",
-                      "label": "Ende",
-                      "scope": "#/properties/endDate"
+                      "type": "Group",
+                      "elements": [
+                        {
+                          "type": "Control",
+                          "label": "Ende",
+                          "scope": "#/properties/endDate"
+                        }
+                      ]
                     }
                   ]
                 }
               ]
             },
             {
-              "type": "HorizontalLayout",
+              "type": "Group",
+              "label": "Weitere Zeitangaben",
               "elements": [
                 {
-                  "type": "Control",
-                  "scope": "#/properties/vernissage",
-                  "label": "Vernissage"
-                },
-                {
-                  "type": "Control",
-                  "scope": "#/properties/midissage",
-                  "label": "Midissage"
-                },
-                {
-                  "type": "Control",
-                  "scope": "#/properties/finissage",
-                  "label": "Finissage"
+                  "type": "HorizontalLayout",
+                  "elements": [
+                    {
+                      "type": "Control",
+                      "scope": "#/properties/vernissage",
+                      "label": "Vernissage"
+                    },
+                    {
+                      "type": "Control",
+                      "scope": "#/properties/midissage",
+                      "label": "Midissage"
+                    },
+                    {
+                      "type": "Control",
+                      "scope": "#/properties/finissage",
+                      "label": "Finissage"
+                    }
+                  ]
                 }
               ]
             }
@@ -198,30 +220,58 @@
       "label": "Personen und Institutionen",
       "elements": [
         {
-          "type": "Control",
-          "label": "Künstler",
-          "scope": "#/properties/involvedPersons",
-          "options": {
-            "imagePath": "person.image",
-            "elementLabelTemplate": "{{=it.person?.name || ''}} ({{=it.role?.title || ''}})",
-            "elementDetailItemPath": "person",
-            "detail": "GENERATED",
-            "isReifiedStatement": true,
-            "autoFocusOnValid": true
-          }
+          "type": "Group",
+          "label": "Beteiligte Personen",
+          "elements": [
+            {
+              "type": "Control",
+              "label": "Kurator:innen",
+              "scope": "#/properties/curators",
+              "options": {
+                "labelAsHeadline": true
+              }
+            },
+            {
+              "type": "Control",
+              "label": "Weitere beteiligte Personen",
+              "scope": "#/properties/involvedPersons",
+              "options": {
+                "imagePath": "person.image",
+                "elementLabelTemplate": "{{=it.person?.name || ''}} ({{=it.role?.title || ''}})",
+                "elementDetailItemPath": "person",
+                "detail": "GENERATED",
+                "isReifiedStatement": true,
+                "autoFocusOnValid": true
+              }
+            }
+          ]
         },
         {
-          "type": "Control",
-          "label": "Institutionen",
-          "scope": "#/properties/involvedCorporations",
-          "options": {
-            "elementImagePath": "corporation.image",
-            "elementLabelTemplate": "{{=it.corporation?.name || ''}} ({{=it.role?.title || ''}})",
-            "elementDetailItemPath": "corporation",
-            "detail": "GENERATED",
-            "isReifiedStatement": true,
-            "autoFocusOnValid": true
-          }
+          "type": "Group",
+          "label": "Beteiligte Körperschaften",
+          "elements": [
+            {
+              "type": "Control",
+              "label": "Veranstalter",
+              "scope": "#/properties/organizers",
+              "options": {
+                "labelAsHeadline": true
+              }
+            },
+            {
+              "type": "Control",
+              "label": "Weitere beteiligte Körperschaften",
+              "scope": "#/properties/involvedCorporations",
+              "options": {
+                "elementImagePath": "corporation.image",
+                "elementLabelTemplate": "{{=it.corporation?.name || ''}} ({{=it.role?.title || ''}})",
+                "elementDetailItemPath": "corporation",
+                "detail": "GENERATED",
+                "isReifiedStatement": true,
+                "autoFocusOnValid": true
+              }
+            }
+          ]
         }
       ]
     },
@@ -231,8 +281,20 @@
       "elements": [
         {
           "type": "Control",
-          "label": "Exponate",
-          "scope": "#/properties/exponats"
+          "label": "ausgestellte Künstler:innen",
+          "scope": "#/properties/exposedArtists",
+          "options": {
+            "labelAsHeadline": true,
+            "orderBy": "name"
+          }
+        },
+        {
+          "type": "Control",
+          "label": "Ausgestellte Werke",
+          "scope": "#/properties/exponats",
+          "options": {
+            "labelAsHeadline": true
+          }
         }
       ]
     },
@@ -241,18 +303,41 @@
       "label": "Quellen",
       "elements": [
         {
-          "type": "Control",
-          "label": "Link zur virtuellen Ausstellung",
-          "scope": "#/properties/exhibitionweblink"
+          "type": "Group",
+          "label": "Quellen zur Ausstellung",
+          "elements": [
+            {
+              "type": "Control",
+              "label": "Ausstellungskataloge",
+              "scope": "#/properties/catalogs",
+              "options": {
+                "additionalKnowledgeSources": ["k10plus"],
+                "elementLabelProp": "title",
+                "detail": "GENERATED"
+              }
+            },
+            {
+              "type": "Control",
+              "label": "weitere Quellen",
+              "scope": "#/properties/resources",
+              "options": {
+                "additionalKnowledgeSources": ["k10plus"],
+                "elementLabelProp": "title",
+                "detail": "GENERATED"
+              }
+            }
+          ]
         },
         {
-          "type": "Control",
-          "label": "Ressourcen",
-          "scope": "#/properties/resources",
-          "options": {
-            "elementLabelProp": "title",
-            "detail": "GENERATED"
-          }
+          "type": "Group",
+          "label": "Virtuelle Ausstellung",
+          "elements": [
+            {
+              "type": "Control",
+              "label": "Link zur virtuellen Ausstellung",
+              "scope": "#/properties/exhibitionweblink"
+            }
+          ]
         }
       ]
     },

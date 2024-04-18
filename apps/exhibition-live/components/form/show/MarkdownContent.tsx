@@ -16,7 +16,7 @@ const MarkdownContent = ({ mdDocument }: MarkdownContentProps) => {
   const [reactContent, setMarkdownSource] = useRemark({
     remarkPlugins: [remarkMath],
     rehypePlugins: [
-    //  [rehypeParse as any, { fragment: true }],
+      //  [rehypeParse as any, { fragment: true }],
       rehypeDocument as any,
       rehypeKatex as any,
       [

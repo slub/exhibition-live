@@ -255,12 +255,6 @@
         },
         "description": {
           "type": "string"
-        },
-        "tags": {
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/Tag"
-          }
         }
       }
     },
@@ -389,7 +383,12 @@
             },
             "dateModifier": {
               "type": "integer",
+              "title": "Art der Zeitangabe",
               "oneOf": [
+                {
+                  "const": 0,
+                  "title": "exakt"
+                },
                 {
                   "const": 1,
                   "title": "ca."
@@ -416,7 +415,12 @@
             },
             "dateModifier": {
               "type": "integer",
+              "title": "Art der Zeitangabe",
               "oneOf": [
+                {
+                  "const": 0,
+                  "title": "exakt"
+                },
                 {
                   "const": 1,
                   "title": "ca."
@@ -539,7 +543,12 @@
             },
             "dateModifier": {
               "type": "integer",
+              "title": "Art der Zeitangabe",
               "oneOf": [
+                {
+                  "const": 0,
+                  "title": "exakt"
+                },
                 {
                   "const": 1,
                   "title": "ca."
@@ -566,7 +575,12 @@
             },
             "dateModifier": {
               "type": "integer",
+              "title": "Art der Zeitangabe",
               "oneOf": [
+                {
+                  "const": 0,
+                  "title": "exakt"
+                },
                 {
                   "const": 1,
                   "title": "ca."
@@ -603,6 +617,10 @@
             "$ref": "#/$defs/Genre"
           }
         },
+        "parent": {
+          "title": "Übergeordnete Ausstellung",
+          "$ref": "#/$defs/Exhibition"
+        },
         "externalId": {
           "type": "string",
           "maxLength": 50
@@ -638,10 +656,28 @@
             "$ref": "#/$defs/Tag"
           }
         },
+        "exposedArtists": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Person"
+          }
+        },
+        "curators": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Person"
+          }
+        },
         "involvedPersons": {
           "type": "array",
           "items": {
             "$ref": "#/$defs/InvolvedPerson"
+          }
+        },
+        "organizers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Corporation"
           }
         },
         "involvedCorporations": {
@@ -688,6 +724,12 @@
           "type": "array",
           "items": {
              "$ref": "#/$defs/ExhibitionExponat"
+          }
+        },
+        "catalogs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Resource"
           }
         },
         "resources": {

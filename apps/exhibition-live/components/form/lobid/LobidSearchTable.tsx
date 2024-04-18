@@ -44,6 +44,11 @@ type LobIDEntry = {
 
 const nullOnEmpty = (arr: any[]) => (arr.length > 0 ? arr : null);
 
+const defaultGndPrimaryFieldExtract: PrimaryFieldExtract<any> = {
+  label: "preferredName",
+  image: (entry: any) => entry.depiction?.[0]?.thumbnail,
+};
+
 const gndPrimaryFields: PrimaryFieldExtractDeclaration = {
   DifferentiatedPerson: {
     label: "preferredName",
@@ -75,7 +80,7 @@ const getFirstMatchingFieldDeclaration = <T,>(
   fieldDeclaration: PrimaryFieldExtractDeclaration<T>,
 ): PrimaryFieldExtract<T> | null => {
   const key = Object.keys(fieldDeclaration).find((key) => type.includes(key));
-  return key ? fieldDeclaration[key] : null;
+  return key ? fieldDeclaration[key] : defaultGndPrimaryFieldExtract;
 };
 
 const defaultPrimaryFields: PrimaryFieldExtract<any> = {

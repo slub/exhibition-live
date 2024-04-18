@@ -26,6 +26,9 @@ const additionalOptions: Record<string, any> = {
   ExhibitionCategory: {
     dropdown: true,
   },
+  ResourceType: {
+    dropdown: true,
+  },
 };
 const createStubLayout = (defs: string, baseIRI: string, label?: string) => ({
   type: "VerticalLayout",
@@ -88,4 +91,6 @@ export const uischemas: JsonFormsUISchemaRegistryEntry[] = [
   "Genre",
   "Exhibition",
   "Occupation",
+  "ResourceType",
+  "Resource",
 ].map((key) => createUiSchema(key, BASE_IRI));

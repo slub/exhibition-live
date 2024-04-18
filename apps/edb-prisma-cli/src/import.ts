@@ -1,7 +1,7 @@
 import cliProgress from "cli-progress";
 import { PrismaClient } from "@prisma/client";
 import { AbstractDatastore, CountAndIterable } from "@slub/edb-global-types";
-import {typeIRItoTypeName} from "./dataStore";
+import { typeIRItoTypeName } from "./dataStore";
 
 type PropertiesAndConnects = {
   id?: string;
@@ -80,7 +80,7 @@ const getPropertiesAndConnects = async (
             prisma,
             importError,
             `${key}_`,
-            middleware
+            middleware,
           );
         properties = {
           ...properties,
@@ -182,7 +182,7 @@ const importData = async (
       document: any,
       importError: Set<string>,
     ) => {
-      const typeName = importStore.typeIRItoTypeName(typeIRI)
+      const typeName = importStore.typeIRItoTypeName(typeIRI);
       try {
         await importStore
           .loadDocument(typeName, entityIRI)

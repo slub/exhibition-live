@@ -143,6 +143,9 @@ const MaterialArrayChipsLayoutComponent = (props: ArrayLayoutProps & {}) => {
         readonly={readonly}
         isReifiedStatement={isReifiedStatement}
         formsPath={makeFormsPath(config?.formsPath, path)}
+        additionalKnowledgeSources={
+          appliedUiSchemaOptions.additionalKnowledgeSources
+        }
       />
       {modalIsOpen && (
         <SemanticFormsModal

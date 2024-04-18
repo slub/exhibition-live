@@ -23,7 +23,7 @@ import {
   useSimilarityFinderState,
 } from "../state";
 import { SearchbarWithFloatingButton } from "../layout/main-layout/Searchbar";
-import SimilarityFinder from "../form/SimilarityFinder";
+import SimilarityFinder, { KnowledgeSources } from "../form/SimilarityFinder";
 import { JSONSchema7 } from "json-schema";
 import { AutocompleteSuggestion } from "../form/DebouncedAutoComplete";
 import { NoteAdd } from "@mui/icons-material";
@@ -34,6 +34,8 @@ export interface ArrayLayoutToolbarProps {
   errors: string;
   path: string;
 
+  labelAsHeadline?: boolean;
+
   addItem(path: string, data: any): () => void;
 
   createDefault(): any;
@@ -42,6 +44,8 @@ export interface ArrayLayoutToolbarProps {
   typeIRI?: string;
   onCreate?: () => void;
   isReifiedStatement?: boolean;
+
+  additionalKnowledgeSources?: string[];
 }
 
 const getDefaultLabelKey = (typeIRI?: string) => {
@@ -52,6 +56,7 @@ const getDefaultLabelKey = (typeIRI?: string) => {
 export const ArrayLayoutToolbar = memo(
   ({
     label,
+    labelAsHeadline,
     errors,
     addItem,
     path,
@@ -60,6 +65,7 @@ export const ArrayLayoutToolbar = memo(
     onCreate,
     isReifiedStatement,
     formsPath,
+    additionalKnowledgeSources,
   }: ArrayLayoutToolbarProps & {
     schema?: JsonSchema7;
     formsPath?: string;
@@ -144,7 +150,7 @@ export const ArrayLayoutToolbar = memo(
 
     return (
       <Box>
-        {isReifiedStatement && (
+        {(isReifiedStatement || labelAsHeadline) && (
           <Box>
             <Typography variant={"h4"}>{label}</Typography>
           </Box>
@@ -154,7 +160,7 @@ export const ArrayLayoutToolbar = memo(
             <TextField
               fullWidth
               disabled={Boolean(readonly)}
-              label={label}
+              label={labelAsHeadline ? typeName : label}
               variant="standard"
               onChange={(ev) => handleSearchStringChange(ev.target.value)}
               value={searchString || ""}
@@ -231,6 +237,9 @@ export const ArrayLayoutToolbar = memo(
                 jsonSchema={schema as JSONSchema7}
                 onExistingEntityAccepted={handleExistingEntityAccepted}
                 onMappedDataAccepted={handleMappedData}
+                additionalKnowledgeSources={
+                  (additionalKnowledgeSources || []) as KnowledgeSources[]
+                }
               />
             </SearchbarWithFloatingButton>
           )}

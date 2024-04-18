@@ -109,13 +109,7 @@ export const EditEntityModal = NiceModal.create(
         });
         modal.remove();
       };
-      if (isStale) {
-        return NiceModal.show(GenericModal, {
-          type: "save before proceed",
-        }).then(() => handleSave(acceptCallback));
-      } else {
-        return acceptCallback();
-      }
+      return handleSave(acceptCallback);
     }, [formData, loadedSchema, handleSave, modal, isStale]);
 
     const handleSaveAndAccept = useCallback(async () => {

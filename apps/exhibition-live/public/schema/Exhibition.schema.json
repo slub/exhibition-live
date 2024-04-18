@@ -617,6 +617,9 @@
           "type": "string",
           "maxLength": 300
         },
+        "placesUnknown": {
+          "type": "boolean"
+        },
         "places": {
           "type": "array",
           "items": {

@@ -100,6 +100,15 @@
           "type": "Control",
           "label": "Ausstellungsstätten (Institutionen und Räume)",
           "scope": "#/properties/places",
+          "rule": {
+            "effect": "SHOW",
+            "condition": {
+              "scope": "#/properties/placesUnknown",
+              "schema": {
+                "const": false
+              }
+            }
+          },
           "options": {
             "detail": "GENERATED"
           }
@@ -108,9 +117,23 @@
           "type": "Control",
           "label": "Ausstellungsorte (Städte und Länder)",
           "scope": "#/properties/locations",
+          "rule": {
+            "effect": "DISABLE",
+            "condition": {
+              "scope": "#/properties/placesUnknown",
+              "schema": {
+                "const": true
+              }
+            }
+          },
           "options": {
             "detail": "GENERATED"
           }
+        },
+        {
+          "type": "Control",
+          "label": "Ausstellungsstätte unbekannt",
+          "scope": "#/properties/placesUnknown"
         }
       ]
     },

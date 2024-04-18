@@ -56,6 +56,12 @@ Other SPARQL Endpoints, like Jena Fuseki, Virtuoso, Blazegraph or GraphDB can be
 Additional effort might be needed to configure CORS and authentication and to get along with some
 Endpoints not beeing fully SPARQL 1.1 compliant.
 
+### Endpoint Configuration
+
+The configuration of endpoints within the `exhibition-live` application can either be done dynamically at runtime using
+the settings modal or by providing a `SPARQL_ENDPOINT` environment variable at build time, which disables setting the endpoint
+within the modal and is especially suitable for production deployments, where one wants to make sure all users operate on the same endpoint.
+
 ## Storybook
 
 This project uses [Storybooks](https://storybook.js.org/) to enforce reusable component based development and to document them with
@@ -67,6 +73,19 @@ bun i && bun run storybook
 ```
 
 Open [http://localhost:6006](http://localhost:6006) with your browser to see the storybook.
+
+## Testing
+
+Unit tests of core functionality is done by `jest`. For integration tests of the frontend `Cypress` is being used.
+
+### Trouble Shooting
+
+Cypress under Nix:
+it might be necessary to delete `~/.cache/Cypress`
+
+```
+rm -rf ~/.cache/Cypress
+```
 
 ## Using Docker
 

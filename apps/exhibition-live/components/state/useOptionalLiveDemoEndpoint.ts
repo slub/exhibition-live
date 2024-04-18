@@ -6,8 +6,9 @@ import { SparqlEndpoint, useSettings } from "./useLocalSettings";
  * It is used to provide an open database connection for the live demo.
  */
 export const useOptionalLiveDemoEndpoint = () => {
-  const { sparqlEndpoints, setSparqlEndpoints } = useSettings();
+  const { sparqlEndpoints, setSparqlEndpoints, lockedEndpoint } = useSettings();
   useEffect(() => {
+    if (lockedEndpoint) return;
     const demoEndpointURI = "https://ausstellungsdatenbank.kuenste.live/query";
     if (
       window.location.hostname !== "sdv-ahn-adbtest.slub-dresden.de" &&
@@ -27,5 +28,5 @@ export const useOptionalLiveDemoEndpoint = () => {
       };
       setSparqlEndpoints([liveDemoTestDatabase, ...otherEndpoints]);
     }
-  }, [sparqlEndpoints, setSparqlEndpoints]);
+  }, [sparqlEndpoints, setSparqlEndpoints, lockedEndpoint]);
 };

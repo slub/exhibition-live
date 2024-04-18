@@ -67,7 +67,7 @@ const schema: JsonSchema = {
 };
 
 const EndpointChooser: FunctionComponent<Props> = (props) => {
-  const { sparqlEndpoints, setSparqlEndpoints } = useSettings();
+  const { sparqlEndpoints, setSparqlEndpoints, lockedEndpoint } = useSettings();
 
   const handleFormChange = useCallback(
     (state: Pick<JsonFormsCore, "data" | "errors">) => {
@@ -79,6 +79,7 @@ const EndpointChooser: FunctionComponent<Props> = (props) => {
     <Box>
       <Typography variant="h2">Knowledge Base - SPARQL Endpunkte</Typography>
       <JsonForms
+        readonly={!!lockedEndpoint}
         data={sparqlEndpoints}
         schema={schema}
         renderers={materialRenderers}

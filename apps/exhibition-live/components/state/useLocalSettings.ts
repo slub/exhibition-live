@@ -1,6 +1,32 @@
 import useLocalState from "@phntms/use-local-state";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { create } from "zustand";
+import getConfig from "next/config";
+
+export const envToSparqlEndpoint = (
+  env: Record<string, string>,
+): SparqlEndpoint | undefined => {
+  const endpoint = env.SPARQL_ENDPOINT;
+  if (!endpoint) {
+    return;
+  }
+  const label = env.SPARQL_ENDPOINT_LABEL || "Custom";
+  const provider = env.SPARQL_ENDPOINT_PROVIDER || "oxigraph";
+  const username = env.SPARQL_ENDPOINT_USERNAME;
+  const password = env.SPARQL_ENDPOINT_PASSWORD;
+  const token = env.SPARQL_ENDPOINT_TOKEN;
+  return {
+    label,
+    endpoint,
+    active: true,
+    provider,
+    auth: {
+      username,
+      password,
+      token,
+    },
+  } as SparqlEndpoint;
+};
 
 export type SparqlEndpoint = {
   label?: string;
@@ -45,6 +71,7 @@ type ExternalAuthorityConfig = {
 };
 
 export type Settings = {
+  lockedEndpoint: boolean;
   sparqlEndpoints: SparqlEndpoint[];
 
   features: Features;
@@ -106,8 +133,10 @@ type UseSettings = Settings & {
   setGoogleDriveConfig: (config: GoogleDriveConfig) => void;
 };
 
+const sparqlEndpoint = envToSparqlEndpoint(getConfig().publicRuntimeConfig);
 export const useSettings: () => UseSettings = () => {
-  const [settings, setSettings] = useLocalState<Settings>("settings", {
+  const [settingsVolatile, setSettings] = useLocalState<Settings>("settings", {
+    lockedEndpoint: Boolean(sparqlEndpoint),
     sparqlEndpoints: [],
     openai: {},
     googleDrive: {},
@@ -122,6 +151,17 @@ export const useSettings: () => UseSettings = () => {
       enableBackdrop: false,
     },
   });
+
+  const settings = useMemo(() => {
+    if (sparqlEndpoint) {
+      return {
+        ...settingsVolatile,
+        lockedEndpoint: true,
+        sparqlEndpoints: [sparqlEndpoint],
+      };
+    }
+    return settingsVolatile;
+  }, [settingsVolatile]);
 
   const setSparqlEndpoints = useCallback(
     (endpoints: SparqlEndpoint[]) => {

@@ -4,6 +4,123 @@ import {
   DeclarativeMappings,
 } from "../utils/mapping/mappingStrategies";
 
+export const locationDeclarativeMapping: DeclarativeMappings = [
+  {
+    source: {
+      path: "preferredName",
+    },
+    target: {
+      path: "title",
+    },
+  },
+  {
+    source: {
+      path: "biographicalOrHistoricalInformation",
+    },
+    target: {
+      path: "description",
+    },
+    mapping: {
+      strategy: {
+        id: "concatenate",
+        options: {
+          separator: "\n",
+        },
+      },
+    },
+  },
+  {
+    source: {
+      path: "depiction.0.thumbnail",
+    },
+    target: {
+      path: "image",
+    },
+  },
+  {
+    source: {
+      path: "id",
+    },
+    target: {
+      path: "idAuthority.@id",
+    },
+  },
+];
+
+export const corporateBodyDeclarativeMapping: DeclarativeMappings = [
+  {
+    source: {
+      path: "preferredName",
+      expectedSchema: {
+        type: "string",
+      },
+    },
+    target: {
+      path: "name",
+    },
+  },
+  {
+    source: {
+      path: "variantName",
+    },
+    target: {
+      path: "nameVariant",
+    },
+    mapping: {
+      strategy: {
+        id: "append",
+      },
+    },
+  },
+  {
+    source: {
+      path: "id",
+    },
+    target: {
+      path: "idAuthority.@id",
+    },
+  },
+  {
+    source: {
+      path: "spatialAreaOfActivity",
+    },
+    target: {
+      path: "locations",
+    },
+    mapping: {
+      strategy: {
+        id: "createEntity",
+        options: {
+          typeIRI: sladb("Location").value,
+          typeName: "Location",
+          subFieldMapping: {
+            fromEntity: locationDeclarativeMapping,
+          },
+        },
+      },
+    },
+  },
+];
+
+export const tagMapping: DeclarativeMappings = [
+  {
+    source: {
+      path: "preferredName",
+    },
+    target: {
+      path: "title",
+    },
+  },
+  {
+    source: {
+      path: "id",
+    },
+    target: {
+      path: "idAuthority.@id",
+    },
+  },
+];
+
 export const exhibitionDeclarativeMapping: DeclarativeMappings = [
   {
     source: {
@@ -135,25 +252,9 @@ export const exhibitionDeclarativeMapping: DeclarativeMappings = [
         id: "createEntity",
         options: {
           typeIRI: sladb("Location").value,
+          typeName: "Location",
           subFieldMapping: {
-            fromEntity: [
-              {
-                source: {
-                  path: "label",
-                },
-                target: {
-                  path: "title",
-                },
-              },
-              {
-                source: {
-                  path: "id",
-                },
-                target: {
-                  path: "idAuthority.@id",
-                },
-              },
-            ],
+            fromEntity: locationDeclarativeMapping,
           },
         },
       },
@@ -204,24 +305,7 @@ export const exhibitionDeclarativeMapping: DeclarativeMappings = [
                       typeIRI: sladb("Corporation").value,
                       typeName: "Corporation",
                       subFieldMapping: {
-                        fromEntity: [
-                          {
-                            source: {
-                              path: "label",
-                            },
-                            target: {
-                              path: "name",
-                            },
-                          },
-                          {
-                            source: {
-                              path: "id",
-                            },
-                            target: {
-                              path: "idAuthority.@id",
-                            },
-                          },
-                        ],
+                        fromEntity: corporateBodyDeclarativeMapping,
                       },
                     },
                   },
@@ -229,24 +313,6 @@ export const exhibitionDeclarativeMapping: DeclarativeMappings = [
               },
             ],
           },
-        },
-      },
-    },
-  },
-  {
-    source: {
-      path: "hierarchicalSuperiorOfTheConferenceOrEvent.0",
-    },
-    target: {
-      path: "parent",
-    },
-    mapping: {
-      strategy: {
-        id: "createEntity",
-        options: {
-          typeIRI: sladb("Exhibition").value,
-          typeName: "Exhibition",
-          subFieldMapping: {},
         },
       },
     },
@@ -262,25 +328,10 @@ export const exhibitionDeclarativeMapping: DeclarativeMappings = [
       strategy: {
         id: "createEntity",
         options: {
+          typeIRI: sladb("Tag").value,
+          typeName: "Tag",
           subFieldMapping: {
-            fromEntity: [
-              {
-                source: {
-                  path: "label",
-                },
-                target: {
-                  path: "title",
-                },
-              },
-              {
-                source: {
-                  path: "id",
-                },
-                target: {
-                  path: "idAuthority.@id",
-                },
-              },
-            ],
+            fromEntity: tagMapping,
           },
         },
       },
@@ -288,48 +339,26 @@ export const exhibitionDeclarativeMapping: DeclarativeMappings = [
   },
 ];
 
-export const locationDeclarativeMapping: DeclarativeMappings = [
-  {
-    source: {
-      path: "preferredName",
-    },
-    target: {
-      path: "title",
-    },
+exhibitionDeclarativeMapping.push({
+  source: {
+    path: "hierarchicalSuperiorOfTheConferenceOrEvent.0",
   },
-  {
-    source: {
-      path: "biographicalOrHistoricalInformation",
-    },
-    target: {
-      path: "description",
-    },
-    mapping: {
-      strategy: {
-        id: "concatenate",
-        options: {
-          separator: "\n",
+  target: {
+    path: "parent",
+  },
+  mapping: {
+    strategy: {
+      id: "createEntity",
+      options: {
+        typeIRI: sladb("Exhibition").value,
+        typeName: "Exhibition",
+        subFieldMapping: {
+          fromEntity: exhibitionDeclarativeMapping,
         },
       },
     },
   },
-  {
-    source: {
-      path: "depiction",
-    },
-    target: {
-      path: "image",
-    },
-  },
-  {
-    source: {
-      path: "id",
-    },
-    target: {
-      path: "idAuthority.@id",
-    },
-  },
-];
+});
 
 export const event2exhibitionSeriesDeclarativeMapping: DeclarativeMappings = [
   {
@@ -377,25 +406,9 @@ export const event2exhibitionSeriesDeclarativeMapping: DeclarativeMappings = [
         options: {
           single: true,
           typeIRI: sladb("Location").value,
+          typeName: "Location",
           subFieldMapping: {
-            fromEntity: [
-              {
-                source: {
-                  path: "label",
-                },
-                target: {
-                  path: "title",
-                },
-              },
-              {
-                source: {
-                  path: "id",
-                },
-                target: {
-                  path: "idAuthority.@id",
-                },
-              },
-            ],
+            fromEntity: locationDeclarativeMapping,
           },
         },
       },
@@ -530,6 +543,7 @@ export const personDeclarativeMapping: DeclarativeMappings = [
         id: "createEntity",
         options: {
           typeIRI: sladb("Occupation").value,
+          typeName: "Occupation",
           subFieldMapping: {
             fromEntity: occupationDeclarativeMapping,
           },
@@ -588,102 +602,15 @@ export const corporateBody2PlaceDeclarativeMapping: DeclarativeMappings = [
         options: {
           single: true,
           typeIRI: sladb("Location").value,
+          typeName: "Location",
           subFieldMapping: {
-            fromEntity: [
-              {
-                source: {
-                  path: "label",
-                },
-                target: {
-                  path: "title",
-                },
-              },
-              {
-                source: {
-                  path: "id",
-                },
-                target: {
-                  path: "idAuthority.@id",
-                },
-              },
-            ],
+            fromEntity: locationDeclarativeMapping,
           },
         },
       },
     },
   },
 ];
-export const corporateBodyDeclarativeMapping: DeclarativeMappings = [
-  {
-    source: {
-      path: "preferredName",
-      expectedSchema: {
-        type: "string",
-      },
-    },
-    target: {
-      path: "name",
-    },
-  },
-  {
-    source: {
-      path: "variantName",
-    },
-    target: {
-      path: "nameVariant",
-    },
-    mapping: {
-      strategy: {
-        id: "append",
-      },
-    },
-  },
-  {
-    source: {
-      path: "id",
-    },
-    target: {
-      path: "idAuthority.@id",
-    },
-  },
-  {
-    source: {
-      path: "spatialAreaOfActivity",
-    },
-    target: {
-      path: "locations",
-    },
-    mapping: {
-      strategy: {
-        id: "createEntity",
-        options: {
-          typeIRI: sladb("Location").value,
-          subFieldMapping: {
-            fromEntity: [
-              {
-                source: {
-                  path: "label",
-                },
-                target: {
-                  path: "title",
-                },
-              },
-              {
-                source: {
-                  path: "id",
-                },
-                target: {
-                  path: "idAuthority.@id",
-                },
-              },
-            ],
-          },
-        },
-      },
-    },
-  },
-];
-
 export const workDeclarativeMapping: DeclarativeMappings = [
   {
     source: {
@@ -706,28 +633,9 @@ export const workDeclarativeMapping: DeclarativeMappings = [
   },
 ];
 
-export const tagMapping: DeclarativeMappings = [
-  {
-    source: {
-      path: "preferredName",
-    },
-    target: {
-      path: "title",
-    },
-  },
-  {
-    source: {
-      path: "id",
-    },
-    target: {
-      path: "idAuthority.@id",
-    },
-  },
-];
-
 export const lobidTypemap: Record<string, string | string[]> = {
   Exhibition: "ConferenceOrEvent",
-  ExhibitionSeries: "ConferenceOrEvent",
+  ExhibitionSeries: "SeriesOfConferenceOrEvent",
   Person: "DifferentiatedPerson",
   Corporation: "CorporateBody",
   Place: "CorporateBody",

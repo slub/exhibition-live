@@ -111,7 +111,6 @@ const MaterialArrayLayoutComponent = (props: ArrayLayoutProps & {}) => {
   );
 
   const handleCreateNew = useCallback(() => {
-    console.log("handle create new");
     setFormData(irisToData(slent(uuidv4()).value, typeIRI));
     setModalIsOpen(true);
   }, [setModalIsOpen, setFormData, typeIRI]);
@@ -191,7 +190,6 @@ const MaterialArrayLayoutComponent = (props: ArrayLayoutProps & {}) => {
   );
 
   useEffect(() => {
-    console.log("Setting form data");
     setFormData(irisToData(slent(uuidv4()).value, typeIRI));
   }, [formsPath, typeIRI, setFormData]);
 
@@ -224,21 +222,6 @@ const MaterialArrayLayoutComponent = (props: ArrayLayoutProps & {}) => {
       ["label", "asc"],
     );
   }, [realData, orderByPropertyPath, typeIRI]);
-  console.log({
-    orderedAndUniqueData,
-    realData,
-    data,
-    path,
-    schema,
-    errors,
-    renderers,
-    cells,
-    label,
-    required,
-    rootSchema,
-    config,
-    appliedUiSchemaOptions,
-  });
 
   return (
     <div>

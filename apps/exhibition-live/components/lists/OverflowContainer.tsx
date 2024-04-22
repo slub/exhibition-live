@@ -1,5 +1,5 @@
 import React, { useState, MouseEvent, useCallback } from "react";
-import { Tooltip, Typography, TypographyOwnProps } from "@mui/material";
+import { Box, Tooltip, Typography, TypographyOwnProps } from "@mui/material";
 
 type OverflowContainerProps = {
   children: React.ReactNode;
@@ -39,7 +39,7 @@ export const OverflowContainer = ({
       open={tooltipEnabled}
       onClose={() => setTooltipEnabled(false)}
     >
-      <Typography
+      <Box
         sx={{
           overflow: "hidden",
           maxHeight: "10rem",
@@ -49,7 +49,7 @@ export const OverflowContainer = ({
         {...props}
       >
         {children}
-      </Typography>
+      </Box>
     </Tooltip>
   );
 };

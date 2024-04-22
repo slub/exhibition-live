@@ -93,25 +93,13 @@ const MaterialArrayLayoutComponent = (props: ArrayLayoutProps & {}) => {
     removeItems,
   } = props;
   const appliedUiSchemaOptions = merge({}, config, props.uischema.options);
-  const fixedDataMixin = appliedUiSchemaOptions.fixedDataMixin;
   const { readonly, core } = useJsonForms();
   const realData = Resolve.data(core.data, path);
   const typeIRI = schema.properties?.["@type"]?.const;
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [formData, setFormDataProtected] = useState<any>({
+  const [formData, setFormData] = useState<any>({
     ...irisToData(slent(uuidv4()).value, typeIRI),
-    ...(fixedDataMixin || {}),
   });
-
-  const setFormData = useCallback(
-    (data: any) => {
-      setFormDataProtected({
-        ...data,
-        ...(fixedDataMixin || {}),
-      });
-    },
-    [setFormDataProtected, fixedDataMixin],
-  );
 
   const addButtonRef = useRef<HTMLButtonElement>(null);
 
@@ -123,6 +111,7 @@ const MaterialArrayLayoutComponent = (props: ArrayLayoutProps & {}) => {
   );
 
   const handleCreateNew = useCallback(() => {
+    console.log("handle create new");
     setFormData(irisToData(slent(uuidv4()).value, typeIRI));
     setModalIsOpen(true);
   }, [setModalIsOpen, setFormData, typeIRI]);
@@ -202,6 +191,7 @@ const MaterialArrayLayoutComponent = (props: ArrayLayoutProps & {}) => {
   );
 
   useEffect(() => {
+    console.log("Setting form data");
     setFormData(irisToData(slent(uuidv4()).value, typeIRI));
   }, [formsPath, typeIRI, setFormData]);
 
@@ -234,6 +224,21 @@ const MaterialArrayLayoutComponent = (props: ArrayLayoutProps & {}) => {
       ["label", "asc"],
     );
   }, [realData, orderByPropertyPath, typeIRI]);
+  console.log({
+    orderedAndUniqueData,
+    realData,
+    data,
+    path,
+    schema,
+    errors,
+    renderers,
+    cells,
+    label,
+    required,
+    rootSchema,
+    config,
+    appliedUiSchemaOptions,
+  });
 
   return (
     <div>

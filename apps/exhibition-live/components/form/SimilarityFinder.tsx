@@ -267,7 +267,6 @@ const fetchBasicInformationFromGND: (
   const rawEntry = await findEntityWithinLobidByIRI(id);
   const { category, secondary, avatar } = initialData;
   const entry = gndEntryWithMainInfo(rawEntry);
-  console.log({ entry });
   return {
     category,
     avatar,

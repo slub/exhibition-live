@@ -1,7 +1,7 @@
 import React, { FunctionComponent, useCallback } from "react";
 import { JsonView } from "react-json-view-lite";
-import { PrimaryFieldResults } from "../../utils/types";
 import {
+  Box,
   Button,
   Card,
   CardActionArea,
@@ -22,6 +22,8 @@ import { EditEntityModal } from "../edit/EditEntityModal";
 import { useModalRegistry } from "../../state";
 import { EntityDetailCardProps } from "./EntityDetailCardProps";
 import { StylizedDetailCard } from "./StylizedDetailCard";
+import { isString } from "lodash";
+import MarkdownContent from "./MarkdownContentNoSSR";
 
 export const EntityDetailCard: FunctionComponent<EntityDetailCardProps> = ({
   typeIRI,
@@ -64,12 +66,12 @@ export const EntityDetailCard: FunctionComponent<EntityDetailCardProps> = ({
   ]);
 
   const {
-    features: { enableDebug },
+    features: { enableDebug, enableStylizedCard },
   } = useSettings();
 
   return (
     <>
-      {cardInfo.image && cardInfo.description ? (
+      {cardInfo.image && cardInfo.description && enableStylizedCard ? (
         <StylizedDetailCard
           typeIRI={typeIRI}
           entityIRI={entityIRI}
@@ -102,12 +104,18 @@ export const EntityDetailCard: FunctionComponent<EntityDetailCardProps> = ({
               />
             )}
             <CardContent>
-              <Typography gutterBottom variant="h5" component="div">
+              <Typography gutterBottom variant="h1" component="div">
                 {cardInfo.label}
               </Typography>
-              <Typography variant="body2" color="text.secondary">
-                {cardInfo.description}
-              </Typography>
+              {isString(data.originalTitle) ||
+                isString(data.subtitle) ||
+                (cardInfo.description?.length < 300 && (
+                  <Typography variant="body2" color="text.secondary">
+                    {data.subtitle ||
+                      data.originalTitle ||
+                      cardInfo.description}
+                  </Typography>
+                ))}
             </CardContent>
           </CardActionArea>
           {cardActionChildren !== null && (
@@ -125,6 +133,7 @@ export const EntityDetailCard: FunctionComponent<EntityDetailCardProps> = ({
               )}
             </CardActions>
           )}
+          <Box>{<MarkdownContent mdDocument={cardInfo.description} />}</Box>
         </Card>
       )}
       <LobidAllPropTable

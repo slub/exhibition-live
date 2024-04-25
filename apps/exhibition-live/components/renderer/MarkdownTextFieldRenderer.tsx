@@ -14,6 +14,7 @@ import rehypeExternalLinks from "rehype-external-links";
 import rehypeSanitize from "rehype-sanitize";
 
 import MDEditor, { MDEditorMarkdown } from "./MDEditor";
+import TurndownService from "turndown";
 
 const MarkdownTextFieldRenderer = (props: ControlProps) => {
   const {
@@ -41,6 +42,25 @@ const MarkdownTextFieldRenderer = (props: ControlProps) => {
   const rehypePlugins = useMemo(
     () => [[rehypeSanitize], [rehypeExternalLinks, { target: "_blank" }]],
     [],
+  );
+
+  const handlePaste = useCallback(
+    (e: React.ClipboardEvent<HTMLTextAreaElement>) => {
+      e.preventDefault();
+
+      const htmlContent = e.clipboardData.getData("text/html"),
+        turndownService = new TurndownService(),
+        markdownContent = turndownService.turndown(htmlContent);
+      //insert text at cursor position
+      const start = e.currentTarget.selectionStart,
+        end = e.currentTarget.selectionEnd,
+        text = e.currentTarget.value,
+        before = text.substring(0, start),
+        after = text.substring(end, text.length),
+        newText = before + markdownContent + after;
+      handleChange_(newText);
+    },
+    [handleChange_],
   );
 
   return (
@@ -73,6 +93,7 @@ const MarkdownTextFieldRenderer = (props: ControlProps) => {
           <MDEditor
             textareaProps={{
               id: id + "-input",
+              onPaste: handlePaste,
             }}
             value={data as string}
             onChange={handleChange_}
@@ -87,6 +108,9 @@ const MarkdownTextFieldRenderer = (props: ControlProps) => {
           />
         ) : (
           <MDEditorMarkdown
+            wrapperElement={{
+              "data-color-mode": "light",
+            }}
             source={data as string}
             rehypePlugins={rehypePlugins as any}
           />

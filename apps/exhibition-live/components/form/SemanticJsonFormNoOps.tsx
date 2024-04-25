@@ -55,6 +55,7 @@ import InlineDropdownRenderer from "../renderer/InlineDropdownRenderer";
 import { ErrorObject } from "ajv";
 import { OptionsModal } from "./OptionsModal";
 import { useTranslation } from "next-i18next";
+import MarkdownTextFieldRenderer from "../renderer/MarkdownTextFieldRenderer";
 
 export type CRUDOpsType = {
   load: () => Promise<void>;
@@ -158,6 +159,10 @@ const renderers = [
   {
     tester: materialBooleanControlTester,
     renderer: MaterialBooleanControl,
+  },
+  {
+    tester: rankWith(10, scopeEndsWith("description")),
+    renderer: MarkdownTextFieldRenderer,
   },
 ];
 

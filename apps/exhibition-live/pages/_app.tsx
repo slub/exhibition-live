@@ -46,18 +46,20 @@ function App({ Component, pageProps }: AppProps) {
   return (
     <QueryClientProviderWrapper>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <ThemeComponent>
-          <SnackbarProvider>
-            <NiceModal.Provider>
-              <GoogleOAuthProvider
-                clientId={process.env.NEXT_PUBLIC_GAPI_OAUTH_CLIENT_ID}
-              >
-                <AdbProvider>{<Component {...pageProps} />}</AdbProvider>
-              </GoogleOAuthProvider>
-            </NiceModal.Provider>
-          </SnackbarProvider>
-        </ThemeComponent>
-        <ReactQueryDevtools initialIsOpen={false} />
+        <Provider store={store}>
+          <ThemeComponent>
+            <SnackbarProvider>
+              <NiceModal.Provider>
+                <GoogleOAuthProvider
+                  clientId={process.env.NEXT_PUBLIC_GAPI_OAUTH_CLIENT_ID}
+                >
+                  <AdbProvider>{<Component {...pageProps} />}</AdbProvider>
+                </GoogleOAuthProvider>
+              </NiceModal.Provider>
+            </SnackbarProvider>
+          </ThemeComponent>
+          <ReactQueryDevtools initialIsOpen={false} />
+        </Provider>
       </LocalizationProvider>
     </QueryClientProviderWrapper>
   );

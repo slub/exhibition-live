@@ -21,6 +21,7 @@ import NewSemanticJsonForm from "../../form/SemanticJsonForm";
 import { useModifiedRouter } from "../../basic";
 import { EntityDetailElement } from "../../form/show";
 import { RootFormProvider } from "../../provider";
+import { useFormDataStore } from "../../state/reducer";
 
 type Props = {
   children: React.ReactChild;
@@ -30,7 +31,7 @@ type Props = {
 };
 const WithPreviewForm = ({ classIRI, entityIRI, data, children }: Props) => {
   const isLandscape = false;
-  const { previewEnabled, togglePreview, formData } = useFormEditor();
+  const { previewEnabled } = useFormEditor();
   const { features } = useSettings();
   const { width: rightDrawerWidth, open: rightDrawerOpen } =
     useRightDrawerState();
@@ -84,7 +85,11 @@ export type MainFormProps = {
 };
 const TypedForm = ({ typeName, entityIRI, classIRI }: MainFormProps) => {
   //const { formData: data, setFormData: setData } = useFormData();
-  const [data, setData] = useState(irisToData(entityIRI, classIRI));
+  const { formData: data, setFormData: setData } = useFormDataStore({
+    entityIRI,
+    typeIRI: classIRI,
+  });
+
   const { search: searchText } = useGlobalSearch();
   const router = useModifiedRouter();
 

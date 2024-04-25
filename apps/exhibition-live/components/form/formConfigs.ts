@@ -1,5 +1,6 @@
 import namespace from "@rdfjs/namespace";
 import { NamespaceBuilderPrefixes } from "@slub/edb-core-types";
+import { v4 as uuidv4 } from "uuid";
 
 export const sladb = namespace("http://ontologies.slub-dresden.de/exhibition#");
 export const slent = namespace(
@@ -17,3 +18,5 @@ export const defaultJsonldContext = {
 export const defaultQueryBuilderOptions: NamespaceBuilderPrefixes = {
   prefixes: { [""]: sladb, slent: slent },
 };
+
+export const createNewIRI = () => slent(uuidv4()).value;

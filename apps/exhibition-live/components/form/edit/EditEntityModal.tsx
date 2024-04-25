@@ -1,6 +1,6 @@
 import NiceModal, { useModal } from "@ebay/nice-modal-react";
 import { useTypeIRIFromEntity } from "../../state";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { primaryFieldExtracts, typeIRItoTypeName } from "../../config";
 import useExtendedSchema from "../../state/useExtendedSchema";
 import { useCRUDWithQueryClient } from "../../state/useCRUDWithQueryClient";
@@ -20,6 +20,7 @@ import GenericModal from "../GenericModal";
 import { SemanticJsonFormNoOps } from "../SemanticJsonFormNoOps";
 import MuiEditDialog from "../../renderer/MuiEditDialog";
 import { useSnackbar } from "notistack";
+import { useFormDataStore } from "../../state/reducer";
 
 type EntityDetailModalProps = {
   typeIRI: string | undefined;
@@ -65,7 +66,14 @@ export const EditEntityModal = NiceModal.create(
       };
     }, [typeName, data]);
 
-    const [formData, setFormData] = useState<any>(data);
+    const { formData, setFormData } = useFormDataStore({
+      entityIRI,
+      typeIRI,
+    });
+
+    useEffect(() => {
+      setFormData(data);
+    }, [data, setFormData]);
     const uischema = useMemo(
       () => uischemata[typeName] || (uischemas as any)[typeName],
       [typeName],

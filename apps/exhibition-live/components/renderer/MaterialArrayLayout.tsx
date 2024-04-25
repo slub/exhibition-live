@@ -53,7 +53,7 @@ import { createNewIRI, slent } from "../form/formConfigs";
 import { v4 as uuidv4 } from "uuid";
 import { Grid, IconButton, List, Paper } from "@mui/material";
 import { SemanticFormsInline } from "./SemanticFormsInline";
-import AddIcon from "@mui/icons-material/Add";
+import CheckIcon from "@mui/icons-material/Check";
 import { useCRUDWithQueryClient } from "../state/useCRUDWithQueryClient";
 import { useSnackbar } from "notistack";
 import { ErrorObject } from "ajv";
@@ -308,7 +308,7 @@ const MaterialArrayLayoutComponent = (props: ArrayLayoutProps) => {
         />
       )}
       {isReifiedStatement && (
-        <Paper elevation={3}>
+        <Paper elevation={1} sx={{ p: 2, marginTop: 2, marginBottom: 1 }}>
           <Grid
             display={"flex"}
             container
@@ -336,7 +336,7 @@ const MaterialArrayLayoutComponent = (props: ArrayLayoutProps) => {
                 ref={addButtonRef}
               >
                 <Pulse pulse={inlineErrors?.length === 0}>
-                  <AddIcon style={{ fontSize: 40 }} />
+                  <CheckIcon style={{ fontSize: 40 }} />
                 </Pulse>
               </IconButton>
             </Grid>

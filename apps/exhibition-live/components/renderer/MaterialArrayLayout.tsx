@@ -43,22 +43,17 @@ import React, {
 import { ArrayLayoutToolbar } from "./ArrayToolbar";
 import { useJsonForms } from "@jsonforms/react";
 import { memo } from "./config";
-import { uniqBy, orderBy, isArray, isEqual } from "lodash";
+import { uniqBy, orderBy } from "lodash";
 import { SimpleExpandPanelRenderer } from "./SimpleExpandPanelRenderer";
 import { SemanticFormsModal } from "./SemanticFormsModal";
 import { BASE_IRI, primaryFieldExtracts } from "../config";
-import { irisToData, makeFormsPath } from "../utils/core";
+import { irisToData, makeFormsPath, validate } from "../utils/core";
 import { JSONSchema7 } from "json-schema";
-import {
-  defaultJsonldContext,
-  defaultPrefix,
-  slent,
-} from "../form/formConfigs";
+import { createNewIRI, slent } from "../form/formConfigs";
 import { v4 as uuidv4 } from "uuid";
-import { Grid, IconButton, List } from "@mui/material";
+import { Grid, IconButton, List, Paper } from "@mui/material";
 import { SemanticFormsInline } from "./SemanticFormsInline";
 import AddIcon from "@mui/icons-material/Add";
-import { useGlobalCRUDOptions } from "../state/useGlobalCRUDOptions";
 import { useCRUDWithQueryClient } from "../state/useCRUDWithQueryClient";
 import { useSnackbar } from "notistack";
 import { ErrorObject } from "ajv";
@@ -68,12 +63,50 @@ import {
   applyToEachField,
   extractFieldIfString,
 } from "../utils/mapping/simpleFieldExtractor";
+import { useFormDataStore } from "../state/reducer";
+import { JSONSchema } from "json-schema-to-ts";
+import { useTranslation } from "next-i18next";
 
-type OwnProps = {
-  removeItems(path: string, toDelete: number[]): () => void;
-};
-const MaterialArrayLayoutComponent = (props: ArrayLayoutProps & {}) => {
-  const [expanded, setExpanded] = useState<string | boolean>(false);
+const uiSchemaOptionsSchema = {
+  type: "object",
+  properties: {
+    labelAsHeadline: {
+      type: "boolean",
+    },
+    hideRequiredAsterisk: {
+      type: "boolean",
+    },
+    isReifiedStatement: {
+      type: "boolean",
+    },
+    orderBy: {
+      type: "string",
+    },
+    autoFocusOnValid: {
+      type: "boolean",
+    },
+    additionalKnowledgeSources: {
+      type: "array",
+      items: {
+        type: "string",
+      },
+    },
+    elementDetailItemPath: {
+      type: "string",
+    },
+    elementLabelTemplate: {
+      type: "string",
+    },
+    elementLabelProp: {
+      type: "string",
+    },
+    imagePath: {
+      type: "string",
+    },
+  },
+} as const satisfies JSONSchema;
+
+const MaterialArrayLayoutComponent = (props: ArrayLayoutProps) => {
   const innerCreateDefaultValue = useCallback(
     () => createDefaultValue(props.schema),
     [props.schema],
@@ -84,21 +117,26 @@ const MaterialArrayLayoutComponent = (props: ArrayLayoutProps & {}) => {
     schema,
     errors,
     addItem,
-    renderers,
-    cells,
     label,
     required,
     rootSchema,
     config,
     removeItems,
+    uischema,
   } = props;
-  const appliedUiSchemaOptions = merge({}, config, props.uischema.options);
   const { readonly, core } = useJsonForms();
   const realData = Resolve.data(core.data, path);
   const typeIRI = schema.properties?.["@type"]?.const;
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [formData, setFormData] = useState<any>({
-    ...irisToData(slent(uuidv4()).value, typeIRI),
+
+  const { t } = useTranslation();
+
+  const [entityIRI, setEntityIRI] = useState(createNewIRI());
+  const { formData, setFormData } = useFormDataStore({
+    entityIRI,
+    typeIRI,
+    createNewEntityIRI: createNewIRI,
+    autoCreateNewEntityIRI: true,
   });
 
   const addButtonRef = useRef<HTMLButtonElement>(null);
@@ -123,8 +161,6 @@ const MaterialArrayLayoutComponent = (props: ArrayLayoutProps & {}) => {
       bringDefinitionToTop(rootSchema as JSONSchema7, typeName) as JsonSchema,
     [rootSchema, typeName],
   );
-  const { crudOptions } = useGlobalCRUDOptions();
-  const entityIRI = useMemo(() => formData["@id"], [formData]);
   const { saveMutation } = useCRUDWithQueryClient(
     entityIRI,
     typeIRI,
@@ -137,20 +173,15 @@ const MaterialArrayLayoutComponent = (props: ArrayLayoutProps & {}) => {
     const finalData = {
       ...formData,
     };
-    //if(typeof saveMethod === 'function')  saveMethod();
     saveMutation
       .mutateAsync(finalData)
       .then((res) => {
-        enqueueSnackbar("Saved", { variant: "success" });
+        enqueueSnackbar(t("successfully saved"), { variant: "success" });
         addItem(path, res)();
-        const id = slent(uuidv4()).value;
-        setFormData({
-          "@id": id,
-          "@type": typeIRI,
-        });
+        setEntityIRI(createNewIRI());
       })
       .catch((e) => {
-        enqueueSnackbar("Error while saving " + e.message, {
+        enqueueSnackbar(t("error while saving") + e.message, {
           variant: "error",
         });
       });
@@ -163,9 +194,25 @@ const MaterialArrayLayoutComponent = (props: ArrayLayoutProps & {}) => {
     setFormData({});
   }, [setModalIsOpen, addItem, formData, setFormData, typeIRI]);
 
-  const isReifiedStatement = Boolean(appliedUiSchemaOptions.isReifiedStatement);
-  const orderByPropertyPath = appliedUiSchemaOptions.orderBy;
-  const autoFocusOnValid = Boolean(appliedUiSchemaOptions.autoFocusOnValid);
+  const {
+    isReifiedStatement,
+    orderBy: orderByPropertyPath,
+    autoFocusOnValid,
+    additionalKnowledgeSources,
+    elementDetailItemPath,
+    elementLabelTemplate,
+    elementLabelProp = "label",
+    imagePath,
+    labelAsHeadline,
+    hideRequiredAsterisk,
+  } = useMemo(() => {
+    const appliedUiSchemaOptions = merge({}, config, uischema.options);
+    if (validate(uiSchemaOptionsSchema, appliedUiSchemaOptions)) {
+      return appliedUiSchemaOptions;
+    }
+    return {};
+  }, [config, uischema.options]);
+
   const [inlineErrors, setInlineErrors] = useState<ErrorObject[] | null>(null);
   const handleErrors = useCallback(
     (err: ErrorObject[]) => {
@@ -226,11 +273,11 @@ const MaterialArrayLayoutComponent = (props: ArrayLayoutProps & {}) => {
   return (
     <div>
       <ArrayLayoutToolbar
-        labelAsHeadline={appliedUiSchemaOptions.labelAsHeadline}
+        labelAsHeadline={labelAsHeadline}
         label={computeLabel(
           label,
           Boolean(required),
-          appliedUiSchemaOptions.hideRequiredAsterisk,
+          Boolean(hideRequiredAsterisk),
         )}
         errors={errors}
         path={path}
@@ -241,9 +288,7 @@ const MaterialArrayLayoutComponent = (props: ArrayLayoutProps & {}) => {
         readonly={readonly}
         isReifiedStatement={isReifiedStatement}
         formsPath={makeFormsPath(config?.formsPath, path)}
-        additionalKnowledgeSources={
-          appliedUiSchemaOptions.additionalKnowledgeSources
-        }
+        additionalKnowledgeSources={additionalKnowledgeSources}
       />
       {modalIsOpen && (
         <SemanticFormsModal
@@ -263,38 +308,40 @@ const MaterialArrayLayoutComponent = (props: ArrayLayoutProps & {}) => {
         />
       )}
       {isReifiedStatement && (
-        <Grid
-          display={"flex"}
-          container
-          direction={"row"}
-          alignItems={"center"}
-        >
-          <Grid item flex={"1"}>
-            <SemanticFormsInline
-              schema={subSchema}
-              entityIRI={formData["@id"]}
-              typeIRI={typeIRI}
-              onError={handleErrors}
-              formData={formData}
-              onFormDataChange={handleInlineFormDataChange}
-              semanticJsonFormsProps={{
-                disableSimilarityFinder: true,
-              }}
-              formsPath={formsPath}
-            />
+        <Paper elevation={3}>
+          <Grid
+            display={"flex"}
+            container
+            direction={"row"}
+            alignItems={"center"}
+          >
+            <Grid item flex={"1"}>
+              <SemanticFormsInline
+                schema={subSchema}
+                entityIRI={formData["@id"]}
+                typeIRI={typeIRI}
+                onError={handleErrors}
+                formData={formData}
+                onFormDataChange={handleInlineFormDataChange}
+                semanticJsonFormsProps={{
+                  disableSimilarityFinder: true,
+                }}
+                formsPath={formsPath}
+              />
+            </Grid>
+            <Grid item>
+              <IconButton
+                disabled={inlineErrors?.length > 0}
+                onClick={handleSaveAndAdd}
+                ref={addButtonRef}
+              >
+                <Pulse pulse={inlineErrors?.length === 0}>
+                  <AddIcon style={{ fontSize: 40 }} />
+                </Pulse>
+              </IconButton>
+            </Grid>
           </Grid>
-          <Grid item>
-            <IconButton
-              disabled={inlineErrors?.length > 0}
-              onClick={handleSaveAndAdd}
-              ref={addButtonRef}
-            >
-              <Pulse pulse={inlineErrors?.length === 0}>
-                <AddIcon style={{ fontSize: 40 }} />
-              </Pulse>
-            </IconButton>
-          </Grid>
-        </Grid>
+        </Paper>
       )}
       <List dense>
         {data > 0
@@ -313,16 +360,10 @@ const MaterialArrayLayoutComponent = (props: ArrayLayoutProps & {}) => {
                     index={index}
                     count={count}
                     path={childPath}
-                    imagePath={appliedUiSchemaOptions.imagePath}
-                    elementDetailItemPath={
-                      appliedUiSchemaOptions.elementDetailItemPath
-                    }
-                    childLabelTemplate={
-                      appliedUiSchemaOptions.elementLabelTemplate
-                    }
-                    elementLabelProp={
-                      appliedUiSchemaOptions.elementLabelProp || "label"
-                    }
+                    imagePath={imagePath}
+                    elementDetailItemPath={elementDetailItemPath}
+                    childLabelTemplate={elementLabelTemplate}
+                    elementLabelProp={elementLabelProp}
                     formsPath={formsPath}
                   />
                 );

@@ -1,5 +1,11 @@
 import useLocalState from "@phntms/use-local-state";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import {
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { create } from "zustand";
 import getConfig from "next/config";
 
@@ -51,6 +57,7 @@ type Features = {
   enablePreview?: boolean;
   enableDebug?: boolean;
   enableBackdrop?: boolean;
+  enableStylizedCard?: boolean;
 };
 
 type OpenAIConfig = {
@@ -135,33 +142,51 @@ type UseSettings = Settings & {
 
 const sparqlEndpoint = envToSparqlEndpoint(getConfig().publicRuntimeConfig);
 export const useSettings: () => UseSettings = () => {
-  const [settingsVolatile, setSettings] = useLocalState<Settings>("settings", {
-    lockedEndpoint: Boolean(sparqlEndpoint),
-    sparqlEndpoints: [],
-    openai: {},
-    googleDrive: {},
-    externalAuthority: {
-      kxp: {
-        endpoint: "https://sru.bsz-bw.de/swbtest",
+  const [settingsLocalStorage, setLocalSettings] = useLocalState<Settings>(
+    "settings",
+    {
+      lockedEndpoint: Boolean(sparqlEndpoint),
+      sparqlEndpoints: [],
+      openai: {},
+      googleDrive: {},
+      externalAuthority: {
+        kxp: {
+          endpoint: "https://sru.bsz-bw.de/swbtest",
+        },
+      },
+      features: {
+        enableDebug: false,
+        enablePreview: false,
+        enableBackdrop: false,
+        enableStylizedCard: false,
       },
     },
-    features: {
-      enableDebug: false,
-      enablePreview: false,
-      enableBackdrop: false,
-    },
-  });
+  );
 
-  const settings = useMemo(() => {
-    if (sparqlEndpoint) {
-      return {
-        ...settingsVolatile,
-        lockedEndpoint: true,
-        sparqlEndpoints: [sparqlEndpoint],
-      };
-    }
-    return settingsVolatile;
-  }, [settingsVolatile]);
+  const [settingsState, setSettingsState] = useState<Settings>(
+    sparqlEndpoint
+      ? {
+          ...settingsLocalStorage,
+          lockedEndpoint: true,
+          sparqlEndpoints: [
+            {
+              ...sparqlEndpoint,
+              active: true,
+            },
+          ],
+        }
+      : settingsLocalStorage,
+  );
+
+  const setSettings = useCallback(
+    (settings: SetStateAction<Settings>) => {
+      setLocalSettings(settings);
+      setSettingsState(settings);
+    },
+    [setLocalSettings, setSettingsState],
+  );
+
+  const settings = settingsState;
 
   const setSparqlEndpoints = useCallback(
     (endpoints: SparqlEndpoint[]) => {
@@ -209,12 +234,17 @@ export const useSettings: () => UseSettings = () => {
 
   useEffect(() => {
     if (
-      !Array.isArray(settings.sparqlEndpoints) ||
+      (!settings.lockedEndpoint && !Array.isArray(settings.sparqlEndpoints)) ||
       settings.sparqlEndpoints.length === 0
     ) {
       setSparqlEndpoints(defaultSparqlEndpoints);
     }
-  }, [settings.sparqlEndpoints, setSettings, setSparqlEndpoints]);
+  }, [
+    settings.sparqlEndpoints,
+    settings.lockedEndpoint,
+    setSettings,
+    setSparqlEndpoints,
+  ]);
 
   const activeEndpoint = useMemo(
     () => settings.sparqlEndpoints.find((e) => e.active),

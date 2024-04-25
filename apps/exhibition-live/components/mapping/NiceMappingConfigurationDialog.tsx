@@ -22,7 +22,7 @@ import {
 import { OwnColumnDesc } from "../google/types";
 import { JsonView } from "react-json-view-lite";
 import { DeclarativeFlatMapping } from "../utils/mapping/mappingStrategies";
-import { parseJSONObject } from "../utils/core/parseJSON";
+import { parseJSONObject } from "../utils/core";
 
 type NiceMappingConfigurationDialogProps = {
   mapping: any;

@@ -613,6 +613,36 @@ const useKnowledgeBases = () => {
   return kbs;
 };
 
+const performSearch = (
+  searchString: string,
+  typeIRI: string,
+  findOptions: FindOptions,
+  knowledgeBases: KnowledgeBaseDescription<any>[],
+  setSearchResults: (searchResults: Record<KnowledgeSources, any[]>) => void,
+  setElementCount: (resultCount: number) => void,
+) => {
+  console.log("debounced search", searchString, typeIRI, findOptions);
+  return Promise.all(
+    knowledgeBases.map(async (kb) => {
+      return {
+        [kb.id]: await kb.find(searchString, typeIRI, findOptions),
+      };
+    }),
+  ).then((results) => {
+    if (!results) return;
+    const searchResults = Object.assign({}, ...results) as Record<
+      KnowledgeSources,
+      any[]
+    >;
+    setSearchResults(searchResults);
+    const resultCount = Object.values(searchResults).reduce(
+      (acc, list = []) => acc + list.length,
+      0,
+    );
+    setElementCount(resultCount);
+  });
+};
+
 const SimilarityFinder: FunctionComponent<Props> = ({
   finderId,
   data,
@@ -694,48 +724,32 @@ const SimilarityFinder: FunctionComponent<Props> = ({
     >,
   );
 
-  const [lastSearched, setLastSearched] = useState<string | undefined>();
-  /* eslint-disable react-hooks/exhaustive-deps */
-  const searchAll = useCallback(
-    debounce(
-      (searchString: string, typeIRI: string, findOptions?: FindOptions) => {
-        if (lastSearched === searchString) return;
-        setLastSearched(searchString);
-        return Promise.all(
-          knowledgeBases.map(async (kb) => {
-            return {
-              [kb.id]: await kb.find(searchString, typeIRI, findOptions),
-            };
-          }),
-        ).then((results) => {
-          if (!results) return;
-          const searchResults = Object.assign({}, ...results) as Record<
-            KnowledgeSources,
-            any[]
-          >;
-          setSearchResults(searchResults);
-          const resultCount = Object.values(searchResults).reduce(
-            (acc, list = []) => acc + list.length,
-            0,
-          );
-          setElementCount(resultCount);
-        });
-      },
-      500,
-    ),
+  const debouncedSearch = React.useRef(debounce(performSearch, 500)).current;
+
+  const doSearch = useCallback(
+    (search: string) =>
+      debouncedSearch(
+        search,
+        preselectedClassIRI,
+        { limit },
+        knowledgeBases,
+        setSearchResults,
+        setElementCount,
+      ),
     [
+      preselectedClassIRI,
+      limit,
       knowledgeBases,
       setSearchResults,
       setElementCount,
-      lastSearched,
-      setLastSearched,
     ],
   );
 
   useEffect(() => {
+    debouncedSearch.cancel();
     if (!searchString || searchString.length < 1) return;
-    searchAll(searchString, preselectedClassIRI, { limit });
-  }, [searchString, preselectedClassIRI, searchAll, limit]);
+    doSearch(searchString);
+  }, [searchString]);
 
   const [typeName, setTypeName] = useState(
     typeIRItoTypeName(preselectedClassIRI),
@@ -747,7 +761,6 @@ const SimilarityFinder: FunctionComponent<Props> = ({
   useEffect(() => {
     setTypeName(typeIRItoTypeName(preselectedClassIRI));
   }, [preselectedClassIRI, setTypeName]);
-
   const handleMapAbstractAndDescUsingAI = useCallback(
     async (id: string | undefined, entryData: any) => {
       const newData = mapAbstractDataUsingAI(id, typeName, entryData, {

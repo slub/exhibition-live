@@ -25,6 +25,8 @@ import dayjs from "dayjs";
 import "dayjs/locale/de";
 import "dayjs/locale/en";
 import { useEffect } from "react";
+import { Provider } from "react-redux";
+import store from "../components/state/reducer/formStore";
 
 export const queryClient = new QueryClient();
 const QueryClientProviderWrapper = ({

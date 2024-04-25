@@ -90,5 +90,8 @@
   "confirm-mapping-dialog-message": "You can accept the data from the mapping into the database. Decide if you want to overwrite the already entered data or merge it intelligently.",
   "merge data": "merge data",
   "replace data": "overwrite data",
-  "unknown": "unknown"
+  "unknown": "unknown",
+  "successfully saved": "successfully saved",
+  "error while saving": "error while saving",
+  "saved": "saved"
 }

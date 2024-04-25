@@ -90,5 +90,8 @@
   "confirm-mapping-dialog-message": "Sie können die Daten aus der Abbildung in die Datenbank übernehmen, Entschieden Sie ob sie die bereits eingegebenen Datet überscheiben oder intelligent zusammenführen wollen.",
   "merge data": "Daten zusammenführen",
   "replace data": "Daten überschreiben",
-  "unknown": "unbekannt"
+  "unknown": "unbekannt",
+  "successfully saved": "erfolgreich gespeichert",
+  "error while saving": "Fehler beim Speichern",
+  "saved": "gespeichert"
 }

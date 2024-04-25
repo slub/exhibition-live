@@ -1,11 +1,10 @@
-import "../styles/globals.css";
 import "../styles/jquery.typeahead.min.css";
 import "../styles/jquery-ui.min.css";
 import "../styles/highlight.min.css";
 import "../styles/tooltipster.bundle.min.css";
 import "../styles/tooltipster-sideTip-shadow.min.css";
-import "../styles/layout.css";
-import "../styles/temp.css";
+import "@uiw/react-markdown-preview/markdown.css";
+import "@uiw/react-md-editor/markdown-editor.css";
 import "leaflet/dist/leaflet.css";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";

@@ -1,8 +1,33 @@
 import { create } from "zustand";
+import { Lato, Concert_One, Work_Sans as Prompt } from "next/font/google";
+import { NextFontWithVariable } from "next/dist/compiled/@next/font";
+
+// Custom fonts bundled (i.e. no external requests), see <https://nextjs.org/docs/pages/building-your-application/optimizing/fonts>
+export const lato = Lato({
+  weight: ["300", "400", "700"],
+  style: ["normal", "italic"],
+  subsets: ["latin"],
+  variable: "--lato",
+});
+
+export const concertOne = Concert_One({
+  weight: ["400"],
+  style: ["normal"],
+  subsets: ["latin"],
+  variable: "--concert-one",
+});
+
+const prompt = Prompt({
+  weight: ["400"],
+  style: ["normal"],
+  subsets: ["latin"],
+  variable: "--prompt",
+});
 
 type UseThemeSettings = {
   isOpen: string[];
   fontFamily: string;
+  font: NextFontWithVariable;
   borderRadius: number;
   opened: boolean;
   defaultId: string;
@@ -12,7 +37,8 @@ type UseThemeSettings = {
 export const useThemeSettings = create<UseThemeSettings>((set, get) => ({
   isOpen: [], // for active default menu
   defaultId: "default",
-  fontFamily: "'Roboto', sans-serif",
+  fontFamily: prompt.style.fontFamily,
+  font: lato,
   borderRadius: 12,
   opened: true,
   navType: "light",

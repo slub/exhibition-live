@@ -24,6 +24,9 @@ const schema: JsonSchema = {
     enablePreview: {
       type: "boolean",
     },
+    enableStylizedCard: {
+      type: "boolean",
+    },
   },
 };
 

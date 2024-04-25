@@ -1,5 +1,10 @@
+const removeImports = require("next-remove-imports")({
+  test: /node_modules([\s\S]*?)\.(tsx|ts|js|mjs|jsx)$/,
+  matchImports: "\\.(less|css|scss|sass|styl)$",
+});
+
 /** @type {import('next').NextConfig} */
-const nextConfig = {
+const nextConfig = removeImports({
   reactStrictMode: true,
   output: "export",
   images: {
@@ -17,6 +22,6 @@ const nextConfig = {
     SPARQL_ENDPOINT_PASSWORD: process.env.SPARQL_ENDPOINT_PASSWORD,
     SPARQL_ENDPOINT_TOKEN: process.env.SPARQL_ENDPOINT_TOKEN,
   },
-};
+});
 
 module.exports = nextConfig;

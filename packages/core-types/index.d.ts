@@ -53,7 +53,7 @@ export interface SparqlBuildOptions {
   prefixes?: Record<string, string>;
   propertyToIRI: StringToIRIFn;
   typeIRItoTypeName: IRIToStringFn;
-  primaryFields: PrimaryFieldExtractDeclaration;
+  primaryFields: PrimaryFieldDeclaration;
 }
 export interface SelectFetchOptions {
   withHeaders?: boolean;
@@ -96,7 +96,8 @@ export type SparqlEndpoint = {
     | "worker"
     | "blazegraph"
     | "virtuoso"
-    | "qlever";
+    | "qlever"
+    | "rest";
 };
 
 export type SPARQLFlavour = "default" | "oxigraph" | "blazegraph" | "allegro";
@@ -118,4 +119,13 @@ export type BasicThingInformation = {
 export type QueryBuilderOptions = {
   prefixes: Prefixes;
   defaultPrefix: string;
+};
+
+export type Permission = {
+  view: boolean;
+  edit: boolean;
+};
+
+export type PermissionDeclaration<T extends string> = {
+  [typeName in T]: Permission;
 };

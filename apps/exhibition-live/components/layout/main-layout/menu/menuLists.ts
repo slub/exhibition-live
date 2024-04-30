@@ -6,8 +6,8 @@ import {
 import { JSONSchema7 } from "json-schema";
 
 import { MenuGroup } from "./types";
-import { Permission } from "../../../config";
 import { TFunction } from "i18next";
+import { Permission } from "@slub/edb-core-types";
 
 const icons = { IconFaceId, IconPaint, IconDots };
 

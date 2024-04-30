@@ -16,7 +16,7 @@
     "push": "yalc push"
   },
   "devDependencies": {
-    "@comunica/types": "^3.0.3",
+    "@comunica/types": "^2.10.0",
     "@slub/edb-build-helper": "workspace:*",
     "@slub/edb-core-types": "workspace:*",
     "@slub/edb-tsconfig": "workspace:*",
@@ -42,7 +42,7 @@
     "react": "^16.9.0 || ^17.0.0 || ^18"
   },
   "dependencies": {
-    "@comunica/query-sparql": "^3.0.3",
+    "@comunica/query-sparql": "^2.10.2",
     "@slub/json-schema-utils": "workspace:*",
     "@slub/sparql-schema": "workspace:*",
     "@slub/edb-graph-traversal": "workspace:*",

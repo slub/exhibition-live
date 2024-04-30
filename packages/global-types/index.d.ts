@@ -1,4 +1,8 @@
-import { SparqlEndpoint } from "@slub/edb-core-types";
+import {
+  IRIToStringFn,
+  SparqlEndpoint,
+  StringToIRIFn,
+} from "@slub/edb-core-types";
 import { WalkerOptions } from "@slub/edb-graph-traversal";
 import { NamespaceBuilder } from "@rdfjs/namespace";
 import { JSONSchema7 } from "json-schema";
@@ -57,8 +61,8 @@ export type AbstractDatastore<
   ImportResult = any,
   BulkImportResult = any,
 > = {
-  typeNameToTypeIRI: (typeName: string) => string;
-  typeIRItoTypeName: (iri: string) => string;
+  typeNameToTypeIRI: StringToIRIFn;
+  typeIRItoTypeName: IRIToStringFn;
   removeDocument: (
     typeName: string,
     entityIRI: string,

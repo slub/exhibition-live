@@ -2,15 +2,20 @@ import { AbstractDatastore } from "@slub/edb-global-types";
 import { initSPARQLStore } from "@slub/sparql-db-impl";
 import { JSONSchema7 } from "json-schema";
 import { useGlobalCRUDOptions } from "./useGlobalCRUDOptions";
-import { useGlobalSettings } from "./useGlobalSettings";
-import { CRUDFunctions } from "@slub/edb-core-types";
-import { defaultQueryBuilderOptions, sladb } from "../form/formConfigs";
+import {
+  CRUDFunctions,
+  SparqlBuildOptions,
+  StringToIRIFn,
+} from "@slub/edb-core-types";
 import { useMemo } from "react";
 import { WalkerOptions } from "@slub/edb-graph-traversal";
+import { useAdbContext } from "../provider";
 
 type UserDataStoreProps = {
   crudOptionsPartial?: Partial<CRUDFunctions>;
   schema: JSONSchema7;
+  typeNameToTypeIRI: StringToIRIFn;
+  queryBuildOptions: SparqlBuildOptions;
   walkerOptions?: Partial<WalkerOptions>;
 };
 
@@ -19,10 +24,11 @@ type UseDataStoreState = {
   ready: boolean;
 };
 
-export const typeNameToTypeIRI = (typeName: string) => sladb(typeName).value;
 export const useDataStore = ({
   crudOptionsPartial = {},
   schema,
+  typeNameToTypeIRI,
+  queryBuildOptions,
   walkerOptions,
 }: UserDataStoreProps): UseDataStoreState => {
   const { crudOptions: globalCRUDOptions } = useGlobalCRUDOptions();
@@ -31,20 +37,20 @@ export const useDataStore = ({
     [globalCRUDOptions, crudOptionsPartial],
   );
 
-  const { defaultPrefix } = useGlobalSettings();
+  const { jsonLDConfig } = useAdbContext();
   const dataStore = useMemo(
     () =>
       crudOptions.constructFetch &&
       initSPARQLStore({
-        defaultPrefix,
+        defaultPrefix: jsonLDConfig.defaultPrefix,
         typeNameToTypeIRI,
-        queryBuildOptions: defaultQueryBuilderOptions,
+        queryBuildOptions,
         walkerOptions,
         sparqlQueryFunctions: crudOptions,
         schema,
         defaultLimit: 10,
       }),
-    [crudOptions, defaultPrefix, walkerOptions, schema],
+    [crudOptions, jsonLDConfig.defaultPrefix, walkerOptions, schema],
   );
 
   return {

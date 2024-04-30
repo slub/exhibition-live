@@ -107,12 +107,12 @@ export const EntityDetailCard: FunctionComponent<EntityDetailCardProps> = ({
               <Typography gutterBottom variant="h1" component="div">
                 {cardInfo.label}
               </Typography>
-              {isString(data.originalTitle) ||
-                isString(data.subtitle) ||
+              {isString(data?.originalTitle) ||
+                isString(data?.subtitle) ||
                 (cardInfo.description?.length < 300 && (
                   <Typography variant="body2" color="text.secondary">
-                    {data.subtitle ||
-                      data.originalTitle ||
+                    {data?.subtitle ||
+                      data?.originalTitle ||
                       cardInfo.description}
                   </Typography>
                 ))}

@@ -9,7 +9,11 @@ import {
   restoreFromTrash,
   exists,
 } from "@slub/sparql-schema";
-import { CRUDFunctions, SparqlBuildOptions } from "@slub/edb-core-types";
+import {
+  CRUDFunctions,
+  SparqlBuildOptions,
+  StringToIRIFn,
+} from "@slub/edb-core-types";
 import { WalkerOptions } from "@slub/edb-graph-traversal";
 import {
   AbstractDatastore,
@@ -20,7 +24,7 @@ import {
 
 type SPARQLDataStoreConfig = {
   defaultPrefix: string;
-  typeNameToTypeIRI: (typeName: string) => string;
+  typeNameToTypeIRI: StringToIRIFn;
   queryBuildOptions: SparqlBuildOptions;
   walkerOptions?: Partial<WalkerOptions>;
   sparqlQueryFunctions: CRUDFunctions;

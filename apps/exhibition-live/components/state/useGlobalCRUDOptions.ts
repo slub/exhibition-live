@@ -3,7 +3,7 @@ import { WorkerResult } from "async-oxigraph";
 import N3 from "n3";
 import { useCallback, useMemo } from "react";
 
-import { SparqlEndpoint, useSettings } from "./useLocalSettings";
+import { useSettings } from "./useLocalSettings";
 import { useOxigraph } from "./useOxigraph";
 import { CRUDFunctions } from "@slub/edb-core-types";
 import {
@@ -11,6 +11,7 @@ import {
   oxigraphCrudOptions,
   qleverCrudOptions,
 } from "@slub/remote-query-implementations";
+import { SparqlEndpoint } from "../types/settings";
 
 type UseGlobalCRUDOptions = () => {
   crudOptions?: CRUDFunctions;

@@ -2,11 +2,9 @@ import { useGlobalSearch } from "./useGlobalSearch";
 import { useCallback, useState } from "react";
 import { useCRUDWithQueryClient } from "./useCRUDWithQueryClient";
 import { JSONSchema7 } from "json-schema";
-import { slent } from "../form/formConfigs";
-import { v4 as uuidv4 } from "uuid";
 import get from "lodash/get";
-import { primaryFields } from "../config";
 import { useRightDrawerState } from "./useRightDrawerState";
+import { useAdbContext } from "../provider";
 
 export const useGlobalSearchWithHelper = (
   typeName: string,
@@ -15,6 +13,10 @@ export const useGlobalSearchWithHelper = (
   formsPath: string,
   onDataAccepted?: (data: any) => void,
 ) => {
+  const {
+    createEntityIRI,
+    queryBuildOptions: { primaryFields },
+  } = useAdbContext();
   const globalSearch = useGlobalSearch();
   const { setTypeName, setPath, setSearch, path } = globalSearch;
 
@@ -41,8 +43,7 @@ export const useGlobalSearchWithHelper = (
 
   const handleMappedData = useCallback(
     (newData: any) => {
-      const prefix = slent[""].value;
-      const newIRI = `${prefix}${uuidv4()}`;
+      const newIRI = createEntityIRI(typeName);
       saveMutation.mutate({
         ...newData,
         "@id": newIRI,

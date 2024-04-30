@@ -26,6 +26,16 @@ import "dayjs/locale/en";
 import { useEffect } from "react";
 import { Provider } from "react-redux";
 import store from "../components/state/reducer/formStore";
+import { OptionalLiveDemoEndpoint } from "../components/state/useOptionalLiveDemoEndpoint";
+import {
+  createNewIRI,
+  defaultJsonldContext,
+  defaultPrefix,
+  defaultQueryBuilderOptions,
+  sladb,
+} from "../components/form/formConfigs";
+import { envToSparqlEndpoint } from "../components/config/envToSparqlEndpoint";
+import getConfig from "next/config";
 
 export const queryClient = new QueryClient();
 const QueryClientProviderWrapper = ({
@@ -37,6 +47,9 @@ const QueryClientProviderWrapper = ({
     <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
   );
 };
+
+const sparqlEndpoint = envToSparqlEndpoint(getConfig().publicRuntimeConfig);
+
 function App({ Component, pageProps }: AppProps) {
   const { i18n } = useTranslation();
   useEffect(() => {
@@ -48,13 +61,27 @@ function App({ Component, pageProps }: AppProps) {
         <Provider store={store}>
           <ThemeComponent>
             <SnackbarProvider>
-              <NiceModal.Provider>
-                <GoogleOAuthProvider
-                  clientId={process.env.NEXT_PUBLIC_GAPI_OAUTH_CLIENT_ID}
-                >
-                  <AdbProvider>{<Component {...pageProps} />}</AdbProvider>
-                </GoogleOAuthProvider>
-              </NiceModal.Provider>
+              <AdbProvider
+                queryBuildOptions={defaultQueryBuilderOptions}
+                typeNameToTypeIRI={(name: string) => sladb(name).value}
+                createEntityIRI={createNewIRI}
+                lockedSPARQLEndpoint={sparqlEndpoint}
+                jsonLDConfig={{
+                  defaultPrefix: defaultPrefix,
+                  jsonldContext: defaultJsonldContext,
+                  allowUnsafeSourceIRIs: false,
+                }}
+              >
+                <NiceModal.Provider>
+                  <GoogleOAuthProvider
+                    clientId={process.env.NEXT_PUBLIC_GAPI_OAUTH_CLIENT_ID}
+                  >
+                    <OptionalLiveDemoEndpoint>
+                      {<Component {...pageProps} />}
+                    </OptionalLiveDemoEndpoint>
+                  </GoogleOAuthProvider>
+                </NiceModal.Provider>
+              </AdbProvider>
             </SnackbarProvider>
           </ThemeComponent>
           <ReactQueryDevtools initialIsOpen={false} />

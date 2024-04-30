@@ -1,9 +1,5 @@
 import exhibitionSchema from "../../public/schema/Exhibition.schema.json";
-
-export type Permission = {
-  view: boolean;
-  edit: boolean;
-};
+import { Permission, PermissionDeclaration } from "@slub/edb-core-types";
 
 export const fullPermission: Permission = {
   view: true,
@@ -22,11 +18,9 @@ export const noPermission: Permission = {
 
 export const defaultPermission = viewerPermission;
 
-type ExhibitionPermissionDeclaration = {
-  [typeName in keyof typeof exhibitionSchema.$defs]: Permission;
-};
-
-export const editorPermissions: Partial<ExhibitionPermissionDeclaration> = {
+export const editorPermissions: Partial<
+  PermissionDeclaration<keyof typeof exhibitionSchema.$defs>
+> = {
   Exhibition: fullPermission,
   Tag: fullPermission,
   Person: fullPermission,

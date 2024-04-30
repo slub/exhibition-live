@@ -1,5 +1,6 @@
 import { useEffect } from "react";
-import { SparqlEndpoint, useSettings } from "./useLocalSettings";
+import { useSettings } from "./useLocalSettings";
+import { SparqlEndpoint } from "../types/settings";
 
 /**
  * This hook adds a demo endpoint to the list of endpoints if the app is not running on the test server.
@@ -29,4 +30,13 @@ export const useOptionalLiveDemoEndpoint = () => {
       setSparqlEndpoints([liveDemoTestDatabase, ...otherEndpoints]);
     }
   }, [sparqlEndpoints, setSparqlEndpoints, lockedEndpoint]);
+};
+
+export const OptionalLiveDemoEndpoint = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
+  useOptionalLiveDemoEndpoint();
+  return children;
 };

@@ -7,10 +7,10 @@ import {
 } from "@tanstack/react-query";
 import { NamedAndTypedEntity } from "@slub/edb-core-types";
 import { cleanJSONLD, jsonld2DataSet, LoadResult } from "@slub/sparql-schema";
-import { useGlobalSettings } from "./useGlobalSettings";
 import { CRUDOptions } from "./useSPARQL_CRUD";
 import { useDataStore } from "./useDataStore";
 import { filterUndefOrNull } from "@slub/edb-core-utils";
+import { useAdbContext } from "../provider";
 
 export const useCRUDWithQueryClient = (
   entityIRI: string | undefined,
@@ -21,9 +21,16 @@ export const useCRUDWithQueryClient = (
   crudOptionsPartial: Partial<CRUDOptions> = {},
   allowUnsafeSourceIRIs?: boolean,
 ) => {
-  const { dataStore, ready } = useDataStore({ schema, crudOptionsPartial });
+  const { queryBuildOptions, typeNameToTypeIRI, jsonLDConfig } =
+    useAdbContext();
+  const { dataStore, ready } = useDataStore({
+    schema,
+    crudOptionsPartial,
+    typeNameToTypeIRI,
+    queryBuildOptions,
+  });
 
-  const { defaultPrefix, jsonldContext } = useGlobalSettings();
+  const { defaultPrefix, jsonldContext } = jsonLDConfig;
   //const { resolveSourceIRIs } = useQueryKeyResolver();
   const { enabled, ...queryOptionsRest } = queryOptions || {};
   const queryClient = useQueryClient();

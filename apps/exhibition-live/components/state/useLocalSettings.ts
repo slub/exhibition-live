@@ -7,94 +7,16 @@ import {
   useState,
 } from "react";
 import { create } from "zustand";
-import getConfig from "next/config";
-
-export const envToSparqlEndpoint = (
-  env: Record<string, string>,
-): SparqlEndpoint | undefined => {
-  const endpoint = env.SPARQL_ENDPOINT;
-  if (!endpoint) {
-    return;
-  }
-  const label = env.SPARQL_ENDPOINT_LABEL || "Custom";
-  const provider = env.SPARQL_ENDPOINT_PROVIDER || "oxigraph";
-  const username = env.SPARQL_ENDPOINT_USERNAME;
-  const password = env.SPARQL_ENDPOINT_PASSWORD;
-  const token = env.SPARQL_ENDPOINT_TOKEN;
-  return {
-    label,
-    endpoint,
-    active: true,
-    provider,
-    auth: {
-      username,
-      password,
-      token,
-    },
-  } as SparqlEndpoint;
-};
-
-export type SparqlEndpoint = {
-  label?: string;
-  endpoint: string;
-  active: boolean;
-  auth?: {
-    username?: string;
-    password?: string;
-    token?: string;
-  };
-  provider?:
-    | "allegro"
-    | "oxigraph"
-    | "worker"
-    | "blazegraph"
-    | "virtuoso"
-    | "qlever"
-    | "rest";
-};
-
-type Features = {
-  enablePreview?: boolean;
-  enableDebug?: boolean;
-  enableBackdrop?: boolean;
-  enableStylizedCard?: boolean;
-};
-
-type OpenAIConfig = {
-  organization?: string;
-  apiKey?: string;
-};
-
-type GoogleDriveConfig = {
-  apiKey?: string;
-};
-
-type ExternalAuthorityConfig = {
-  kxp?: {
-    endpoint?: string;
-    baseURL?: string;
-    recordSchema?: string;
-  };
-};
-
-export type Settings = {
-  lockedEndpoint: boolean;
-  sparqlEndpoints: SparqlEndpoint[];
-
-  features: Features;
-  openai: OpenAIConfig;
-  googleDrive: GoogleDriveConfig;
-  externalAuthority: ExternalAuthorityConfig;
-};
-
-export type UseLocalSettings = {
-  settingsOpen: boolean;
-  sparqlEndpoints: SparqlEndpoint[];
-  setSparqlEndpoints: (endpoints: SparqlEndpoint[]) => void;
-  openSettings: () => void;
-  closeSettings: () => void;
-  getActiveEndpoint: () => SparqlEndpoint | undefined;
-};
+import {
+  ExternalAuthorityConfig,
+  Features,
+  GoogleDriveConfig,
+  OpenAIConfig,
+  Settings,
+  SparqlEndpoint,
+  UseLocalSettings,
+} from "../types/settings";
+import { useAdbContext } from "../provider";
 
 const defaultSparqlEndpoints: SparqlEndpoint[] = [
   {
@@ -140,12 +62,12 @@ type UseSettings = Settings & {
   setGoogleDriveConfig: (config: GoogleDriveConfig) => void;
 };
 
-const sparqlEndpoint = envToSparqlEndpoint(getConfig().publicRuntimeConfig);
 export const useSettings: () => UseSettings = () => {
+  const { lockedSPARQLEndpoint } = useAdbContext();
   const [settingsLocalStorage, setLocalSettings] = useLocalState<Settings>(
     "settings",
     {
-      lockedEndpoint: Boolean(sparqlEndpoint),
+      lockedEndpoint: Boolean(lockedSPARQLEndpoint),
       sparqlEndpoints: [],
       openai: {},
       googleDrive: {},
@@ -164,13 +86,13 @@ export const useSettings: () => UseSettings = () => {
   );
 
   const [settingsState, setSettingsState] = useState<Settings>(
-    sparqlEndpoint
+    lockedSPARQLEndpoint
       ? {
           ...settingsLocalStorage,
           lockedEndpoint: true,
           sparqlEndpoints: [
             {
-              ...sparqlEndpoint,
+              ...lockedSPARQLEndpoint,
               active: true,
             },
           ],

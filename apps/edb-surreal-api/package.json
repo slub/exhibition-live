@@ -18,6 +18,7 @@
   "license": "MIT",
   "devDependencies": {
     "@slub/edb-tsconfig": "workspace:*",
+    "@slub/edb-core-types": "workspace:*",
     "@tsconfig/node18": "^18.2.2",
     "bun-types": "^1.0.30",
     "tsx": "^4.7.1",

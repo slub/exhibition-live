@@ -55,7 +55,7 @@ import useExtendedSchema from "../../state/useExtendedSchema";
 import Button from "@mui/material/Button";
 import { download, generateCsv, mkConfig } from "export-to-csv";
 import { useModifiedRouter } from "../../basic";
-import { SparqlEndpoint, useSettings } from "../../state/useLocalSettings";
+import { useSettings } from "../../state/useLocalSettings";
 import { EntityDetailModal } from "../../form/show";
 import { useTranslation } from "next-i18next";
 import {
@@ -69,6 +69,7 @@ import { computeColumns } from "./listHelper";
 import { tableConfig } from "../../config/tableConfig";
 import { encodeIRI, filterUndefOrNull } from "@slub/edb-ui-utils";
 import { bringDefinitionToTop } from "@slub/json-schema-utils";
+import { SparqlEndpoint } from "../../types/settings";
 
 type Props = {
   typeName: string;

@@ -57,7 +57,7 @@ export const prismaStore: (
       take: limit,
       select,
     });
-    return entries.map((entry) => toJSONLD(entry));
+    return entries.map((entry: any) => toJSONLD(entry));
   };
   const dataStore: AbstractDatastore = {
     typeNameToTypeIRI: typeNameToTypeIRI,

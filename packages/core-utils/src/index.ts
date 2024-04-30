@@ -11,3 +11,4 @@ export * from "./ellipsis";
 export * from "./parseMarkdownLink";
 export * from "./filterJSONLD";
 export * from "./numeric2JSDate";
+export * from "./permissions";

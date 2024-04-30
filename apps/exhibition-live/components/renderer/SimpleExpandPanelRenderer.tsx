@@ -12,10 +12,7 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 
 import { Clear, Save } from "@mui/icons-material";
 import { BASE_IRI, primaryFields } from "../config";
-import {
-  applyToEachField,
-  extractFieldIfString,
-} from "../utils/mapping/simpleFieldExtractor";
+import { applyToEachField, extractFieldIfString } from "@slub/edb-ui-utils";
 import { JSONSchema7 } from "json-schema";
 import { useJsonForms } from "@jsonforms/react";
 import dot from "dot";
@@ -23,10 +20,10 @@ import { useCRUDWithQueryClient } from "../state/useCRUDWithQueryClient";
 import get from "lodash/get";
 import NiceModal from "@ebay/nice-modal-react";
 import { EntityDetailModal } from "../form/show";
-import { bringDefinitionToTop } from "@slub/json-schema-utils";
-import { withEllipsis } from "../utils/typography";
-import { specialDate2LocalDate } from "../utils/specialDate2LocalDate";
+import { withEllipsis } from "@slub/edb-ui-utils";
+import { specialDate2LocalDate } from "@slub/edb-ui-utils";
 import { useTranslation } from "next-i18next";
+import { bringDefinitionToTop } from "@slub/json-schema-utils";
 
 type SimpleExpandPanelRendererProps = {
   data: any;

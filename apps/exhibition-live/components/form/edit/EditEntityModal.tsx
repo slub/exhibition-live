@@ -6,21 +6,17 @@ import useExtendedSchema from "../../state/useExtendedSchema";
 import { useCRUDWithQueryClient } from "../../state/useCRUDWithQueryClient";
 import { defaultJsonldContext, defaultPrefix } from "../formConfigs";
 import { useTranslation } from "next-i18next";
-import { PrimaryFieldResults } from "../../utils/types";
-import {
-  applyToEachField,
-  extractFieldIfString,
-} from "../../utils/mapping/simpleFieldExtractor";
+import { applyToEachField, extractFieldIfString } from "@slub/edb-ui-utils";
 import { Button, Stack } from "@mui/material";
 import { JSONSchema7 } from "json-schema";
 import { uischemata } from "../uischemaForType";
 import { uischemas } from "../uischemas";
-import { cleanJSONLD } from "../../utils/crud";
-import GenericModal from "../GenericModal";
 import { SemanticJsonFormNoOps } from "../SemanticJsonFormNoOps";
 import MuiEditDialog from "../../renderer/MuiEditDialog";
 import { useSnackbar } from "notistack";
 import { useFormDataStore } from "../../state/reducer";
+import { PrimaryFieldResults } from "@slub/edb-core-types";
+import { cleanJSONLD } from "@slub/sparql-schema";
 
 type EntityDetailModalProps = {
   typeIRI: string | undefined;

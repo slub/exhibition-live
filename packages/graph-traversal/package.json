@@ -57,8 +57,7 @@
     "@tpluscode/rdf-ns-builders": "^2.0.1",
     "add": "^2.0.6",
     "clownface": "2.0.2",
-    "lodash-es": "^4.17.21",
-    "pnpm": "^8.15.3"
+    "lodash-es": "^4.17.21"
   },
   "repository": {
     "type": "git",

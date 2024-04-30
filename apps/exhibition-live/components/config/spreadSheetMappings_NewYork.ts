@@ -1,13 +1,13 @@
-import { DeclarativeFlatMappings } from "../utils/mapping/mappingStrategies";
+import { DeclarativeFlatMappings } from "@slub/edb-ui-utils";
 import { sladb } from "../form/formConfigs";
 import { OwnColumnDesc } from "../google/types";
-import { gndBaseIRI } from "../utils/gnd/prefixes";
+import { gndBaseIRI } from "@slub/edb-ui-utils";
 import {
   DeclarativeMatchBasedFlatMappings,
   indexFromTitle,
   matchBased2DeclarativeFlatMapping,
-} from "../utils/mapping/mapMatchBasedByConfig";
-import { filterUndefOrNull } from "@slub/edb-core-utils";
+} from "@slub/edb-ui-utils";
+import { filterUndefOrNull } from "@slub/edb-ui-utils";
 
 /*
 B:Name Kiste

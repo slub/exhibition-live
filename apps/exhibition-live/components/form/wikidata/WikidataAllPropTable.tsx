@@ -12,7 +12,7 @@ import React, { FunctionComponent, useEffect, useState } from "react";
 import {
   CommonPropertyValues,
   getCommonPropsFromWikidata,
-} from "../../utils/wikidata";
+} from "@slub/edb-ui-utils";
 import { OverflowContainer } from "../../lists";
 
 interface OwnProps {

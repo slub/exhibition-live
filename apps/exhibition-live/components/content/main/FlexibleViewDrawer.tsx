@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { TimelineItem, TimelineOptions } from "vis-timeline/types";
-import { filterUndefOrNull } from "../../utils/core";
+import { filterUndefOrNull } from "@slub/edb-ui-utils";
 import { dateValueToDate } from "./Search";
 import { Box, Tab, Tabs } from "@mui/material";
 import VisTimelineWrapper from "../visTimelineWrapper/VisTimelineWrapper";
@@ -9,7 +9,7 @@ import { JsonView } from "react-json-view-lite";
 import { Home, Timeline } from "@mui/icons-material";
 import { useDrawerDimensions } from "../../state";
 import { typeIRItoTypeName } from "../../config";
-import { useDebounce } from "../../utils/hooks/useDebounce";
+import { useDebounce } from "@slub/edb-ui-utils";
 
 type FlexibleViewDrawerProps = {
   data: any;

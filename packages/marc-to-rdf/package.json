@@ -1,0 +1,62 @@
+{
+  "name": "@slub/edb-marc-to-rdf",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs",
+      "default": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "description": "",
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "lint": "eslint \"**/*.ts*\"",
+    "lint-fix": "eslint --fix \"**/*.ts*\"",
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest",
+    "test:watch": "NODE_OPTIONS=--experimental-vm-modules jest --watch --color",
+    "test:coverage": "NODE_OPTIONS=--experimental-vm-modules jest --coverage",
+    "docs": "typedoc --out docs"
+  },
+  "devDependencies": {
+    "@jest/globals": "^29.3.1",
+    "@slub/edb-tsconfig": "workspace:*",
+    "@slub/edb-tsup-config": "workspace:*",
+    "@types/jest": "^29.5.12",
+    "@types/json-schema": "^7.0.14",
+    "@types/lodash": "^4.14.200",
+    "@types/rdf-dataset-ext": "^1.0.3",
+    "@types/rdfjs__data-model": "^2.0.7",
+    "@types/rdfjs__dataset": "^2.0.0",
+    "@types/rdfjs__namespace": "^2.0.8",
+    "@types/rdfjs__parser-jsonld": "^1.2.5",
+    "@types/rdfjs__parser-n3": "^1.1.5",
+    "eslint-config-edb": "workspace:*",
+    "jest": "^29.7.0",
+    "rdf-dataset-ext": "^1.0.1",
+    "ts-jest": "^29.1.2",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "@rdfjs/dataset": "^2.0.1",
+    "@rdfjs/data-model": "^1.3.4",
+    "@rdfjs/namespace": "^2.0.0",
+    "@rdfjs/types": "^1.1.0",
+    "@slub/edb-core-utils": "workspace:*",
+    "clownface": "2.0.2",
+    "lodash-es": "^4.17.21"
+  },
+  "keywords": [
+    "RDF",
+    "JSON Schema",
+    "Semantic Web",
+    "Marc21"
+  ],
+  "license": "MIT"
+}

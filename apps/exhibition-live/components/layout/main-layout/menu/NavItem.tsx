@@ -17,7 +17,7 @@ import { useEffect, useCallback } from "react";
 
 import { useThemeSettings } from "../../../state";
 import { MenuItem } from "./types";
-import { encodeIRI } from "../../../utils/core";
+import { encodeIRI } from "@slub/edb-ui-utils";
 import { slent } from "../../../form/formConfigs";
 
 type NavItemProps = {

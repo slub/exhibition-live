@@ -20,20 +20,20 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import DiscoverAutocompleteInput from "../form/discover/DiscoverAutocompleteInput";
 import { primaryFields, typeIRItoTypeName } from "../config";
 import { AutocompleteSuggestion } from "../form/DebouncedAutoComplete";
-import { extractFieldIfString } from "../utils/mapping/simpleFieldExtractor";
-import { PrimaryField } from "../utils/types";
+import { extractFieldIfString } from "@slub/edb-ui-utils";
 import {
   useGlobalSearchWithHelper,
   useRightDrawerState,
   useKeyEventForSimilarityFinder,
 } from "../state";
-import { makeFormsPath } from "../utils/core";
+import { makeFormsPath } from "@slub/edb-ui-utils";
 import { SearchbarWithFloatingButton } from "../layout/main-layout/Searchbar";
 import SimilarityFinder from "../form/SimilarityFinder";
 import { JSONSchema7 } from "json-schema";
 import { useRouter } from "next/router";
 import { useTranslation } from "next-i18next";
 import { EntityDetailListItem } from "../form/show";
+import { PrimaryField } from "@slub/edb-core-types";
 
 const InlineDropdownSemanticFormsRenderer = (props: ControlProps) => {
   const {

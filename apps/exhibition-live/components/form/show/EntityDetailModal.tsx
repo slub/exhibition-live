@@ -15,16 +15,12 @@ import useExtendedSchema from "../../state/useExtendedSchema";
 import { useCRUDWithQueryClient } from "../../state/useCRUDWithQueryClient";
 import { useCallback, useMemo, useState } from "react";
 import { primaryFields, typeIRItoTypeName } from "../../config";
-import {
-  applyToEachField,
-  extractFieldIfString,
-} from "../../utils/mapping/simpleFieldExtractor";
-import { PrimaryFieldResults } from "../../utils/types";
+import { applyToEachField, extractFieldIfString } from "@slub/edb-ui-utils";
 import { EntityDetailCard } from "./EntityDetailCard";
 import { useTypeIRIFromEntity } from "../../state";
 import { useTranslation } from "next-i18next";
-import { filterUndefOrNull } from "@slub/edb-core-utils";
-import { PrimaryField } from "@slub/edb-core-types";
+import { filterUndefOrNull } from "@slub/edb-ui-utils";
+import { PrimaryField, PrimaryFieldResults } from "@slub/edb-core-types";
 
 type EntityDetailModalProps = {
   typeIRI: string | undefined;

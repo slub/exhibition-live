@@ -1,9 +1,9 @@
 import { VisibilityState } from "@tanstack/table-core";
 import { ColumnDefMatcher, mkAccessor } from "../content/list/listHelper";
 import { MRT_ColumnDef } from "material-react-table";
-import { numeric2JSDate } from "@slub/edb-core-utils";
+import { numeric2JSDate } from "@slub/edb-ui-utils";
 import { TFunction } from "i18next";
-import { specialDate2LocalDate } from "../utils/specialDate2LocalDate";
+import { specialDate2LocalDate } from "@slub/edb-ui-utils";
 export type ListConfigType = {
   columnVisibility: VisibilityState;
   matcher: ColumnDefMatcher;

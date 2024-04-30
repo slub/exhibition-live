@@ -11,7 +11,7 @@ import { useSnackbar } from "notistack";
 import NiceModal from "@ebay/nice-modal-react";
 import GenericModal from "../form/GenericModal";
 import { SemanticJsonFormNoOps } from "../form/SemanticJsonFormNoOps";
-import { irisToData } from "../utils/core";
+import { irisToData } from "@slub/edb-ui-utils";
 import { SemanticJsonFormsProps } from "../form/SemanticJsonForm";
 
 type SemanticFormsModalProps = {

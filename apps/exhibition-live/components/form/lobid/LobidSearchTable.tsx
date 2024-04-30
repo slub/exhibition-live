@@ -9,25 +9,22 @@ import React, {
 import {
   findEntityWithinLobid,
   findEntityWithinLobidByIRI,
-} from "../../utils/lobid/findEntityWithinLobid";
+} from "@slub/edb-ui-utils";
 import ClassicResultListItem from "../result/ClassicResultListItem";
 import ClassicEntityCard from "./ClassicEntityCard";
 import LobidAllPropTable from "./LobidAllPropTable";
 import WikidataAllPropTable from "../wikidata/WikidataAllPropTable";
-import {
-  PrimaryFieldExtract,
-  PrimaryFieldExtractDeclaration,
-} from "../../utils/types";
-import { filterUndefOrNull } from "../../utils/core";
-import {
-  applyToEachField,
-  extractFieldIfString,
-} from "../../utils/mapping/simpleFieldExtractor";
+import { filterUndefOrNull } from "@slub/edb-ui-utils";
+import { applyToEachField, extractFieldIfString } from "@slub/edb-ui-utils";
 import { useQuery } from "@tanstack/react-query";
-import { typeIRItoTypeName } from "../../config";
+import { lobidTypemap, typeIRItoTypeName } from "../../config";
 import Ajv from "ajv";
 import { useTranslation } from "next-i18next";
-import { BasicThingInformation } from "@slub/edb-core-types";
+import {
+  BasicThingInformation,
+  PrimaryFieldExtract,
+  PrimaryFieldExtractDeclaration,
+} from "@slub/edb-core-types";
 
 type Props = {
   searchString: string;
@@ -179,6 +176,7 @@ const LobidSearchTable: FunctionComponent<Props> = ({
         await findEntityWithinLobid(
           searchString,
           typeIRItoTypeName(typeIRI),
+          lobidTypemap,
           10,
         )
       )?.member?.map((allProps: any) => gndEntryWithMainInfo(allProps)),

@@ -4,7 +4,7 @@ import { JSONSchema7 } from "json-schema";
 import { useGlobalCRUDOptions } from "./useGlobalCRUDOptions";
 import { useGlobalSettings } from "./useGlobalSettings";
 import { CRUDFunctions } from "@slub/edb-core-types";
-import { sladb } from "../form/formConfigs";
+import { defaultQueryBuilderOptions, sladb } from "../form/formConfigs";
 import { useMemo } from "react";
 import { WalkerOptions } from "@slub/edb-graph-traversal";
 
@@ -31,20 +31,20 @@ export const useDataStore = ({
     [globalCRUDOptions, crudOptionsPartial],
   );
 
-  const { defaultPrefix, namespacePrefixes } = useGlobalSettings();
+  const { defaultPrefix } = useGlobalSettings();
   const dataStore = useMemo(
     () =>
       crudOptions.constructFetch &&
       initSPARQLStore({
         defaultPrefix,
         typeNameToTypeIRI,
-        queryBuildOptions: namespacePrefixes,
+        queryBuildOptions: defaultQueryBuilderOptions,
         walkerOptions,
         sparqlQueryFunctions: crudOptions,
         schema,
         defaultLimit: 10,
       }),
-    [crudOptions, defaultPrefix, namespacePrefixes, walkerOptions, schema],
+    [crudOptions, defaultPrefix, walkerOptions, schema],
   );
 
   return {

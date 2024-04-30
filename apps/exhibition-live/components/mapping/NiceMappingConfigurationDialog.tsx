@@ -18,11 +18,11 @@ import { useTranslation } from "next-i18next";
 import {
   DeclarativeMatchBasedFlatMapping,
   matchBased2DeclarativeFlatMapping,
-} from "../utils/mapping/mapMatchBasedByConfig";
+} from "@slub/edb-ui-utils";
 import { OwnColumnDesc } from "../google/types";
 import { JsonView } from "react-json-view-lite";
-import { DeclarativeFlatMapping } from "../utils/mapping/mappingStrategies";
-import { parseJSONObject } from "../utils/core";
+import { DeclarativeFlatMapping } from "@slub/edb-ui-utils";
+import { parseJSONObject } from "@slub/edb-ui-utils";
 
 type NiceMappingConfigurationDialogProps = {
   mapping: any;

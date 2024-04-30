@@ -1,0 +1,37 @@
+import df from "@rdfjs/data-model";
+import { SELECT } from "@tpluscode/sparql-builder";
+import { QueryBuilderOptions } from "@slub/edb-core-types";
+
+export const findEntityByAuthorityIRI = async (
+  authorityIRI: string,
+  typeIRI: string | undefined,
+  doQuery: (query: string) => Promise<any>,
+  limit: number = 10,
+  options: QueryBuilderOptions,
+) => {
+  const { prefixes, defaultPrefix } = options;
+  const subjectV = df.variable("subject");
+  let query = (
+    typeIRI
+      ? SELECT.DISTINCT` ${subjectV}`.WHERE`
+    ${subjectV} :idAuthority <${authorityIRI}> .
+    ${subjectV} a <${typeIRI}> .
+  `
+      : SELECT.DISTINCT` ${subjectV}`.WHERE`
+    ${subjectV} :idAuthority <${authorityIRI}> .
+  `
+  )
+    .LIMIT(limit)
+    .build({ prefixes });
+
+  query = `PREFIX : <${defaultPrefix}>
+  ${query}`;
+
+  try {
+    const bindings = await doQuery(query);
+    return bindings.map((binding: any) => binding.subject.value);
+  } catch (e) {
+    console.error("Error finding entity by authority IRI", e);
+    return [];
+  }
+};

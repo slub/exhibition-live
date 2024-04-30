@@ -25,7 +25,7 @@ import React, {
   useState,
 } from "react";
 
-import { filterUndefOrNull } from "../utils/core";
+import { filterUndefOrNull } from "@slub/edb-ui-utils";
 import { ColumnRaw } from "./datagrid/columnRaw";
 import extendedFilter from "./datagrid/extendedFilter";
 import { transformValue } from "./datagrid/tableValueMapper";

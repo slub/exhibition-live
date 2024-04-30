@@ -4,7 +4,6 @@ import React, { FunctionComponent } from "react";
 
 import SettingsModal from "../content/settings/SettingsModal";
 import { useLocalSettings } from "../state/useLocalSettings";
-import { Img } from "../utils/image/Img";
 import { Logo } from "./main-layout";
 
 interface OwnProps {}

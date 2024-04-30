@@ -47,7 +47,7 @@ import { uniqBy, orderBy } from "lodash";
 import { SimpleExpandPanelRenderer } from "./SimpleExpandPanelRenderer";
 import { SemanticFormsModal } from "./SemanticFormsModal";
 import { BASE_IRI, primaryFieldExtracts } from "../config";
-import { irisToData, makeFormsPath, validate } from "../utils/core";
+import { irisToData, makeFormsPath, validate } from "@slub/edb-ui-utils";
 import { JSONSchema7 } from "json-schema";
 import { createNewIRI, slent } from "../form/formConfigs";
 import { v4 as uuidv4 } from "uuid";
@@ -57,15 +57,12 @@ import CheckIcon from "@mui/icons-material/Check";
 import { useCRUDWithQueryClient } from "../state/useCRUDWithQueryClient";
 import { useSnackbar } from "notistack";
 import { ErrorObject } from "ajv";
-import { bringDefinitionToTop } from "@slub/json-schema-utils";
-import { Pulse } from "../form/utils";
-import {
-  applyToEachField,
-  extractFieldIfString,
-} from "../utils/mapping/simpleFieldExtractor";
+import { applyToEachField, extractFieldIfString } from "@slub/edb-ui-utils";
 import { useFormDataStore } from "../state/reducer";
 import { JSONSchema } from "json-schema-to-ts";
 import { useTranslation } from "next-i18next";
+import { Pulse } from "../form/utils";
+import { bringDefinitionToTop } from "@slub/json-schema-utils";
 
 const uiSchemaOptionsSchema = {
   type: "object",

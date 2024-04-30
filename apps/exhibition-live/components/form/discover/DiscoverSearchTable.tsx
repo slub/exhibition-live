@@ -7,10 +7,14 @@ import React, {
 } from "react";
 
 import { useGlobalCRUDOptions } from "../../state/useGlobalCRUDOptions";
-import { findEntityByClass } from "../../utils/discover";
-import { sladb } from "../formConfigs";
+import {
+  defaultPrefix,
+  defaultQueryBuilderOptions,
+  sladb,
+} from "../formConfigs";
 import ClassicResultListItem from "../result/ClassicResultListItem";
 import { EntityDetailElement } from "../show";
+import { findEntityByClass } from "@slub/sparql-schema";
 
 type Props = {
   searchString: string;
@@ -39,7 +43,12 @@ const DiscoverSearchTable: FunctionComponent<Props> = ({
     if (!searchString || searchString.length < 1 || !crudOptions) return;
     setResultTable(
       (
-        await findEntityByClass(searchString, classIRI, crudOptions.selectFetch)
+        await findEntityByClass(
+          searchString,
+          classIRI,
+          crudOptions.selectFetch,
+          { defaultPrefix, queryBuildOptions: defaultQueryBuilderOptions },
+        )
       ).map(({ name = "", value }: { name: string; value: any }) => {
         return {
           label: name,

@@ -11,13 +11,13 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 
 import { primaryFields, typeIRItoTypeName } from "../config";
 import { AutocompleteSuggestion } from "../form/DebouncedAutoComplete";
-import { extractFieldIfString } from "../utils/mapping/simpleFieldExtractor";
-import { PrimaryField } from "../utils/types";
-import { makeFormsPath } from "../utils/core";
+import { extractFieldIfString } from "@slub/edb-ui-utils";
+import { makeFormsPath } from "@slub/edb-ui-utils";
 import { useTranslation } from "next-i18next";
 import { PreloadedOptionSelect } from "../form/PreloadedOptionSelect";
-import { findEntityByClass } from "../utils/discover";
 import { useGlobalCRUDOptions } from "../state/useGlobalCRUDOptions";
+import { PrimaryField } from "@slub/edb-core-types";
+import { findEntityByClass } from "@slub/sparql-schema";
 
 const InlineDropdownRenderer = (props: ControlProps) => {
   const {

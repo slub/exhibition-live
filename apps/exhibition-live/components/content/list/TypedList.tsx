@@ -9,7 +9,6 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import schema from "../../../public/schema/Exhibition.schema.json";
 import { v4 as uuidv4 } from "uuid";
 import { useGlobalCRUDOptions } from "../../state/useGlobalCRUDOptions";
-import { jsonSchema2Select } from "../../utils/sparql";
 import {
   Backdrop,
   Box,
@@ -59,12 +58,17 @@ import { useModifiedRouter } from "../../basic";
 import { SparqlEndpoint, useSettings } from "../../state/useLocalSettings";
 import { EntityDetailModal } from "../../form/show";
 import { useTranslation } from "next-i18next";
-import { moveToTrash, remove, withDefaultPrefix } from "@slub/sparql-schema";
+import {
+  jsonSchema2Select,
+  moveToTrash,
+  remove,
+  withDefaultPrefix,
+} from "@slub/sparql-schema";
 import { SPARQLFlavour } from "@slub/edb-core-types";
-import { bringDefinitionToTop } from "@slub/json-schema-utils";
 import { computeColumns } from "./listHelper";
 import { tableConfig } from "../../config/tableConfig";
-import { encodeIRI, filterUndefOrNull } from "@slub/edb-core-utils";
+import { encodeIRI, filterUndefOrNull } from "@slub/edb-ui-utils";
+import { bringDefinitionToTop } from "@slub/json-schema-utils";
 
 type Props = {
   typeName: string;

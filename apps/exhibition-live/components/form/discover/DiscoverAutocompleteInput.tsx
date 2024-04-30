@@ -3,14 +3,17 @@ import parse from "html-react-parser";
 import React, { FunctionComponent, useCallback, useId } from "react";
 
 import { useGlobalCRUDOptions } from "../../state/useGlobalCRUDOptions";
-import { findEntityByClass } from "../../utils/discover";
 import {
   AutocompleteSuggestion,
   DebouncedAutocomplete,
 } from "../DebouncedAutoComplete";
-import { loadEntityBasics } from "../../utils/crud/loadEntityBasics";
-import { defaultPrefix, sladb } from "../formConfigs";
+import {
+  defaultPrefix,
+  defaultQueryBuilderOptions,
+  sladb,
+} from "../formConfigs";
 import { useQuery } from "@tanstack/react-query";
+import { findEntityByClass, loadEntityBasics } from "@slub/sparql-schema";
 
 interface OwnProps {
   selected?: AutocompleteSuggestion | null;
@@ -89,6 +92,10 @@ const DiscoverAutocompleteInput: FunctionComponent<Props> = ({
               searchString || null,
               typeIRI,
               crudOptions.selectFetch,
+              {
+                defaultPrefix: defaultPrefix,
+                queryBuildOptions: defaultQueryBuilderOptions,
+              },
               limit,
             )
           ).map(({ name = "", value }: { name: string; value: any }) => {

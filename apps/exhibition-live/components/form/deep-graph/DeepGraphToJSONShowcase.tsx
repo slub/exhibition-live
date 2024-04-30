@@ -8,9 +8,11 @@ import dsExt from "rdf-dataset-ext";
 import React, { FunctionComponent, useEffect, useState } from "react";
 import { JsonView } from "react-json-view-lite";
 import stringToStream from "string-to-stream";
-import { WalkerOptions } from "@slub/edb-graph-traversal";
+import {
+  traverseGraphExtractBySchema,
+  WalkerOptions,
+} from "@slub/edb-graph-traversal";
 
-import { jsonSchemaGraphInfuser } from "../../utils/graph/jsonSchemaGraphInfuser";
 import { addressSchema } from "../../../fixtures/schema";
 // @ts-ignore
 import tbbt from "tbbt-ld/dist/tbbt.nq";
@@ -70,7 +72,7 @@ const DeepGraphToJSONShowcase: FunctionComponent<Props> = ({
 
   useEffect(() => {
     if (dataset) {
-      const resultJSON = jsonSchemaGraphInfuser(
+      const resultJSON = traverseGraphExtractBySchema(
         baseIRI,
         entityIRI,
         dataset as Dataset,

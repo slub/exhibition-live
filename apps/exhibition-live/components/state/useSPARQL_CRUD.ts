@@ -19,12 +19,14 @@ import N3 from "n3";
 import { useCallback, useEffect, useState } from "react";
 import { useSnackbar } from "notistack";
 
-import { jsonSchemaGraphInfuser } from "../utils/graph/jsonSchemaGraphInfuser";
-import { jsonSchema2construct } from "../utils/sparql";
 import { useQueryKeyResolver } from "./useQueryKeyResolver";
 import df from "@rdfjs/data-model";
 import { CRUDFunctions, SparqlBuildOptions } from "@slub/edb-core-types";
-import { WalkerOptions } from "@slub/edb-graph-traversal";
+import {
+  traverseGraphExtractBySchema,
+  WalkerOptions,
+} from "@slub/edb-graph-traversal";
+import { jsonSchema2construct } from "@slub/sparql-schema";
 
 type OwnUseCRUDResults = {
   save: (data?: any) => Promise<void>;
@@ -144,7 +146,7 @@ export const useSPARQL_CRUD = (
         }
       }
       updateSourceToTargets(entityIRI, Array.from(subjects));
-      const resultJSON = jsonSchemaGraphInfuser(
+      const resultJSON = traverseGraphExtractBySchema(
         defaultPrefix,
         entityIRI,
         ds as Dataset,

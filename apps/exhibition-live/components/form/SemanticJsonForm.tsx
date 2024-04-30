@@ -12,10 +12,8 @@ import React, {
   useState,
 } from "react";
 
-import { CRUDOptions } from "../state/useSPARQL_CRUD";
 import { FormDebuggingTools } from "./FormDebuggingTools";
 import GenericModal from "./GenericModal";
-import { cleanJSONLD } from "../utils/crud";
 import { useCRUDWithQueryClient } from "../state/useCRUDWithQueryClient";
 import { useSnackbar } from "notistack";
 import { ChangeCause, SemanticJsonFormNoOps } from "./SemanticJsonFormNoOps";
@@ -26,12 +24,7 @@ import { Backdrop, Box, CircularProgress } from "@mui/material";
 import { EntityDetailModal } from "./show";
 import { create } from "zustand";
 import { useTranslation } from "next-i18next";
-
-export type CRUDOpsType = {
-  load: () => Promise<void>;
-  save: () => Promise<void>;
-  remove: () => Promise<void>;
-};
+import { cleanJSONLD } from "@slub/sparql-schema";
 
 export interface SemanticJsonFormsProps {
   entityIRI?: string | undefined;

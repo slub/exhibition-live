@@ -9,10 +9,7 @@ import React, {
 } from "react";
 
 import { BASE_IRI, primaryFieldExtracts } from "../config";
-import {
-  applyToEachField,
-  extractFieldIfString,
-} from "../utils/mapping/simpleFieldExtractor";
+import { applyToEachField, extractFieldIfString } from "@slub/edb-ui-utils";
 import { JSONSchema7 } from "json-schema";
 import { useJsonForms } from "@jsonforms/react";
 import dot from "dot";
@@ -21,8 +18,8 @@ import get from "lodash/get";
 import { useModifiedRouter } from "../basic";
 import NiceModal from "@ebay/nice-modal-react";
 import { EntityDetailModal } from "../form/show/EntityDetailModal";
-import { bringDefinitionToTop } from "@slub/json-schema-utils";
 import { useRootFormContext } from "../provider";
+import { bringDefinitionToTop } from "@slub/json-schema-utils";
 
 type SimpleChipRendererProps = {
   data: any;

@@ -29,22 +29,22 @@ import {
 } from "react";
 import { v4 as uuidv4 } from "uuid";
 
-import { declarativeMappings } from "../config/lobidMappings";
+import { declarativeMappings, lobidTypemap } from "../config/lobidMappings";
 import { useSettings } from "../state/useLocalSettings";
-import { Img } from "../utils/image/Img";
-import { mapByConfig } from "../utils/mapping/mapByConfig";
+import { mapByConfig } from "@slub/edb-ui-utils";
+import { DeclarativeMapping, StrategyContext } from "@slub/edb-ui-utils";
 import {
-  DeclarativeMapping,
-  StrategyContext,
-} from "../utils/mapping/mappingStrategies";
-import { defaultPrefix, sladb, slent } from "./formConfigs";
+  defaultPrefix,
+  defaultQueryBuilderOptions,
+  sladb,
+  slent,
+} from "./formConfigs";
 import {
   gndEntryFromSuggestion,
   gndEntryWithMainInfo,
 } from "./lobid/LobidSearchTable";
-import { findEntityByAuthorityIRI, findEntityByClass } from "../utils/discover";
+import { findEntityByAuthorityIRI } from "@slub/edb-ui-utils";
 import { useGlobalCRUDOptions } from "../state/useGlobalCRUDOptions";
-import { mapAbstractDataUsingAI, mapDataUsingAI } from "../utils/ai";
 import {
   useGlobalSearch,
   useLoadQuery,
@@ -52,31 +52,31 @@ import {
   useSimilarityFinderState,
 } from "../state";
 import { useTranslation } from "next-i18next";
-import { searchEntityByLabel } from "../utils/discover/searchEntityByLabel";
+import { searchEntityByLabel } from "@slub/edb-ui-utils";
 import { primaryFields, typeIRItoTypeName } from "../config";
 import NiceModal from "@ebay/nice-modal-react";
 import { EditEntityModal } from "./edit/EditEntityModal";
-import { PrimaryField } from "../utils/types";
 import ClassicResultListItem from "./result/ClassicResultListItem";
 import { EntityDetailElement } from "./show";
 import {
   findEntityWithinLobid,
   findEntityWithinLobidByIRI,
-} from "../utils/lobid/findEntityWithinLobid";
+} from "@slub/edb-ui-utils";
 import LobidAllPropTable from "./lobid/LobidAllPropTable";
 import WikidataAllPropTable from "./wikidata/WikidataAllPropTable";
 import ClassicEntityCard from "./lobid/ClassicEntityCard";
 import { debounce } from "lodash";
-import { filterUndefOrNull } from "@slub/edb-core-utils";
+import { filterUndefOrNull } from "@slub/edb-ui-utils";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import useExtendedSchema from "../state/useExtendedSchema";
-import { BasicThingInformation } from "@slub/edb-core-types";
+import { BasicThingInformation, PrimaryField } from "@slub/edb-core-types";
 import { NumberInput } from "./NumberInput";
-import { findEntityWithinK10Plus } from "../utils/k10plus/findEntityWithinK10Plus";
 import { dcterms } from "@tpluscode/rdf-ns-builders";
-import { fabio } from "../utils/marc";
 import { findFirstInProps } from "./k10plus/K10PlusSearchTable";
-import { KXPEntry } from "../utils/k10plus/types";
+import { Img } from "../basic";
+import { findEntityByClass } from "@slub/sparql-schema";
+import { findEntityWithinK10Plus, KXPEntry } from "@slub/edb-kxp-utils";
+import { fabio } from "@slub/edb-marc-to-rdf";
 
 export type KnowledgeSources = "kb" | "gnd" | "wikidata" | "k10plus" | "ai";
 // @ts-ignore
@@ -114,7 +114,14 @@ export const makeDefaultMappingStrategyContext: (
     authorityIRI: string,
     typeIRI?: string | undefined,
   ) => {
-    const ids = await findEntityByAuthorityIRI(secondaryIRI, typeIRI, doQuery);
+    // @ts-ignore
+    const ids = await findEntityByAuthorityIRI(
+      secondaryIRI,
+      typeIRI,
+      doQuery,
+      undefined,
+      { prefixes: defaultQueryBuilderOptions.prefixes, defaultPrefix },
+    );
     if (ids.length > 0) {
       console.warn("found more then one entity");
     }
@@ -124,7 +131,11 @@ export const makeDefaultMappingStrategyContext: (
     label: string,
     typeIRI: string,
   ): Promise<string> => {
-    const ids = await searchEntityByLabel(label, typeIRI, doQuery);
+    // @ts-ignore
+    const ids = await searchEntityByLabel(label, typeIRI, doQuery, undefined, {
+      prefixes: defaultQueryBuilderOptions.prefixes,
+      defaultPrefix,
+    });
     if (ids.length > 0) {
       console.warn("found more then one entity");
     }
@@ -134,6 +145,9 @@ export const makeDefaultMappingStrategyContext: (
   newIRI: (typeIRI: string) => {
     return slent(uuidv4()).value;
   },
+  typeIRItoTypeName: typeIRItoTypeName,
+  primaryFields: primaryFields,
+  declarativeMappings: declarativeMappings,
 });
 
 type FindOptions = {
@@ -465,6 +479,10 @@ const useKnowledgeBases = () => {
               searchString,
               typeIRI,
               crudOptions.selectFetch,
+              {
+                defaultPrefix,
+                queryBuildOptions: defaultQueryBuilderOptions,
+              },
               findOptions?.limit || 10,
             )
           ).map(
@@ -528,6 +546,7 @@ const useKnowledgeBases = () => {
             await findEntityWithinLobid(
               searchString,
               typeIRItoTypeName(typeIRI),
+              lobidTypemap,
               findOptions?.limit || 10,
               "json:suggest",
             ),
@@ -761,26 +780,7 @@ const SimilarityFinder: FunctionComponent<Props> = ({
   useEffect(() => {
     setTypeName(typeIRItoTypeName(preselectedClassIRI));
   }, [preselectedClassIRI, setTypeName]);
-  const handleMapAbstractAndDescUsingAI = useCallback(
-    async (id: string | undefined, entryData: any) => {
-      const newData = mapAbstractDataUsingAI(id, typeName, entryData, {
-        jsonSchema,
-        openai,
-      });
-      onMappedDataAccepted && onMappedDataAccepted(newData);
-    },
-    [typeName, onMappedDataAccepted, jsonSchema, openai],
-  );
-  const handleMapUsingAI = useCallback(
-    async (id: string | undefined, entryData: any) => {
-      const newData = await mapDataUsingAI(id, typeName, entryData, {
-        jsonSchema,
-        openai,
-      });
-      onMappedDataAccepted && onMappedDataAccepted(newData);
-    },
-    [typeName, onMappedDataAccepted, jsonSchema, openai],
-  );
+
   const { crudOptions } = useGlobalCRUDOptions();
   const handleManuallyMapData = useCallback(
     async (
@@ -857,19 +857,10 @@ const SimilarityFinder: FunctionComponent<Props> = ({
       if (source === "kb") {
         handleEntityChange(id, entryData);
       } else {
-        if (selectedKnowledgeSources?.includes("ai")) {
-          handleMapUsingAI(id, entryData);
-        } else {
-          handleManuallyMapData(id, entryData, source);
-        }
+        handleManuallyMapData(id, entryData, source);
       }
     },
-    [
-      handleManuallyMapData,
-      handleMapUsingAI,
-      handleEntityChange,
-      selectedKnowledgeSources,
-    ],
+    [handleManuallyMapData, handleEntityChange, selectedKnowledgeSources],
   );
 
   const { cycleThroughElements } = useSimilarityFinderState();

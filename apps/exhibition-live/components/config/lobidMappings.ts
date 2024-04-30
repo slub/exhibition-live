@@ -1,8 +1,6 @@
-import { sladb } from "../form/formConfigs";
-import {
-  DeclarativeMapping,
-  DeclarativeMappings,
-} from "../utils/mapping/mappingStrategies";
+import { DeclarativeMapping, DeclarativeMappings } from "@slub/edb-ui-utils";
+import namespace from "@rdfjs/namespace";
+export const sladb = namespace("http://ontologies.slub-dresden.de/exhibition#");
 
 export const locationDeclarativeMapping: DeclarativeMappings = [
   {

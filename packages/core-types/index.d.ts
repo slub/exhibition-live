@@ -45,30 +45,19 @@ export type NamedEntityData = {
 export type NamedAndTypedEntity = NamedEntityData & {
   "@type": string;
 };
+
+export type StringToIRIFn = (property: string) => string;
+export type IRIToStringFn = (iri: string) => string;
 export interface SparqlBuildOptions {
   base?: string;
-  prefixes?: Record<string, string | NamespaceBuilder>;
+  prefixes?: Record<string, string>;
+  propertyToIRI: StringToIRIFn;
+  typeIRItoTypeName: IRIToStringFn;
+  primaryFields: PrimaryFieldExtractDeclaration;
 }
-
 export interface SelectFetchOptions {
   withHeaders?: boolean;
 }
-
-export type CRUDFunctions = {
-  updateFetch: (
-    query: string,
-  ) => Promise<
-    | ResultStream<any>
-    | boolean
-    | void
-    | ResultStream<Bindings>
-    | ResultStream<Quad>
-    | Response
-  >;
-  constructFetch: (query: string) => Promise<DatasetCore>;
-  selectFetch: (query: string, options?: SelectFetchOptions) => Promise<any>;
-  askFetch: (query: string) => Promise<boolean>;
-};
 
 export type SPARQLCRUDOptions = {
   queryBuildOptions?: SparqlBuildOptions;
@@ -124,4 +113,9 @@ export type BasicThingInformation = {
   avatar?: string;
   category?: string;
   allProps?: Record<string, any>;
+};
+
+export type QueryBuilderOptions = {
+  prefixes: Prefixes;
+  defaultPrefix: string;
 };

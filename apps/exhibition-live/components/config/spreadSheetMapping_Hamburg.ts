@@ -1,4 +1,4 @@
-import { DeclarativeFlatMappings } from "../utils/mapping/mappingStrategies";
+import { DeclarativeFlatMappings } from "@slub/edb-ui-utils";
 import { sladb } from "../form/formConfigs";
 import { OwnColumnDesc } from "../google/types";
 

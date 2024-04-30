@@ -27,16 +27,16 @@ import React, {
 } from "react";
 
 import { MappingConfigurationDialog } from "../../mapping/MappingConfigurationDialog";
-import { gndBaseIRI } from "../../utils/gnd/prefixes";
+import { gndBaseIRI } from "@slub/edb-ui-utils";
 import { EntityChip } from "../show";
 import { useQuery } from "@tanstack/react-query";
-import { findEntityWithinLobidByIRI } from "../../utils/lobid/findEntityWithinLobid";
+import { findEntityWithinLobidByIRI } from "@slub/edb-ui-utils";
 import WikidataAllPropTable from "../wikidata/WikidataAllPropTable";
 import { OverflowContainer } from "../../lists";
-import { specialDate2LocalDate } from "../../utils/specialDate2LocalDate";
+import { specialDate2LocalDate } from "@slub/edb-ui-utils";
 import { useTranslation } from "next-i18next";
 import isNil from "lodash/isNil";
-import { isValidUrl } from "@slub/edb-core-utils";
+import { isValidUrl } from "@slub/edb-ui-utils";
 import { Image } from "mui-image";
 
 export interface AllPropTableProps {

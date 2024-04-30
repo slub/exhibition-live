@@ -2,11 +2,10 @@ import get from "lodash/get";
 import { JSONSchema7, JSONSchema7Definition } from "json-schema";
 import { MRT_ColumnDef, MRT_TableInstance } from "material-react-table";
 import { OverflowContainer } from "../../lists";
-import { isJSONSchema, isPrimitive } from "@slub/json-schema-utils";
 import { Avatar, Box, Checkbox, Grid, Link, Typography } from "@mui/material";
 import isNil from "lodash/isNil";
 import maxBy from "lodash/maxBy";
-import { filterUndefOrNull, parseMarkdownLinks } from "@slub/edb-core-utils";
+import { filterUndefOrNull, parseMarkdownLinks } from "@slub/edb-ui-utils";
 import { OverflowChip } from "../../lists/OverflowChip";
 import * as React from "react";
 import { TFunction } from "i18next";
@@ -14,9 +13,8 @@ import { MouseEvent, useCallback, useMemo } from "react";
 import NiceModal from "@ebay/nice-modal-react";
 import { EntityDetailModal } from "../../form/show";
 import { primaryFields } from "../../config";
-import { PrimaryField } from "@slub/edb-core-types";
-import { applyToEachField } from "../../utils/mapping/simpleFieldExtractor";
-import { FieldExtractDeclaration } from "../../utils/types";
+import { FieldExtractDeclaration, PrimaryField } from "@slub/edb-core-types";
+import { applyToEachField } from "@slub/edb-ui-utils";
 import {
   and,
   formatIs,
@@ -31,6 +29,7 @@ import {
   Tester,
   TesterContext,
 } from "@jsonforms/core";
+import { isJSONSchema, isPrimitive } from "@slub/json-schema-utils";
 
 const p = (path: string[]) => path.join("_");
 export const mkAccessor =

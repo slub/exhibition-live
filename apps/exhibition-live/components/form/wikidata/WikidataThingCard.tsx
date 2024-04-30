@@ -15,12 +15,10 @@ import React, {
   useState,
 } from "react";
 
-import {
-  remoteSparqlQuery,
-  sparqlSelectViaFieldMappings,
-} from "../../utils/sparql";
-import { wikidataPrefixes } from "../../utils/wikidata";
+import { wikidataPrefixes } from "@slub/edb-ui-utils";
 import WikidataAllPropTable from "./WikidataAllPropTable";
+import { sparqlSelectViaFieldMappings } from "@slub/sparql-schema";
+import { remoteSparqlQuery } from "@slub/remote-query-implementations";
 
 interface OwnProps {
   thingIRI?: string | null;

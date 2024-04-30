@@ -5,12 +5,12 @@ import {
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
-import { filterUndefOrNull } from "../utils/core";
 import { NamedAndTypedEntity } from "@slub/edb-core-types";
 import { cleanJSONLD, jsonld2DataSet, LoadResult } from "@slub/sparql-schema";
 import { useGlobalSettings } from "./useGlobalSettings";
 import { CRUDOptions } from "./useSPARQL_CRUD";
 import { useDataStore } from "./useDataStore";
+import { filterUndefOrNull } from "@slub/edb-core-utils";
 
 export const useCRUDWithQueryClient = (
   entityIRI: string | undefined,
@@ -23,8 +23,7 @@ export const useCRUDWithQueryClient = (
 ) => {
   const { dataStore, ready } = useDataStore({ schema, crudOptionsPartial });
 
-  const { defaultPrefix, jsonldContext, namespacePrefixes } =
-    useGlobalSettings();
+  const { defaultPrefix, jsonldContext } = useGlobalSettings();
   //const { resolveSourceIRIs } = useQueryKeyResolver();
   const { enabled, ...queryOptionsRest } = queryOptions || {};
   const queryClient = useQueryClient();

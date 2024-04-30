@@ -8,7 +8,7 @@ import { JsonFormsStateContext } from "@jsonforms/react";
 import find from "lodash/find";
 import React, { ComponentType } from "react";
 
-import { filterUndefOrNull, resolveObj } from "../utils/core";
+import { filterUndefOrNull, resolveObj } from "@slub/edb-ui-utils";
 import {
   OwnPropsOfMasterListItem,
   StatePropsOfMasterItem,

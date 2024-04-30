@@ -13,16 +13,13 @@ import { primaryFields, typeIRItoTypeName } from "../../config";
 import useExtendedSchema from "../../state/useExtendedSchema";
 import { useCRUDWithQueryClient } from "../../state/useCRUDWithQueryClient";
 import { useTranslation } from "next-i18next";
-import { PrimaryFieldResults } from "../../utils/types";
-import {
-  applyToEachField,
-  extractFieldIfString,
-} from "../../utils/mapping/simpleFieldExtractor";
+import { applyToEachField, extractFieldIfString } from "@slub/edb-ui-utils";
 import NiceModal from "@ebay/nice-modal-react";
 import { EntityDetailModal } from "./EntityDetailModal";
 import { Clear, HideImage } from "@mui/icons-material";
-import { ellipsis } from "../../utils/core";
+import { ellipsis } from "@slub/edb-ui-utils";
 import { useRootFormContext } from "../../provider";
+import { PrimaryFieldResults } from "@slub/edb-core-types";
 
 type EntityDetailListItemProps = {
   entityIRI: string;

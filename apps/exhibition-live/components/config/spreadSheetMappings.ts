@@ -3,9 +3,9 @@ import {
   spreadSheetMappings_NewYork,
 } from "./spreadSheetMappings_NewYork";
 import { spreadSheetMapping_Hamburg } from "./spreadSheetMapping_Hamburg";
-import { DeclarativeMatchBasedFlatMappings } from "../utils/mapping/mapMatchBasedByConfig";
+import { DeclarativeMatchBasedFlatMappings } from "@slub/edb-ui-utils";
 import { OwnColumnDesc } from "../google/types";
-import { DeclarativeFlatMappings } from "../utils/mapping/mappingStrategies";
+import { DeclarativeFlatMappings } from "@slub/edb-ui-utils";
 
 export type ConcreteSpreadSheetMapping = {
   raw?: DeclarativeMatchBasedFlatMappings;

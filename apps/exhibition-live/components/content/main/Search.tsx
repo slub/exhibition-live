@@ -12,16 +12,12 @@ import { primaryFields, typeIRItoTypeName } from "../../config";
 import { defaultPrefix } from "../../form/formConfigs";
 import df from "@rdfjs/data-model";
 import { isString, orderBy, uniq } from "lodash";
-import { fixSparqlOrder } from "../../utils/discover";
 import { Box, Chip, Grid, Skeleton, Tab, Tabs } from "@mui/material";
-import { filterUndefOrNull } from "../../utils/core";
+import { filterUndefOrNull } from "@slub/edb-ui-utils";
 import { Line, LineChart, Tooltip, XAxis, YAxis } from "recharts";
 import VisTimelineWrapper from "../visTimelineWrapper/VisTimelineWrapper";
 import { TimelineItem } from "vis-timeline/types";
-import {
-  applyToEachField,
-  extractFieldIfString,
-} from "../../utils/mapping/simpleFieldExtractor";
+import { applyToEachField, extractFieldIfString } from "@slub/edb-ui-utils";
 import get from "lodash/get";
 import { ListAlt, Polyline, Timeline } from "@mui/icons-material";
 import {
@@ -31,7 +27,7 @@ import {
 import { useTranslation } from "next-i18next";
 import NiceModal from "@ebay/nice-modal-react";
 import { EntityDetailModal } from "../../form/show";
-import { withDefaultPrefix } from "@slub/sparql-schema";
+import { fixSparqlOrder, withDefaultPrefix } from "@slub/sparql-schema";
 
 const makeFilterUNION2 = (searchString: string, length: number) => {
   const filterUNION = [];

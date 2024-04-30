@@ -21,15 +21,15 @@ import { Add, OpenInNew, OpenInNewOff } from "@mui/icons-material";
 import { primaryFields, typeIRItoTypeName } from "../config";
 import { AutocompleteSuggestion } from "../form/DebouncedAutoComplete";
 import { SemanticFormsModal } from "./SemanticFormsModal";
-import { extractFieldIfString } from "../utils/mapping/simpleFieldExtractor";
-import { PrimaryField } from "../utils/types";
+import { extractFieldIfString } from "@slub/edb-ui-utils";
 import { useGlobalSearchWithHelper } from "../state";
-import { encodeIRI, makeFormsPath } from "../utils/core";
+import { encodeIRI, makeFormsPath } from "@slub/edb-ui-utils";
 import { SearchbarWithFloatingButton } from "../layout/main-layout/Searchbar";
 import SimilarityFinder from "../form/SimilarityFinder";
 import { JSONSchema7 } from "json-schema";
 import { useRouter } from "next/router";
 import { useTranslation } from "next-i18next";
+import { PrimaryField } from "@slub/edb-core-types";
 
 const InlineTextFieldRenderer = (props: ControlProps) => {
   const {

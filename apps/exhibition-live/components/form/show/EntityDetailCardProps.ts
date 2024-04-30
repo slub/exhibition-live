@@ -1,6 +1,6 @@
-import { PrimaryFieldResults } from "../../utils/types";
 import React from "react";
 import { AllPropTableProps } from "../lobid/LobidAllPropTable";
+import { PrimaryFieldResults } from "@slub/edb-core-types";
 
 type OwnProps = {
   typeIRI: string;

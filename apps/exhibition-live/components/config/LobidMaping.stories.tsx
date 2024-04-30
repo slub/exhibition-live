@@ -3,13 +3,13 @@ import LobidSearchTable, {
   gndEntryWithMainInfo,
 } from "../form/lobid/LobidSearchTable";
 import {
+  mapByConfig,
   findEntityWithinLobidByIRI,
   findEntityWithinLobidWithCertainProperty,
-} from "../utils/lobid/findEntityWithinLobid";
+} from "@slub/edb-ui-utils";
 import { useQuery } from "@tanstack/react-query";
-import React, { useEffect, useMemo, useState } from "react";
-import { declarativeMappings } from "./lobidMappings";
-import { mapByConfig } from "../utils/mapping/mapByConfig";
+import React, { useEffect, useState } from "react";
+import { declarativeMappings, lobidTypemap } from "./lobidMappings";
 import { useGlobalCRUDOptions } from "../state/useGlobalCRUDOptions";
 import { JsonView } from "react-json-view-lite";
 import { Grid, List, TextField } from "@mui/material";
@@ -105,6 +105,7 @@ export const LobidSearchForProperty = () => {
       propertyName,
       undefined,
       "ConferenceOrEvent",
+      lobidTypemap,
     );
     return res?.member?.map((allProps: any) => gndEntryWithMainInfo(allProps));
   });

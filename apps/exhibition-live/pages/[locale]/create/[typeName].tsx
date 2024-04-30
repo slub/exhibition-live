@@ -9,13 +9,13 @@ import { MainLayout } from "../../../components/layout/main-layout";
 import schema from "../../../public/schema/Exhibition.schema.json";
 import { BASE_IRI } from "../../../components/config";
 import { v4 as uuidv4 } from "uuid";
-import { decodeIRI } from "../../../components/utils/core";
 import { useTranslation } from "next-i18next";
 import { getI18nProps, mixinStaticPathsParams } from "../../../components/i18n";
 import { useSettings } from "../../../components/state/useLocalSettings";
 import { useFormEditor } from "../../../components/state";
 import { Button, Hidden, ToggleButton } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { decodeIRI } from "@slub/edb-core-utils";
 
 type Props = {
   typeName: string;

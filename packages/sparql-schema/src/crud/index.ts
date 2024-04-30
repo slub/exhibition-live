@@ -14,3 +14,5 @@ export * from "./restoreFromTrash";
 export * from "./jsonld2NTriples";
 export * from "./jsonld2DataSet";
 export * from "./dataset2NTriples";
+export * from "./loadEntityBasics";
+export * from "./basicFieldsQuery";

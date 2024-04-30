@@ -16,7 +16,7 @@ import {
 import useExtendedSchema from "../../state/useExtendedSchema";
 import { useGlobalCRUDOptions } from "../../state/useGlobalCRUDOptions";
 import { useSettings } from "../../state/useLocalSettings";
-import { encodeIRI, irisToData } from "../../utils/core";
+import { encodeIRI, irisToData } from "@slub/edb-ui-utils";
 import NewSemanticJsonForm from "../../form/SemanticJsonForm";
 import { useModifiedRouter } from "../../basic";
 import { EntityDetailElement } from "../../form/show";

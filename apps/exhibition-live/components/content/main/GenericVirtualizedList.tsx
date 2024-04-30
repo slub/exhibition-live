@@ -3,13 +3,12 @@ import {
   List,
   ListItem,
   ListItemAvatar,
-  ListItemIcon,
   ListItemButton,
   ListItemText,
   Typography,
 } from "@mui/material";
 import { Components, ScrollerProps, Virtuoso } from "react-virtuoso";
-import { withEllipsis } from "../../utils/typography";
+import { withEllipsis } from "@slub/edb-ui-utils";
 import React, {
   ComponentType,
   CSSProperties,
@@ -19,7 +18,6 @@ import React, {
   useRef,
 } from "react";
 import PerfectScrollbar from "perfect-scrollbar";
-import { Img } from "../../utils/image/Img";
 
 const Scroller: ComponentType<ScrollerProps> = forwardRef<HTMLDivElement, any>(
   ({ children, style, ...props }, ref) => {

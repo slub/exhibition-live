@@ -9,19 +9,17 @@ import React, {
 } from "react";
 
 import {
-  remoteSparqlQuery,
-  sparqlSelectViaFieldMappings,
-} from "../../utils/sparql";
-import {
   findPersonWithinWikidataUsingREST,
   wikidataPrefixes,
-} from "../../utils/wikidata";
+} from "@slub/edb-ui-utils";
 import {
   AutocompleteSuggestion,
   DebouncedAutocomplete,
 } from "../DebouncedAutoComplete";
 import WikidataHumanCard from "./WikidataHumanCard";
 import WikidataThingCard from "./WikidataThingCard";
+import { sparqlSelectViaFieldMappings } from "@slub/sparql-schema";
+import { remoteSparqlQuery } from "@slub/remote-query-implementations";
 
 interface OwnProps {
   selected?: AutocompleteSuggestion | null;

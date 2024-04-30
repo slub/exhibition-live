@@ -19,9 +19,9 @@ import { orderBy } from "lodash";
 import { useMemo } from "react";
 import { SearchBar } from "./Search";
 import { ParentSize } from "@visx/responsive";
-import { fixSparqlOrder } from "../../utils/discover";
 import df from "@rdfjs/data-model";
 import { useTranslation } from "next-i18next";
+import { fixSparqlOrder } from "@slub/sparql-schema";
 
 export const HeaderTitle = styled(Typography)(({ theme }) => ({
   fontFamily: "'Play', sans-serif",

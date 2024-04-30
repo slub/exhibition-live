@@ -13,7 +13,7 @@ import { useCRUDWithQueryClient } from "../state/useCRUDWithQueryClient";
 import NiceModal from "@ebay/nice-modal-react";
 import GenericModal from "../form/GenericModal";
 import { useSnackbar } from "notistack";
-import { irisToData } from "../utils/core";
+import { irisToData } from "@slub/edb-ui-utils";
 
 type InlineSemanticFormsModalProps = {
   label?: string;

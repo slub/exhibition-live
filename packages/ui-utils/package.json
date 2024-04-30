@@ -1,0 +1,59 @@
+{
+  "name": "@slub/edb-ui-utils",
+  "version": "0.1.0",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "type": "module",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "lint": "eslint \"**/*.ts*\"",
+    "lint-fix": "eslint --fix \"**/*.ts*\"",
+    "test": "jest",
+    "test:watch": "jest --watch --color",
+    "test:coverage": "jest --coverage",
+    "push": "yalc push"
+  },
+  "devDependencies": {
+    "@comunica/types": "^3.0.3",
+    "@slub/edb-build-helper": "workspace:*",
+    "@slub/edb-core-types": "workspace:*",
+    "@slub/edb-tsconfig": "workspace:*",
+    "@slub/edb-tsup-config": "workspace:*",
+    "@types/jest": "^29.5.12",
+    "@types/lodash": "^4.14.200",
+    "@types/json-schema": "^7.0.14",
+    "ajv": "^8.12.0",
+    "eslint-config-edb": "workspace:*",
+    "typescript": "^5.3.3",
+    "dayjs": "^1.11.11",
+    "react": ">=18"
+  },
+  "peerDependencies": {
+    "@jsonforms/core": "^3.1.0",
+    "@jsonforms/material-renderers": "^3.1.0",
+    "@jsonforms/react": "^3.1.0",
+    "@mui/icons-material": "^5.14.1",
+    "@mui/material": "^5.14.2",
+    "@mui/x-date-pickers": "^6.10.0",
+    "dayjs": ">1",
+    "ajv": ">8.12",
+    "react": "^16.9.0 || ^17.0.0 || ^18"
+  },
+  "dependencies": {
+    "@comunica/query-sparql": "^3.0.3",
+    "@slub/json-schema-utils": "workspace:*",
+    "@slub/sparql-schema": "workspace:*",
+    "@slub/edb-graph-traversal": "workspace:*",
+    "@slub/exhibition-schema": "workspace:*",
+    "@slub/exhibition-sparql-config": "workspace:*",
+    "@slub/edb-core-types": "workspace:*",
+    "@slub/edb-global-types": "workspace:*",
+    "cross-fetch": "^4.0.0",
+    "jsonpath": "^1.1.1",
+    "json-schema": "^0.4.0",
+    "json-schema-to-ts": "^3.0.1",
+    "lodash-es": "^4.17.21"
+  }
+}

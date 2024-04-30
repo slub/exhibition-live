@@ -38,12 +38,12 @@ import {
   MRT_ColumnDef,
   useMaterialReactTable,
 } from "material-react-table";
-import { mapByConfigFlat } from "../utils/mapping/mapByConfig";
+import { mapByConfigFlat } from "@slub/edb-ui-utils";
 import { spreadSheetMappings } from "../config/spreadSheetMappings";
 import { declarativeMappings } from "../config";
 import { makeDefaultMappingStrategyContext } from "../form/SimilarityFinder";
 import { useGlobalCRUDOptions } from "../state/useGlobalCRUDOptions";
-import { encodeIRI, filterUndefOrNull } from "../utils/core";
+import { encodeIRI, filterUndefOrNull } from "@slub/edb-ui-utils";
 import { useQuery } from "@tanstack/react-query";
 import { OwnColumnDesc } from "./types";
 import TypedListItem from "../content/list/TypedListItem";
@@ -57,13 +57,13 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import {
   DeclarativeFlatMapping,
   DeclarativeFlatMappings,
-} from "../utils/mapping/mappingStrategies";
+} from "@slub/edb-ui-utils";
 import { useTranslation } from "next-i18next";
 import { NiceMappingConfigurationDialog } from "../mapping/NiceMappingConfigurationDialog";
 import {
   DeclarativeMatchBasedFlatMapping,
   DeclarativeMatchBasedFlatMappings,
-} from "../utils/mapping/mapMatchBasedByConfig";
+} from "@slub/edb-ui-utils";
 import { CRUDFunctions } from "@slub/edb-core-types";
 
 //we will create a cashed worksheet, were selectively rows are preloaded and once loaded use for a certain stale time

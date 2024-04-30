@@ -16,7 +16,7 @@ import { memo } from "./config";
 import { uniqBy, orderBy } from "lodash";
 import { SemanticFormsModal } from "./SemanticFormsModal";
 import { BASE_IRI } from "../config";
-import { irisToData, makeFormsPath } from "../utils/core";
+import { irisToData, makeFormsPath } from "@slub/edb-ui-utils";
 import { JSONSchema7 } from "json-schema";
 import { defaultJsonldContext, slent } from "../form/formConfigs";
 import { v4 as uuidv4 } from "uuid";

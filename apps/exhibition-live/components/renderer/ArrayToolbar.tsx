@@ -27,7 +27,7 @@ import SimilarityFinder, { KnowledgeSources } from "../form/SimilarityFinder";
 import { JSONSchema7 } from "json-schema";
 import { AutocompleteSuggestion } from "../form/DebouncedAutoComplete";
 import { NoteAdd } from "@mui/icons-material";
-import { PrimaryField } from "../utils/types";
+import { PrimaryField } from "@slub/edb-core-types";
 
 export interface ArrayLayoutToolbarProps {
   label: string;

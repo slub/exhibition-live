@@ -13,7 +13,7 @@ import {
 import { useTranslation } from "next-i18next";
 import LobidAllPropTable from "../lobid/LobidAllPropTable";
 import { useModifiedRouter } from "../../basic";
-import { encodeIRI } from "../../utils/core";
+import { encodeIRI } from "@slub/edb-ui-utils";
 
 import { typeIRItoTypeName } from "../../config";
 import { useSettings } from "../../state/useLocalSettings";

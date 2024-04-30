@@ -1,6 +1,7 @@
 import namespace from "@rdfjs/namespace";
-import { NamespaceBuilderPrefixes } from "@slub/edb-core-types";
+import { SparqlBuildOptions } from "@slub/edb-core-types";
 import { v4 as uuidv4 } from "uuid";
+import { primaryFields, typeIRItoTypeName } from "../config";
 
 export const sladb = namespace("http://ontologies.slub-dresden.de/exhibition#");
 export const slent = namespace(
@@ -15,8 +16,13 @@ export const defaultJsonldContext = {
   },
 };
 
-export const defaultQueryBuilderOptions: NamespaceBuilderPrefixes = {
-  prefixes: { [""]: sladb, slent: slent },
+export const defaultQueryBuilderOptions: SparqlBuildOptions = {
+  prefixes: { [""]: sladb[""].value, slent: slent[""].value },
+  propertyToIRI: (property: string) => {
+    return sladb[property].value;
+  },
+  typeIRItoTypeName: typeIRItoTypeName,
+  primaryFields: primaryFields,
 };
 
 export const createNewIRI = () => slent(uuidv4()).value;

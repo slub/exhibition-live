@@ -2,9 +2,14 @@ import { describe, expect, test } from "@jest/globals";
 
 import exampleData from "../../fixtures/lobid/documeta-1257120557.json";
 import rendevousData from "../../fixtures/lobid/1256926108.json";
-import { mapByConfig } from "../utils/mapping/mapByConfig";
-import { StrategyContext } from "../utils/mapping/mappingStrategies";
-import { exhibitionDeclarativeMapping } from "./lobidMappings";
+import { mapByConfig } from "@slub/edb-ui-utils";
+import { StrategyContext } from "@slub/edb-ui-utils";
+import {
+  declarativeMappings,
+  exhibitionDeclarativeMapping,
+} from "./lobidMappings";
+import { primaryFields } from "./primaryFields";
+import { typeIRItoTypeName } from "./typeIRIToTypeName";
 
 let i = 0;
 
@@ -26,6 +31,9 @@ const strategyContext: StrategyContext = {
     //console.warn("using stub method");
     return `http://example.com/${i++}`;
   },
+  primaryFields: primaryFields,
+  typeIRItoTypeName: typeIRItoTypeName,
+  declarativeMappings: declarativeMappings,
 };
 describe("apply different mapping strategies", () => {
   test("can map simple exhibition", () => {

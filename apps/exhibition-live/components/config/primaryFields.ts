@@ -1,5 +1,5 @@
 import exhibitionSchema from "../../public/schema/Exhibition.schema.json";
-import { PrimaryField, PrimaryFieldExtract } from "../utils/types";
+import { PrimaryField, PrimaryFieldExtract } from "@slub/edb-core-types";
 
 type ExhibitionPrimaryFieldDeclaration = {
   //typeof keys of exhibitionSchema.$defs

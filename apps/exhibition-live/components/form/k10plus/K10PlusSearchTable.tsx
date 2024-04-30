@@ -25,13 +25,12 @@ import React, {
 
 import { useLocalHistory } from "../../state";
 import { useSettings } from "../../state/useLocalSettings";
-import { findEntityWithinK10Plus } from "../../utils/k10plus/findEntityWithinK10Plus";
 import ClassicEntityCard from "../lobid/ClassicEntityCard";
 import ClassicResultListItem from "../result/ClassicResultListItem";
 import { NodePropertyTree } from "@slub/edb-graph-traversal";
 import { useTranslation } from "next-i18next";
-import { KXPEntry } from "../../utils/k10plus/types";
-import { fabio, geonames, radatana } from "../../utils/marc";
+import { findEntityWithinK10Plus, KXPEntry } from "@slub/edb-kxp-utils";
+import { fabio, geonames, radatana } from "@slub/edb-marc-to-rdf";
 
 type Props = {
   searchString: string;

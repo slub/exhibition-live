@@ -1,7 +1,6 @@
 import { ImageProps } from "next/image";
 import React from "react";
-
-import { Img } from "../../utils/image/Img";
+import { Img } from "../../basic";
 
 type OwnProps = {
   size?: number;

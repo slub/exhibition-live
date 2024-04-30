@@ -8,7 +8,6 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import schema from "../../../public/schema/Exhibition.schema.json";
 import { v4 as uuidv4 } from "uuid";
 import { useGlobalCRUDOptions } from "../../state/useGlobalCRUDOptions";
-import { jsonSchema2Select } from "../../utils/sparql";
 import {
   Box,
   Link,
@@ -25,7 +24,7 @@ import {
   MRT_SortingState,
   MRT_Virtualizer,
 } from "material-react-table";
-import { encodeIRI } from "../../utils/core";
+import { encodeIRI } from "@slub/edb-ui-utils";
 import { JSONSchema7 } from "json-schema";
 import { Add, Details, Edit } from "@mui/icons-material";
 import { useRouter } from "next/router";
@@ -41,13 +40,17 @@ import Button from "@mui/material/Button";
 import { flatten } from "lodash";
 import get from "lodash/get";
 import { useModifiedRouter } from "../../basic";
-import { remove, withDefaultPrefix } from "@slub/sparql-schema";
+import {
+  jsonSchema2Select,
+  remove,
+  withDefaultPrefix,
+} from "@slub/sparql-schema";
+import { parseMarkdownLinks } from "@slub/edb-ui-utils";
 import {
   filterForArrayProperties,
   filterForPrimitiveProperties,
   isJSONSchema,
 } from "@slub/json-schema-utils";
-import { parseMarkdownLinks } from "@slub/edb-core-utils";
 
 type Props = {
   typeName: string;

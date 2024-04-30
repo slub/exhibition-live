@@ -4,10 +4,7 @@ import {
   primaryFields,
   typeIRItoTypeName,
 } from "../../config";
-import {
-  applyToEachField,
-  extractFieldIfString,
-} from "../../utils/mapping/simpleFieldExtractor";
+import { applyToEachField, extractFieldIfString } from "@slub/edb-ui-utils";
 import {
   Avatar,
   ListItem,

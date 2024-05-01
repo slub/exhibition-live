@@ -22,6 +22,7 @@ import { useModifiedRouter } from "../../basic";
 import { EntityDetailElement } from "../../form/show";
 import { RootFormProvider } from "../../provider";
 import { useFormDataStore } from "../../state/reducer";
+import { useCRUDWithQueryClient } from "../../state/useCRUDWithQueryClient";
 
 type Props = {
   children: React.ReactChild;
@@ -154,6 +155,9 @@ const TypedForm = ({ typeName, entityIRI, classIRI }: MainFormProps) => {
                 uischema,
                 uischemas: uischemas,
                 renderers: mainFormRenderers,
+                config: {
+                  useCRUDHook: useCRUDWithQueryClient,
+                },
               }}
               enableSidebar={false}
               disableSimilarityFinder={true}

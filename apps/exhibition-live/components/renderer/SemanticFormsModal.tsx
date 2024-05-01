@@ -55,12 +55,12 @@ export const SemanticFormsModal = (props: SemanticFormsModalProps) => {
 
   const uischemaExternal = typeIRI && useUISchemaForType(typeIRI);
 
-  const { loadQuery, saveMutation, removeMutation } = useCRUDWithQueryClient(
+  const { loadQuery, saveMutation, removeMutation } = useCRUDWithQueryClient({
     entityIRI,
     typeIRI,
-    schema as JSONSchema7,
-    { enabled: true },
-  );
+    schema: schema as JSONSchema7,
+    queryOptions: { enabled: true },
+  });
   const { data: remoteData } = loadQuery;
 
   useEffect(() => {

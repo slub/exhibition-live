@@ -36,17 +36,17 @@ export const EditEntityModal = NiceModal.create(
     const classIRI: string | undefined = typeIRI || typeIRIs?.[0];
     const typeName = useMemo(() => typeIRItoTypeName(classIRI), [classIRI]);
     const loadedSchema = useExtendedSchema({ typeName, classIRI });
-    const { loadQuery, saveMutation } = useCRUDWithQueryClient(
+    const { loadQuery, saveMutation } = useCRUDWithQueryClient({
       entityIRI,
-      classIRI,
-      loadedSchema,
-      {
+      typeIRI: classIRI,
+      schema: loadedSchema,
+      queryOptions: {
         enabled: !disableLoad,
         refetchOnWindowFocus: true,
         initialData: defaultData,
       },
-      "show",
-    );
+      loadQueryKey: "show",
+    });
     const { t } = useTranslation();
     const [firstTimeSaved, setFirstTimeSaved] = useState(false);
     const [isStale, setIsStale] = useState(false);

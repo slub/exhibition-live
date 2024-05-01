@@ -73,12 +73,12 @@ const MaterialArrayChipsLayoutComponent = (props: ArrayLayoutProps & {}) => {
   );
   const { crudOptions } = useGlobalCRUDOptions();
   const entityIRI = useMemo(() => formData["@id"], [formData]);
-  const { saveMutation } = useCRUDWithQueryClient(
+  const { saveMutation } = useCRUDWithQueryClient({
     entityIRI,
     typeIRI,
-    subSchema as JSONSchema7,
-    { enabled: false },
-  );
+    schema: subSchema as JSONSchema7,
+    queryOptions: { enabled: false },
+  });
 
   const { enqueueSnackbar } = useSnackbar();
   const handleSaveAndAdd = useCallback(() => {

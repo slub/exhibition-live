@@ -36,6 +36,7 @@ import {
 } from "../components/form/formConfigs";
 import { envToSparqlEndpoint } from "../components/config/envToSparqlEndpoint";
 import getConfig from "next/config";
+import { BASE_IRI, PUBLIC_BASE_PATH } from "../components/config";
 
 export const queryClient = new QueryClient();
 const QueryClientProviderWrapper = ({
@@ -70,6 +71,10 @@ function App({ Component, pageProps }: AppProps) {
                   defaultPrefix: defaultPrefix,
                   jsonldContext: defaultJsonldContext,
                   allowUnsafeSourceIRIs: false,
+                }}
+                env={{
+                  publicBasePath: PUBLIC_BASE_PATH,
+                  baseIRI: BASE_IRI,
                 }}
               >
                 <NiceModal.Provider>

@@ -44,7 +44,7 @@ type SimpleExpandPanelRendererProps = {
 export const SimpleExpandPanelRenderer = (
   props: SimpleExpandPanelRendererProps,
 ) => {
-  const { dispatch } = useJsonForms();
+  const { dispatch, config } = useJsonForms();
   const {
     data,
     entityIRI,
@@ -128,16 +128,16 @@ export const SimpleExpandPanelRenderer = (
     [elementDetailItemPath, data],
   );
 
-  const { loadQuery, saveMutation } = useCRUDWithQueryClient(
+  const { loadQuery, saveMutation } = useCRUDWithQueryClient({
     entityIRI,
     typeIRI,
-    subSchema,
-    {
+    schema: subSchema,
+    queryOptions: {
       enabled: !data?.__draft && !data?.__label,
       initialData: data,
       refetchOnWindowFocus: true,
     },
-  );
+  });
   const draft = data?.__draft && !saveMutation.isSuccess;
   const { data: loadedData } = loadQuery;
   useEffect(() => {

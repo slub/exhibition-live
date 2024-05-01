@@ -92,10 +92,15 @@ export const SimpleChipRenderer = (
     return label || data?.__label;
   }, [childLabelTemplate, elementLabelProp, data, label]);
 
-  const { loadQuery } = useCRUDWithQueryClient(entityIRI, typeIRI, subSchema, {
-    enabled: !data?.__draft && !data?.__label,
-    initialData: data,
-    refetchOnWindowFocus: true,
+  const { loadQuery } = useCRUDWithQueryClient({
+    entityIRI,
+    typeIRI,
+    schema: subSchema,
+    queryOptions: {
+      enabled: !data?.__draft && !data?.__label,
+      initialData: data,
+      refetchOnWindowFocus: true,
+    },
   });
   //const draft = data?.__draft && !saveMutation.isSuccess;
   const { data: loadedData } = loadQuery;

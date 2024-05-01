@@ -33,13 +33,13 @@ export const EntityChip = ({
   const loadedSchema = useExtendedSchema({ typeName, classIRI });
   const {
     loadQuery: { data: rawData },
-  } = useCRUDWithQueryClient(
+  } = useCRUDWithQueryClient({
     entityIRI,
-    classIRI,
-    loadedSchema,
-    { enabled: true, refetchOnWindowFocus: true },
-    "show",
-  );
+    typeIRI: classIRI,
+    schema: loadedSchema,
+    queryOptions: { enabled: true, refetchOnWindowFocus: true },
+    loadQueryKey: "show",
+  });
   const { t } = useTranslation();
   const data = rawData?.document?.["@type"] ? rawData?.document : defaultData;
   const cardInfo = useMemo<PrimaryFieldResults<string>>(() => {

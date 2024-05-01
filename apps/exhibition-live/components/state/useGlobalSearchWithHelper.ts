@@ -31,15 +31,12 @@ export const useGlobalSearchWithHelper = (
   );
   const { keepMounted, setOpen } = useRightDrawerState();
 
-  const { saveMutation } = useCRUDWithQueryClient(
-    null,
+  const { saveMutation } = useCRUDWithQueryClient({
     typeIRI,
     schema,
-    { enabled: false },
-    undefined,
-    undefined,
-    true,
-  );
+    queryOptions: { enabled: false },
+    allowUnsafeSourceIRIs: true,
+  });
 
   const handleMappedData = useCallback(
     (newData: any) => {

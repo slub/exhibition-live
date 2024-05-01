@@ -35,13 +35,17 @@ export const EntityDetailElement = ({
   const loadedSchema = useExtendedSchema({ typeName, classIRI });
   const {
     loadQuery: { data: rawData },
-  } = useCRUDWithQueryClient(
+  } = useCRUDWithQueryClient({
     entityIRI,
-    classIRI,
-    loadedSchema,
-    { enabled: true, refetchOnWindowFocus: true, initialData: initialData },
-    "show",
-  );
+    typeIRI: classIRI,
+    schema: loadedSchema,
+    queryOptions: {
+      enabled: true,
+      refetchOnWindowFocus: true,
+      initialData: initialData,
+    },
+    loadQueryKey: "show",
+  });
   const { t } = useTranslation();
   const data = initialData || rawData?.document;
   const fieldDeclaration = useMemo(

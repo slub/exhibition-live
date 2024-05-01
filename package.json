@@ -43,6 +43,8 @@
   "workspaces": [
     "apps/*",
     "packages/*",
+    "packages/ideas/*",
+    "packages/renderer/*",
     "manifestation/*"
   ],
   "devDependencies": {

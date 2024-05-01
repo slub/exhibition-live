@@ -86,7 +86,12 @@ export const InlineSemanticFormsModal = (
   );
 
   const { loadQuery, existsQuery, saveMutation, removeMutation } =
-    useCRUDWithQueryClient(data, typeIRI, subSchema, { enabled: false });
+    useCRUDWithQueryClient({
+      entityIRI: data,
+      typeIRI,
+      schema: subSchema,
+      queryOptions: { enabled: false },
+    });
 
   const { enqueueSnackbar } = useSnackbar();
   const handleSave = useCallback(async () => {

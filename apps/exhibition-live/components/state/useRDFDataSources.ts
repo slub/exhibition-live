@@ -1,35 +1,36 @@
-import { useQueries, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { RDFMimetype } from "async-oxigraph";
 import { useCallback, useEffect, useState } from "react";
 
-import { BASE_IRI } from "../config";
 import { useOxigraph } from "./useOxigraph";
 
-export const useRDFDataSources = (source: string) => {
-  const { oxigraph, init, bulkLoaded, setBulkLoaded } = useOxigraph();
+/**
+ * Load RDF data sources into local in memory Oxigraph store
+ *
+ * @param source URL to RDF data source
+ * @param baseIRI Base IRI for the RDF data source
+ */
+export const useRDFDataSources = (source: string, baseIRI: string) => {
+  const { oxigraph, bulkLoaded, setBulkLoaded } = useOxigraph();
   const [bulkLoading, setBulkLoading] = useState(false);
-  const { data } = useQuery(["exhibition", "ontology"], () =>
+  const { data } = useQuery(["knowledge", source], () =>
     fetch(source).then((r) => r.text()),
   );
 
   const load = useCallback(
     async (ao: any) => {
       setBulkLoading(true);
-      await ao.load(data, RDFMimetype.TURTLE, BASE_IRI);
+      await ao.load(data, RDFMimetype.TURTLE, baseIRI);
       setBulkLoading(false);
       setBulkLoaded(true);
     },
-    [setBulkLoading, setBulkLoaded, data],
+    [setBulkLoading, setBulkLoaded, data, baseIRI],
   );
 
   useEffect(() => {
-    if (!data) return;
-    if (oxigraph) {
-      load(oxigraph.ao);
-    } else {
-      init();
-    }
-  }, [init, oxigraph, data, load]);
+    if (!data || !oxigraph) return;
+    load(oxigraph.ao);
+  }, [oxigraph, data, load]);
 
   return {
     bulkLoading,

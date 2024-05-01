@@ -1,26 +1,20 @@
-import { JSONSchema7 } from "json-schema";
-import {
-  QueryObserverOptions,
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { NamedAndTypedEntity } from "@slub/edb-core-types";
 import { cleanJSONLD, jsonld2DataSet, LoadResult } from "@slub/sparql-schema";
-import { CRUDOptions } from "./useSPARQL_CRUD";
 import { useDataStore } from "./useDataStore";
 import { filterUndefOrNull } from "@slub/edb-core-utils";
 import { useAdbContext } from "../provider";
+import { UseCRUDHook } from "./useCrudHook";
 
-export const useCRUDWithQueryClient = (
-  entityIRI: string | undefined,
-  typeIRI: string | undefined,
-  schema: JSONSchema7,
-  queryOptions?: QueryObserverOptions<any, Error>,
-  loadQueryKey: string = "load",
-  crudOptionsPartial: Partial<CRUDOptions> = {},
-  allowUnsafeSourceIRIs?: boolean,
-) => {
+export const useCRUDWithQueryClient: UseCRUDHook = ({
+  entityIRI,
+  typeIRI,
+  schema,
+  queryOptions,
+  loadQueryKey,
+  crudOptionsPartial,
+  allowUnsafeSourceIRIs,
+}) => {
   const { queryBuildOptions, typeNameToTypeIRI, jsonLDConfig } =
     useAdbContext();
   const { dataStore, ready } = useDataStore({

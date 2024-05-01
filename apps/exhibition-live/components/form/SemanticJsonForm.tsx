@@ -25,6 +25,8 @@ import { EntityDetailModal } from "./show";
 import { create } from "zustand";
 import { useTranslation } from "next-i18next";
 import { cleanJSONLD } from "@slub/sparql-schema";
+import { QueryObserverOptions } from "@tanstack/react-query";
+import { CRUDOptions } from "../state/useCrudHook";
 
 export interface SemanticJsonFormsProps {
   entityIRI?: string | undefined;
@@ -101,13 +103,13 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> = ({
   );
   const { enqueueSnackbar } = useSnackbar();
 
-  const { saveMutation, removeMutation } = useCRUDWithQueryClient(
+  const { saveMutation, removeMutation } = useCRUDWithQueryClient({
     entityIRI,
     typeIRI,
     schema,
-    { enabled: false },
-    "rootLoad",
-  );
+    queryOptions: { enabled: false },
+    loadQueryKey: "rootLoad",
+  });
 
   const loadEntity = useLoadQuery(defaultPrefix, "rootLoad");
 

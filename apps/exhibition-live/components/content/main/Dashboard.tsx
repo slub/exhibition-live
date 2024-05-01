@@ -14,7 +14,6 @@ import { useGlobalCRUDOptions } from "../../state/useGlobalCRUDOptions";
 import { SELECT } from "@tpluscode/sparql-builder";
 import { primaryFields, typeIRItoTypeName } from "../../config";
 import { sladb } from "../../form/formConfigs";
-import BarReChart from "../charts/BarReChart";
 import { orderBy } from "lodash";
 import { useMemo } from "react";
 import { SearchBar } from "./Search";
@@ -22,6 +21,7 @@ import { ParentSize } from "@visx/responsive";
 import df from "@rdfjs/data-model";
 import { useTranslation } from "next-i18next";
 import { fixSparqlOrder } from "@slub/sparql-schema";
+import { BarReChart } from "@slub/edb-charts";
 
 export const HeaderTitle = styled(Typography)(({ theme }) => ({
   fontFamily: "'Play', sans-serif",
@@ -134,8 +134,6 @@ export const Dashboard = (props) => {
       ),
     [typeCountData, t],
   );
-
-  const items = useMemo(() => {}, []);
 
   return (
     <Box

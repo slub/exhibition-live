@@ -158,12 +158,12 @@ const MaterialArrayLayoutComponent = (props: ArrayLayoutProps) => {
       bringDefinitionToTop(rootSchema as JSONSchema7, typeName) as JsonSchema,
     [rootSchema, typeName],
   );
-  const { saveMutation } = useCRUDWithQueryClient(
+  const { saveMutation } = useCRUDWithQueryClient({
     entityIRI,
     typeIRI,
-    subSchema as JSONSchema7,
-    { enabled: false },
-  );
+    schema: subSchema as JSONSchema7,
+    queryOptions: { enabled: false },
+  });
 
   const { enqueueSnackbar } = useSnackbar();
   const handleSaveAndAdd = useCallback(() => {

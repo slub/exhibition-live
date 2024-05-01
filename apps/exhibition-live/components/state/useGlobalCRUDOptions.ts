@@ -68,16 +68,15 @@ const getProviderOrDefault = (endpoint: SparqlEndpoint) =>
 
 export const useGlobalCRUDOptions: UseGlobalCRUDOptions = () => {
   const { activeEndpoint } = useSettings();
-  const { oxigraph, init } = useOxigraph();
+  const { oxigraph } = useOxigraph();
   const doQuery = useCallback(
     async (query: string, mimeType?: string) => {
       if (!oxigraph) {
-        await init();
         throw new Error("Oxigraph not initialized");
       }
       return await oxigraph.ao.query(query);
     },
-    [oxigraph, init],
+    [oxigraph],
   );
 
   const crudOptions = useMemo<CRUDFunctions | undefined>(() => {

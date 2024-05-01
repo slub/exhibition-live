@@ -1,4 +1,4 @@
-import { List, ListItemProps } from "@mui/material";
+import { List } from "@mui/material";
 import React, {
   FunctionComponent,
   useCallback,
@@ -20,7 +20,6 @@ type Props = {
   searchString: string;
   typeName?: string;
   classIRI?: string;
-  onSelect?: (id: string | undefined) => void;
   onAcceptItem?: (id: string | undefined, data: any) => void;
   selectedIndex?: number;
 };
@@ -29,13 +28,10 @@ const DiscoverSearchTable: FunctionComponent<Props> = ({
   searchString,
   typeName = "Person",
   classIRI = sladb[typeName].value,
-  onSelect,
   onAcceptItem,
   selectedIndex,
 }) => {
   const [resultTable, setResultTable] = useState<any | undefined>();
-  const [selectedId, setSelectedId] = useState<string | undefined>();
-  const [selectedEntry, setSelectedEntry] = useState<any | undefined>();
   const { crudOptions } = useGlobalCRUDOptions();
   const typeIRI = sladb[typeName].value;
 

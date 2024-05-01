@@ -25,6 +25,10 @@ type AdbContextValue = {
   createEntityIRI: (typeName: string, id?: string) => string;
   lockedSPARQLEndpoint?: SparqlEndpoint;
   jsonLDConfig: JSONLDConfig;
+  env: {
+    publicBasePath: string;
+    baseIRI: string;
+  };
 };
 
 type EdbGlobalContextProps = AdbContextValue & {

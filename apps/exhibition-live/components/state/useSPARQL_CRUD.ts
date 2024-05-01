@@ -21,12 +21,9 @@ import { useSnackbar } from "notistack";
 
 import { useQueryKeyResolver } from "./useQueryKeyResolver";
 import df from "@rdfjs/data-model";
-import { CRUDFunctions, SparqlBuildOptions } from "@slub/edb-core-types";
-import {
-  traverseGraphExtractBySchema,
-  WalkerOptions,
-} from "@slub/edb-graph-traversal";
+import { traverseGraphExtractBySchema } from "@slub/edb-graph-traversal";
 import { jsonSchema2construct } from "@slub/sparql-schema";
+import { CRUDOptions } from "./useCrudHook";
 
 type OwnUseCRUDResults = {
   save: (data?: any) => Promise<void>;
@@ -40,18 +37,6 @@ type OwnUseCRUDResults = {
 };
 
 export type UseCRUDResults = UseQueryResult<any, Error> & OwnUseCRUDResults;
-export type CRUDOptions = CRUDFunctions & {
-  defaultPrefix: string;
-  data: any;
-  setData?: (data: any, isRefetch: boolean) => void;
-  walkerOptions?: Partial<WalkerOptions>;
-  queryBuildOptions?: SparqlBuildOptions;
-  upsertByDefault?: boolean;
-  ready?: boolean;
-  onLoad?: (data: any) => void;
-  queryOptions?: QueryObserverOptions<any, Error>;
-  queryKey?: string;
-};
 
 export const useSPARQL_CRUD = (
   entityIRI: string | undefined,

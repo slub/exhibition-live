@@ -55,6 +55,7 @@
     "@react-oauth/google": "^0.12.1",
     "@slub/edb-core-utils": "workspace:*",
     "@slub/edb-graph-traversal": "workspace:*",
+    "@slub/edb-charts": "workspace:*",
     "@slub/remote-query-implementations": "workspace:*",
     "@slub/sparql-schema": "workspace:*",
     "@slub/sparql-db-impl": "workspace:*",

@@ -8,7 +8,6 @@ export * from "./useRDFDataSources";
 export * from "./useThemeSettings";
 export * from "./useQueryKeyResolver";
 export * from "./useGlobalAuth";
-export * from "./useDrawerDimensions";
 export * from "./useRightDrawerState";
 export * from "./useTypeIRIFromEntity";
 export * from "./useSimilarityFinderState";

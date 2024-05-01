@@ -3,7 +3,7 @@ import { styled, useTheme, Theme, CSSObject } from "@mui/material/styles";
 import MuiDrawer, { DrawerProps } from "@mui/material/Drawer";
 import { makeStyles } from "@mui/styles";
 import { useCallback, useMemo } from "react";
-import { useDrawerDimensions } from "../../state";
+import { useDrawerDimensions } from "./useDrawerDimensions";
 
 const isHorizontal = (anchor: DrawerProps["anchor"]): boolean =>
   anchor === "right" || anchor === "left" ? false : true;

@@ -47,17 +47,17 @@ export const EntityDetailModal = NiceModal.create(
     const loadedSchema = useExtendedSchema({ typeName, classIRI });
     const {
       loadQuery: { data: rawData },
-    } = useCRUDWithQueryClient(
+    } = useCRUDWithQueryClient({
       entityIRI,
-      classIRI,
-      loadedSchema,
-      {
+      typeIRI: classIRI,
+      schema: loadedSchema,
+      queryOptions: {
         enabled: !disableLoad,
         refetchOnWindowFocus: true,
         initialData: defaultData,
       },
-      "show",
-    );
+      loadQueryKey: "show",
+    });
     const { t } = useTranslation();
     const data = rawData?.document || defaultData;
     const cardInfo = useMemo<PrimaryFieldResults<string>>(() => {

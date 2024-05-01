@@ -39,14 +39,13 @@ export const EntityDetailListItem = ({
   const loadedSchema = useExtendedSchema({ typeName, classIRI });
   const {
     loadQuery: { data: rawData },
-  } = useCRUDWithQueryClient(
+  } = useCRUDWithQueryClient({
     entityIRI,
-    classIRI,
-    loadedSchema,
-    { enabled: true, refetchOnWindowFocus: true },
-    "show",
-  );
-  const { t } = useTranslation();
+    typeIRI: classIRI,
+    schema: loadedSchema,
+    queryOptions: { enabled: true, refetchOnWindowFocus: true },
+    loadQueryKey: "show",
+  });
   const data = rawData?.document?.["@type"] ? rawData?.document : defaultData;
   const cardInfo = useMemo<PrimaryFieldResults<string>>(() => {
     const fieldDecl = primaryFields[typeName];

@@ -606,15 +606,12 @@ export const GoogleSpeadSheetWorkSheetView: FC<
   });
 
   const loadedSchema = useExtendedSchema({ typeName, classIRI });
-  const { saveMutation } = useCRUDWithQueryClient(
-    undefined,
-    undefined,
-    loadedSchema as JSONSchema7,
-    { enabled: false },
-    "importsave",
-    undefined,
-    true,
-  );
+  const { saveMutation } = useCRUDWithQueryClient({
+    schema: loadedSchema,
+    queryOptions: { enabled: false },
+    loadQueryKey: "importsave",
+    allowUnsafeSourceIRIs: true,
+  });
   const handleMapAndImport = useCallback(async () => {
     const rows = [...Array(pagination.pageSize)].map(
       (_, index) => index + pagination.pageIndex + 2,

@@ -1,16 +1,5 @@
 import React from "react";
-import {
-  BarChart,
-  Bar,
-  Rectangle,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-} from "recharts";
-import { ROUNDED_CORNERS } from "./chartConfig";
+import { BarChart, Bar, Rectangle, XAxis, YAxis, Tooltip } from "recharts";
 
 export type BarStackHorizontalProps = {
   height: number;
@@ -34,7 +23,7 @@ type ScoreData = {
 
 let tooltipTimeout: number;
 
-export default ({
+export const BarReChart = ({
   height,
   width,
   events = false,

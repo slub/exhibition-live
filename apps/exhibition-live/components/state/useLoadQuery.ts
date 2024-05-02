@@ -1,10 +1,10 @@
-import { CRUDOptions } from "./useSPARQL_CRUD";
 import { useGlobalCRUDOptions } from "./useGlobalCRUDOptions";
 import { useQueryClient } from "@tanstack/react-query";
 import { useCallback } from "react";
 import { JSONSchema7 } from "json-schema";
 import { load } from "@slub/sparql-schema";
-import { useAdbContext } from "../provider";
+import { useAdbContext } from "./provider";
+import { CRUDOptions } from "./useCrudHook";
 
 export const useLoadQuery = (
   defaultPrefix: string,
@@ -31,7 +31,7 @@ export const useLoadQuery = (
         },
       );
     },
-    [constructFetch, defaultPrefix, queryKey, queryClient],
+    [constructFetch, defaultPrefix, queryKey, queryClient, queryBuildOptions],
   );
 
   return loadEntity;

@@ -30,13 +30,23 @@ export type UseCRUDWithQueryClientOptions = {
   allowUnsafeSourceIRIs?: boolean;
 };
 
-export type UseCRUDWithQueryClientResult = {
-  loadQuery: ReturnType<typeof useQuery<any>>;
-  existsQuery: ReturnType<typeof useQuery<any>>;
-  removeMutation: ReturnType<typeof useMutation<any>>;
-  saveMutation: ReturnType<typeof useMutation<any>>;
+export type UseCRUDWithQueryClientResult<
+  LQ = any,
+  EQ = boolean,
+  RM = void,
+  SM = Record<string, any>,
+> = {
+  loadQuery: ReturnType<typeof useQuery<LQ>>;
+  existsQuery: ReturnType<typeof useQuery<EQ>>;
+  removeMutation: ReturnType<typeof useMutation<any, unknown, RM>>;
+  saveMutation: ReturnType<typeof useMutation<any, unknown, SM>>;
 };
 
-export type UseCRUDHook = (
+export type UseCRUDHook<
+  LQ = any,
+  EQ = boolean,
+  RM = void,
+  SM = Record<string, any>,
+> = (
   options: UseCRUDWithQueryClientOptions,
-) => UseCRUDWithQueryClientResult;
+) => UseCRUDWithQueryClientResult<LQ, EQ, RM, SM>;

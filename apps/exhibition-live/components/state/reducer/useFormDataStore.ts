@@ -34,9 +34,8 @@ export const useFormDataStore = ({
       typeof onEntityIRIChange !== "function"
     )
       return;
-    console.log("create new IRI");
     onEntityIRIChange(createNewEntityIRI());
-  }, [typeIRI, autoCreateNewEntityIRI, createNewEntityIRI]);
+  }, [typeIRI, autoCreateNewEntityIRI, createNewEntityIRI, onEntityIRIChange]);
 
   const setFormData = useCallback(
     (data: any | ((_data: any) => any)) => {

@@ -8,6 +8,7 @@ import {
   CardActions,
   CardContent,
   CardMedia,
+  IconButton,
   Typography,
 } from "@mui/material";
 import { useTranslation } from "next-i18next";
@@ -24,6 +25,7 @@ import { EntityDetailCardProps } from "./EntityDetailCardProps";
 import { StylizedDetailCard } from "./StylizedDetailCard";
 import { isString } from "lodash";
 import MarkdownContent from "./MarkdownContentNoSSR";
+import { Edit } from "@mui/icons-material";
 
 export const EntityDetailCard: FunctionComponent<EntityDetailCardProps> = ({
   typeIRI,
@@ -32,7 +34,7 @@ export const EntityDetailCard: FunctionComponent<EntityDetailCardProps> = ({
   data,
   cardActionChildren,
   readonly,
-  inlineEditing,
+  disableInlineEditing,
   onEditClicked,
   tableProps = {},
 }) => {
@@ -42,7 +44,7 @@ export const EntityDetailCard: FunctionComponent<EntityDetailCardProps> = ({
   const { registerModal } = useModalRegistry();
   const editEntry = useCallback(() => {
     const typeName = typeIRItoTypeName(typeIRI);
-    if (inlineEditing === true) {
+    if (!disableInlineEditing) {
       const modalID = `edit-${typeIRI}-${entityIRI}`;
       registerModal(modalID, EditEntityModal);
       NiceModal.show(modalID, {
@@ -59,7 +61,7 @@ export const EntityDetailCard: FunctionComponent<EntityDetailCardProps> = ({
     router,
     typeIRI,
     entityIRI,
-    inlineEditing,
+    disableInlineEditing,
     registerModal,
     data,
     onEditClicked,
@@ -81,14 +83,16 @@ export const EntityDetailCard: FunctionComponent<EntityDetailCardProps> = ({
             typeof cardActionChildren !== "undefined"
               ? cardActionChildren
               : !readonly && (
-                  <Button
+                  <IconButton
+                    component={Button}
                     size="small"
                     color="primary"
                     variant={"outlined"}
                     onClick={editEntry}
+                    startIcon={<Edit />}
                   >
-                    {inlineEditing ? t("edit inline") : t("edit")}
-                  </Button>
+                    {!disableInlineEditing ? t("edit inline") : t("edit")}
+                  </IconButton>
                 )
           }
         />
@@ -125,9 +129,16 @@ export const EntityDetailCard: FunctionComponent<EntityDetailCardProps> = ({
               ) : (
                 <>
                   {!readonly && (
-                    <Button size="small" color="primary" onClick={editEntry}>
-                      {inlineEditing ? t("edit inline") : t("edit")}
-                    </Button>
+                    <IconButton
+                      component={Button}
+                      size="small"
+                      color="primary"
+                      variant={"outlined"}
+                      onClick={editEntry}
+                      startIcon={<Edit />}
+                    >
+                      {!disableInlineEditing ? t("edit inline") : t("edit")}
+                    </IconButton>
                   )}
                 </>
               )}

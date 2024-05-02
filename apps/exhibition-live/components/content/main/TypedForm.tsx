@@ -1,7 +1,6 @@
 import { Box, Grid } from "@mui/material";
 import { JSONSchema7 } from "json-schema";
 import React, { useCallback, useMemo, useState } from "react";
-import { SplitPane } from "react-collapse-pane";
 
 import { BASE_IRI } from "../../config";
 import { defaultJsonldContext, defaultPrefix } from "../../form/formConfigs";
@@ -20,7 +19,6 @@ import { encodeIRI, irisToData } from "@slub/edb-ui-utils";
 import NewSemanticJsonForm from "../../form/SemanticJsonForm";
 import { useModifiedRouter } from "../../basic";
 import { EntityDetailElement } from "../../form/show";
-import { RootFormProvider } from "../../provider";
 import { useFormDataStore } from "../../state/reducer";
 import { useCRUDWithQueryClient } from "../../state/useCRUDWithQueryClient";
 
@@ -135,38 +133,36 @@ const TypedForm = ({ typeName, entityIRI, classIRI }: MainFormProps) => {
   );
 
   return (
-    <RootFormProvider>
-      <WithPreviewForm data={data} classIRI={classIRI} entityIRI={entityIRI}>
-        {loadedSchema && (
-          <Box sx={{ p: 2, display: "flex" }}>
-            <NewSemanticJsonForm
-              defaultEditMode={true}
-              data={data}
-              entityIRI={entityIRI}
-              onChange={handleChangeData}
-              searchText={searchText}
-              shouldLoadInitially
-              typeIRI={classIRI}
-              onEntityDataChange={handleChange}
-              defaultPrefix={defaultPrefix}
-              jsonldContext={defaultJsonldContext}
-              schema={loadedSchema as JSONSchema7}
-              jsonFormsProps={{
-                uischema,
-                uischemas: uischemas,
-                renderers: mainFormRenderers,
-                config: {
-                  useCRUDHook: useCRUDWithQueryClient,
-                },
-              }}
-              enableSidebar={false}
-              disableSimilarityFinder={true}
-              wrapWithinCard={true}
-            />
-          </Box>
-        )}
-      </WithPreviewForm>
-    </RootFormProvider>
+    <WithPreviewForm data={data} classIRI={classIRI} entityIRI={entityIRI}>
+      {loadedSchema && (
+        <Box sx={{ p: 2, display: "flex" }}>
+          <NewSemanticJsonForm
+            defaultEditMode={true}
+            data={data}
+            entityIRI={entityIRI}
+            onChange={handleChangeData}
+            searchText={searchText}
+            shouldLoadInitially
+            typeIRI={classIRI}
+            onEntityDataChange={handleChange}
+            defaultPrefix={defaultPrefix}
+            jsonldContext={defaultJsonldContext}
+            schema={loadedSchema as JSONSchema7}
+            jsonFormsProps={{
+              uischema,
+              uischemas: uischemas,
+              renderers: mainFormRenderers,
+              config: {
+                useCRUDHook: useCRUDWithQueryClient,
+              },
+            }}
+            enableSidebar={false}
+            disableSimilarityFinder={true}
+            wrapWithinCard={true}
+          />
+        </Box>
+      )}
+    </WithPreviewForm>
   );
 };
 

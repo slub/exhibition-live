@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useGlobalCRUDOptions } from "./useGlobalCRUDOptions";
 import { getClasses } from "@slub/sparql-schema";
-import { useAdbContext } from "../provider";
+import { useAdbContext } from "./provider";
 
 export const useTypeIRIFromEntity = (entityIRI: string) => {
   const { queryBuildOptions, jsonLDConfig } = useAdbContext();

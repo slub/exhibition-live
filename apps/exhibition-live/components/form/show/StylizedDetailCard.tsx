@@ -232,12 +232,15 @@ export const StylizedDetailCard = ({
             className="image-content animate slide delay-5"
             style={{ backgroundImage: `url(${cardInfo.image})` }}
           >
-            <img
-              ref={imgRef}
-              alt={cardInfo.label}
-              src={cardInfo.image}
-              style={{ display: "block", height: "1px" }}
-            />
+            {
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                ref={imgRef}
+                alt={cardInfo.label}
+                src={cardInfo.image}
+                style={{ display: "block", height: "1px" }}
+              />
+            }
           </div>
           <div className="dots animate">
             <div className="dot animate slide-up delay-6"></div>

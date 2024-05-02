@@ -761,6 +761,7 @@ const SimilarityFinder: FunctionComponent<Props> = ({
       knowledgeBases,
       setSearchResults,
       setElementCount,
+      debouncedSearch,
     ],
   );
 
@@ -768,7 +769,7 @@ const SimilarityFinder: FunctionComponent<Props> = ({
     debouncedSearch.cancel();
     if (!searchString || searchString.length < 1) return;
     doSearch(searchString);
-  }, [searchString]);
+  }, [searchString, doSearch, debouncedSearch]);
 
   const [typeName, setTypeName] = useState(
     typeIRItoTypeName(preselectedClassIRI),
@@ -860,7 +861,7 @@ const SimilarityFinder: FunctionComponent<Props> = ({
         handleManuallyMapData(id, entryData, source);
       }
     },
-    [handleManuallyMapData, handleEntityChange, selectedKnowledgeSources],
+    [handleManuallyMapData, handleEntityChange],
   );
 
   const { cycleThroughElements } = useSimilarityFinderState();

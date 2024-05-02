@@ -9,7 +9,7 @@ import {
 } from "@slub/edb-core-types";
 import { useMemo } from "react";
 import { WalkerOptions } from "@slub/edb-graph-traversal";
-import { useAdbContext } from "../provider";
+import { useAdbContext } from "./provider";
 
 type UserDataStoreProps = {
   crudOptionsPartial?: Partial<CRUDFunctions>;
@@ -50,7 +50,14 @@ export const useDataStore = ({
         schema,
         defaultLimit: 10,
       }),
-    [crudOptions, jsonLDConfig.defaultPrefix, walkerOptions, schema],
+    [
+      crudOptions,
+      jsonLDConfig.defaultPrefix,
+      walkerOptions,
+      schema,
+      queryBuildOptions,
+      typeNameToTypeIRI,
+    ],
   );
 
   return {

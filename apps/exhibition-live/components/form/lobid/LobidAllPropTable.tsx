@@ -143,13 +143,11 @@ const PropertyItem = ({
   value: originalValue,
   onEntityChange,
   disableContextMenu,
-  inlineEditing,
 }: {
   property: string;
   value: any;
   onEntityChange?: (uri: string) => void;
   disableContextMenu?: boolean;
-  inlineEditing?: boolean;
 }) => {
   const { menuAnchorEl, menuOpen, handleMenuClick, handleMenuClose } =
     useMenuState();
@@ -250,7 +248,6 @@ const PropertyItem = ({
                     data={v}
                     entityIRI={v["@id"]}
                     typeIRI={v["@type"]}
-                    inlineEditing={true}
                   />
                 );
               }
@@ -330,7 +327,6 @@ const LobidAllPropTable: FunctionComponent<Props> = ({
                     property={key}
                     value={value}
                     disableContextMenu={disableContextMenu}
-                    inlineEditing={true}
                   />
                 ))}
           </TableBody>

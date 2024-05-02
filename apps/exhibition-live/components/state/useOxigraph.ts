@@ -1,6 +1,6 @@
 import { AsyncOxigraph } from "async-oxigraph";
 import { create } from "zustand";
-import { useAdbContext } from "../provider";
+import { useAdbContext } from "./provider";
 import { useEffect } from "react";
 
 const initAsyncOxigraph = async function (publicBasePath: string) {

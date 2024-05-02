@@ -3,10 +3,15 @@ import { NamedAndTypedEntity } from "@slub/edb-core-types";
 import { cleanJSONLD, jsonld2DataSet, LoadResult } from "@slub/sparql-schema";
 import { useDataStore } from "./useDataStore";
 import { filterUndefOrNull } from "@slub/edb-core-utils";
-import { useAdbContext } from "../provider";
+import { useAdbContext } from "./provider";
 import { UseCRUDHook } from "./useCrudHook";
 
-export const useCRUDWithQueryClient: UseCRUDHook = ({
+export const useCRUDWithQueryClient: UseCRUDHook<
+  LoadResult,
+  boolean,
+  void,
+  Record<string, any>
+> = ({
   entityIRI,
   typeIRI,
   schema,

@@ -12,13 +12,11 @@ import { useTypeIRIFromEntity } from "../../state";
 import { primaryFields, typeIRItoTypeName } from "../../config";
 import useExtendedSchema from "../../state/useExtendedSchema";
 import { useCRUDWithQueryClient } from "../../state/useCRUDWithQueryClient";
-import { useTranslation } from "next-i18next";
 import { applyToEachField, extractFieldIfString } from "@slub/edb-ui-utils";
 import NiceModal from "@ebay/nice-modal-react";
 import { EntityDetailModal } from "./EntityDetailModal";
 import { Clear, HideImage } from "@mui/icons-material";
 import { ellipsis } from "@slub/edb-ui-utils";
-import { useRootFormContext } from "../../provider";
 import { PrimaryFieldResults } from "@slub/edb-core-types";
 
 type EntityDetailListItemProps = {
@@ -68,15 +66,13 @@ export const EntityDetailListItem = ({
     };
   }, [typeName, data]);
   const { label, image, description } = cardInfo;
-  const { isWithinRootForm } = useRootFormContext();
   const showDetailModal = useCallback(() => {
     NiceModal.show(EntityDetailModal, {
       typeIRI,
       entityIRI,
       data,
-      inlineEditing: isWithinRootForm,
     });
-  }, [typeIRI, entityIRI, data, isWithinRootForm]);
+  }, [typeIRI, entityIRI, data]);
   //Sorry for this hack, in future we will have class dependent List items
   const variant = useMemo(
     () => (typeIRI.endsWith("Person") ? "circular" : "rounded"),

@@ -28,7 +28,7 @@ type EntityDetailModalProps = {
   data: any;
   disableLoad?: boolean;
   readonly?: boolean;
-  inlineEditing?: boolean;
+  disableInlineEditing?: boolean;
 };
 
 export const EntityDetailModal = NiceModal.create(
@@ -38,7 +38,7 @@ export const EntityDetailModal = NiceModal.create(
     data: defaultData,
     disableLoad,
     readonly,
-    inlineEditing,
+    disableInlineEditing,
   }: EntityDetailModalProps) => {
     const modal = useModal();
     const typeIRIs = useTypeIRIFromEntity(entityIRI);
@@ -123,7 +123,7 @@ export const EntityDetailModal = NiceModal.create(
             entityIRI={entityIRI}
             data={data}
             cardInfo={cardInfo}
-            inlineEditing={inlineEditing}
+            disableInlineEditing={disableInlineEditing}
             readonly={readonly}
             onEditClicked={removeSlowly}
             tableProps={{ disabledProperties }}

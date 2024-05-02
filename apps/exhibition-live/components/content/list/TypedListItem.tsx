@@ -14,7 +14,6 @@ import {
 } from "@mui/material";
 import NiceModal from "@ebay/nice-modal-react";
 import { EntityDetailModal } from "../../form/show/EntityDetailModal";
-import { useRootFormContext } from "../../provider";
 
 interface OwnProps {
   index: number;
@@ -40,16 +39,15 @@ const TypedListItem: FunctionComponent<Props> = ({
     [data, primaryFieldDesc],
   );
 
-  const { isWithinRootForm } = useRootFormContext();
   const showDetailModal = useCallback(() => {
     NiceModal.show(EntityDetailModal, {
       typeIRI,
       entityIRI,
       data,
       disableLoad,
-      inlineEditing: isWithinRootForm,
+      disableInlineEditing: true,
     });
-  }, [typeIRI, entityIRI, data, disableLoad, isWithinRootForm]);
+  }, [typeIRI, entityIRI, data, disableLoad]);
 
   return (
     <ListItem>

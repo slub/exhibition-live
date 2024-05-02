@@ -227,6 +227,7 @@ export const TypedList = ({ typeName }: Props) => {
       NiceModal.show(EntityDetailModal, {
         typeIRI: typeIRI,
         entityIRI: id,
+        disableInlineEditing: true,
       });
     },
     [typeIRI],

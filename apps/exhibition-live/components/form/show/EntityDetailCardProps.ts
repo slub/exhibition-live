@@ -9,7 +9,7 @@ type OwnProps = {
   cardActionChildren?: React.ReactNode;
   data: any;
   readonly?: boolean;
-  inlineEditing?: boolean;
+  disableInlineEditing?: boolean;
   onEditClicked?: () => void;
   tableProps?: Partial<AllPropTableProps>;
 };

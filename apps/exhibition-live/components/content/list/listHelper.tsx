@@ -105,7 +105,11 @@ export const PrimaryColumnContent = ({
   const showDetailModal = useCallback(
     (e: MouseEvent) => {
       e.preventDefault();
-      NiceModal.show(EntityDetailModal, { entityIRI, data: {} });
+      NiceModal.show(EntityDetailModal, {
+        entityIRI,
+        data: {},
+        disableInlineEditing: true,
+      });
     },
     [entityIRI],
   );

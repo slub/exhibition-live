@@ -114,7 +114,7 @@ export const EditEntityModal = NiceModal.create(
         modal.remove();
       };
       return handleSave(acceptCallback);
-    }, [formData, loadedSchema, handleSave, modal, isStale]);
+    }, [formData, loadedSchema, handleSave, modal]);
 
     const handleSaveAndAccept = useCallback(async () => {
       //await handleSave(handleAccept);
@@ -126,7 +126,7 @@ export const EditEntityModal = NiceModal.create(
         setFormData(data);
         setIsStale(true);
       },
-      [setIsStale],
+      [setIsStale, setFormData],
     );
 
     return (

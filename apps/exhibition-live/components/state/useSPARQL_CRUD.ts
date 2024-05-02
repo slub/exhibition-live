@@ -1,6 +1,5 @@
 import { Dataset } from "@rdfjs/types";
 import {
-  QueryObserverOptions,
   QueryObserverResult,
   useQuery,
   useQueryClient,

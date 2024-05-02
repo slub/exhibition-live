@@ -4,7 +4,7 @@ import { useCRUDWithQueryClient } from "./useCRUDWithQueryClient";
 import { JSONSchema7 } from "json-schema";
 import get from "lodash/get";
 import { useRightDrawerState } from "./useRightDrawerState";
-import { useAdbContext } from "../provider";
+import { useAdbContext } from "./provider";
 
 export const useGlobalSearchWithHelper = (
   typeName: string,
@@ -53,7 +53,14 @@ export const useGlobalSearchWithHelper = (
           __label: label,
         });
     },
-    [onDataAccepted, saveMutation, typeIRI, typeName],
+    [
+      onDataAccepted,
+      saveMutation,
+      typeIRI,
+      typeName,
+      createEntityIRI,
+      primaryFields,
+    ],
   );
 
   const handleFocus = useCallback(() => {

@@ -410,6 +410,7 @@ export const SearchBar = ({ relevantTypes }: { relevantTypes: string[] }) => {
   const showEntry = useCallback((entityIRI: string) => {
     NiceModal.show(EntityDetailModal, {
       entityIRI,
+      disableInlineEditing: true,
     });
   }, []);
 

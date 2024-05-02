@@ -16,7 +16,7 @@ import {
   SparqlEndpoint,
   UseLocalSettings,
 } from "../types/settings";
-import { useAdbContext } from "../provider";
+import { useAdbContext } from "./provider";
 
 const defaultSparqlEndpoints: SparqlEndpoint[] = [
   {

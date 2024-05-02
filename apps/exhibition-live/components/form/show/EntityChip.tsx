@@ -9,7 +9,6 @@ import { ellipsis } from "@slub/edb-ui-utils";
 import NiceModal from "@ebay/nice-modal-react";
 import { EntityDetailModal } from "./EntityDetailModal";
 import { Avatar, Chip, ChipProps, Tooltip } from "@mui/material";
-import { useRootFormContext } from "../../provider";
 import { PrimaryFieldResults } from "@slub/edb-core-types";
 
 type EntityChipProps = {
@@ -17,14 +16,12 @@ type EntityChipProps = {
   entityIRI: string;
   typeIRI?: string;
   data?: any;
-  inlineEditing?: boolean;
 } & ChipProps;
 export const EntityChip = ({
   index,
   entityIRI,
   typeIRI,
   data: defaultData,
-  inlineEditing,
   ...chipProps
 }: EntityChipProps) => {
   const typeIRIs = useTypeIRIFromEntity(entityIRI);
@@ -69,18 +66,15 @@ export const EntityChip = ({
     [typeIRI],
   );
   const [tooltipEnabled, setTooltipEnabled] = useState(false);
-  const { isWithinRootForm } = useRootFormContext();
   const showDetailModal = useCallback(
     (e: MouseEvent) => {
       e.preventDefault();
       NiceModal.show(EntityDetailModal, {
         entityIRI,
         data: {},
-        inlineEditing:
-          inlineEditing === undefined ? isWithinRootForm : inlineEditing,
       });
     },
-    [entityIRI, isWithinRootForm, inlineEditing],
+    [entityIRI],
   );
   const handleShouldShow = useCallback(
     (e: MouseEvent<Element>) => {

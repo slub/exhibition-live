@@ -15,7 +15,7 @@ type EntityDetailElementProps = {
   entityIRI: string;
   data: any;
   cardActionChildren?: React.ReactNode;
-  inlineEditing?: boolean;
+  disableInlineEditing?: boolean;
   readonly?: boolean;
 };
 
@@ -24,7 +24,7 @@ export const EntityDetailElement = ({
   entityIRI,
   data: initialData,
   cardActionChildren,
-  inlineEditing,
+  disableInlineEditing,
   readonly,
   ...rest
 }: EntityDetailElementProps & Partial<BoxProps>) => {
@@ -75,7 +75,7 @@ export const EntityDetailElement = ({
         data={data}
         cardInfo={cardInfo}
         cardActionChildren={cardActionChildren}
-        inlineEditing={inlineEditing}
+        disableInlineEditing={disableInlineEditing}
         readonly={readonly}
         tableProps={{ disabledProperties }}
       />

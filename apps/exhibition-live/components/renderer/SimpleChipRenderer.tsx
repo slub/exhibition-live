@@ -15,10 +15,8 @@ import { useJsonForms } from "@jsonforms/react";
 import dot from "dot";
 import { useCRUDWithQueryClient } from "../state/useCRUDWithQueryClient";
 import get from "lodash/get";
-import { useModifiedRouter } from "../basic";
 import NiceModal from "@ebay/nice-modal-react";
 import { EntityDetailModal } from "../form/show/EntityDetailModal";
-import { useRootFormContext } from "../provider";
 import { bringDefinitionToTop } from "@slub/json-schema-utils";
 
 type SimpleChipRendererProps = {
@@ -110,10 +108,7 @@ export const SimpleChipRenderer = (
     }
   }, [loadedData, onData]);
 
-  const router = useModifiedRouter();
-  const locale = router.query.locale || "";
   const [tooltipEnabled, setTooltipEnabled] = useState(false);
-  const { isWithinRootForm } = useRootFormContext();
 
   const showDetailModal = useCallback(
     (e: MouseEvent) => {
@@ -121,10 +116,9 @@ export const SimpleChipRenderer = (
       NiceModal.show(EntityDetailModal, {
         entityIRI,
         data: {},
-        inlineEditing: isWithinRootForm,
       });
     },
-    [entityIRI, isWithinRootForm],
+    [entityIRI],
   );
   const handleShouldShow = useCallback(
     (e: MouseEvent<Element>) => {

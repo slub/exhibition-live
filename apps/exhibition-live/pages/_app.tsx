@@ -17,7 +17,7 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { appWithTranslation, UserConfig, useTranslation } from "next-i18next";
 import nextI18NextConfig from "../next-i18next.config";
 import { GoogleOAuthProvider } from "@react-oauth/google";
-import { AdbProvider } from "../components/provider/adbContext";
+import { AdbProvider } from "../components/state/provider/adbContext";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";

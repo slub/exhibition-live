@@ -13,7 +13,7 @@ import { applyToEachField, extractFieldIfString } from "@slub/edb-ui-utils";
 import { JSONSchema7 } from "json-schema";
 import { useJsonForms } from "@jsonforms/react";
 import dot from "dot";
-import { useCRUDWithQueryClient } from "../state/useCRUDWithQueryClient";
+import { useCRUDWithQueryClient } from "@slub/edb-state-hooks";
 import get from "lodash/get";
 import NiceModal from "@ebay/nice-modal-react";
 import { EntityDetailModal } from "../form/show/EntityDetailModal";

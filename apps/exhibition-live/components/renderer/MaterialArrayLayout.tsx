@@ -54,11 +54,13 @@ import { v4 as uuidv4 } from "uuid";
 import { Grid, IconButton, List, Paper } from "@mui/material";
 import { SemanticFormsInline } from "./SemanticFormsInline";
 import CheckIcon from "@mui/icons-material/Check";
-import { useCRUDWithQueryClient } from "../state/useCRUDWithQueryClient";
+import {
+  useCRUDWithQueryClient,
+  useFormDataStore,
+} from "@slub/edb-state-hooks";
 import { useSnackbar } from "notistack";
 import { ErrorObject } from "ajv";
 import { applyToEachField, extractFieldIfString } from "@slub/edb-ui-utils";
-import { useFormDataStore } from "../state/reducer";
 import { JSONSchema } from "json-schema-to-ts";
 import { useTranslation } from "next-i18next";
 import { Pulse } from "../form/utils";

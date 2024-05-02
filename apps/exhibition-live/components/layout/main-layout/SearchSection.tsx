@@ -10,7 +10,7 @@ import { useTranslation } from "next-i18next";
 // project imports
 import DiscoverAutocompleteInput from "../../form/discover/DiscoverAutocompleteInput";
 import { sladb } from "../../form/formConfigs";
-import { useGlobalSearch } from "../../state";
+import { useGlobalSearch } from "@slub/edb-state-hooks";
 import { encodeIRI } from "@slub/edb-ui-utils";
 import { useModifiedRouter } from "../../basic";
 

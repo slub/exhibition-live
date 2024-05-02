@@ -8,7 +8,7 @@ import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import schema from "../../../public/schema/Exhibition.schema.json";
 import { v4 as uuidv4 } from "uuid";
-import { useGlobalCRUDOptions } from "../../state/useGlobalCRUDOptions";
+import { useGlobalCRUDOptions } from "@slub/edb-state-hooks";
 import {
   Backdrop,
   Box,
@@ -55,7 +55,7 @@ import useExtendedSchema from "../../state/useExtendedSchema";
 import Button from "@mui/material/Button";
 import { download, generateCsv, mkConfig } from "export-to-csv";
 import { useModifiedRouter } from "../../basic";
-import { useSettings } from "../../state/useLocalSettings";
+import { useSettings } from "@slub/edb-state-hooks";
 import { EntityDetailModal } from "../../form/show";
 import { useTranslation } from "next-i18next";
 import {

@@ -4,7 +4,7 @@ import { useAdbContext } from "./provider";
 import { useEffect } from "react";
 
 const initAsyncOxigraph = async function (publicBasePath: string) {
-  const ao = new AsyncOxigraph(publicBasePath + "/worker.js");
+  const ao = AsyncOxigraph.getInstance(publicBasePath + "/worker.js");
   await ao.init(publicBasePath + "/web_bg.wasm"); // Default is same folder as worker.js
   return ao;
 };

@@ -6,7 +6,7 @@ import { useUISchemaForType } from "../form/uischemaForType";
 import { uischemas } from "../form/uischemas";
 import MuiEditDialog from "./MuiEditDialog";
 import { useControlled } from "@mui/material";
-import { useCRUDWithQueryClient } from "../state/useCRUDWithQueryClient";
+import { useCRUDWithQueryClient } from "@slub/edb-state-hooks";
 import { useSnackbar } from "notistack";
 import NiceModal from "@ebay/nice-modal-react";
 import GenericModal from "../form/GenericModal";

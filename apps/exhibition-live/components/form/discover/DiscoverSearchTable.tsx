@@ -6,7 +6,7 @@ import React, {
   useState,
 } from "react";
 
-import { useGlobalCRUDOptions } from "../../state/useGlobalCRUDOptions";
+import { useGlobalCRUDOptions } from "@slub/edb-state-hooks";
 import {
   defaultPrefix,
   defaultQueryBuilderOptions,

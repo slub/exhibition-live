@@ -5,12 +5,12 @@ import React, { useCallback, useMemo } from "react";
 
 import loadedSchema from "../../../public/schema/Exhibition.schema.json";
 import SettingsModal from "../../content/settings/SettingsModal";
-import { useLocalSettings } from "../../state/useLocalSettings";
+import { useLocalSettings } from "@slub/edb-state-hooks";
 import { MenuGroup, NavGroup, NavItem, Drawer } from "./menu";
 import menuLists from "./menu/menuLists";
-import { useGlobalAuth } from "../../state";
 import { useTranslation } from "next-i18next";
 import { useModifiedRouter } from "../../basic";
+import { useGlobalAuth } from "../../state/useGlobalAuth";
 
 type SidebarProps = {
   open?: boolean;

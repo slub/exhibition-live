@@ -1,6 +1,6 @@
 import { useEffect } from "react";
-import { useSettings } from "./useLocalSettings";
 import { SparqlEndpoint } from "@slub/edb-core-types";
+import { useSettings } from "@slub/edb-state-hooks";
 
 /**
  * This hook adds a demo endpoint to the list of endpoints if the app is not running on the test server.

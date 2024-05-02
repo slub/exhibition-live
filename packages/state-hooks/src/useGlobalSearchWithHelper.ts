@@ -25,7 +25,7 @@ export const useGlobalSearchWithHelper = (
   const handleSearchStringChange = useCallback(
     (value: string | undefined) => {
       setSearchString(value);
-      setSearch(value);
+      setSearch(value || "");
     },
     [setSearchString, setSearch],
   );
@@ -46,7 +46,8 @@ export const useGlobalSearchWithHelper = (
         "@id": newIRI,
         "@type": typeIRI,
       });
-      const label = get(newData, primaryFields[typeName]?.label);
+      const labelField = primaryFields[typeName]?.label;
+      const label = labelField ? get(newData, labelField) : "";
       onDataAccepted &&
         onDataAccepted({
           "@id": newIRI,
@@ -66,7 +67,7 @@ export const useGlobalSearchWithHelper = (
   const handleFocus = useCallback(() => {
     setTypeName(typeName);
     setPath(formsPath);
-    setSearch(searchString);
+    setSearch(searchString || "");
     if (keepMounted) setOpen(true);
   }, [
     searchString,

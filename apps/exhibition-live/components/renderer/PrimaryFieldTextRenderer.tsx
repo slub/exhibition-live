@@ -28,8 +28,7 @@ import {
   useGlobalSearch,
   useKeyEventForSimilarityFinder,
   useRightDrawerState,
-  useSimilarityFinderState,
-} from "../state";
+} from "@slub/edb-state-hooks";
 
 interface MuiTextInputProps {
   muiInputProps?: InputProps["inputProps"];

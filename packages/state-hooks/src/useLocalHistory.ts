@@ -1,8 +1,8 @@
 import { useCallback, useState } from "react";
 
 export const useLocalHistory: () => {
-  pushHistory: (historyElement?: string) => string;
-  popHistory: () => string;
+  pushHistory: (historyElement?: string) => string | undefined;
+  popHistory: () => string | undefined;
   history: (string | undefined)[];
 } = () => {
   const [history, setHistory] = useState<(string | undefined)[]>([undefined]);

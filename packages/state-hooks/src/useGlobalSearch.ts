@@ -6,7 +6,7 @@ export type GlobalSearchState = {
   typeName: string;
   setTypeName: (typeName: string) => void;
   path?: string;
-  setPath: (path?: string) => void;
+  setPath: (path: string) => void;
 };
 
 export const useGlobalSearch = create<GlobalSearchState>((set, get) => ({

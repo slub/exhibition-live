@@ -2,7 +2,7 @@ import { TextFieldProps, useControlled } from "@mui/material";
 import parse from "html-react-parser";
 import React, { FunctionComponent, useCallback, useId } from "react";
 
-import { useGlobalCRUDOptions } from "../../state/useGlobalCRUDOptions";
+import { useGlobalCRUDOptions } from "@slub/edb-state-hooks";
 import {
   AutocompleteSuggestion,
   DebouncedAutocomplete,

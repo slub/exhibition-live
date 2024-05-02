@@ -47,7 +47,7 @@ import {
   primaryTextFieldControlTester,
   PrimaryTextFieldRenderer,
 } from "../renderer/PrimaryFieldTextRenderer";
-import { useGlobalSearch, useRightDrawerState } from "../state";
+import { useGlobalSearch, useRightDrawerState } from "@slub/edb-state-hooks";
 import MaterialArrayOfLinkedItemChipsRenderer, {
   materialArrayLayoutChipsTester,
 } from "../renderer/MaterialArrayOfLinkedItemChipsRenderer";

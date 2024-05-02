@@ -10,6 +10,7 @@ export const useTypeIRIFromEntity = (entityIRI: string) => {
   const { data: typeIRIs } = useQuery(
     ["classes", entityIRI],
     async () => {
+      if (!selectFetch) return [];
       return await getClasses(entityIRI, selectFetch, {
         queryBuildOptions,
         defaultPrefix: jsonLDConfig.defaultPrefix,

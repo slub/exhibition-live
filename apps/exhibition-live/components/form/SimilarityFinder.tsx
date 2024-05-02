@@ -30,7 +30,7 @@ import {
 import { v4 as uuidv4 } from "uuid";
 
 import { declarativeMappings, lobidTypemap } from "../config/lobidMappings";
-import { useSettings } from "../state/useLocalSettings";
+import { useSettings } from "@slub/edb-state-hooks";
 import { mapByConfig } from "@slub/edb-ui-utils";
 import { DeclarativeMapping, StrategyContext } from "@slub/edb-ui-utils";
 import {
@@ -44,13 +44,13 @@ import {
   gndEntryWithMainInfo,
 } from "./lobid/LobidSearchTable";
 import { findEntityByAuthorityIRI } from "@slub/edb-ui-utils";
-import { useGlobalCRUDOptions } from "../state/useGlobalCRUDOptions";
+import { useGlobalCRUDOptions } from "@slub/edb-state-hooks";
 import {
   useGlobalSearch,
   useLoadQuery,
   useModalRegistry,
   useSimilarityFinderState,
-} from "../state";
+} from "@slub/edb-state-hooks";
 import { useTranslation } from "next-i18next";
 import { searchEntityByLabel } from "@slub/edb-ui-utils";
 import { primaryFields, typeIRItoTypeName } from "../config";

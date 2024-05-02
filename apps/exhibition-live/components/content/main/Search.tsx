@@ -6,7 +6,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import { ParentSize } from "@visx/responsive";
 import { useCallback, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { useGlobalCRUDOptions } from "../../state/useGlobalCRUDOptions";
+import { useGlobalCRUDOptions } from "@slub/edb-state-hooks";
 import { SELECT } from "@tpluscode/sparql-builder";
 import { primaryFields, typeIRItoTypeName } from "../../config";
 import { defaultPrefix } from "../../form/formConfigs";

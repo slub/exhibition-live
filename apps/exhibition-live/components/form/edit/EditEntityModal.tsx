@@ -1,9 +1,9 @@
 import NiceModal, { useModal } from "@ebay/nice-modal-react";
-import { useTypeIRIFromEntity } from "../../state";
+import { useTypeIRIFromEntity } from "@slub/edb-state-hooks";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { primaryFieldExtracts, typeIRItoTypeName } from "../../config";
 import useExtendedSchema from "../../state/useExtendedSchema";
-import { useCRUDWithQueryClient } from "../../state/useCRUDWithQueryClient";
+import { useCRUDWithQueryClient } from "@slub/edb-state-hooks";
 import { defaultJsonldContext, defaultPrefix } from "../formConfigs";
 import { useTranslation } from "next-i18next";
 import { applyToEachField, extractFieldIfString } from "@slub/edb-ui-utils";
@@ -14,7 +14,7 @@ import { uischemas } from "../uischemas";
 import { SemanticJsonFormNoOps } from "../SemanticJsonFormNoOps";
 import MuiEditDialog from "../../renderer/MuiEditDialog";
 import { useSnackbar } from "notistack";
-import { useFormDataStore } from "../../state/reducer";
+import { useFormDataStore } from "@slub/edb-state-hooks";
 import { PrimaryFieldResults } from "@slub/edb-core-types";
 import { cleanJSONLD } from "@slub/sparql-schema";
 

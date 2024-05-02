@@ -22,7 +22,7 @@ import { primaryFields, typeIRItoTypeName } from "../config";
 import { AutocompleteSuggestion } from "../form/DebouncedAutoComplete";
 import { SemanticFormsModal } from "./SemanticFormsModal";
 import { extractFieldIfString } from "@slub/edb-ui-utils";
-import { useGlobalSearchWithHelper } from "../state";
+import { useGlobalSearchWithHelper } from "@slub/edb-state-hooks";
 import { encodeIRI, makeFormsPath } from "@slub/edb-ui-utils";
 import { SearchbarWithFloatingButton } from "../layout/main-layout/Searchbar";
 import SimilarityFinder from "../form/SimilarityFinder";

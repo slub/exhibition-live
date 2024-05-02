@@ -4,7 +4,7 @@ import { useState } from "react";
 
 import schema from "../../public/schema/Exhibition.schema.json";
 import useExtendedSchema from "../state/useExtendedSchema";
-import { useSettings } from "../state/useLocalSettings";
+import { useSettings } from "@slub/edb-state-hooks";
 import {
   defaultJsonldContext,
   defaultPrefix,

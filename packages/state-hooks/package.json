@@ -1,0 +1,60 @@
+{
+  "name": "@slub/edb-state-hooks",
+  "version": "1.1.0",
+  "description": "use hooks that implement global state management logic for the EDB project",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs",
+      "default": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsup src/index.ts --format esm,cjs --dts --external react",
+    "dev": "tsup src/index.ts --format esm,cjs --watch --dts --external react",
+    "lint": "eslint \"**/*.ts*\"",
+    "lint-fix": "eslint --fix \"**/*.ts*\"",
+    "test": "jest",
+    "test:watch": "jest --watch --color",
+    "test:coverage": "jest --coverage",
+    "doc": "typedoc"
+  },
+  "devDependencies": {
+    "@slub/edb-core-types": "workspace:*",
+    "@slub/edb-global-types": "workspace:*",
+    "@slub/edb-tsconfig": "workspace:*",
+    "@slub/edb-tsup-config": "workspace:*",
+    "@types/jest": "^29.5.12",
+    "@tanstack/react-query": "^4.36.1",
+    "eslint-config-edb": "workspace:*",
+    "notistack": "^3.0.1",
+    "typescript": "^5.3.3",
+    "react": ">=18"
+  },
+  "peerDependencies": {
+    "notistack": ">3",
+    "@tanstack/react-query": ">4",
+    "react": "^16.9.0 || ^17.0.0 || ^18"
+  },
+  "dependencies": {
+    "@rdfjs/dataset": "^2.0.2",
+    "async-oxigraph": "^0.0.9",
+    "n3": "^1.17.3",
+    "jsonld-context-parser": "^2.4.0",
+    "@slub/remote-query-implementations": "workspace:*",
+    "@slub/edb-graph-traversal": "workspace:*",
+    "@slub/edb-core-utils": "workspace:*",
+    "@slub/edb-ui-utils": "workspace:*",
+    "@slub/sparql-schema": "workspace:*",
+    "@reduxjs/toolkit": "^2.2.3",
+    "json-schema": "^0.4.0",
+    "jsonld": "^8.3.2",
+    "react-redux": "^9.1.1",
+    "zustand": "^4.5.2"
+  }
+}

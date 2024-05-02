@@ -18,7 +18,7 @@ import { useGoogleToken } from "./useGoogleToken";
 import { GenericMaterialListItem } from "../content/main/GenericVirtualizedList";
 import NiceModal, { useModal } from "@ebay/nice-modal-react";
 import { Close as CloseIcon } from "@mui/icons-material";
-import { useSettings } from "../state/useLocalSettings";
+import { useSettings } from "@slub/edb-state-hooks";
 
 const googleApiURL = "https://content.googleapis.com/drive/v3/files";
 const mimeIconsBase =

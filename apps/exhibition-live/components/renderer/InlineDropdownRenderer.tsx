@@ -15,7 +15,7 @@ import { extractFieldIfString } from "@slub/edb-ui-utils";
 import { makeFormsPath } from "@slub/edb-ui-utils";
 import { useTranslation } from "next-i18next";
 import { PreloadedOptionSelect } from "../form/PreloadedOptionSelect";
-import { useGlobalCRUDOptions } from "../state/useGlobalCRUDOptions";
+import { useGlobalCRUDOptions } from "@slub/edb-state-hooks";
 import { PrimaryField } from "@slub/edb-core-types";
 import { findEntityByClass } from "@slub/sparql-schema";
 

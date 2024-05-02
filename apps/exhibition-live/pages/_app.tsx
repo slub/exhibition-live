@@ -17,7 +17,6 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { appWithTranslation, UserConfig, useTranslation } from "next-i18next";
 import nextI18NextConfig from "../next-i18next.config";
 import { GoogleOAuthProvider } from "@react-oauth/google";
-import { AdbProvider } from "../components/state/provider/adbContext";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
@@ -25,7 +24,6 @@ import "dayjs/locale/de";
 import "dayjs/locale/en";
 import { useEffect } from "react";
 import { Provider } from "react-redux";
-import store from "../components/state/reducer/formStore";
 import { OptionalLiveDemoEndpoint } from "../components/state/useOptionalLiveDemoEndpoint";
 import {
   createNewIRI,
@@ -37,6 +35,7 @@ import {
 import { envToSparqlEndpoint } from "../components/config/envToSparqlEndpoint";
 import getConfig from "next/config";
 import { BASE_IRI, PUBLIC_BASE_PATH } from "../components/config";
+import { AdbProvider, store } from "@slub/edb-state-hooks";
 
 export const queryClient = new QueryClient();
 const QueryClientProviderWrapper = ({

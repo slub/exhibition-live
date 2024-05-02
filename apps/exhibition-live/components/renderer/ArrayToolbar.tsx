@@ -21,7 +21,7 @@ import {
   useKeyEventForSimilarityFinder,
   useRightDrawerState,
   useSimilarityFinderState,
-} from "../state";
+} from "@slub/edb-state-hooks";
 import { SearchbarWithFloatingButton } from "../layout/main-layout/Searchbar";
 import SimilarityFinder, { KnowledgeSources } from "../form/SimilarityFinder";
 import { JSONSchema7 } from "json-schema";

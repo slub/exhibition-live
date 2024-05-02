@@ -11,8 +11,8 @@ import {
   ToggleButton,
 } from "@mui/material";
 import React from "react";
-import { useFormEditor } from "../../state";
-import { useSettings } from "../../state/useLocalSettings";
+import { useFormEditor } from "@slub/edb-state-hooks";
+import { useSettings } from "@slub/edb-state-hooks";
 
 type AppHeaderProps = {
   toggleDrawer: () => void;

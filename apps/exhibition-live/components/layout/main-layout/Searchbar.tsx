@@ -2,7 +2,7 @@ import { Box, Toolbar } from "@mui/material";
 import React, { useCallback, useState } from "react";
 import { FloatingButton } from "./menu";
 import MuiDrawer from "@mui/material/Drawer";
-import { useRightDrawerState } from "../../state";
+import { useRightDrawerState } from "@slub/edb-state-hooks";
 
 type SearchbarProps = {
   drawerWidth: number;

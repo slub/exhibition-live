@@ -14,19 +14,17 @@ import React, {
 
 import { FormDebuggingTools } from "./FormDebuggingTools";
 import GenericModal from "./GenericModal";
-import { useCRUDWithQueryClient } from "../state/useCRUDWithQueryClient";
+import { useCRUDWithQueryClient } from "@slub/edb-state-hooks";
 import { useSnackbar } from "notistack";
 import { ChangeCause, SemanticJsonFormNoOps } from "./SemanticJsonFormNoOps";
 import { SemanticJsonFormToolbar } from "./SemanticJsonFormToolbar";
-import { useSettings } from "../state/useLocalSettings";
-import { useLoadQuery, useQueryKeyResolver } from "../state";
+import { useSettings } from "@slub/edb-state-hooks";
+import { useLoadQuery, useQueryKeyResolver } from "@slub/edb-state-hooks";
 import { Backdrop, Box, CircularProgress } from "@mui/material";
 import { EntityDetailModal } from "./show";
 import { create } from "zustand";
 import { useTranslation } from "next-i18next";
 import { cleanJSONLD } from "@slub/sparql-schema";
-import { QueryObserverOptions } from "@tanstack/react-query";
-import { CRUDOptions } from "../state/useCrudHook";
 
 export interface SemanticJsonFormsProps {
   entityIRI?: string | undefined;

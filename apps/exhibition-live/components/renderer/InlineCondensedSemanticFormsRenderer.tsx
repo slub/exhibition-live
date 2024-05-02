@@ -25,7 +25,7 @@ import {
   useGlobalSearchWithHelper,
   useRightDrawerState,
   useKeyEventForSimilarityFinder,
-} from "../state";
+} from "@slub/edb-state-hooks";
 import { makeFormsPath } from "@slub/edb-ui-utils";
 import { SearchbarWithFloatingButton } from "../layout/main-layout/Searchbar";
 import SimilarityFinder from "../form/SimilarityFinder";

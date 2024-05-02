@@ -20,7 +20,7 @@ type UserDataStoreProps = {
 };
 
 type UseDataStoreState = {
-  dataStore: AbstractDatastore;
+  dataStore?: AbstractDatastore;
   ready: boolean;
 };
 
@@ -46,6 +46,7 @@ export const useDataStore = ({
         typeNameToTypeIRI,
         queryBuildOptions,
         walkerOptions,
+        // @ts-ignore
         sparqlQueryFunctions: crudOptions,
         schema,
         defaultLimit: 10,

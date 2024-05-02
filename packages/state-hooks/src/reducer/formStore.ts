@@ -1,7 +1,8 @@
 import { configureStore } from "@reduxjs/toolkit";
-import formDataReducer from "./formSlice";
+import { formDataReducer } from "./formSlice";
 
-const store = configureStore({
+// @ts-ignore
+export const store = configureStore({
   reducer: {
     formData: formDataReducer,
   },
@@ -9,5 +10,3 @@ const store = configureStore({
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
-
-export default store;

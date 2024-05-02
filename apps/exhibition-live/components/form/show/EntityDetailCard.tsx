@@ -17,10 +17,9 @@ import { useModifiedRouter } from "../../basic";
 import { encodeIRI } from "@slub/edb-ui-utils";
 
 import { typeIRItoTypeName } from "../../config";
-import { useSettings } from "../../state/useLocalSettings";
 import NiceModal from "@ebay/nice-modal-react";
 import { EditEntityModal } from "../edit/EditEntityModal";
-import { useModalRegistry } from "../../state";
+import { useModalRegistry, useSettings } from "@slub/edb-state-hooks";
 import { EntityDetailCardProps } from "./EntityDetailCardProps";
 import { StylizedDetailCard } from "./StylizedDetailCard";
 import { isString } from "lodash";

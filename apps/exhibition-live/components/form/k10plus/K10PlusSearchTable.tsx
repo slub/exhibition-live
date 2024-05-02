@@ -23,8 +23,8 @@ import React, {
   useState,
 } from "react";
 
-import { useLocalHistory } from "../../state";
-import { useSettings } from "../../state/useLocalSettings";
+import { useLocalHistory } from "@slub/edb-state-hooks";
+import { useSettings } from "@slub/edb-state-hooks";
 import ClassicEntityCard from "../lobid/ClassicEntityCard";
 import ClassicResultListItem from "../result/ClassicResultListItem";
 import { NodePropertyTree } from "@slub/edb-graph-traversal";

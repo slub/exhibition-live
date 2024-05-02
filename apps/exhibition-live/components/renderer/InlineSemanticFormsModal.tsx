@@ -9,7 +9,7 @@ import { uischemas } from "../form/uischemas";
 import MuiEditDialog from "./MuiEditDialog";
 import { BASE_IRI } from "../config";
 import { SemanticJsonFormNoOps } from "../form/SemanticJsonFormNoOps";
-import { useCRUDWithQueryClient } from "../state/useCRUDWithQueryClient";
+import { useCRUDWithQueryClient } from "@slub/edb-state-hooks";
 import NiceModal from "@ebay/nice-modal-react";
 import GenericModal from "../form/GenericModal";
 import { useSnackbar } from "notistack";

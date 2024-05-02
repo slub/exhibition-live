@@ -1,4 +1,3 @@
-import useLocalState from "@phntms/use-local-state";
 import {
   SetStateAction,
   useCallback,
@@ -17,6 +16,7 @@ import {
   UseLocalSettings,
 } from "@slub/edb-core-types";
 import { useAdbContext } from "./provider";
+import { useLocalStorage } from "./useLocalStorage";
 
 const defaultSparqlEndpoints: SparqlEndpoint[] = [
   {
@@ -62,53 +62,52 @@ type UseSettings = Settings & {
   setGoogleDriveConfig: (config: GoogleDriveConfig) => void;
 };
 
+const initalState = {
+  lockedEndpoint: false,
+  sparqlEndpoints: [],
+  openai: {},
+  googleDrive: {},
+  externalAuthority: {
+    kxp: {
+      endpoint: "https://sru.bsz-bw.de/swbtest",
+    },
+  },
+  features: {
+    enableDebug: false,
+    enablePreview: false,
+    enableBackdrop: false,
+    enableStylizedCard: false,
+  },
+};
 export const useSettings: () => UseSettings = () => {
   const { lockedSPARQLEndpoint } = useAdbContext();
-  const [settingsLocalStorage, setLocalSettings] = useLocalState<Settings>(
-    "settings",
-    {
-      lockedEndpoint: Boolean(lockedSPARQLEndpoint),
-      sparqlEndpoints: [],
-      openai: {},
-      googleDrive: {},
-      externalAuthority: {
-        kxp: {
-          endpoint: "https://sru.bsz-bw.de/swbtest",
-        },
-      },
-      features: {
-        enableDebug: false,
-        enablePreview: false,
-        enableBackdrop: false,
-        enableStylizedCard: false,
-      },
-    },
-  );
+  const [settingsLocalStorage = initalState, setLocalSettings] =
+    useLocalStorage<Settings>("settings", initalState);
 
-  const [settingsState, setSettingsState] = useState<Settings>(
-    lockedSPARQLEndpoint
-      ? {
-          ...settingsLocalStorage,
-          lockedEndpoint: true,
-          sparqlEndpoints: [
-            {
-              ...lockedSPARQLEndpoint,
-              active: true,
-            },
-          ],
-        }
-      : settingsLocalStorage,
+  const settings2 = useMemo<Settings>(
+    () =>
+      lockedSPARQLEndpoint
+        ? {
+            ...settingsLocalStorage,
+            lockedEndpoint: true,
+            sparqlEndpoints: [
+              {
+                ...lockedSPARQLEndpoint,
+                active: true,
+              },
+            ],
+          }
+        : settingsLocalStorage,
+    [lockedSPARQLEndpoint, settingsLocalStorage],
   );
 
   const setSettings = useCallback(
     (settings: SetStateAction<Settings>) => {
+      // @ts-ignore
       setLocalSettings(settings);
-      setSettingsState(settings);
     },
-    [setLocalSettings, setSettingsState],
+    [setLocalSettings],
   );
-
-  const settings = settingsState;
 
   const setSparqlEndpoints = useCallback(
     (endpoints: SparqlEndpoint[]) => {
@@ -153,7 +152,7 @@ export const useSettings: () => UseSettings = () => {
     },
     [setSettings],
   );
-
+  /*
   useEffect(() => {
     if (
       (!settings.lockedEndpoint && !Array.isArray(settings.sparqlEndpoints)) ||
@@ -166,15 +165,16 @@ export const useSettings: () => UseSettings = () => {
     settings.lockedEndpoint,
     setSettings,
     setSparqlEndpoints,
-  ]);
+  ]);*/
 
   const activeEndpoint = useMemo(
-    () => settings.sparqlEndpoints.find((e) => e.active),
-    [settings.sparqlEndpoints],
+    () =>
+      lockedSPARQLEndpoint || settings2.sparqlEndpoints.find((e) => e.active),
+    [settings2.sparqlEndpoints, lockedSPARQLEndpoint],
   );
 
   return {
-    ...settings,
+    ...settingsLocalStorage,
     setSparqlEndpoints,
     setFeatures,
     activeEndpoint,

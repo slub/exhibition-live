@@ -1,8 +1,8 @@
 import { JsonView } from "react-json-view-lite";
 import { Divider, Grid, Typography } from "@mui/material";
 import React from "react";
-import { useSettings } from "../state/useLocalSettings";
-import { useGlobalCRUDOptions } from "../state/useGlobalCRUDOptions";
+import { useSettings } from "@slub/edb-state-hooks";
+import { useGlobalCRUDOptions } from "@slub/edb-state-hooks";
 import SPARQLLocalOxigraphToolkit from "../utils/dev/SPARQLLocalOxigraphToolkit";
 
 type FormDebuggingToolsProps = {

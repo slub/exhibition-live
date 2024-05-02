@@ -10,7 +10,7 @@ import {
 import Grid2 from "@mui/material/Unstable_Grid2";
 import { TrendingDown, TrendingUp } from "@mui/icons-material";
 import { useQuery } from "@tanstack/react-query";
-import { useGlobalCRUDOptions } from "../../state/useGlobalCRUDOptions";
+import { useGlobalCRUDOptions } from "@slub/edb-state-hooks";
 import { SELECT } from "@tpluscode/sparql-builder";
 import { primaryFields, typeIRItoTypeName } from "../../config";
 import { sladb } from "../../form/formConfigs";

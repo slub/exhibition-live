@@ -19,7 +19,7 @@ import { ClassicResultPopperItem } from "./ClassicResultPopperItem";
 import {
   useKeyEventForSimilarityFinder,
   useSimilarityFinderState,
-} from "../../state";
+} from "@slub/edb-state-hooks";
 import { Check } from "@mui/icons-material";
 import { OverflowContainer } from "../../lists";
 import { OverflowChip } from "../../lists/OverflowChip";

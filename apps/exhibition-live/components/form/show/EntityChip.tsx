@@ -1,8 +1,8 @@
-import { useTypeIRIFromEntity } from "../../state";
+import { useTypeIRIFromEntity } from "@slub/edb-state-hooks";
 import React, { MouseEvent, useCallback, useMemo, useState } from "react";
 import { primaryFieldExtracts, typeIRItoTypeName } from "../../config";
 import useExtendedSchema from "../../state/useExtendedSchema";
-import { useCRUDWithQueryClient } from "../../state/useCRUDWithQueryClient";
+import { useCRUDWithQueryClient } from "@slub/edb-state-hooks";
 import { useTranslation } from "next-i18next";
 import { applyToEachField, extractFieldIfString } from "@slub/edb-ui-utils";
 import { ellipsis } from "@slub/edb-ui-utils";

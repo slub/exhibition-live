@@ -8,10 +8,10 @@ import {
   Stack,
 } from "@mui/material";
 import React, { useCallback, useMemo } from "react";
-import { useTypeIRIFromEntity } from "../../state";
+import { useTypeIRIFromEntity } from "@slub/edb-state-hooks";
 import { primaryFields, typeIRItoTypeName } from "../../config";
 import useExtendedSchema from "../../state/useExtendedSchema";
-import { useCRUDWithQueryClient } from "../../state/useCRUDWithQueryClient";
+import { useCRUDWithQueryClient } from "@slub/edb-state-hooks";
 import { applyToEachField, extractFieldIfString } from "@slub/edb-ui-utils";
 import NiceModal from "@ebay/nice-modal-react";
 import { EntityDetailModal } from "./EntityDetailModal";

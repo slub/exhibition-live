@@ -1,7 +1,7 @@
 import Head from "next/head";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/router";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 import TypedForm from "../../../components/content/main/TypedForm";
 import { sladb, slent } from "../../../components/form/formConfigs";
@@ -11,11 +11,10 @@ import { BASE_IRI } from "../../../components/config";
 import { v4 as uuidv4 } from "uuid";
 import { useTranslation } from "next-i18next";
 import { getI18nProps, mixinStaticPathsParams } from "../../../components/i18n";
-import { useSettings } from "../../../components/state/useLocalSettings";
-import { useFormEditor } from "../../../components/state";
 import { Button, Hidden, ToggleButton } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { decodeIRI } from "@slub/edb-core-utils";
+import { useFormEditor, useSettings } from "@slub/edb-state-hooks";
 
 type Props = {
   typeName: string;

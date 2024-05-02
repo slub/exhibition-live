@@ -11,16 +11,15 @@ import {
   useFormEditor,
   useGlobalSearch,
   useRightDrawerState,
-} from "../../state";
+  useSettings,
+} from "@slub/edb-state-hooks";
 import useExtendedSchema from "../../state/useExtendedSchema";
-import { useGlobalCRUDOptions } from "../../state/useGlobalCRUDOptions";
-import { useSettings } from "../../state/useLocalSettings";
 import { encodeIRI, irisToData } from "@slub/edb-ui-utils";
 import NewSemanticJsonForm from "../../form/SemanticJsonForm";
 import { useModifiedRouter } from "../../basic";
 import { EntityDetailElement } from "../../form/show";
-import { useFormDataStore } from "../../state/reducer";
-import { useCRUDWithQueryClient } from "../../state/useCRUDWithQueryClient";
+import { useFormDataStore } from "@slub/edb-state-hooks";
+import { useCRUDWithQueryClient } from "@slub/edb-state-hooks";
 
 type Props = {
   children: React.ReactChild;

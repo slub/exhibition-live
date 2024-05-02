@@ -1,5 +1,6 @@
 import { Bindings, DatasetCore, Quad, ResultStream } from "@rdfjs/types";
 import { NamespaceBuilder } from "@rdfjs/namespace";
+export type * from "./settings";
 
 export type Prefixes = {
   [k: string]: string;

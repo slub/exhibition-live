@@ -64,12 +64,11 @@ import {
   remove,
   withDefaultPrefix,
 } from "@slub/sparql-schema";
-import { SPARQLFlavour } from "@slub/edb-core-types";
+import { SPARQLFlavour, SparqlEndpoint } from "@slub/edb-core-types";
 import { computeColumns } from "./listHelper";
 import { tableConfig } from "../../config/tableConfig";
 import { encodeIRI, filterUndefOrNull } from "@slub/edb-ui-utils";
 import { bringDefinitionToTop } from "@slub/json-schema-utils";
-import { SparqlEndpoint } from "../../types/settings";
 
 type Props = {
   typeName: string;

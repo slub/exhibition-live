@@ -1,4 +1,4 @@
-import { SparqlEndpoint } from "../types/settings";
+import { SparqlEndpoint } from "@slub/edb-core-types";
 
 export const envToSparqlEndpoint = (
   env: Record<string, string>,

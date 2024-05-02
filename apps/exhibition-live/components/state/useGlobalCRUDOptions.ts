@@ -5,13 +5,12 @@ import { useCallback, useMemo } from "react";
 
 import { useSettings } from "./useLocalSettings";
 import { useOxigraph } from "./useOxigraph";
-import { CRUDFunctions } from "@slub/edb-core-types";
+import { CRUDFunctions, SparqlEndpoint } from "@slub/edb-core-types";
 import {
   allegroCrudOptions,
   oxigraphCrudOptions,
   qleverCrudOptions,
 } from "@slub/remote-query-implementations";
-import { SparqlEndpoint } from "../types/settings";
 
 type UseGlobalCRUDOptions = () => {
   crudOptions?: CRUDFunctions;

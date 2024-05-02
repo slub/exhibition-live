@@ -1,4 +1,3 @@
-import { createSelector } from "@reduxjs/toolkit";
 import { RootState } from "./formStore";
 
 export const selectFormData = (state: RootState, entityIRI: string) =>

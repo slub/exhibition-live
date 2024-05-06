@@ -54,7 +54,7 @@ import InlineDropdownRenderer from "../renderer/InlineDropdownRenderer";
 import { ErrorObject } from "ajv";
 import { OptionsModal } from "./OptionsModal";
 import { useTranslation } from "next-i18next";
-import {MarkdownTextFieldRenderer} from "@slub/edb-markdown-renderer";
+import { MarkdownTextFieldRenderer } from "@slub/edb-markdown-renderer";
 
 export type CRUDOpsType = {
   load: () => Promise<void>;

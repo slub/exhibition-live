@@ -120,4 +120,6 @@ const MarkdownTextFieldRendererComponent = (props: ControlProps) => {
   );
 };
 
-export const MarkdownTextFieldRenderer = withJsonFormsControlProps(MarkdownTextFieldRendererComponent);
+export const MarkdownTextFieldRenderer = withJsonFormsControlProps(
+  MarkdownTextFieldRendererComponent,
+);

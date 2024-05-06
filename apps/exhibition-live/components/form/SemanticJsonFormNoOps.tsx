@@ -42,7 +42,6 @@ import MaterialBooleanControl, {
 } from "../renderer/MaterialBooleanControl";
 import { primaryFields, typeIRItoTypeName } from "../config";
 import NiceModal from "@ebay/nice-modal-react";
-import GenericModal from "./GenericModal";
 import {
   primaryTextFieldControlTester,
   PrimaryTextFieldRenderer,
@@ -55,7 +54,7 @@ import InlineDropdownRenderer from "../renderer/InlineDropdownRenderer";
 import { ErrorObject } from "ajv";
 import { OptionsModal } from "./OptionsModal";
 import { useTranslation } from "next-i18next";
-import MarkdownTextFieldRenderer from "../renderer/MarkdownTextFieldRenderer";
+import {MarkdownTextFieldRenderer} from "@slub/edb-markdown-renderer";
 
 export type CRUDOpsType = {
   load: () => Promise<void>;
@@ -234,7 +233,6 @@ export const SemanticJsonFormNoOps: FunctionComponent<
       }).then((decision: string) => {
         closeDrawer();
         onChange((data: any) => {
-          console.log({ data, newData, decision });
           if (decision === "replace") {
             return {
               ...newData,

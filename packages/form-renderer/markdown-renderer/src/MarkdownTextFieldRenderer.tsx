@@ -8,7 +8,7 @@ import {
   Hidden,
   IconButton,
 } from "@mui/material";
-import merge from "lodash/merge";
+import merge from "lodash-es/merge";
 import React, { useCallback, useMemo, useState } from "react";
 import rehypeExternalLinks from "rehype-external-links";
 import rehypeSanitize from "rehype-sanitize";
@@ -16,7 +16,7 @@ import rehypeSanitize from "rehype-sanitize";
 import MDEditor, { MDEditorMarkdown } from "./MDEditor";
 import TurndownService from "turndown";
 
-const MarkdownTextFieldRenderer = (props: ControlProps) => {
+const MarkdownTextFieldRendererComponent = (props: ControlProps) => {
   const {
     id,
     errors,
@@ -120,4 +120,4 @@ const MarkdownTextFieldRenderer = (props: ControlProps) => {
   );
 };
 
-export default withJsonFormsControlProps(MarkdownTextFieldRenderer);
+export const MarkdownTextFieldRenderer = withJsonFormsControlProps(MarkdownTextFieldRendererComponent);

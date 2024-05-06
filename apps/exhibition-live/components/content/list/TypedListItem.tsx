@@ -1,7 +1,6 @@
 import React, { FunctionComponent, useCallback, useMemo } from "react";
 import {
   primaryFieldExtracts,
-  primaryFields,
   typeIRItoTypeName,
 } from "../../config";
 import { applyToEachField, extractFieldIfString } from "@slub/edb-ui-utils";

@@ -44,6 +44,7 @@
     "apps/*",
     "packages/*",
     "packages/ideas/*",
+    "packages/form-renderer/*",
     "manifestation/*"
   ],
   "devDependencies": {

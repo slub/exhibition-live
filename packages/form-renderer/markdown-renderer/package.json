@@ -1,0 +1,51 @@
+{
+  "name": "@slub/edb-markdown-renderer",
+  "version": "1.0.0",
+  "description": "A markdown renderer for json forms",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs",
+      "default": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsup src/index.tsx --format esm,cjs --dts --external react",
+    "dev": "tsup src/index.tsx --format esm,cjs --watch --dts --external react",
+    "lint": "eslint \"**/*.ts*\"",
+    "lint-fix": "eslint --fix \"**/*.ts*\"",
+    "test": "jest",
+    "test:watch": "jest --watch --color",
+    "test:coverage": "jest --coverage",
+    "doc": "typedoc"
+  },
+  "devDependencies": {
+    "@slub/edb-tsconfig": "workspace:*",
+    "@slub/edb-tsup-config": "workspace:*",
+    "@types/jest": "^29.5.12",
+    "@tanstack/react-query": "^4.36.1",
+    "eslint-config-edb": "workspace:*",
+    "typescript": "^5.3.3",
+    "react": ">=18"
+  },
+  "peerDependencies": {
+    "next": ">14",
+    "@jsonforms/react": ">3",
+    "@jsonforms/core": ">3",
+    "@uiw/react-markdown-preview": ">5",
+    "@uiw/react-md-editor": ">4",
+    "@mui/icons-material": ">5",
+    "react": "^16.9.0 || ^17.0.0 || ^18"
+  },
+  "dependencies": {
+    "lodash-es": "^4.17.21",
+    "rehype-sanitize": "^6.0.0",
+    "rehype-external-links": "^3.0.0",
+    "turndown": "^7.0.0"
+  }
+}

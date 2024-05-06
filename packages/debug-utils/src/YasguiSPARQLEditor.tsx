@@ -1,25 +1,27 @@
-import "@triply/yasgui/build/yasgui.min.css";
-
 import Yasgui from "@triply/yasgui";
 import React, { FunctionComponent, useEffect, useState } from "react";
 
-import { exhibitionPrefixes } from "../../exhibtion";
+import { Prefixes } from "@slub/edb-core-types";
 
 interface OwnProps {
   onInit?: (yasgu: Yasgui) => void;
+  prefixes?: Prefixes;
 }
 
-type Props = OwnProps;
+export type YasguiSPARQLEditorProps = OwnProps;
 
-const withPrefixes = (yg: Yasgui) => {
+const withPrefixes = (yg: Yasgui, prefixes?: Prefixes) => {
   const yasqe = yg.getTab(yg.persistentConfig.currentId())?.getYasqe();
   const yasqr = yg.getTab(yg.persistentConfig.currentId())?.getYasr();
-  yasqe?.addPrefixes(exhibitionPrefixes);
+  prefixes && yasqe?.addPrefixes(prefixes);
   //yasqr?.set
   return yg;
 };
 
-const YasguiSPARQLEditor: FunctionComponent<Props> = ({ onInit }) => {
+const YasguiSPARQLEditor: FunctionComponent<YasguiSPARQLEditorProps> = ({
+  onInit,
+  prefixes,
+}) => {
   const [yasgui, setYasgui] = useState<Yasgui | null>(null);
 
   useEffect(() => {
@@ -34,6 +36,7 @@ const YasguiSPARQLEditor: FunctionComponent<Props> = ({ onInit }) => {
                 showQueryButton: true,
               },
             }),
+            prefixes,
           );
     });
   }, [setYasgui]);

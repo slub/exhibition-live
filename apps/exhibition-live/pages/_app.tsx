@@ -5,6 +5,7 @@ import "../styles/tooltipster.bundle.min.css";
 import "../styles/tooltipster-sideTip-shadow.min.css";
 import "@uiw/react-markdown-preview/markdown.css";
 import "@uiw/react-md-editor/markdown-editor.css";
+import "@triply/yasgui/build/yasgui.min.css";
 import "leaflet/dist/leaflet.css";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";

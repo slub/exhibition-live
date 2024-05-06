@@ -2,9 +2,9 @@ import { ToggleButton } from "@mui/lab";
 import { Button } from "@mui/material";
 import React, { FunctionComponent, useState } from "react";
 
-import YasguiSPARQLEditorNoSSR, {
-  YasguiSPARQLEditorProps,
-} from "./YasguiSPARQLEditorNoSSR";
+import { YasguiSPARQLEditorNoSSR } from "./YasguiSPARQLEditorNoSSR";
+import { useAdbContext } from "@slub/edb-state-hooks";
+import type { YasguiSPARQLEditorProps } from "./YasguiSPARQLEditor";
 
 interface OwnProps {
   onSendClicked?: () => void;
@@ -12,16 +12,19 @@ interface OwnProps {
 
 type Props = OwnProps & YasguiSPARQLEditorProps;
 
-const SPARQLToolkit: FunctionComponent<Props> = ({
+export const SPARQLToolkit: FunctionComponent<Props> = ({
   onSendClicked,
   ...props
 }) => {
   const [editorEnabled, setEditorEnabled] = useState(false);
+  const {
+    queryBuildOptions: { prefixes },
+  } = useAdbContext();
   return (
     <>
       {editorEnabled ? (
         <>
-          <YasguiSPARQLEditorNoSSR {...props} />
+          <YasguiSPARQLEditorNoSSR {...props} prefixes={prefixes} />
           <Button onClick={() => onSendClicked && onSendClicked()}>
             query
           </Button>
@@ -36,5 +39,3 @@ const SPARQLToolkit: FunctionComponent<Props> = ({
     </>
   );
 };
-
-export default SPARQLToolkit;

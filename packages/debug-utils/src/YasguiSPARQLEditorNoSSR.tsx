@@ -1,9 +1,6 @@
-import type Yasgui from "@triply/yasgui";
 import dynamic from "next/dynamic";
+import type { YasguiSPARQLEditorProps } from "./YasguiSPARQLEditor";
 
-export interface YasguiSPARQLEditorProps {
-  onInit?: (yasgu: Yasgui) => void;
-}
 const DynamicComponentWithNoSSR = dynamic(
   () => import("./YasguiSPARQLEditor"),
   {
@@ -11,7 +8,6 @@ const DynamicComponentWithNoSSR = dynamic(
   },
 );
 
-// @ts-ignore
-export default (props: YasguiSPARQLEditorProps) => (
+export const YasguiSPARQLEditorNoSSR = (props: YasguiSPARQLEditorProps) => (
   <DynamicComponentWithNoSSR {...props} />
 );

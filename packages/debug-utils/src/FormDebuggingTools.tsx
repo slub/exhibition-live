@@ -3,7 +3,7 @@ import { Divider, Grid, Typography } from "@mui/material";
 import React from "react";
 import { useSettings } from "@slub/edb-state-hooks";
 import { useGlobalCRUDOptions } from "@slub/edb-state-hooks";
-import SPARQLLocalOxigraphToolkit from "../utils/dev/SPARQLLocalOxigraphToolkit";
+import { SPARQLLocalOxigraphToolkit } from "./SPARQLLocalOxigraphToolkit";
 
 type FormDebuggingToolsProps = {
   jsonData?: Record<string, any>;

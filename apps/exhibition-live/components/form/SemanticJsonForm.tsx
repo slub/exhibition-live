@@ -12,7 +12,6 @@ import React, {
   useState,
 } from "react";
 
-import { FormDebuggingTools } from "./FormDebuggingTools";
 import GenericModal from "./GenericModal";
 import { useCRUDWithQueryClient } from "@slub/edb-state-hooks";
 import { useSnackbar } from "notistack";
@@ -25,6 +24,7 @@ import { EntityDetailModal } from "./show";
 import { create } from "zustand";
 import { useTranslation } from "next-i18next";
 import { cleanJSONLD } from "@slub/sparql-schema";
+import { FormDebuggingTools } from "@slub/edb-debug-utils";
 
 export interface SemanticJsonFormsProps {
   entityIRI?: string | undefined;

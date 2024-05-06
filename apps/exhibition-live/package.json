@@ -56,6 +56,7 @@
     "@slub/edb-core-utils": "workspace:*",
     "@slub/edb-graph-traversal": "workspace:*",
     "@slub/edb-charts": "workspace:*",
+    "@slub/edb-debug-utils": "workspace:*",
     "@slub/remote-query-implementations": "workspace:*",
     "@slub/sparql-schema": "workspace:*",
     "@slub/sparql-db-impl": "workspace:*",

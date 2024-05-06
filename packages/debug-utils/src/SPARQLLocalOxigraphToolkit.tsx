@@ -1,7 +1,6 @@
 import Yasgui from "@triply/yasgui";
 import React, { FunctionComponent, useCallback, useState } from "react";
-
-import SPARQLToolkit from "./SPARQLToolkit";
+import { SPARQLToolkit } from "./SPARQLToolkit";
 
 interface OwnProps {
   sparqlQuery?: (query: string) => Promise<any>;
@@ -9,7 +8,7 @@ interface OwnProps {
 
 type Props = OwnProps;
 
-const SPARQLLocalOxigraphToolkit: FunctionComponent<Props> = ({
+export const SPARQLLocalOxigraphToolkit: FunctionComponent<Props> = ({
   sparqlQuery,
 }) => {
   const [yasgui, setYasgui] = useState<Yasgui | null>(null);
@@ -33,5 +32,3 @@ const SPARQLLocalOxigraphToolkit: FunctionComponent<Props> = ({
     />
   );
 };
-
-export default SPARQLLocalOxigraphToolkit;

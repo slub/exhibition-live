@@ -97,3 +97,15 @@ export type AbstractDatastore<
   ) => Promise<FindResult>;
   iterableImplementation?: AbstractDatastoreIterable<DocumentResult>;
 };
+
+export type EditEntityModalProps = {
+  typeIRI: string | undefined;
+  entityIRI: string;
+  data: any;
+  disableLoad?: boolean;
+};
+
+type EntityDetailModalProps = EditEntityModalProps & {
+  readonly?: boolean;
+  disableInlineEditing?: boolean;
+};

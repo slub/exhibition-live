@@ -15,7 +15,6 @@ import dot from "dot";
 import { useAdbContext, useCRUDWithQueryClient } from "@slub/edb-state-hooks";
 import get from "lodash/get";
 import NiceModal from "@ebay/nice-modal-react";
-import { EntityDetailModal } from "../form/show/EntityDetailModal";
 import { bringDefinitionToTop } from "@slub/json-schema-utils";
 
 type SimpleChipRendererProps = {
@@ -53,6 +52,7 @@ export const SimpleChipRenderer = (
   const {
     typeIRIToTypeName,
     queryBuildOptions: { primaryFieldExtracts },
+    components: { EntityDetailModal },
   } = useAdbContext();
   const typeName = useMemo(
     () => typeIRI && typeIRIToTypeName(typeIRI),

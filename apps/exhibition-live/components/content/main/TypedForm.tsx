@@ -106,7 +106,7 @@ const TypedForm = ({ typeName, entityIRI, classIRI }: MainFormProps) => {
     },
     [router, typeIRIToTypeName],
   );
-  const loadedSchema = useExtendedSchema({ typeName, classIRI });
+  const loadedSchema = useExtendedSchema({ typeName });
 
   const { width: rightDrawerWidth, open: rightDrawerOpen } =
     useRightDrawerState();

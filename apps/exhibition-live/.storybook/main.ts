@@ -10,12 +10,17 @@ const config: StorybookConfig = {
     "@storybook/addon-docs",
     "@storybook/addon-links",
     "@storybook/addon-essentials",
+    "storybook-addon-next-router",
   ],
   staticDirs: ["../public"],
 
   framework: {
     name: "@storybook/nextjs",
-    options: {},
+    options: {
+      builder: {
+        useSWC: true, // Enables SWC support
+      },
+    },
   },
   docs: {
     autodocs: true,

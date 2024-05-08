@@ -37,7 +37,7 @@ export const EntityDetailElement = ({
     () => typeIRIToTypeName(classIRI),
     [classIRI, typeIRIToTypeName],
   );
-  const loadedSchema = useExtendedSchema({ typeName, classIRI });
+  const loadedSchema = useExtendedSchema({ typeName });
   const {
     loadQuery: { data: rawData },
   } = useCRUDWithQueryClient({

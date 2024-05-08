@@ -7,7 +7,11 @@ import {
   isPrimitive,
 } from "@slub/json-schema-utils";
 
-import { PrimaryFieldDeclaration, SPARQLFlavour } from "@slub/edb-core-types";
+import {
+  PrimaryField,
+  PrimaryFieldDeclaration,
+  SPARQLFlavour,
+} from "@slub/edb-core-types";
 
 const makeWherePart = (queryClause: string, required: boolean) =>
   required ? queryClause : ` OPTIONAL { ${queryClause} } `;
@@ -148,8 +152,9 @@ const propertiesToSPARQLSelectPatterns = (
           );
           let primaryInfoWhere = "";
           if (primaryFields && typeName in primaryFields) {
-            const primaryFieldDeclaration =
-              primaryFields && primaryFields[typeName];
+            const primaryFieldDeclaration = primaryFields[
+              typeName
+            ] as PrimaryField;
             Object.entries(primaryFieldDeclaration).forEach(([key, value]) => {
               const primaryMultiVariable = makeVariable([
                 ...subPath,

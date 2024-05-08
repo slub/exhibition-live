@@ -1,12 +1,17 @@
 import { createContext, useContext } from "react";
 import {
   IRIToStringFn,
+  NormDataMapping,
   SparqlBuildOptions,
   SparqlEndpoint,
   StringToIRIFn,
 } from "@slub/edb-core-types";
 import { JsonLdContext } from "jsonld-context-parser";
-import { NormDataMapping } from "../../dist/index";
+import {
+  EditEntityModalProps,
+  EntityDetailModalProps,
+} from "@slub/edb-global-types";
+import { NiceModalHocProps } from "@ebay/nice-modal-react";
 
 export type JSONLDConfig = {
   defaultPrefix: string;
@@ -36,6 +41,10 @@ type AdbContextValue = {
   env: {
     publicBasePath: string;
     baseIRI: string;
+  };
+  components: {
+    EditEntityModal: React.FC<EditEntityModalProps & NiceModalHocProps>;
+    EntityDetailModal: React.FC<EntityDetailModalProps & NiceModalHocProps>;
   };
 };
 

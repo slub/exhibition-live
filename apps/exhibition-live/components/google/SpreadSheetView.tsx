@@ -635,7 +635,7 @@ export const GoogleSpeadSheetWorkSheetView: FC<
     () => typeNameToTypeIRI(typeName),
     [typeName, typeNameToTypeIRI],
   );
-  const loadedSchema = useExtendedSchema({ typeName, classIRI });
+  const loadedSchema = useExtendedSchema({ typeName });
   const { saveMutation } = useCRUDWithQueryClient({
     schema: loadedSchema,
     queryOptions: { enabled: false },

@@ -13,7 +13,6 @@ import useExtendedSchema from "../../state/useExtendedSchema";
 import { useCRUDWithQueryClient } from "@slub/edb-state-hooks";
 import { applyToEachField, extractFieldIfString } from "@slub/edb-ui-utils";
 import NiceModal from "@ebay/nice-modal-react";
-import { EntityDetailModal } from "./EntityDetailModal";
 import { Clear, HideImage } from "@mui/icons-material";
 import { ellipsis } from "@slub/edb-ui-utils";
 import { PrimaryFieldResults } from "@slub/edb-core-types";
@@ -33,6 +32,7 @@ export const EntityDetailListItem = ({
   const {
     queryBuildOptions: { primaryFields },
     typeIRIToTypeName,
+    components: { EntityDetailModal },
   } = useAdbContext();
   const typeIRIs = useTypeIRIFromEntity(entityIRI);
   const classIRI: string | undefined = typeIRI || typeIRIs?.[0];
@@ -40,7 +40,7 @@ export const EntityDetailListItem = ({
     () => typeIRIToTypeName(classIRI),
     [classIRI, typeIRIToTypeName],
   );
-  const loadedSchema = useExtendedSchema({ typeName, classIRI });
+  const loadedSchema = useExtendedSchema({ typeName });
   const {
     loadQuery: { data: rawData },
   } = useCRUDWithQueryClient({
@@ -78,7 +78,7 @@ export const EntityDetailListItem = ({
       entityIRI,
       data,
     });
-  }, [typeIRI, entityIRI, data]);
+  }, [typeIRI, entityIRI, data, EntityDetailModal]);
   //Sorry for this hack, in future we will have class dependent List items
   const variant = useMemo(
     () => (typeIRI.endsWith("Person") ? "circular" : "rounded"),

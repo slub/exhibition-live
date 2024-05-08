@@ -1,5 +1,6 @@
 import { Bindings, DatasetCore, Quad, ResultStream } from "@rdfjs/types";
 import { NamespaceBuilder } from "@rdfjs/namespace";
+import { DeclarativeMapping } from "@slub/edb-ui-utils";
 export type * from "./settings";
 
 export type Prefixes = {
@@ -133,4 +134,9 @@ export type Permission = {
 
 export type PermissionDeclaration<T extends string> = {
   [typeName in T]: Permission;
+};
+
+export type NormDataMapping = {
+  mapping: DeclarativeMapping;
+  typeToTypeMap: Record<string, string | string[]>;
 };

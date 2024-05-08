@@ -23,7 +23,6 @@ export const useOxigraphZustand = create<OxigraphStore>((set, get) => {
     bulkLoaded: false,
     initialized: false,
     init: async (publicBasePath: string) => {
-      console.log("init oxigraph");
       if (get().initialized) return;
       set({ initialized: true });
       console.log("really init oxigraph");

@@ -47,7 +47,6 @@ import {
 import { useTranslation } from "next-i18next";
 import { searchEntityByLabel } from "@slub/edb-ui-utils";
 import NiceModal from "@ebay/nice-modal-react";
-import { EditEntityModal } from "./edit/EditEntityModal";
 import ClassicResultListItem from "./result/ClassicResultListItem";
 import { EntityDetailElement } from "./show";
 import {
@@ -414,7 +413,7 @@ const KBListItemRenderer = ({
     () => typeIRIToTypeName(typeIRI),
     [typeIRI, typeIRIToTypeName],
   );
-  const loadedSchema = useExtendedSchema({ typeName, classIRI: typeIRI });
+  const loadedSchema = useExtendedSchema({ typeName });
   const loadEntity = useLoadQuery(defaultPrefix, "load");
   const { resetElementIndex } = useSimilarityFinderState();
   const handleAccept = useCallback(async () => {
@@ -708,6 +707,7 @@ const SimilarityFinder: FunctionComponent<Props> = ({
     typeNameToTypeIRI,
     typeIRIToTypeName,
     jsonLDConfig: { defaultPrefix },
+    components: { EditEntityModal },
   } = useAdbContext();
   const {
     search: globalSearch,
@@ -972,6 +972,7 @@ const SimilarityFinder: FunctionComponent<Props> = ({
     typeIRIToTypeName,
     createEntityIRI,
     getDefaultLabelKey,
+    EditEntityModal,
   ]);
 
   /**

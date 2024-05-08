@@ -11,7 +11,6 @@ import * as React from "react";
 import { TFunction } from "i18next";
 import { MouseEvent, useCallback, useMemo } from "react";
 import NiceModal from "@ebay/nice-modal-react";
-import { EntityDetailModal } from "../../form/show";
 import {
   FieldExtractDeclaration,
   PrimaryField,
@@ -98,6 +97,7 @@ export const PrimaryColumnContent = ({
 }: PrimaryColumnContentProps) => {
   const {
     queryBuildOptions: { primaryFields },
+    components: { EntityDetailModal },
   } = useAdbContext();
   const primaryContent = useMemo(() => {
     const fieldDecl = primaryFields[typeName] as PrimaryField | undefined;
@@ -118,7 +118,7 @@ export const PrimaryColumnContent = ({
         disableInlineEditing: true,
       });
     },
-    [entityIRI],
+    [entityIRI, EntityDetailModal],
   );
 
   return (

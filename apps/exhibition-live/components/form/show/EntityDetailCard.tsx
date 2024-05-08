@@ -17,7 +17,6 @@ import { useModifiedRouter } from "../../basic";
 import { encodeIRI } from "@slub/edb-ui-utils";
 
 import NiceModal from "@ebay/nice-modal-react";
-import { EditEntityModal } from "../edit/EditEntityModal";
 import {
   useAdbContext,
   useModalRegistry,
@@ -41,7 +40,10 @@ export const EntityDetailCard: FunctionComponent<EntityDetailCardProps> = ({
   tableProps = {},
 }) => {
   const { t } = useTranslation();
-  const { typeIRIToTypeName } = useAdbContext();
+  const {
+    typeIRIToTypeName,
+    components: { EditEntityModal },
+  } = useAdbContext();
 
   const router = useModifiedRouter();
   const { registerModal } = useModalRegistry(NiceModal);
@@ -69,6 +71,7 @@ export const EntityDetailCard: FunctionComponent<EntityDetailCardProps> = ({
     registerModal,
     data,
     onEditClicked,
+    EditEntityModal,
   ]);
 
   const {

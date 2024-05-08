@@ -49,7 +49,6 @@ import Button from "@mui/material/Button";
 import { download, generateCsv, mkConfig } from "export-to-csv";
 import { useModifiedRouter } from "../../basic";
 import { useSettings } from "@slub/edb-state-hooks";
-import { EntityDetailModal } from "../../form/show";
 import { useTranslation } from "next-i18next";
 import {
   jsonSchema2Select,
@@ -122,6 +121,7 @@ export const TypedList = ({ typeName }: Props) => {
     jsonLDConfig: { defaultPrefix },
     typeNameToTypeIRI,
     createEntityIRI,
+    components: { EntityDetailModal },
   } = useAdbContext();
 
   const typeIRI = useMemo(() => {
@@ -241,9 +241,9 @@ export const TypedList = ({ typeName }: Props) => {
         disableInlineEditing: true,
       });
     },
-    [typeIRI],
+    [typeIRI, EntityDetailModal],
   );
-  const extendedSchema = useExtendedSchema({ typeName, classIRI: typeIRI });
+  const extendedSchema = useExtendedSchema({ typeName });
   const queryClient = useQueryClient();
   const { mutateAsync: moveToTrashAsync, isLoading: aboutToMoveToTrash } =
     useMutation(

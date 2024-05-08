@@ -42,6 +42,8 @@ import {
   PUBLIC_BASE_PATH,
 } from "../components/config";
 import { AdbProvider, store } from "@slub/edb-state-hooks";
+import { EntityDetailModal } from "../components/form/show";
+import { EditEntityModal } from "../components/form/edit/EditEntityModal";
 
 export const queryClient = new QueryClient();
 const QueryClientProviderWrapper = ({
@@ -53,8 +55,6 @@ const QueryClientProviderWrapper = ({
     <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
   );
 };
-
-const sparqlEndpoint = envToSparqlEndpoint(getConfig().publicRuntimeConfig);
 
 function App({ Component, pageProps }: AppProps) {
   const { i18n } = useTranslation();
@@ -78,7 +78,11 @@ function App({ Component, pageProps }: AppProps) {
                   iri?.substring(BASE_IRI.length, iri.length)
                 }
                 createEntityIRI={createNewIRI}
-                lockedSPARQLEndpoint={sparqlEndpoint}
+                lockedSPARQLEndpoint={{
+                  label: "Local",
+                  endpoint: "urn:local",
+                  active: true,
+                }}
                 jsonLDConfig={{
                   defaultPrefix: defaultPrefix,
                   jsonldContext: defaultJsonldContext,
@@ -93,6 +97,10 @@ function App({ Component, pageProps }: AppProps) {
                 env={{
                   publicBasePath: PUBLIC_BASE_PATH,
                   baseIRI: BASE_IRI,
+                }}
+                components={{
+                  EntityDetailModal: EntityDetailModal,
+                  EditEntityModal: EditEntityModal,
                 }}
               >
                 <NiceModal.Provider>

@@ -1,6 +1,7 @@
 import theme from "../components/theme/berry-theme";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
 import {
   createNewIRI,
   defaultJsonldContext,
@@ -14,9 +15,16 @@ import {
   lobidTypemap,
   PUBLIC_BASE_PATH,
 } from "../components/config";
-import { AdbProvider } from "@slub/edb-state-hooks";
+import { AdbProvider, store } from "@slub/edb-state-hooks";
+import { EntityDetailModal } from "../components/form/show";
+import { EditEntityModal } from "../components/form/edit/EditEntityModal";
+import { Provider } from "react-redux";
+import { AppRouterContext } from "next/dist/shared/lib/app-router-context.shared-runtime";
 
 export const parameters = {
+  nextRouter: {
+    Provider: AppRouterContext.Provider, // next 13 next 13 (using next/navigation)
+  },
   actions: { argTypesRegex: "^on[A-Z].*" },
   controls: {
     matchers: {
@@ -35,39 +43,48 @@ const finalTheme = theme({
   navType: "light",
 });
 const queryClient = new QueryClient();
-export const withMuiTheme = (Story) => (
-  <AdbProvider
-    queryBuildOptions={defaultQueryBuilderOptions}
-    typeNameToTypeIRI={(name) => sladb(name).value}
-    propertyNameToIRI={(name) => sladb(name).value}
-    typeIRIToTypeName={(iri) => iri?.substring(BASE_IRI.length, iri.length)}
-    propertyIRIToPropertyName={(iri) =>
-      iri?.substring(BASE_IRI.length, iri.length)
-    }
-    createEntityIRI={createNewIRI}
-    jsonLDConfig={{
-      defaultPrefix: defaultPrefix,
-      jsonldContext: defaultJsonldContext,
-      allowUnsafeSourceIRIs: false,
-    }}
-    normDataMapping={{
-      gnd: {
-        mapping: declarativeMappings,
-        typeToTypeMap: lobidTypemap,
-      },
-    }}
-    env={{
-      publicBasePath: PUBLIC_BASE_PATH,
-      baseIRI: BASE_IRI,
-    }}
-  >
-    <ThemeProvider theme={finalTheme}>
-      <QueryClientProvider client={queryClient}>
-        <CssBaseline />
-        <Story />
-      </QueryClientProvider>
-    </ThemeProvider>
-  </AdbProvider>
-);
+
+export const withMuiTheme = (Story) => {
+  return (
+    <Provider store={store}>
+      <AdbProvider
+        queryBuildOptions={defaultQueryBuilderOptions}
+        typeNameToTypeIRI={(name) => sladb(name).value}
+        propertyNameToIRI={(name) => sladb(name).value}
+        typeIRIToTypeName={(iri) => iri?.substring(BASE_IRI.length, iri.length)}
+        propertyIRIToPropertyName={(iri) =>
+          iri?.substring(BASE_IRI.length, iri.length)
+        }
+        createEntityIRI={createNewIRI}
+        jsonLDConfig={{
+          defaultPrefix: defaultPrefix,
+          jsonldContext: defaultJsonldContext,
+          allowUnsafeSourceIRIs: false,
+        }}
+        normDataMapping={{
+          gnd: {
+            mapping: declarativeMappings,
+            typeToTypeMap: lobidTypemap,
+          },
+        }}
+        env={{
+          publicBasePath: PUBLIC_BASE_PATH,
+          baseIRI: BASE_IRI,
+        }}
+        components={{
+          EntityDetailModal: EntityDetailModal,
+          EditEntityModal: EditEntityModal,
+        }}
+      >
+        <ThemeProvider theme={finalTheme}>
+          <QueryClientProvider client={queryClient}>
+            <CssBaseline />
+            <Story />
+          </QueryClientProvider>
+        </ThemeProvider>
+      </AdbProvider>
+    </Provider>
+  );
+};
 
 export const decorators = [withMuiTheme];

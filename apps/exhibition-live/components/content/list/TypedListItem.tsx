@@ -8,7 +8,6 @@ import {
   ListItemText,
 } from "@mui/material";
 import NiceModal from "@ebay/nice-modal-react";
-import { EntityDetailModal } from "../../form/show/EntityDetailModal";
 import { useAdbContext } from "@slub/edb-state-hooks";
 
 interface OwnProps {
@@ -27,6 +26,7 @@ const TypedListItem: FunctionComponent<Props> = ({
   const {
     typeIRIToTypeName,
     queryBuildOptions: { primaryFieldExtracts },
+    components: { EntityDetailModal },
   } = useAdbContext();
   const typeIRI = data["@type"] as string;
   const entityIRI = data["@id"] as string;
@@ -52,7 +52,7 @@ const TypedListItem: FunctionComponent<Props> = ({
       disableLoad,
       disableInlineEditing: true,
     });
-  }, [typeIRI, entityIRI, data, disableLoad]);
+  }, [typeIRI, entityIRI, data, disableLoad, EntityDetailModal]);
 
   return (
     <ListItem>

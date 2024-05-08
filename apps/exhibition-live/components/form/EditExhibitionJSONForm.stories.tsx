@@ -11,7 +11,7 @@ import {
 } from "./formConfigs";
 import NewSemanticJsonForm from "./SemanticJsonForm";
 
-export const queryClient = new QueryClient();
+const queryClient = new QueryClient();
 
 const classIRI = sladb.Exhibition.value;
 const exampleData = {
@@ -23,7 +23,7 @@ const exampleData = {
 const SemanticJsonFormOneShot = () => {
   const [data, setData] = useState<any>(exampleData);
   const typeName = "Exhibition";
-  const loadedSchema = useExtendedSchema({ typeName, classIRI });
+  const loadedSchema = useExtendedSchema({ typeName });
 
   return (
     <NewSemanticJsonForm

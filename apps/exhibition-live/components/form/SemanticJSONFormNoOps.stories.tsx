@@ -44,7 +44,7 @@ const SemanticJsonFormNoOperationsExample = ({
 }) => {
   const { typeIRI, data: initialData } = makeExampleData(typeName, defaultData);
   const [data, setData] = useState<any>(initialData);
-  const loadedSchema = useExtendedSchema({ typeName, classIRI: typeIRI });
+  const loadedSchema = useExtendedSchema({ typeName });
   const uischema = useMemo(
     () => uischemata[typeName] || uischemas[typeName],
     [typeName],
@@ -72,7 +72,7 @@ const exhibitionExample = makeExampleData("Exhibition", {
 export const SemanticJsonFormNoOperationsExhibition = () => {
   const { typeIRI, typeName, data: initialData } = exhibitionExample;
   const [data, setData] = useState<any>(initialData);
-  const loadedSchema = useExtendedSchema({ typeName, classIRI: typeIRI });
+  const loadedSchema = useExtendedSchema({ typeName });
   const uischema = useMemo(
     () => uischemata[typeName] || uischemas[typeName],
     [typeName],

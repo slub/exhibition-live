@@ -10,7 +10,6 @@ import {
 } from "@mui/material";
 import merge from "lodash/merge";
 import React, { useCallback, useEffect, useState } from "react";
-import { v4 as uuidv4 } from "uuid";
 
 const TypeOfRenderer = (props: ControlProps) => {
   const {

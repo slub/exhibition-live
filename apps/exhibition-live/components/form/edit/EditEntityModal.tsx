@@ -15,22 +15,16 @@ import { useSnackbar } from "notistack";
 import { useFormDataStore } from "@slub/edb-state-hooks";
 import { PrimaryFieldResults } from "@slub/edb-core-types";
 import { cleanJSONLD } from "@slub/sparql-schema";
+import { EditEntityModalProps } from "@slub/edb-global-types";
 
-type EntityDetailModalProps = {
-  typeIRI: string | undefined;
-  entityIRI: string;
-  data: any;
-  disableLoad?: boolean;
-};
 export const EditEntityModal = NiceModal.create(
   ({
     typeIRI,
     entityIRI,
     data: defaultData,
     disableLoad,
-  }: EntityDetailModalProps) => {
+  }: EditEntityModalProps) => {
     const {
-      typeNameToTypeIRI,
       jsonLDConfig,
       typeIRIToTypeName,
       queryBuildOptions: { primaryFieldExtracts },
@@ -43,9 +37,9 @@ export const EditEntityModal = NiceModal.create(
     );
     const typeName = useMemo(
       () => typeIRIToTypeName(classIRI),
-      [classIRI, typeNameToTypeIRI, EditEntityModal],
+      [classIRI, typeIRIToTypeName],
     );
-    const loadedSchema = useExtendedSchema({ typeName, classIRI });
+    const loadedSchema = useExtendedSchema({ typeName });
     const { loadQuery, saveMutation } = useCRUDWithQueryClient({
       entityIRI,
       typeIRI: classIRI,

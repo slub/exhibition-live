@@ -15,10 +15,9 @@ import { applyToEachField, extractFieldIfString } from "@slub/edb-ui-utils";
 import { JSONSchema7 } from "json-schema";
 import { useJsonForms } from "@jsonforms/react";
 import dot from "dot";
-import { useCRUDWithQueryClient } from "@slub/edb-state-hooks";
+import { useAdbContext, useCRUDWithQueryClient } from "@slub/edb-state-hooks";
 import get from "lodash/get";
 import NiceModal from "@ebay/nice-modal-react";
-import { EntityDetailModal } from "../form/show";
 import { withEllipsis } from "@slub/edb-ui-utils";
 import { specialDate2LocalDate } from "@slub/edb-ui-utils";
 import { useTranslation } from "next-i18next";
@@ -66,6 +65,9 @@ export const SimpleExpandPanelRenderer = (
   const onData = useCallback((_data) => {
     dispatch(update(props.path, () => _data));
   }, []);
+  const {
+    components: { EntityDetailModal },
+  } = useAdbContext();
   // @ts-ignore
   const { label, description, image } = useMemo(() => {
     let imageUrl = null;

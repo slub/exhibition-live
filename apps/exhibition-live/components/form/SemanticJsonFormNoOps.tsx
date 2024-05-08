@@ -58,6 +58,7 @@ import { ErrorObject } from "ajv";
 import { OptionsModal } from "./OptionsModal";
 import { useTranslation } from "next-i18next";
 import { MarkdownTextFieldRenderer } from "@slub/edb-markdown-renderer";
+import { JsonView } from "react-json-view-lite";
 
 export type CRUDOpsType = {
   load: () => Promise<void>;

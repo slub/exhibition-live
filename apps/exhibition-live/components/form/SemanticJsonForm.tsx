@@ -13,17 +13,16 @@ import React, {
 } from "react";
 
 import GenericModal from "./GenericModal";
-import { useCRUDWithQueryClient } from "@slub/edb-state-hooks";
+import { useAdbContext, useCRUDWithQueryClient } from "@slub/edb-state-hooks";
 import { useSnackbar } from "notistack";
 import { ChangeCause, SemanticJsonFormNoOps } from "./SemanticJsonFormNoOps";
 import { SemanticJsonFormToolbar } from "./SemanticJsonFormToolbar";
 import { useSettings } from "@slub/edb-state-hooks";
 import { useLoadQuery, useQueryKeyResolver } from "@slub/edb-state-hooks";
 import { Backdrop, Box, CircularProgress } from "@mui/material";
-import { EntityDetailModal } from "./show";
 import { create } from "zustand";
 import { useTranslation } from "next-i18next";
-import { cleanJSONLD } from "@slub/sparql-schema";
+import { cleanJSONLD, LoadResult } from "@slub/sparql-schema";
 import { FormDebuggingTools } from "@slub/edb-debug-utils";
 
 export interface SemanticJsonFormsProps {
@@ -101,6 +100,10 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> = ({
   );
   const { enqueueSnackbar } = useSnackbar();
 
+  const {
+    components: { EntityDetailModal },
+  } = useAdbContext();
+
   const { saveMutation, removeMutation } = useCRUDWithQueryClient({
     entityIRI,
     typeIRI,
@@ -121,16 +124,18 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> = ({
 
   const refetch = useCallback(
     () =>
-      loadEntity(entityIRI, typeIRI, schema).then((loadResult) => {
-        if (loadResult.document) {
-          console.log("(refetch) result from root load");
-          const data = loadResult.document;
-          updateSourceToTargets(entityIRI, loadResult.subjects);
-          if (!data["@id"] || !data["@type"]) return;
-          onChange(data);
-          return data;
-        }
-      }),
+      loadEntity(entityIRI, typeIRI, schema).then(
+        (loadResult: LoadResult | null) => {
+          if (loadResult !== null && loadResult?.document) {
+            console.log("(refetch) result from root load");
+            const data = loadResult.document;
+            updateSourceToTargets(entityIRI, loadResult.subjects);
+            if (!data["@id"] || !data["@type"]) return;
+            onChange(data);
+            return data;
+          }
+        },
+      ),
     [loadEntity, entityIRI, typeIRI, schema, onChange, updateSourceToTargets],
   );
 
@@ -251,7 +256,7 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> = ({
       entityIRI: entityIRI,
       readonly: true,
     });
-  }, [typeIRI, entityIRI]);
+  }, [typeIRI, entityIRI, EntityDetailModal]);
 
   const handleOnChange = useCallback(
     (data: any, reason: ChangeCause) => {

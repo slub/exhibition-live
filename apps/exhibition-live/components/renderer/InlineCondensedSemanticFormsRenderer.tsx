@@ -29,8 +29,6 @@ import { makeFormsPath } from "@slub/edb-ui-utils";
 import { SearchbarWithFloatingButton } from "../layout/main-layout/Searchbar";
 import SimilarityFinder from "../form/SimilarityFinder";
 import { JSONSchema7 } from "json-schema";
-import { useRouter } from "next/router";
-import { useTranslation } from "next-i18next";
 import { EntityDetailListItem } from "../form/show";
 import { PrimaryField } from "@slub/edb-core-types";
 
@@ -134,9 +132,6 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
     },
     [handleSelectedChange, closeDrawer],
   );
-
-  const router = useRouter();
-  const locale = router.query.locale || "";
 
   const searchOnDataPath = useMemo(() => {
     const typeName = typeIRIToTypeName(typeIRI);

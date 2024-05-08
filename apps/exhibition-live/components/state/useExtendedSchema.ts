@@ -7,15 +7,13 @@ import { prepareStubbedSchema } from "@slub/json-schema-utils";
 
 type UseExtendedSchemaProps = {
   typeName: string;
-  classIRI: string;
 };
 
 const genSlubRequiredProperties = (_modelName: string) => {
   return ["@type", "@id"];
 };
 
-const useExtendedSchema = ({ typeName, classIRI }: UseExtendedSchemaProps) => {
-  //const {data: loadedSchema} = useQuery(['schema', typeName], () => fetch(`/schema/${typeName}.schema.json`).then(async res => {
+const useExtendedSchema = ({ typeName }: UseExtendedSchemaProps) => {
   return useMemo(() => {
     const prepared = prepareStubbedSchema(
       schema as JSONSchema7,

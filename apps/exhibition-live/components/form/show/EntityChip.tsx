@@ -5,7 +5,6 @@ import { useCRUDWithQueryClient } from "@slub/edb-state-hooks";
 import { applyToEachField, extractFieldIfString } from "@slub/edb-ui-utils";
 import { ellipsis } from "@slub/edb-ui-utils";
 import NiceModal from "@ebay/nice-modal-react";
-import { EntityDetailModal } from "./EntityDetailModal";
 import { Avatar, Chip, ChipProps, Tooltip } from "@mui/material";
 import { PrimaryFieldResults } from "@slub/edb-core-types";
 
@@ -27,12 +26,13 @@ export const EntityChip = ({
   const {
     queryBuildOptions: { primaryFieldExtracts },
     typeIRIToTypeName,
+    components: { EntityDetailModal },
   } = useAdbContext();
   const typeName = useMemo(
     () => typeIRIToTypeName(classIRI),
     [classIRI, typeIRIToTypeName],
   );
-  const loadedSchema = useExtendedSchema({ typeName, classIRI });
+  const loadedSchema = useExtendedSchema({ typeName });
   const {
     loadQuery: { data: rawData },
   } = useCRUDWithQueryClient({
@@ -79,7 +79,7 @@ export const EntityChip = ({
         data: {},
       });
     },
-    [entityIRI],
+    [entityIRI, EntityDetailModal],
   );
   const handleShouldShow = useCallback(
     (e: MouseEvent<Element>) => {

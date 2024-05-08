@@ -23,7 +23,6 @@ import {
 } from "./GenericVirtualizedList";
 import { useTranslation } from "next-i18next";
 import NiceModal from "@ebay/nice-modal-react";
-import { EntityDetailModal } from "../../form/show";
 import { fixSparqlOrder, withDefaultPrefix } from "@slub/sparql-schema";
 import { IRIToStringFn, PrimaryFieldDeclaration } from "@slub/edb-core-types";
 
@@ -181,9 +180,8 @@ export const SearchBar = ({ relevantTypes }: { relevantTypes: string[] }) => {
   const {
     queryBuildOptions: { primaryFields },
     typeIRIToTypeName,
-    typeNameToTypeIRI,
     jsonLDConfig: { defaultPrefix },
-    propertyNameToIRI,
+    components: { EntityDetailModal },
   } = useAdbContext();
   const { t } = useTranslation();
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -382,12 +380,15 @@ export const SearchBar = ({ relevantTypes }: { relevantTypes: string[] }) => {
     setTabIndex(newTabIndex);
   };
 
-  const showEntry = useCallback((entityIRI: string) => {
-    NiceModal.show(EntityDetailModal, {
-      entityIRI,
-      disableInlineEditing: true,
-    });
-  }, []);
+  const showEntry = useCallback(
+    (entityIRI: string) => {
+      NiceModal.show(EntityDetailModal, {
+        entityIRI,
+        disableInlineEditing: true,
+      });
+    },
+    [EntityDetailModal],
+  );
 
   return (
     <Grid container direction={"row"} spacing={3}>

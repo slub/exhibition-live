@@ -1,7 +1,7 @@
 import { useState, MouseEvent, useMemo, useCallback } from "react";
 import { Chip, Tooltip, Typography } from "@mui/material";
 import NiceModal from "@ebay/nice-modal-react";
-import { EntityDetailModal } from "../form/show/EntityDetailModal";
+import { useAdbContext } from "@slub/edb-state-hooks";
 
 type OverflowContainerProps = {
   label: React.ReactNode;
@@ -18,6 +18,9 @@ export const OverflowChip = ({
   secondary,
 }: OverflowContainerProps) => {
   const [tooltipEnabled, setTooltipEnabled] = useState(false);
+  const {
+    components: { EntityDetailModal },
+  } = useAdbContext();
 
   const showDetailModal = useCallback(
     (e: MouseEvent) => {
@@ -25,7 +28,7 @@ export const OverflowChip = ({
       e.preventDefault();
       NiceModal.show(EntityDetailModal, { entityIRI, data: {} });
     },
-    [entityIRI],
+    [entityIRI, EntityDetailModal],
   );
 
   const handleShouldShow = useCallback(

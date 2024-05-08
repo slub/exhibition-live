@@ -20,15 +20,7 @@ import { useTypeIRIFromEntity } from "@slub/edb-state-hooks";
 import { useTranslation } from "next-i18next";
 import { filterUndefOrNull } from "@slub/edb-ui-utils";
 import { PrimaryField, PrimaryFieldResults } from "@slub/edb-core-types";
-
-type EntityDetailModalProps = {
-  typeIRI: string | undefined;
-  entityIRI: string;
-  data: any;
-  disableLoad?: boolean;
-  readonly?: boolean;
-  disableInlineEditing?: boolean;
-};
+import { EntityDetailModalProps } from "@slub/edb-global-types";
 
 export const EntityDetailModal = NiceModal.create(
   ({
@@ -50,7 +42,7 @@ export const EntityDetailModal = NiceModal.create(
       () => typeIRIToTypeName(classIRI),
       [classIRI, typeIRIToTypeName],
     );
-    const loadedSchema = useExtendedSchema({ typeName, classIRI });
+    const loadedSchema = useExtendedSchema({ typeName });
     const {
       loadQuery: { data: rawData },
     } = useCRUDWithQueryClient({
@@ -75,7 +67,7 @@ export const EntityDetailModal = NiceModal.create(
         description: null,
         image: null,
       };
-    }, [typeName, data]);
+    }, [typeName, data, primaryFields]);
 
     const [aboutToRemove, setAboutToRemove] = useState(false);
     const removeSlowly = useCallback(() => {

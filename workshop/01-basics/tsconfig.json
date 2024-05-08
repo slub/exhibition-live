@@ -1,0 +1,7 @@
+{
+  "extends": "@slub/edb-tsconfig/base.json",
+  "include": ["src"],
+  "compilerOptions": {
+    "strict": true
+  }
+}

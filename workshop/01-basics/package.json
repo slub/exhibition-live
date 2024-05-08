@@ -1,0 +1,13 @@
+{
+  "name": "01-basics",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "tsc"
+  },
+  "devDependencies": {
+    "@slub/edb-tsconfig": "workspace:*"
+  },
+  "dependencies": {
+    "typescript": "^5.4.5"
+  }
+}

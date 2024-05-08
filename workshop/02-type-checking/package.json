@@ -1,0 +1,10 @@
+{
+  "name": "02-type-checking",
+  "version": "1.0.0",
+  "devDependencies": {
+    "@slub/edb-tsconfig": "workspace:*"
+  },
+  "dependencies": {
+    "typescript": "^5.4.5"
+  }
+}

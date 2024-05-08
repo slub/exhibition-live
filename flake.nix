@@ -20,6 +20,7 @@
             bun
             openssl
             appimage-run
+            tree
           ];
           PRISMA_QUERY_ENGINE_BINARY = "${pkgs.prisma-engines}/bin/query-engine";
           PRISMA_QUERY_ENGINE_LIBRARY = "${pkgs.prisma-engines}/lib/libquery_engine.node";

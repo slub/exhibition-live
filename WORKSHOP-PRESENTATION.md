@@ -5,6 +5,7 @@ tags: presentation
 slideOptions:
   theme: simple
   transition: "fade"
+  # https://hedgedoc.c3d2.de/p/workshop-ereignisdatenbank_2024#/
 ---
 
 ## Workshop Ereignisdatenbanken
@@ -19,7 +20,7 @@ www.slub-dresden.de
 ## Ziel
 
 - Verständnis für das Ereignisdatenbank Framework entwickeln
-- Entwiclung weiterer Fachdatenbank ermöglichen
+- Entwicklung weiterer Fachdatenbank ermöglichen
 
 ---
 

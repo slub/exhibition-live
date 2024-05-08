@@ -42,6 +42,7 @@
   },
   "workspaces": [
     "apps/*",
+    "workshop/*",
     "packages/*",
     "packages/ideas/*",
     "packages/form-renderer/*",

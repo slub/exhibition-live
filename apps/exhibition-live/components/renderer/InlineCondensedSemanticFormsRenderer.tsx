@@ -17,14 +17,13 @@ import {
 import merge from "lodash/merge";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 
-import DiscoverAutocompleteInput from "../form/discover/DiscoverAutocompleteInput";
-import { primaryFields, typeIRItoTypeName } from "../config";
 import { AutocompleteSuggestion } from "../form/DebouncedAutoComplete";
 import { extractFieldIfString } from "@slub/edb-ui-utils";
 import {
   useGlobalSearchWithHelper,
   useRightDrawerState,
   useKeyEventForSimilarityFinder,
+  useAdbContext,
 } from "@slub/edb-state-hooks";
 import { makeFormsPath } from "@slub/edb-ui-utils";
 import { SearchbarWithFloatingButton } from "../layout/main-layout/Searchbar";
@@ -49,11 +48,15 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
     rootSchema,
     label,
   } = props;
+  const {
+    typeIRIToTypeName,
+    queryBuildOptions: { primaryFields },
+  } = useAdbContext();
   const appliedUiSchemaOptions = merge({}, config, uischema.options);
   const { $ref, typeIRI } = appliedUiSchemaOptions.context || {};
   const typeName = useMemo(
-    () => typeIRI && typeIRItoTypeName(typeIRI),
-    [typeIRI],
+    () => typeIRI && typeIRIToTypeName(typeIRI),
+    [typeIRI, typeIRIToTypeName],
   );
   const ctx = useJsonForms();
   const [realLabel, setRealLabel] = useState("");
@@ -136,9 +139,9 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
   const locale = router.query.locale || "";
 
   const searchOnDataPath = useMemo(() => {
-    const typeName = typeIRItoTypeName(typeIRI);
+    const typeName = typeIRIToTypeName(typeIRI);
     return primaryFields[typeName]?.label;
-  }, [typeIRI]);
+  }, [typeIRI, typeIRIToTypeName]);
 
   const labelKey = useMemo(() => {
     const fieldDecl = primaryFields[typeName] as PrimaryField | undefined;

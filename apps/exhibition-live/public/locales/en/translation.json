@@ -66,6 +66,8 @@
   "timeline": "timeline",
   "delete selected entries": "delete selected {{count}} entries",
   "will remove entries": "{{count}} entries will be removed",
+  "removed": "removed",
+  "about to remove": "about to move",
   "actions": "actions",
   "successfully removed entries": "Successfully removed {{count}} entries",
   "move selected entries to trash": "move {{count}} selected entries to trash",

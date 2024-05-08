@@ -3,15 +3,11 @@ import React, {
   FunctionComponent,
   useCallback,
   useEffect,
+  useMemo,
   useState,
 } from "react";
 
-import { useGlobalCRUDOptions } from "@slub/edb-state-hooks";
-import {
-  defaultPrefix,
-  defaultQueryBuilderOptions,
-  sladb,
-} from "../formConfigs";
+import { useAdbContext, useGlobalCRUDOptions } from "@slub/edb-state-hooks";
 import ClassicResultListItem from "../result/ClassicResultListItem";
 import { EntityDetailElement } from "../show";
 import { findEntityByClass } from "@slub/sparql-schema";
@@ -27,13 +23,20 @@ type Props = {
 const DiscoverSearchTable: FunctionComponent<Props> = ({
   searchString,
   typeName = "Person",
-  classIRI = sladb[typeName].value,
   onAcceptItem,
   selectedIndex,
 }) => {
   const [resultTable, setResultTable] = useState<any | undefined>();
+  const {
+    typeNameToTypeIRI,
+    jsonLDConfig: { defaultPrefix },
+    queryBuildOptions,
+  } = useAdbContext();
   const { crudOptions } = useGlobalCRUDOptions();
-  const typeIRI = sladb[typeName].value;
+  const typeIRI = useMemo(
+    () => typeNameToTypeIRI[typeName],
+    [typeName, typeNameToTypeIRI],
+  );
 
   const fetchData = useCallback(async () => {
     if (!searchString || searchString.length < 1 || !crudOptions) return;
@@ -41,9 +44,9 @@ const DiscoverSearchTable: FunctionComponent<Props> = ({
       (
         await findEntityByClass(
           searchString,
-          classIRI,
+          typeIRI,
           crudOptions.selectFetch,
-          { defaultPrefix, queryBuildOptions: defaultQueryBuilderOptions },
+          { defaultPrefix, queryBuildOptions },
         )
       ).map(({ name = "", value }: { name: string; value: any }) => {
         return {
@@ -52,7 +55,7 @@ const DiscoverSearchTable: FunctionComponent<Props> = ({
         };
       }),
     );
-  }, [searchString, classIRI, crudOptions]);
+  }, [searchString, typeIRI, crudOptions, defaultPrefix, queryBuildOptions]);
 
   const handleSelect = useCallback(
     (id: string | undefined) => {

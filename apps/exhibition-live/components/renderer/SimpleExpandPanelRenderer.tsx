@@ -11,7 +11,6 @@ import {
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 
 import { Clear, Save } from "@mui/icons-material";
-import { BASE_IRI, primaryFields } from "../config";
 import { applyToEachField, extractFieldIfString } from "@slub/edb-ui-utils";
 import { JSONSchema7 } from "json-schema";
 import { useJsonForms } from "@jsonforms/react";
@@ -24,10 +23,13 @@ import { withEllipsis } from "@slub/edb-ui-utils";
 import { specialDate2LocalDate } from "@slub/edb-ui-utils";
 import { useTranslation } from "next-i18next";
 import { bringDefinitionToTop } from "@slub/json-schema-utils";
+import { PrimaryFieldDeclaration } from "@slub/edb-core-types";
 
 type SimpleExpandPanelRendererProps = {
   data: any;
   entityIRI: string;
+  typeIRI: string;
+  typeName: string;
   index: number;
   count: number;
   schema: JsonSchema;
@@ -40,6 +42,7 @@ type SimpleExpandPanelRendererProps = {
   elementLabelProp?: string;
   imagePath?: string;
   formsPath?: string;
+  primaryFields: PrimaryFieldDeclaration;
 };
 export const SimpleExpandPanelRenderer = (
   props: SimpleExpandPanelRendererProps,
@@ -56,12 +59,10 @@ export const SimpleExpandPanelRenderer = (
     imagePath,
     elementLabelProp,
     elementDetailItemPath,
+    typeIRI,
+    typeName,
+    primaryFields,
   } = props;
-  const typeIRI = schema.properties?.["@type"]?.const;
-  const typeName = useMemo(
-    () => typeIRI && typeIRI.substring(BASE_IRI.length, typeIRI.length),
-    [typeIRI],
-  );
   const onData = useCallback((_data) => {
     dispatch(update(props.path, () => _data));
   }, []);

@@ -16,10 +16,13 @@ import LobidAllPropTable from "../lobid/LobidAllPropTable";
 import { useModifiedRouter } from "../../basic";
 import { encodeIRI } from "@slub/edb-ui-utils";
 
-import { typeIRItoTypeName } from "../../config";
 import NiceModal from "@ebay/nice-modal-react";
 import { EditEntityModal } from "../edit/EditEntityModal";
-import { useModalRegistry, useSettings } from "@slub/edb-state-hooks";
+import {
+  useAdbContext,
+  useModalRegistry,
+  useSettings,
+} from "@slub/edb-state-hooks";
 import { EntityDetailCardProps } from "./EntityDetailCardProps";
 import { StylizedDetailCard } from "./StylizedDetailCard";
 import { isString } from "lodash";
@@ -38,11 +41,12 @@ export const EntityDetailCard: FunctionComponent<EntityDetailCardProps> = ({
   tableProps = {},
 }) => {
   const { t } = useTranslation();
+  const { typeIRIToTypeName } = useAdbContext();
 
   const router = useModifiedRouter();
-  const { registerModal } = useModalRegistry();
+  const { registerModal } = useModalRegistry(NiceModal);
   const editEntry = useCallback(() => {
-    const typeName = typeIRItoTypeName(typeIRI);
+    const typeName = typeIRIToTypeName(typeIRI);
     if (!disableInlineEditing) {
       const modalID = `edit-${typeIRI}-${entityIRI}`;
       registerModal(modalID, EditEntityModal);
@@ -61,6 +65,7 @@ export const EntityDetailCard: FunctionComponent<EntityDetailCardProps> = ({
     typeIRI,
     entityIRI,
     disableInlineEditing,
+    typeIRIToTypeName,
     registerModal,
     data,
     onEditClicked,

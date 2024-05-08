@@ -8,8 +8,7 @@ import {
   Stack,
 } from "@mui/material";
 import React, { useCallback, useMemo } from "react";
-import { useTypeIRIFromEntity } from "@slub/edb-state-hooks";
-import { primaryFields, typeIRItoTypeName } from "../../config";
+import { useAdbContext, useTypeIRIFromEntity } from "@slub/edb-state-hooks";
 import useExtendedSchema from "../../state/useExtendedSchema";
 import { useCRUDWithQueryClient } from "@slub/edb-state-hooks";
 import { applyToEachField, extractFieldIfString } from "@slub/edb-ui-utils";
@@ -31,9 +30,16 @@ export const EntityDetailListItem = ({
   onClear,
   data: defaultData,
 }: EntityDetailListItemProps) => {
+  const {
+    queryBuildOptions: { primaryFields },
+    typeIRIToTypeName,
+  } = useAdbContext();
   const typeIRIs = useTypeIRIFromEntity(entityIRI);
   const classIRI: string | undefined = typeIRI || typeIRIs?.[0];
-  const typeName = useMemo(() => typeIRItoTypeName(classIRI), [classIRI]);
+  const typeName = useMemo(
+    () => typeIRIToTypeName(classIRI),
+    [classIRI, typeIRIToTypeName],
+  );
   const loadedSchema = useExtendedSchema({ typeName, classIRI });
   const {
     loadQuery: { data: rawData },
@@ -64,7 +70,7 @@ export const EntityDetailListItem = ({
       description: null,
       image: null,
     };
-  }, [typeName, data]);
+  }, [typeName, data, primaryFields]);
   const { label, image, description } = cardInfo;
   const showDetailModal = useCallback(() => {
     NiceModal.show(EntityDetailModal, {

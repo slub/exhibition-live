@@ -29,8 +29,8 @@ import rehypeExternalLinks from "rehype-external-links";
 import rehypeSanitize from "rehype-sanitize";
 
 import { getI18nDescription, getI18nLabel } from "./i18nHelper";
-import { MDEditorMarkdown } from "./MDEditor";
 import { memo } from "./config";
+import { MDEditorMarkdown } from "@slub/edb-markdown-renderer";
 
 export const groupTester: RankedTester = rankWith(1, uiTypeIs("Group"));
 const style: { [x: string]: any } = { marginBottom: "10px" };

@@ -66,6 +66,8 @@
   "timeline": "Zeitstrahl",
   "delete selected entries": "lösche ausgewählte {{count}} Einträge",
   "will remove entries": "{{count}} Einträge werden gelöscht",
+  "removed": "entfernt",
+  "about to remove": "dabei zu entfernen",
   "actions": "Aktionen",
   "successfully removed entries": "Erfolgreich {{count}} Einträge entfernt",
   "move selected entries to trash": "Ausgewählte {{count}}  Einträge in den Papierkorb verschieben",

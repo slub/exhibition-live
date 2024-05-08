@@ -1,9 +1,7 @@
-import { useTypeIRIFromEntity } from "@slub/edb-state-hooks";
+import { useAdbContext, useTypeIRIFromEntity } from "@slub/edb-state-hooks";
 import React, { MouseEvent, useCallback, useMemo, useState } from "react";
-import { primaryFieldExtracts, typeIRItoTypeName } from "../../config";
 import useExtendedSchema from "../../state/useExtendedSchema";
 import { useCRUDWithQueryClient } from "@slub/edb-state-hooks";
-import { useTranslation } from "next-i18next";
 import { applyToEachField, extractFieldIfString } from "@slub/edb-ui-utils";
 import { ellipsis } from "@slub/edb-ui-utils";
 import NiceModal from "@ebay/nice-modal-react";
@@ -26,7 +24,14 @@ export const EntityChip = ({
 }: EntityChipProps) => {
   const typeIRIs = useTypeIRIFromEntity(entityIRI);
   const classIRI: string | undefined = typeIRI || typeIRIs?.[0];
-  const typeName = useMemo(() => typeIRItoTypeName(classIRI), [classIRI]);
+  const {
+    queryBuildOptions: { primaryFieldExtracts },
+    typeIRIToTypeName,
+  } = useAdbContext();
+  const typeName = useMemo(
+    () => typeIRIToTypeName(classIRI),
+    [classIRI, typeIRIToTypeName],
+  );
   const loadedSchema = useExtendedSchema({ typeName, classIRI });
   const {
     loadQuery: { data: rawData },
@@ -37,7 +42,7 @@ export const EntityChip = ({
     queryOptions: { enabled: true, refetchOnWindowFocus: true },
     loadQueryKey: "show",
   });
-  const { t } = useTranslation();
+
   const data = rawData?.document?.["@type"] ? rawData?.document : defaultData;
   const cardInfo = useMemo<PrimaryFieldResults<string>>(() => {
     const fieldDecl = primaryFieldExtracts[typeName];
@@ -58,7 +63,7 @@ export const EntityChip = ({
       description: null,
       image: null,
     };
-  }, [typeName, data]);
+  }, [typeName, data, primaryFieldExtracts]);
   const { label, image, description } = cardInfo;
   //Sorry for this hack, in future we will have class dependent List items
   const variant = useMemo(

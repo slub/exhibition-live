@@ -2,16 +2,11 @@ import { TextFieldProps, useControlled } from "@mui/material";
 import parse from "html-react-parser";
 import React, { FunctionComponent, useCallback, useId } from "react";
 
-import { useGlobalCRUDOptions } from "@slub/edb-state-hooks";
+import { useAdbContext, useGlobalCRUDOptions } from "@slub/edb-state-hooks";
 import {
   AutocompleteSuggestion,
   DebouncedAutocomplete,
 } from "../DebouncedAutoComplete";
-import {
-  defaultPrefix,
-  defaultQueryBuilderOptions,
-  sladb,
-} from "../formConfigs";
 import { useQuery } from "@tanstack/react-query";
 import { findEntityByClass, loadEntityBasics } from "@slub/sparql-schema";
 
@@ -54,6 +49,11 @@ const DiscoverAutocompleteInput: FunctionComponent<Props> = ({
   searchString: searchStringProp,
   autocompleteDisabled,
 }) => {
+  const {
+    typeNameToTypeIRI,
+    queryBuildOptions,
+    jsonLDConfig: { defaultPrefix },
+  } = useAdbContext();
   const { crudOptions } = useGlobalCRUDOptions();
   const [selectedValue, setSelectedUncontrolled] =
     useControlled<AutocompleteSuggestion | null>({
@@ -93,8 +93,8 @@ const DiscoverAutocompleteInput: FunctionComponent<Props> = ({
               typeIRI,
               crudOptions.selectFetch,
               {
-                defaultPrefix: defaultPrefix,
-                queryBuildOptions: defaultQueryBuilderOptions,
+                defaultPrefix,
+                queryBuildOptions,
               },
               limit,
             )
@@ -105,7 +105,7 @@ const DiscoverAutocompleteInput: FunctionComponent<Props> = ({
             };
           })
         : [],
-    [typeIRI, crudOptions, limit],
+    [typeIRI, crudOptions, limit, defaultPrefix, queryBuildOptions],
   );
 
   const { data: basicFields } = useQuery(
@@ -113,7 +113,7 @@ const DiscoverAutocompleteInput: FunctionComponent<Props> = ({
     async () => {
       const value = selected?.value;
       if (value && crudOptions && crudOptions.selectFetch) {
-        const typeIRI = sladb(typeName).value;
+        const typeIRI = typeNameToTypeIRI(typeName);
         return await loadEntityBasics(value, typeIRI, crudOptions.selectFetch, {
           defaultPrefix: defaultPrefix,
         });

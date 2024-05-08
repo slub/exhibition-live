@@ -169,7 +169,7 @@ const PropertyItem = ({
       >
         {disableContextMenu ? (
           <OverflowContainer variant="body2">
-            {exists(property, { ns: "table" })
+            {typeof exists === "function" && exists(property, { ns: "table" })
               ? t(property)
               : camelCaseToTitleCase(property)}
           </OverflowContainer>
@@ -186,7 +186,9 @@ const PropertyItem = ({
               aria-label={"mapping"}
               onClick={handleMenuClick}
             >
-              {exists(property) ? t(property) : camelCaseToTitleCase(property)}
+              {typeof exists === "function" && exists(property)
+                ? t(property)
+                : camelCaseToTitleCase(property)}
             </Button>
             <Menu
               id="basic-menu"

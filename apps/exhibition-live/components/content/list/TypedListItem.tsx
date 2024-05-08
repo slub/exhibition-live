@@ -1,5 +1,4 @@
 import React, { FunctionComponent, useCallback, useMemo } from "react";
-import { primaryFieldExtracts, typeIRItoTypeName } from "../../config";
 import { applyToEachField, extractFieldIfString } from "@slub/edb-ui-utils";
 import {
   Avatar,
@@ -10,6 +9,7 @@ import {
 } from "@mui/material";
 import NiceModal from "@ebay/nice-modal-react";
 import { EntityDetailModal } from "../../form/show/EntityDetailModal";
+import { useAdbContext } from "@slub/edb-state-hooks";
 
 interface OwnProps {
   index: number;
@@ -24,11 +24,20 @@ const TypedListItem: FunctionComponent<Props> = ({
   data,
   disableLoad,
 }) => {
+  const {
+    typeIRIToTypeName,
+    queryBuildOptions: { primaryFieldExtracts },
+  } = useAdbContext();
   const typeIRI = data["@type"] as string;
   const entityIRI = data["@id"] as string;
-  const typeName = typeIRItoTypeName(typeIRI);
-  //const loadedSchema = useExtendedSchema({ typeName, classIRI: typeIRI });
-  const primaryFieldDesc = primaryFieldExtracts[typeName];
+  const typeName = useMemo(
+    () => typeIRIToTypeName(typeIRI),
+    [typeIRI, typeIRIToTypeName],
+  );
+  const primaryFieldDesc = useMemo(
+    () => primaryFieldExtracts[typeName],
+    [primaryFieldExtracts, typeName],
+  );
 
   const { label, description, image } = useMemo(
     () => applyToEachField(data, primaryFieldDesc, extractFieldIfString),

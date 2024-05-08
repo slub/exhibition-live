@@ -12,8 +12,11 @@ import { TFunction } from "i18next";
 import { MouseEvent, useCallback, useMemo } from "react";
 import NiceModal from "@ebay/nice-modal-react";
 import { EntityDetailModal } from "../../form/show";
-import { primaryFields } from "../../config";
-import { FieldExtractDeclaration, PrimaryField } from "@slub/edb-core-types";
+import {
+  FieldExtractDeclaration,
+  PrimaryField,
+  PrimaryFieldDeclaration,
+} from "@slub/edb-core-types";
 import { applyToEachField } from "@slub/edb-ui-utils";
 import {
   and,
@@ -30,6 +33,7 @@ import {
   TesterContext,
 } from "@jsonforms/core";
 import { isJSONSchema, isPrimitive } from "@slub/json-schema-utils";
+import { useAdbContext } from "@slub/edb-state-hooks";
 
 const p = (path: string[]) => path.join("_");
 export const mkAccessor =
@@ -92,6 +96,9 @@ export const PrimaryColumnContent = ({
   data,
   density,
 }: PrimaryColumnContentProps) => {
+  const {
+    queryBuildOptions: { primaryFields },
+  } = useAdbContext();
   const primaryContent = useMemo(() => {
     const fieldDecl = primaryFields[typeName] as PrimaryField | undefined;
     if (data && fieldDecl)
@@ -101,7 +108,7 @@ export const PrimaryColumnContent = ({
       description: null,
       image: null,
     };
-  }, [data, typeName]);
+  }, [data, typeName, primaryFields]);
   const showDetailModal = useCallback(
     (e: MouseEvent) => {
       e.preventDefault();
@@ -155,6 +162,7 @@ type ComputeColumnDefFunction<T = any> = (
   schemaDef: JSONSchema7Definition,
   t: TFunction,
   path?: string[],
+  primaryFields?: PrimaryFieldDeclaration,
 ) => MRT_ColumnDef<T>;
 export interface MuiTableColumnDefinitionRegistryEntry<T = any> {
   tester: RankedTester;
@@ -199,10 +207,10 @@ const titleOf = (schema: JSONSchema7Definition) =>
 const cellConfigRegistry: MuiTableColumnDefinitionRegistryEntry[] = [
   {
     tester: rankWith(1, isPrimitiveControl),
-    columnDef: (typeName, key, schemaDef, t, path) => ({
+    columnDef: (typeName, key, schemaDef, t, path, primaryFields) => ({
       ...singleValueColumnStub(path, key, t, titleOf(schemaDef)),
       Cell: ({ cell, renderedCellValue, row, table }) =>
-        primaryFields[typeName]?.label === key ? (
+        primaryFields?.[typeName]?.label === key ? (
           <PrimaryColumnContent
             entityIRI={row.original.entity.value}
             typeName={typeName}
@@ -349,7 +357,7 @@ const cellConfigRegistry: MuiTableColumnDefinitionRegistryEntry[] = [
   },
   {
     tester: rankWith(2, isObjectWithRefControl),
-    columnDef: (typeName, key, schemaDef, t, path) => {
+    columnDef: (typeName, key, schemaDef, t, path = []) => {
       const id = p([...path, key, "entity"]);
       const labelPath = p([...path, key, "label"]);
       const descriptionPath = p([...path, key, "description"]);
@@ -387,6 +395,7 @@ export const defaultColumnDefinitionStub: (
   rootSchema: JSONSchema7,
   t: TFunction,
   path?: string[],
+  primaryFields?: PrimaryFieldDeclaration,
 ) => MRT_ColumnDef<any> = (
   typeName,
   key,
@@ -394,6 +403,7 @@ export const defaultColumnDefinitionStub: (
   rootSchema,
   t,
   path = [],
+  primaryFields,
 ) => {
   const testerContext: TesterContext = {
     rootSchema: rootSchema as JsonSchema,
@@ -419,7 +429,7 @@ export const defaultColumnDefinitionStub: (
   );
   //console.log({columnDef})
   return rank > 0
-    ? columnDef.columnDef(typeName, key, schemaDef, t, path)
+    ? columnDef.columnDef(typeName, key, schemaDef, t, path, primaryFields)
     : null;
 };
 
@@ -436,7 +446,15 @@ export const computeColumns: (
   t: TFunction,
   matcher?: ColumnDefMatcher,
   path?: string[],
-) => MRT_ColumnDef<any>[] = (schema, typeName, t, matcher, path = []) =>
+  primaryFields?: PrimaryFieldDeclaration,
+) => MRT_ColumnDef<any>[] = (
+  schema,
+  typeName,
+  t,
+  matcher,
+  path = [],
+  primaryFields,
+) =>
   (!schema?.properties
     ? []
     : [
@@ -465,6 +483,7 @@ export const computeColumns: (
                   schema,
                   t,
                   path,
+                  primaryFields,
                 )
               );
             },
@@ -479,7 +498,14 @@ export const computeColumns: (
           )
           .map(([key, value]) =>
             isJSONSchema(value)
-              ? computeColumns(value, typeName, t, matcher, [...path, key])
+              ? computeColumns(
+                  value,
+                  typeName,
+                  t,
+                  matcher,
+                  [...path, key],
+                  primaryFields,
+                )
               : [],
           )
           .flat(),

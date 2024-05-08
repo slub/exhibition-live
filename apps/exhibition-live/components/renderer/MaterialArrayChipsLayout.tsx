@@ -15,15 +15,12 @@ import { useJsonForms } from "@jsonforms/react";
 import { memo } from "./config";
 import { uniqBy, orderBy } from "lodash";
 import { SemanticFormsModal } from "./SemanticFormsModal";
-import { BASE_IRI } from "../config";
 import { irisToData, makeFormsPath } from "@slub/edb-ui-utils";
 import { JSONSchema7 } from "json-schema";
-import { defaultJsonldContext, slent } from "../form/formConfigs";
-import { v4 as uuidv4 } from "uuid";
-import { Box, Grid, IconButton, List, Stack } from "@mui/material";
+import { Box, Grid, IconButton, Stack } from "@mui/material";
 import { SemanticFormsInline } from "./SemanticFormsInline";
 import AddIcon from "@mui/icons-material/Add";
-import { useGlobalCRUDOptions } from "@slub/edb-state-hooks";
+import { useAdbContext } from "@slub/edb-state-hooks";
 import { useCRUDWithQueryClient } from "@slub/edb-state-hooks";
 import { useSnackbar } from "notistack";
 import { SimpleChipRenderer } from "./SimpleChipRenderer";
@@ -37,6 +34,7 @@ const MaterialArrayChipsLayoutComponent = (props: ArrayLayoutProps & {}) => {
     () => createDefaultValue(props.schema),
     [props.schema],
   );
+  const { createEntityIRI, typeIRIToTypeName } = useAdbContext();
   const {
     data,
     path,
@@ -49,29 +47,38 @@ const MaterialArrayChipsLayoutComponent = (props: ArrayLayoutProps & {}) => {
     config,
     removeItems,
   } = props;
-  const appliedUiSchemaOptions = merge({}, config, props.uischema.options);
+  const {
+    isReifiedStatement,
+    hideRequiredAsterisk,
+    additionalKnowledgeSources,
+    elementLabelTemplate,
+    elementLabelProp = "label",
+  } = useMemo(
+    () => merge({}, config, props.uischema.options),
+    [config, props.uischema.options],
+  );
   const { readonly, core } = useJsonForms();
   const realData = Resolve.data(core.data, path);
   const typeIRI = schema.properties?.["@type"]?.const;
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const typeName = useMemo(
+    () => typeIRIToTypeName(typeIRI),
+    [typeIRI, typeIRIToTypeName],
+  );
+
   const [formData, setFormData] = useState<any>(
-    irisToData(slent(uuidv4()).value, typeIRI),
+    irisToData(createEntityIRI(typeName), typeIRI),
   );
 
   const handleCreateNew = useCallback(() => {
-    setFormData(irisToData(slent(uuidv4()).value, typeIRI));
+    setFormData(irisToData(createEntityIRI(typeName), typeIRI));
     setModalIsOpen(true);
-  }, [setModalIsOpen, setFormData, typeIRI]);
-  const typeName = useMemo(
-    () => typeIRI && typeIRI.substring(BASE_IRI.length, typeIRI.length),
-    [typeIRI],
-  );
+  }, [setModalIsOpen, setFormData, typeIRI, typeName]);
   const subSchema = useMemo(
     () =>
       bringDefinitionToTop(rootSchema as JSONSchema7, typeName) as JsonSchema,
     [rootSchema, typeName],
   );
-  const { crudOptions } = useGlobalCRUDOptions();
   const entityIRI = useMemo(() => formData["@id"], [formData]);
   const { saveMutation } = useCRUDWithQueryClient({
     entityIRI,
@@ -91,9 +98,8 @@ const MaterialArrayChipsLayoutComponent = (props: ArrayLayoutProps & {}) => {
       .then((res) => {
         enqueueSnackbar("Saved", { variant: "success" });
         addItem(path, res)();
-        const id = slent(uuidv4()).value;
         setFormData({
-          "@id": id,
+          "@id": createEntityIRI(typeName),
           "@type": typeIRI,
         });
       })
@@ -102,7 +108,7 @@ const MaterialArrayChipsLayoutComponent = (props: ArrayLayoutProps & {}) => {
           variant: "error",
         });
       });
-  }, [saveMutation, typeIRI, addItem, setFormData]);
+  }, [saveMutation, typeIRI, typeName, addItem, setFormData]);
 
   const handleAddNew = useCallback(() => {
     setModalIsOpen(false);
@@ -111,16 +117,14 @@ const MaterialArrayChipsLayoutComponent = (props: ArrayLayoutProps & {}) => {
     setFormData({});
   }, [setModalIsOpen, addItem, formData, setFormData, typeIRI]);
 
-  const isReifiedStatement = Boolean(appliedUiSchemaOptions.isReifiedStatement);
-
   const formsPath = useMemo(
     () => makeFormsPath(config?.formsPath, path),
     [config?.formsPath, path],
   );
 
   useEffect(() => {
-    setFormData(irisToData(slent(uuidv4()).value, typeIRI));
-  }, [formsPath, typeIRI, setFormData]);
+    setFormData(irisToData(createEntityIRI(typeName), typeIRI));
+  }, [formsPath, typeIRI, typeName, setFormData]);
 
   return (
     <Box
@@ -132,7 +136,7 @@ const MaterialArrayChipsLayoutComponent = (props: ArrayLayoutProps & {}) => {
         label={computeLabel(
           label,
           Boolean(required),
-          appliedUiSchemaOptions.hideRequiredAsterisk,
+          Boolean(hideRequiredAsterisk),
         )}
         errors={errors}
         path={path}
@@ -141,11 +145,9 @@ const MaterialArrayChipsLayoutComponent = (props: ArrayLayoutProps & {}) => {
         onCreate={handleCreateNew}
         createDefault={innerCreateDefaultValue}
         readonly={readonly}
-        isReifiedStatement={isReifiedStatement}
+        isReifiedStatement={Boolean(isReifiedStatement)}
         formsPath={makeFormsPath(config?.formsPath, path)}
-        additionalKnowledgeSources={
-          appliedUiSchemaOptions.additionalKnowledgeSources
-        }
+        additionalKnowledgeSources={additionalKnowledgeSources}
       />
       {modalIsOpen && (
         <SemanticFormsModal
@@ -217,12 +219,8 @@ const MaterialArrayChipsLayoutComponent = (props: ArrayLayoutProps & {}) => {
                     index={index}
                     count={count}
                     path={childPath}
-                    childLabelTemplate={
-                      appliedUiSchemaOptions.elementLabelTemplate
-                    }
-                    elementLabelProp={
-                      appliedUiSchemaOptions.elementLabelProp || "label"
-                    }
+                    childLabelTemplate={elementLabelTemplate}
+                    elementLabelProp={elementLabelProp}
                     formsPath={makeFormsPath(config?.formsPath, childPath)}
                     sx={{
                       margin: 0.5,

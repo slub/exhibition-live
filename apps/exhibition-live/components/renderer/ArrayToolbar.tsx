@@ -8,26 +8,23 @@ import {
 } from "@mui/material";
 import * as React from "react";
 import { useTranslation } from "next-i18next";
-import { v4 as uuidv4 } from "uuid";
 
 import DiscoverAutocompleteInput from "../form/discover/DiscoverAutocompleteInput";
 import { useCallback, useMemo } from "react";
 import { JsonSchema7 } from "@jsonforms/core";
-import { slent } from "../form/formConfigs";
-import { BASE_IRI, primaryFields, typeIRItoTypeName } from "../config";
 import { memo } from "./config";
 import {
+  useAdbContext,
   useGlobalSearchWithHelper,
   useKeyEventForSimilarityFinder,
   useRightDrawerState,
-  useSimilarityFinderState,
 } from "@slub/edb-state-hooks";
 import { SearchbarWithFloatingButton } from "../layout/main-layout/Searchbar";
 import SimilarityFinder, { KnowledgeSources } from "../form/SimilarityFinder";
 import { JSONSchema7 } from "json-schema";
 import { AutocompleteSuggestion } from "../form/DebouncedAutoComplete";
 import { NoteAdd } from "@mui/icons-material";
-import { PrimaryField } from "@slub/edb-core-types";
+import { PrimaryField, PrimaryFieldDeclaration } from "@slub/edb-core-types";
 
 export interface ArrayLayoutToolbarProps {
   label: string;
@@ -44,12 +41,13 @@ export interface ArrayLayoutToolbarProps {
   typeIRI?: string;
   onCreate?: () => void;
   isReifiedStatement?: boolean;
-
   additionalKnowledgeSources?: string[];
 }
 
-const getDefaultLabelKey = (typeIRI?: string) => {
-  const typeName = typeIRItoTypeName(typeIRI);
+const getDefaultLabelKey = (
+  typeName: string,
+  primaryFields: PrimaryFieldDeclaration,
+) => {
   const fieldDefinitions = primaryFields[typeName] as PrimaryField | undefined;
   return fieldDefinitions?.label || "title";
 };
@@ -70,10 +68,19 @@ export const ArrayLayoutToolbar = memo(
     schema?: JsonSchema7;
     formsPath?: string;
   }) => {
+    const {
+      createEntityIRI,
+      queryBuildOptions: { primaryFields },
+      typeIRIToTypeName,
+    } = useAdbContext();
     const { t } = useTranslation();
     const typeIRI = useMemo(
       () => schema?.properties?.["@type"]?.const,
       [schema],
+    );
+    const typeName = useMemo(
+      () => typeIRIToTypeName(typeIRI),
+      [typeIRI, typeIRIToTypeName],
     );
     const handleSelectedChange = React.useCallback(
       (v: AutocompleteSuggestion) => {
@@ -89,17 +96,13 @@ export const ArrayLayoutToolbar = memo(
       (value?: string) => {
         if (!value) return;
         addItem(path, {
-          "@id": slent(uuidv4()).value,
+          "@id": createEntityIRI(typeName),
           "@type": typeIRI,
           __draft: true,
-          [getDefaultLabelKey(typeIRI)]: value,
+          [getDefaultLabelKey(typeName, primaryFields)]: value,
         })();
       },
-      [addItem, path, typeIRI],
-    );
-    const typeName = useMemo(
-      () => typeIRI?.substring(BASE_IRI.length, typeIRI.length),
-      [typeIRI],
+      [addItem, path, typeName, typeIRI, primaryFields],
     );
     const handleEntityIRIChange = useCallback(
       (iri: string) => {
@@ -111,12 +114,15 @@ export const ArrayLayoutToolbar = memo(
     const handleExistingEntityAccepted = useCallback(
       (iri: string, data: any) => {
         console.log("onExistingEntityAccepted", { iri, data });
-        const label = data[getDefaultLabelKey(typeIRI)] || data.label || iri;
+        const label =
+          data[getDefaultLabelKey(typeName, primaryFields)] ||
+          data.label ||
+          iri;
         //handleSelectedChange({ value: iri, label });
         addItem(path, data)();
         inputRef.current?.focus();
       },
-      [addItem, typeIRI],
+      [addItem, typeName],
     );
 
     const handleMappedDataAccepted = useCallback(
@@ -238,7 +244,7 @@ export const ArrayLayoutToolbar = memo(
                 onExistingEntityAccepted={handleExistingEntityAccepted}
                 onMappedDataAccepted={handleMappedData}
                 additionalKnowledgeSources={
-                  (additionalKnowledgeSources || []) as KnowledgeSources[]
+                  additionalKnowledgeSources as KnowledgeSources[]
                 }
               />
             </SearchbarWithFloatingButton>

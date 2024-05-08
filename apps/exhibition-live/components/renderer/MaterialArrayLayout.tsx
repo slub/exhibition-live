@@ -46,15 +46,14 @@ import { memo } from "./config";
 import { uniqBy, orderBy } from "lodash";
 import { SimpleExpandPanelRenderer } from "./SimpleExpandPanelRenderer";
 import { SemanticFormsModal } from "./SemanticFormsModal";
-import { BASE_IRI, primaryFieldExtracts } from "../config";
 import { irisToData, makeFormsPath, validate } from "@slub/edb-ui-utils";
 import { JSONSchema7 } from "json-schema";
-import { createNewIRI, slent } from "../form/formConfigs";
 import { v4 as uuidv4 } from "uuid";
 import { Grid, IconButton, List, Paper } from "@mui/material";
 import { SemanticFormsInline } from "./SemanticFormsInline";
 import CheckIcon from "@mui/icons-material/Check";
 import {
+  useAdbContext,
   useCRUDWithQueryClient,
   useFormDataStore,
 } from "@slub/edb-state-hooks";
@@ -127,14 +126,23 @@ const MaterialArrayLayoutComponent = (props: ArrayLayoutProps) => {
   const realData = Resolve.data(core.data, path);
   const typeIRI = schema.properties?.["@type"]?.const;
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const {
+    createEntityIRI,
+    typeIRIToTypeName,
+    queryBuildOptions: { primaryFields, primaryFieldExtracts },
+  } = useAdbContext();
+  const typeName = useMemo(
+    () => typeIRIToTypeName(typeIRI),
+    [typeIRI, typeIRIToTypeName],
+  );
 
   const { t } = useTranslation();
 
-  const [entityIRI, setEntityIRI] = useState(createNewIRI());
+  const [entityIRI, setEntityIRI] = useState(createEntityIRI(typeName));
   const { formData, setFormData } = useFormDataStore({
     entityIRI,
     typeIRI,
-    createNewEntityIRI: createNewIRI,
+    createNewEntityIRI: () => createEntityIRI(typeName),
     autoCreateNewEntityIRI: true,
   });
 
@@ -148,13 +156,9 @@ const MaterialArrayLayoutComponent = (props: ArrayLayoutProps) => {
   );
 
   const handleCreateNew = useCallback(() => {
-    setFormData(irisToData(slent(uuidv4()).value, typeIRI));
+    setFormData(irisToData(createEntityIRI(typeName), typeIRI));
     setModalIsOpen(true);
-  }, [setModalIsOpen, setFormData, typeIRI]);
-  const typeName = useMemo(
-    () => typeIRI && typeIRI.substring(BASE_IRI.length, typeIRI.length),
-    [typeIRI],
-  );
+  }, [setModalIsOpen, setFormData, typeIRI, typeName]);
   const subSchema = useMemo(
     () =>
       bringDefinitionToTop(rootSchema as JSONSchema7, typeName) as JsonSchema,
@@ -177,14 +181,14 @@ const MaterialArrayLayoutComponent = (props: ArrayLayoutProps) => {
       .then((res) => {
         enqueueSnackbar(t("successfully saved"), { variant: "success" });
         addItem(path, res)();
-        setEntityIRI(createNewIRI());
+        setEntityIRI(createEntityIRI(typeName));
       })
       .catch((e) => {
         enqueueSnackbar(t("error while saving") + e.message, {
           variant: "error",
         });
       });
-  }, [saveMutation, typeIRI, addItem, setFormData]);
+  }, [saveMutation, typeIRI, typeName, createEntityIRI, addItem, setFormData]);
 
   const handleAddNew = useCallback(() => {
     setModalIsOpen(false);
@@ -236,14 +240,13 @@ const MaterialArrayLayoutComponent = (props: ArrayLayoutProps) => {
   );
 
   useEffect(() => {
-    setFormData(irisToData(slent(uuidv4()).value, typeIRI));
-  }, [formsPath, typeIRI, setFormData]);
+    setFormData(irisToData(createEntityIRI(typeName), typeIRI));
+  }, [formsPath, typeIRI, createEntityIRI, typeName, setFormData]);
 
   const orderedAndUniqueData = useMemo(() => {
     return orderBy(
       uniqBy(
         realData?.map((childData, index) => {
-          const typeName = typeIRI.substring(BASE_IRI.length, typeIRI.length);
           const fieldDecl = primaryFieldExtracts[typeName];
           let label = childData.label || childData.__label || childData["@id"];
           if (childData && fieldDecl) {
@@ -267,7 +270,7 @@ const MaterialArrayLayoutComponent = (props: ArrayLayoutProps) => {
       ),
       ["label", "asc"],
     );
-  }, [realData, orderByPropertyPath, typeIRI]);
+  }, [realData, orderByPropertyPath, primaryFieldExtracts, typeIRI, typeName]);
 
   return (
     <div>
@@ -354,6 +357,8 @@ const MaterialArrayLayoutComponent = (props: ArrayLayoutProps) => {
                     onChange={() => {}}
                     rootSchema={rootSchema}
                     entityIRI={expandID}
+                    typeIRI={typeIRI}
+                    typeName={typeName}
                     data={childData}
                     key={expandID}
                     index={index}
@@ -364,6 +369,7 @@ const MaterialArrayLayoutComponent = (props: ArrayLayoutProps) => {
                     childLabelTemplate={elementLabelTemplate}
                     elementLabelProp={elementLabelProp}
                     formsPath={formsPath}
+                    primaryFields={primaryFields}
                   />
                 );
               },

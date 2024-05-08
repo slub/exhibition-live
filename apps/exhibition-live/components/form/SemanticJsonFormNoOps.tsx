@@ -40,13 +40,16 @@ import { SearchbarWithFloatingButton } from "../layout/main-layout/Searchbar";
 import MaterialBooleanControl, {
   materialBooleanControlTester,
 } from "../renderer/MaterialBooleanControl";
-import { primaryFields, typeIRItoTypeName } from "../config";
 import NiceModal from "@ebay/nice-modal-react";
 import {
   primaryTextFieldControlTester,
   PrimaryTextFieldRenderer,
 } from "../renderer/PrimaryFieldTextRenderer";
-import { useGlobalSearch, useRightDrawerState } from "@slub/edb-state-hooks";
+import {
+  useAdbContext,
+  useGlobalSearch,
+  useRightDrawerState,
+} from "@slub/edb-state-hooks";
 import MaterialArrayOfLinkedItemChipsRenderer, {
   materialArrayLayoutChipsTester,
 } from "../renderer/MaterialArrayOfLinkedItemChipsRenderer";
@@ -182,21 +185,25 @@ export const SemanticJsonFormNoOps: FunctionComponent<
   wrapWithinCard,
   formsPath,
 }) => {
+  const {
+    queryBuildOptions: { primaryFields },
+    typeIRIToTypeName,
+  } = useAdbContext();
   const searchOnDataPath = useMemo(() => {
-    const typeName = typeIRItoTypeName(typeIRI);
+    const typeName = typeIRIToTypeName(typeIRI);
     return primaryFields[typeName]?.label;
-  }, [typeIRI]);
+  }, [typeIRI, typeIRIToTypeName, primaryFields]);
   const primaryFieldRenderer = useMemo(
     () =>
-      primaryFields[typeIRItoTypeName(typeIRI)]?.label
+      primaryFields[typeIRIToTypeName(typeIRI)]?.label
         ? [
             {
-              tester: primaryTextFieldControlTester(typeIRItoTypeName(typeIRI)),
+              tester: primaryTextFieldControlTester(typeIRIToTypeName(typeIRI)),
               renderer: PrimaryTextFieldRenderer,
             },
           ]
         : [],
-    [typeIRI],
+    [typeIRI, typeIRIToTypeName, primaryFields],
   );
 
   const handleFormChange = useCallback(
@@ -239,12 +246,14 @@ export const SemanticJsonFormNoOps: FunctionComponent<
               "@id": data["@id"],
               "@type": data["@type"],
             };
+          } else {
+            const computedData = merge(data, {
+              ...newData,
+              "@id": data["@id"],
+              "@type": data["@type"],
+            });
+            return computedData;
           }
-          return merge(data, {
-            ...newData,
-            "@id": data["@id"],
-            "@type": data["@type"],
-          });
         }, "mapping");
       });
     },

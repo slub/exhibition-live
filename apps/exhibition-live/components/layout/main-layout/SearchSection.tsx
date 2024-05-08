@@ -3,14 +3,13 @@ import { Avatar, OutlinedInput, Popper } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { shouldForwardProp } from "@mui/system";
 // assets
-import React, { useCallback } from "react";
+import React, { useCallback, useMemo } from "react";
 import { useTranslation } from "next-i18next";
 
 // third-party
 // project imports
 import DiscoverAutocompleteInput from "../../form/discover/DiscoverAutocompleteInput";
-import { sladb } from "../../form/formConfigs";
-import { useGlobalSearch } from "@slub/edb-state-hooks";
+import { useAdbContext, useGlobalSearch } from "@slub/edb-state-hooks";
 import { encodeIRI } from "@slub/edb-ui-utils";
 import { useModifiedRouter } from "../../basic";
 
@@ -67,9 +66,13 @@ export const SearchSection = () => {
   const { t } = useTranslation();
   const { search, setSearch } = useGlobalSearch();
   const router = useModifiedRouter();
+  const { typeNameToTypeIRI } = useAdbContext();
   const { typeName } = router.query as { typeName: string | null | undefined };
-  const classIRI: string | undefined =
-    typeof typeName === "string" ? sladb(typeName).value : undefined;
+  const classIRI: string | undefined = useMemo(
+    () =>
+      typeof typeName === "string" ? typeNameToTypeIRI(typeName) : undefined,
+    [typeName, typeNameToTypeIRI],
+  );
 
   const handleChange = useCallback(
     (value?: string | null) => {

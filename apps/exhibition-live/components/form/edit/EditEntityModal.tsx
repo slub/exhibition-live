@@ -1,10 +1,8 @@
 import NiceModal, { useModal } from "@ebay/nice-modal-react";
-import { useTypeIRIFromEntity } from "@slub/edb-state-hooks";
+import { useAdbContext, useTypeIRIFromEntity } from "@slub/edb-state-hooks";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { primaryFieldExtracts, typeIRItoTypeName } from "../../config";
 import useExtendedSchema from "../../state/useExtendedSchema";
 import { useCRUDWithQueryClient } from "@slub/edb-state-hooks";
-import { defaultJsonldContext, defaultPrefix } from "../formConfigs";
 import { useTranslation } from "next-i18next";
 import { applyToEachField, extractFieldIfString } from "@slub/edb-ui-utils";
 import { Button, Stack } from "@mui/material";
@@ -31,10 +29,22 @@ export const EditEntityModal = NiceModal.create(
     data: defaultData,
     disableLoad,
   }: EntityDetailModalProps) => {
+    const {
+      typeNameToTypeIRI,
+      jsonLDConfig,
+      typeIRIToTypeName,
+      queryBuildOptions: { primaryFieldExtracts },
+    } = useAdbContext();
     const modal = useModal();
     const typeIRIs = useTypeIRIFromEntity(entityIRI);
-    const classIRI: string | undefined = typeIRI || typeIRIs?.[0];
-    const typeName = useMemo(() => typeIRItoTypeName(classIRI), [classIRI]);
+    const classIRI: string | undefined = useMemo(
+      () => typeIRI || typeIRIs?.[0],
+      [typeIRI, typeIRIs],
+    );
+    const typeName = useMemo(
+      () => typeIRIToTypeName(classIRI),
+      [classIRI, typeNameToTypeIRI, EditEntityModal],
+    );
     const loadedSchema = useExtendedSchema({ typeName, classIRI });
     const { loadQuery, saveMutation } = useCRUDWithQueryClient({
       entityIRI,
@@ -60,7 +70,7 @@ export const EditEntityModal = NiceModal.create(
         description: null,
         image: null,
       };
-    }, [typeName, data]);
+    }, [typeName, data, primaryFieldExtracts]);
 
     const { formData, setFormData } = useFormDataStore({
       entityIRI,
@@ -103,8 +113,8 @@ export const EditEntityModal = NiceModal.create(
     const handleAccept = useCallback(() => {
       const acceptCallback = async () => {
         let cleanedData = await cleanJSONLD(formData, loadedSchema, {
-          jsonldContext: defaultJsonldContext,
-          defaultPrefix,
+          jsonldContext: jsonLDConfig.jsonldContext,
+          defaultPrefix: jsonLDConfig.defaultPrefix,
           keepContext: true,
         });
         modal.resolve({
@@ -114,7 +124,7 @@ export const EditEntityModal = NiceModal.create(
         modal.remove();
       };
       return handleSave(acceptCallback);
-    }, [formData, loadedSchema, handleSave, modal]);
+    }, [formData, loadedSchema, handleSave, modal, jsonLDConfig]);
 
     const handleSaveAndAccept = useCallback(async () => {
       //await handleSave(handleAccept);

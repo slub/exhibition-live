@@ -37,8 +37,9 @@
     "react": ">=18"
   },
   "peerDependencies": {
-    "notistack": ">3",
-    "@tanstack/react-query": ">4",
+    "@ebay/nice-modal-react": ">=1",
+    "notistack": ">=3",
+    "@tanstack/react-query": ">=4",
     "react": "^16.9.0 || ^17.0.0 || ^18"
   },
   "dependencies": {

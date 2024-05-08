@@ -23,12 +23,13 @@ import {
   and,
 } from "@jsonforms/core";
 import { withJsonFormsControlProps } from "@jsonforms/react";
-import { primaryFields, typeIRItoTypeName } from "../config";
 import {
+  useAdbContext,
   useGlobalSearch,
   useKeyEventForSimilarityFinder,
   useRightDrawerState,
 } from "@slub/edb-state-hooks";
+import { primaryFields } from "../config";
 
 interface MuiTextInputProps {
   muiInputProps?: InputProps["inputProps"];
@@ -36,6 +37,7 @@ interface MuiTextInputProps {
 }
 export const PrimaryFieldText = React.memo(
   (props: CellProps & WithClassname & MuiTextInputProps) => {
+    const { typeIRIToTypeName } = useAdbContext();
     const [showAdornment, setShowAdornment] = useState(false);
     const {
       data,
@@ -90,11 +92,12 @@ export const PrimaryFieldText = React.memo(
     const handleFocus = useCallback(() => {
       if (!config?.typeIRI || !config.formsPath) return;
       setPath(config.formsPath);
-      setTypeName(typeIRItoTypeName(config.typeIRI as string));
+      setTypeName(typeIRIToTypeName(config.typeIRI as string));
       setRightDrawerOpen(true);
     }, [
       config?.typeIRI,
       config?.formsPath,
+      typeIRIToTypeName,
       setPath,
       setTypeName,
       setRightDrawerOpen,

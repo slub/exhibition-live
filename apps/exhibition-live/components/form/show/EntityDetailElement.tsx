@@ -1,8 +1,7 @@
 import { Box, BoxProps } from "@mui/material";
 import useExtendedSchema from "../../state/useExtendedSchema";
-import { useCRUDWithQueryClient } from "@slub/edb-state-hooks";
+import { useAdbContext, useCRUDWithQueryClient } from "@slub/edb-state-hooks";
 import { useMemo } from "react";
-import { primaryFields, typeIRItoTypeName } from "../../config";
 import { applyToEachField, extractFieldIfString } from "@slub/edb-ui-utils";
 import { EntityDetailCard } from "./EntityDetailCard";
 import { useTypeIRIFromEntity } from "@slub/edb-state-hooks";
@@ -28,10 +27,16 @@ export const EntityDetailElement = ({
   readonly,
   ...rest
 }: EntityDetailElementProps & Partial<BoxProps>) => {
-  const boxProps = rest || {};
+  const {
+    queryBuildOptions: { primaryFields },
+    typeIRIToTypeName,
+  } = useAdbContext();
   const typeIRIs = useTypeIRIFromEntity(entityIRI);
   const classIRI: string | undefined = typeIRI || typeIRIs?.[0];
-  const typeName = useMemo(() => typeIRItoTypeName(classIRI), [classIRI]);
+  const typeName = useMemo(
+    () => typeIRIToTypeName(classIRI),
+    [classIRI, typeIRIToTypeName],
+  );
   const loadedSchema = useExtendedSchema({ typeName, classIRI });
   const {
     loadQuery: { data: rawData },
@@ -46,11 +51,10 @@ export const EntityDetailElement = ({
     },
     loadQueryKey: "show",
   });
-  const { t } = useTranslation();
   const data = initialData || rawData?.document;
   const fieldDeclaration = useMemo(
     () => primaryFields[typeName] as PrimaryField,
-    [typeName],
+    [typeName, primaryFields],
   );
   const cardInfo = useMemo<PrimaryFieldResults<string>>(() => {
     if (data && fieldDeclaration)

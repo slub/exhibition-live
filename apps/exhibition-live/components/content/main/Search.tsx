@@ -6,10 +6,8 @@ import SearchIcon from "@mui/icons-material/Search";
 import { ParentSize } from "@visx/responsive";
 import { useCallback, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { useGlobalCRUDOptions } from "@slub/edb-state-hooks";
+import { useAdbContext, useGlobalCRUDOptions } from "@slub/edb-state-hooks";
 import { SELECT } from "@tpluscode/sparql-builder";
-import { primaryFields, typeIRItoTypeName } from "../../config";
-import { defaultPrefix } from "../../form/formConfigs";
 import df from "@rdfjs/data-model";
 import { isString, orderBy, uniq } from "lodash";
 import { Box, Chip, Grid, Skeleton, Tab, Tabs } from "@mui/material";
@@ -17,7 +15,6 @@ import { filterUndefOrNull } from "@slub/edb-ui-utils";
 import { Line, LineChart, Tooltip, XAxis, YAxis } from "recharts";
 import VisTimelineWrapper from "../visTimelineWrapper/VisTimelineWrapper";
 import { TimelineItem } from "vis-timeline/types";
-import { applyToEachField, extractFieldIfString } from "@slub/edb-ui-utils";
 import get from "lodash/get";
 import { ListAlt, Polyline, Timeline } from "@mui/icons-material";
 import {
@@ -28,6 +25,7 @@ import { useTranslation } from "next-i18next";
 import NiceModal from "@ebay/nice-modal-react";
 import { EntityDetailModal } from "../../form/show";
 import { fixSparqlOrder, withDefaultPrefix } from "@slub/sparql-schema";
+import { IRIToStringFn, PrimaryFieldDeclaration } from "@slub/edb-core-types";
 
 const makeFilterUNION2 = (searchString: string, length: number) => {
   const filterUNION = [];
@@ -97,55 +95,13 @@ const personDateToDate = (date: string) => {
   return null;
 };
 
-const itemToTimelineItemGeneric = (
+const itemToListItem = (
   item: any,
   typeIRI: string,
-  parseStart: (item: any) => Date | null,
-  parseEnd: (item: any) => Date | null,
-): TimelineItem | null => {
-  const typeName = typeIRItoTypeName(typeIRI);
-  if (isString(item.entity?.value)) {
-    const start = parseStart(item);
-    if (!start) return null;
-    const end = parseEnd(item);
-    const primaryField = primaryFields[typeName];
-    const content = primaryField ? get(item, primaryField.label)?.value : null;
-    return {
-      id: item.entity?.value,
-      content: content || typeName,
-      start,
-      end,
-      style: "point", //!end || start === end ? 'circle' : 'box',
-      group: typeName,
-    };
-  }
-  return null;
-};
-
-const itemToListItemReal = (
-  item: any,
-  typeIRI: string,
+  typeIRIToTypeName: IRIToStringFn,
+  primaryFields: PrimaryFieldDeclaration,
 ): GenericListItem | null => {
-  const typeName = typeIRItoTypeName(typeIRI);
-  if (isString(item.entity?.value)) {
-    const primaryFieldDeclaration = primaryFields[typeName];
-    const { label, description, image } = applyToEachField(
-      item,
-      primaryFieldDeclaration,
-      extractFieldIfString,
-    );
-    return {
-      id: item.entity.value,
-      entry: item,
-      primary: label,
-      description,
-      avatar: image,
-    };
-  }
-  return null;
-};
-const itemToListItem = (item: any, typeIRI: string): GenericListItem | null => {
-  const typeName = typeIRItoTypeName(typeIRI);
+  const typeName = typeIRIToTypeName(typeIRI);
   if (isString(item.entity?.value)) {
     const primaryField = primaryFields[typeName];
     const primary = primaryField
@@ -168,8 +124,10 @@ const itemToListItem = (item: any, typeIRI: string): GenericListItem | null => {
 const itemToTimelineItem = (
   item: any,
   typeIRI: string,
+  typeIRIToTypeName: IRIToStringFn,
+  primaryFields: PrimaryFieldDeclaration,
 ): TimelineItem | null => {
-  const typeName = typeIRItoTypeName(typeIRI);
+  const typeName = typeIRIToTypeName(typeIRI);
   if (typeName === "Person") {
     if (isString(item.birthDate?.value)) {
       const start = personDateToDate(item.birthDate.value);
@@ -220,6 +178,13 @@ const itemToTimelineItem = (
   return null;
 };
 export const SearchBar = ({ relevantTypes }: { relevantTypes: string[] }) => {
+  const {
+    queryBuildOptions: { primaryFields },
+    typeIRIToTypeName,
+    typeNameToTypeIRI,
+    jsonLDConfig: { defaultPrefix },
+    propertyNameToIRI,
+  } = useAdbContext();
   const { t } = useTranslation();
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [searchText, setSearchText] = useState<string>("");
@@ -259,7 +224,7 @@ export const SearchBar = ({ relevantTypes }: { relevantTypes: string[] }) => {
       );
       return (await selectFetch(query))?.map((item) => ({
         id: item.type?.value,
-        title: t(typeIRItoTypeName(item.type?.value)),
+        title: t(typeIRIToTypeName(item.type?.value)),
         score: parseInt(item.count?.value) || 0,
       }));
     },
@@ -278,14 +243,14 @@ export const SearchBar = ({ relevantTypes }: { relevantTypes: string[] }) => {
           .filter((iri) => !searchResults?.find(({ id }) => id === iri))
           .map((iri) => ({
             id: iri,
-            title: t(typeIRItoTypeName(iri)),
+            title: t(typeIRIToTypeName(iri)),
             score: 0,
           })),
       ],
       ["title"],
       ["desc"],
     );
-  }, [t, searchResults, selectedClassIRIs]);
+  }, [t, searchResults, selectedClassIRIs, typeIRIToTypeName]);
 
   const handleTimelineSelect = useCallback(
     (selection: any) => {
@@ -363,10 +328,15 @@ export const SearchBar = ({ relevantTypes }: { relevantTypes: string[] }) => {
     () =>
       filterUndefOrNull(
         allExhibitionsData?.map((item) =>
-          itemToTimelineItem(item, item.type.value),
+          itemToTimelineItem(
+            item,
+            item.type.value,
+            typeIRIToTypeName,
+            primaryFields,
+          ),
         ) || ([] as TimelineItem[]),
       ),
-    [allExhibitionsData],
+    [allExhibitionsData, typeIRIToTypeName, primaryFields],
   );
 
   const dateScore = useMemo(() => {
@@ -395,10 +365,15 @@ export const SearchBar = ({ relevantTypes }: { relevantTypes: string[] }) => {
     () =>
       filterUndefOrNull(
         allExhibitionsData?.map((item) =>
-          itemToListItem(item, item.type.value),
+          itemToListItem(
+            item,
+            item.type.value,
+            typeIRIToTypeName,
+            primaryFields,
+          ),
         ) || ([] as GenericListItem[]),
       ),
-    [allExhibitionsData],
+    [allExhibitionsData, primaryFields, typeIRIToTypeName],
   );
 
   const [tabIndex, setTabIndex] = useState(0);

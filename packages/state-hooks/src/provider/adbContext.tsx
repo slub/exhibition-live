@@ -1,10 +1,12 @@
 import { createContext, useContext } from "react";
 import {
+  IRIToStringFn,
   SparqlBuildOptions,
   SparqlEndpoint,
   StringToIRIFn,
 } from "@slub/edb-core-types";
 import { JsonLdContext } from "jsonld-context-parser";
+import { NormDataMapping } from "../../dist/index";
 
 export type JSONLDConfig = {
   defaultPrefix: string;
@@ -22,9 +24,15 @@ export type JSONLDConfig = {
 type AdbContextValue = {
   queryBuildOptions: SparqlBuildOptions;
   typeNameToTypeIRI: StringToIRIFn;
+  typeIRIToTypeName: IRIToStringFn;
   createEntityIRI: (typeName: string, id?: string) => string;
+  propertyNameToIRI: StringToIRIFn;
+  propertyIRIToPropertyName: IRIToStringFn;
   lockedSPARQLEndpoint?: SparqlEndpoint;
   jsonLDConfig: JSONLDConfig;
+  normDataMapping: {
+    [authorityIRI: string]: NormDataMapping;
+  };
   env: {
     publicBasePath: string;
     baseIRI: string;

@@ -35,7 +35,12 @@ import {
 } from "../components/form/formConfigs";
 import { envToSparqlEndpoint } from "../components/config/envToSparqlEndpoint";
 import getConfig from "next/config";
-import { BASE_IRI, PUBLIC_BASE_PATH } from "../components/config";
+import {
+  BASE_IRI,
+  declarativeMappings,
+  lobidTypemap,
+  PUBLIC_BASE_PATH,
+} from "../components/config";
 import { AdbProvider, store } from "@slub/edb-state-hooks";
 
 export const queryClient = new QueryClient();
@@ -65,12 +70,25 @@ function App({ Component, pageProps }: AppProps) {
               <AdbProvider
                 queryBuildOptions={defaultQueryBuilderOptions}
                 typeNameToTypeIRI={(name: string) => sladb(name).value}
+                propertyNameToIRI={(name: string) => sladb(name).value}
+                typeIRIToTypeName={(iri: string) =>
+                  iri?.substring(BASE_IRI.length, iri.length)
+                }
+                propertyIRIToPropertyName={(iri: string) =>
+                  iri?.substring(BASE_IRI.length, iri.length)
+                }
                 createEntityIRI={createNewIRI}
                 lockedSPARQLEndpoint={sparqlEndpoint}
                 jsonLDConfig={{
                   defaultPrefix: defaultPrefix,
                   jsonldContext: defaultJsonldContext,
                   allowUnsafeSourceIRIs: false,
+                }}
+                normDataMapping={{
+                  gnd: {
+                    mapping: declarativeMappings,
+                    typeToTypeMap: lobidTypemap,
+                  },
                 }}
                 env={{
                   publicBasePath: PUBLIC_BASE_PATH,
@@ -96,4 +114,5 @@ function App({ Component, pageProps }: AppProps) {
   );
 }
 
+// @ts-ignore
 export default appWithTranslation(App, nextI18NextConfig as any as UserConfig);

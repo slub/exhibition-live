@@ -18,7 +18,7 @@ import { useEffect, useCallback } from "react";
 import { useThemeSettings } from "../../../state";
 import { MenuItem } from "./types";
 import { encodeIRI } from "@slub/edb-ui-utils";
-import { slent } from "../../../form/formConfigs";
+import { useAdbContext } from "@slub/edb-state-hooks";
 
 type NavItemProps = {
   item: MenuItem;
@@ -34,16 +34,17 @@ export const NavItem = ({
 }: NavItemProps) => {
   const theme = useTheme();
   const router = useModifiedRouter();
+  const { createEntityIRI } = useAdbContext();
   const { pathname } = router;
   const customization = useThemeSettings();
   const matchesSM = useMediaQuery(theme.breakpoints.down("lg"));
 
   const create = useCallback(
     (typeName: string) => {
-      const newEncodedURI = encodeIRI(slent(`${typeName}-${uuidv4()}`).value);
+      const newEncodedURI = encodeIRI(createEntityIRI(typeName));
       router.push(`/create/${typeName}?encID=${newEncodedURI}`);
     },
-    [router],
+    [router, createEntityIRI],
   );
   const list = useCallback(
     (typeName: any) => {

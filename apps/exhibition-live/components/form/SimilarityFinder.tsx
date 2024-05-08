@@ -27,18 +27,11 @@ import {
   useMemo,
   useState,
 } from "react";
-import { v4 as uuidv4 } from "uuid";
 
-import { declarativeMappings, lobidTypemap } from "../config/lobidMappings";
-import { useSettings } from "@slub/edb-state-hooks";
+import { lobidTypemap } from "../config/lobidMappings";
+import { useAdbContext } from "@slub/edb-state-hooks";
 import { mapByConfig } from "@slub/edb-ui-utils";
 import { DeclarativeMapping, StrategyContext } from "@slub/edb-ui-utils";
-import {
-  defaultPrefix,
-  defaultQueryBuilderOptions,
-  sladb,
-  slent,
-} from "./formConfigs";
 import {
   gndEntryFromSuggestion,
   gndEntryWithMainInfo,
@@ -53,7 +46,6 @@ import {
 } from "@slub/edb-state-hooks";
 import { useTranslation } from "next-i18next";
 import { searchEntityByLabel } from "@slub/edb-ui-utils";
-import { primaryFields, typeIRItoTypeName } from "../config";
 import NiceModal from "@ebay/nice-modal-react";
 import { EditEntityModal } from "./edit/EditEntityModal";
 import ClassicResultListItem from "./result/ClassicResultListItem";
@@ -69,7 +61,12 @@ import { debounce } from "lodash";
 import { filterUndefOrNull } from "@slub/edb-ui-utils";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import useExtendedSchema from "../state/useExtendedSchema";
-import { BasicThingInformation, PrimaryField } from "@slub/edb-core-types";
+import {
+  BasicThingInformation,
+  PrimaryField,
+  PrimaryFieldDeclaration,
+  QueryBuilderOptions,
+} from "@slub/edb-core-types";
 import { NumberInput } from "./NumberInput";
 import { dcterms } from "@tpluscode/rdf-ns-builders";
 import { findFirstInProps } from "./k10plus/K10PlusSearchTable";
@@ -77,6 +74,7 @@ import { Img } from "../basic";
 import { findEntityByClass } from "@slub/sparql-schema";
 import { findEntityWithinK10Plus, KXPEntry } from "@slub/edb-kxp-utils";
 import { fabio } from "@slub/edb-marc-to-rdf";
+import { typeIRItoTypeName } from "../config";
 
 export type KnowledgeSources = "kb" | "gnd" | "wikidata" | "k10plus" | "ai";
 // @ts-ignore
@@ -98,17 +96,22 @@ type SelectedEntity = {
   id: string;
   source: KnowledgeSources;
 };
-const getDefaultLabelKey = (typeIRI?: string) => {
-  const typeName = typeIRItoTypeName(typeIRI);
-  const fieldDefinitions = primaryFields[typeName] as PrimaryField | undefined;
-  return fieldDefinitions?.label || "title";
-};
 
 export const makeDefaultMappingStrategyContext: (
   doQuery: (query) => Promise<any>,
-  mappingTable?: DeclarativeMapping,
-) => StrategyContext = (doQuery, mappingTable) => ({
-  mappingTable,
+  queryBuilderOptions: QueryBuilderOptions,
+  defaultPrefix: string,
+  createEntityIRI: (typeIRI: string) => string,
+  primaryFields: PrimaryFieldDeclaration,
+  declarativeMappings?: DeclarativeMapping,
+) => StrategyContext = (
+  doQuery,
+  queryBuilderOptions,
+  defaultPrefix,
+  createEntityIRI,
+  primaryFields,
+  declarativeMappings,
+) => ({
   getPrimaryIRIBySecondaryIRI: async (
     secondaryIRI: string,
     authorityIRI: string,
@@ -120,7 +123,7 @@ export const makeDefaultMappingStrategyContext: (
       typeIRI,
       doQuery,
       undefined,
-      { prefixes: defaultQueryBuilderOptions.prefixes, defaultPrefix },
+      { prefixes: queryBuilderOptions.prefixes, defaultPrefix },
     );
     if (ids.length > 0) {
       console.warn("found more then one entity");
@@ -133,7 +136,7 @@ export const makeDefaultMappingStrategyContext: (
   ): Promise<string> => {
     // @ts-ignore
     const ids = await searchEntityByLabel(label, typeIRI, doQuery, undefined, {
-      prefixes: defaultQueryBuilderOptions.prefixes,
+      prefixes: queryBuilderOptions.prefixes,
       defaultPrefix,
     });
     if (ids.length > 0) {
@@ -142,12 +145,10 @@ export const makeDefaultMappingStrategyContext: (
     return ids[0] || null;
   },
   authorityIRI: "http://d-nb.info/gnd",
-  newIRI: (typeIRI: string) => {
-    return slent(uuidv4()).value;
-  },
+  newIRI: createEntityIRI,
   typeIRItoTypeName: typeIRItoTypeName,
   primaryFields: primaryFields,
-  declarativeMappings: declarativeMappings,
+  declarativeMappings,
 });
 
 type FindOptions = {
@@ -166,6 +167,7 @@ type KnowledgeBaseDescription<T = any> = {
   find: (
     searchString: string,
     typeIRI: string,
+    typeName: string,
     findOptions?: FindOptions,
   ) => Promise<T[]>;
   detailRenderer?: (id: string) => React.ReactNode;
@@ -197,7 +199,11 @@ const SearchFieldWithBadges = ({
   toggleKnowledgeSource?: (source: string) => void;
   advancedConfigChildren?: React.ReactNode;
 } & Partial<TextFieldProps>) => {
-  const typeName = useMemo(() => typeIRItoTypeName(typeIRI), [typeIRI]);
+  const { typeIRIToTypeName } = useAdbContext();
+  const typeName = useMemo(
+    () => typeIRIToTypeName(typeIRI),
+    [typeIRI, typeIRIToTypeName],
+  );
   const { t } = useTranslation();
   return (
     <Grid
@@ -399,8 +405,15 @@ const KBListItemRenderer = ({
   onAccept,
 }: ListItemRendererProps) => {
   const { id, label, avatar, secondary } = data;
+  const {
+    jsonLDConfig: { defaultPrefix },
+    typeIRIToTypeName,
+  } = useAdbContext();
 
-  const typeName = useMemo(() => typeIRItoTypeName(typeIRI), [typeIRI]);
+  const typeName = useMemo(
+    () => typeIRIToTypeName(typeIRI),
+    [typeIRI, typeIRIToTypeName],
+  );
   const loadedSchema = useExtendedSchema({ typeName, classIRI: typeIRI });
   const loadEntity = useLoadQuery(defaultPrefix, "load");
   const { resetElementIndex } = useSimilarityFinderState();
@@ -462,6 +475,11 @@ const KBListItemRenderer = ({
 };
 const useKnowledgeBases = () => {
   const { crudOptions } = useGlobalCRUDOptions();
+  const {
+    queryBuildOptions,
+    jsonLDConfig: { defaultPrefix },
+    normDataMapping,
+  } = useAdbContext();
   const kbs: KnowledgeBaseDescription[] = useMemo(
     () => [
       {
@@ -472,6 +490,7 @@ const useKnowledgeBases = () => {
         find: async (
           searchString: string,
           typeIRI,
+          typeName,
           findOptions?: FindOptions,
         ) => {
           return (
@@ -481,7 +500,7 @@ const useKnowledgeBases = () => {
               crudOptions.selectFetch,
               {
                 defaultPrefix,
-                queryBuildOptions: defaultQueryBuilderOptions,
+                queryBuildOptions,
               },
               findOptions?.limit || 10,
             )
@@ -540,12 +559,13 @@ const useKnowledgeBases = () => {
         find: async (
           searchString: string,
           typeIRI,
+          typeName,
           findOptions?: FindOptions,
         ) => {
           return filterUndefOrNull(
             await findEntityWithinLobid(
               searchString,
-              typeIRItoTypeName(typeIRI),
+              typeName,
               lobidTypemap,
               findOptions?.limit || 10,
               "json:suggest",
@@ -585,11 +605,12 @@ const useKnowledgeBases = () => {
         find: async (
           searchString: string,
           typeIRI,
+          typeName,
           findOptions?: FindOptions,
         ) => {
           const test = await findEntityWithinK10Plus(
             searchString,
-            typeIRItoTypeName(typeIRI),
+            typeName,
             "http://sru.k10plus.de/gvk",
             findOptions?.limit || 10,
             "marcxml",
@@ -627,7 +648,7 @@ const useKnowledgeBases = () => {
         },
       },
     ],
-    [crudOptions?.selectFetch],
+    [crudOptions?.selectFetch, defaultPrefix, queryBuildOptions],
   );
   return kbs;
 };
@@ -635,16 +656,16 @@ const useKnowledgeBases = () => {
 const performSearch = (
   searchString: string,
   typeIRI: string,
+  typeName: string,
   findOptions: FindOptions,
   knowledgeBases: KnowledgeBaseDescription<any>[],
   setSearchResults: (searchResults: Record<KnowledgeSources, any[]>) => void,
   setElementCount: (resultCount: number) => void,
 ) => {
-  console.log("debounced search", searchString, typeIRI, findOptions);
   return Promise.all(
     knowledgeBases.map(async (kb) => {
       return {
-        [kb.id]: await kb.find(searchString, typeIRI, findOptions),
+        [kb.id]: await kb.find(searchString, typeIRI, typeName, findOptions),
       };
     }),
   ).then((results) => {
@@ -673,14 +694,21 @@ const SimilarityFinder: FunctionComponent<Props> = ({
   search,
   jsonSchema,
   hideFooter,
-  additionalKnowledgeSources = [],
+  additionalKnowledgeSources,
 }) => {
-  const { openai } = useSettings();
   const selectedKnowledgeSources = useMemo(
-    () => ["kb", "gnd", ...additionalKnowledgeSources],
+    () => ["kb", "gnd", ...(additionalKnowledgeSources || [])],
     [additionalKnowledgeSources],
   );
 
+  const {
+    queryBuildOptions: { prefixes, primaryFields },
+    normDataMapping,
+    createEntityIRI,
+    typeNameToTypeIRI,
+    typeIRIToTypeName,
+    jsonLDConfig: { defaultPrefix },
+  } = useAdbContext();
   const {
     search: globalSearch,
     typeName: globalTypeName,
@@ -750,6 +778,7 @@ const SimilarityFinder: FunctionComponent<Props> = ({
       debouncedSearch(
         search,
         preselectedClassIRI,
+        typeIRIToTypeName(preselectedClassIRI),
         { limit },
         knowledgeBases,
         setSearchResults,
@@ -762,8 +791,11 @@ const SimilarityFinder: FunctionComponent<Props> = ({
       setSearchResults,
       setElementCount,
       debouncedSearch,
+      typeIRIToTypeName,
     ],
   );
+
+  //const typeName = useMemo(() =>  typeIRIToTypeName(preselectedClassIRI), [typeIRIToTypeName, preselectedClassIRI])
 
   useEffect(() => {
     debouncedSearch.cancel();
@@ -772,15 +804,19 @@ const SimilarityFinder: FunctionComponent<Props> = ({
   }, [searchString, doSearch, debouncedSearch]);
 
   const [typeName, setTypeName] = useState(
-    typeIRItoTypeName(preselectedClassIRI),
+    typeIRIToTypeName(preselectedClassIRI),
   );
+
   useEffect(() => {
     if (globalTypeName) setTypeName(globalTypeName);
   }, [globalTypeName, setTypeName]);
-  const classIRI = useMemo(() => sladb(typeName).value, [typeName]);
   useEffect(() => {
-    setTypeName(typeIRItoTypeName(preselectedClassIRI));
-  }, [preselectedClassIRI, setTypeName]);
+    setTypeName(typeIRIToTypeName(preselectedClassIRI));
+  }, [preselectedClassIRI, setTypeName, typeIRIToTypeName]);
+  const classIRI = useMemo(
+    () => typeNameToTypeIRI(typeName),
+    [typeName, typeNameToTypeIRI],
+  );
 
   const { crudOptions } = useGlobalCRUDOptions();
   const handleManuallyMapData = useCallback(
@@ -793,7 +829,12 @@ const SimilarityFinder: FunctionComponent<Props> = ({
       const knowledgeBaseDescription = knowledgeBases.find(
         (kb) => kb.id === source,
       );
-      const mappingConfig = declarativeMappings[typeName];
+      const declarativeMapping = normDataMapping[source];
+      if (!declarativeMapping) {
+        console.warn(`no mapping declartion config for ${source}`);
+        return;
+      }
+      const mappingConfig = declarativeMapping.mapping[typeName];
       if (!mappingConfig) {
         console.warn(`no mapping config for ${typeName}`);
         return;
@@ -801,7 +842,14 @@ const SimilarityFinder: FunctionComponent<Props> = ({
       try {
         const mappingContext = makeDefaultMappingStrategyContext(
           crudOptions?.selectFetch,
-          declarativeMappings,
+          {
+            defaultPrefix,
+            prefixes,
+          },
+          defaultPrefix,
+          createEntityIRI,
+          primaryFields,
+          declarativeMapping.mapping,
         );
         const existingEntry = await mappingContext.getPrimaryIRIBySecondaryIRI(
           id,
@@ -842,6 +890,11 @@ const SimilarityFinder: FunctionComponent<Props> = ({
       onEntityIRIChange,
       crudOptions?.selectFetch,
       knowledgeBases,
+      createEntityIRI,
+      defaultPrefix,
+      normDataMapping,
+      prefixes,
+      primaryFields,
     ],
   );
 
@@ -881,12 +934,23 @@ const SimilarityFinder: FunctionComponent<Props> = ({
       setMargin(ref.clientHeight);
     }
   }, [ref]);
-  const { registerModal } = useModalRegistry();
+  const { registerModal, modalRegistry } = useModalRegistry(NiceModal);
+
+  const getDefaultLabelKey = useCallback(
+    (typeIRI?: string) => {
+      const fieldDefinitions = primaryFields[typeName] as
+        | PrimaryField
+        | undefined;
+      return fieldDefinitions?.label || "title";
+    },
+    [primaryFields, typeName],
+  );
 
   const showEditDialog = useCallback(() => {
+    const preselectedTypeName = typeIRIToTypeName(preselectedClassIRI);
     const defaultLabelKey = getDefaultLabelKey(preselectedClassIRI);
     const newItem = {
-      "@id": slent(uuidv4()).value,
+      "@id": createEntityIRI(preselectedClassIRI),
       "@type": preselectedClassIRI,
       [defaultLabelKey]: searchString,
     };
@@ -900,7 +964,15 @@ const SimilarityFinder: FunctionComponent<Props> = ({
     }).then(({ entityIRI, data }) => {
       handleEntityChange(entityIRI, data);
     });
-  }, [registerModal, preselectedClassIRI, searchString, handleEntityChange]);
+  }, [
+    registerModal,
+    preselectedClassIRI,
+    searchString,
+    handleEntityChange,
+    typeIRIToTypeName,
+    createEntityIRI,
+    getDefaultLabelKey,
+  ]);
 
   /**
    * in order to give each element an index across all knowledge sources we need to
@@ -999,6 +1071,9 @@ const SimilarityFinder: FunctionComponent<Props> = ({
                 </ClassicResultListWrapper>
               );
             })}
+            {Array.from(modalRegistry)
+              .map((modal) => modal)
+              .join(",")}
           </Grid>
         </Grid>
         <Hidden xsUp={hideFooter}>

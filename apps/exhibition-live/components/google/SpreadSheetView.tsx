@@ -42,16 +42,14 @@ import { mapByConfigFlat } from "@slub/edb-ui-utils";
 import { spreadSheetMappings } from "../config/spreadSheetMappings";
 import { declarativeMappings } from "../config";
 import { makeDefaultMappingStrategyContext } from "../form/SimilarityFinder";
-import { useGlobalCRUDOptions } from "@slub/edb-state-hooks";
+import { useAdbContext, useGlobalCRUDOptions } from "@slub/edb-state-hooks";
 import { encodeIRI, filterUndefOrNull } from "@slub/edb-ui-utils";
 import { useQuery } from "@tanstack/react-query";
 import { OwnColumnDesc } from "./types";
 import TypedListItem from "../content/list/TypedListItem";
-import { sladb, slent } from "../form/formConfigs";
 import HorizontalNonLinearStepper from "../form/wizard/HorizontalNonLinearStepper";
 import { useCRUDWithQueryClient } from "@slub/edb-state-hooks";
 import useExtendedSchema from "../state/useExtendedSchema";
-import { JSONSchema7 } from "json-schema";
 import { useRouter } from "next/router";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import {
@@ -390,12 +388,18 @@ const MappedItem = ({
   workSheet,
   crudOptions,
 }: MappedItemProps) => {
+  const {
+    queryBuildOptions: { prefixes, primaryFields },
+    createEntityIRI,
+    typeNameToTypeIRI,
+    jsonLDConfig: { defaultPrefix },
+  } = useAdbContext();
   const mapData = useCallback(async () => {
     try {
       const targetData = {
         __index: index,
-        "@id": `${slent().value}${uuidv4()}`,
-        "@type": sladb.Exhibition.value,
+        "@id": createEntityIRI("Exhibition"),
+        "@type": typeNameToTypeIRI("Exhibition"),
       };
       console.log("will map by config");
       const mappedData = await mapByConfigFlat(
@@ -407,6 +411,13 @@ const MappedItem = ({
         spreadSheetMapping,
         makeDefaultMappingStrategyContext(
           crudOptions?.selectFetch,
+          {
+            defaultPrefix,
+            prefixes,
+          },
+          defaultPrefix,
+          createEntityIRI,
+          primaryFields,
           declarativeMappings,
         ),
       );
@@ -415,7 +426,17 @@ const MappedItem = ({
       console.warn("failed to map row", index, e);
     }
     return null;
-  }, [workSheet, crudOptions, spreadSheetMapping, index]);
+  }, [
+    workSheet,
+    crudOptions,
+    spreadSheetMapping,
+    primaryFields,
+    index,
+    createEntityIRI,
+    defaultPrefix,
+    prefixes,
+    typeNameToTypeIRI,
+  ]);
 
   const { data, isLoading } = useQuery(["mappedData", path], mapData, {
     enabled: workSheet.loaded && spreadSheetMapping.length > 0,
@@ -446,12 +467,16 @@ export type SpreadSheetWorkSheetViewProps = {
   workSheet: GoogleSpreadsheetWorksheet;
   selectedSheet: number;
 };
-const typeName = "Exhibition";
-const classIRI = sladb.Exhibition.value;
 const mappingsAvailable = Object.keys(spreadSheetMappings);
 export const GoogleSpeadSheetWorkSheetView: FC<
   SpreadSheetWorkSheetViewProps
 > = ({ workSheet: workSheetOriginal, selectedSheet }) => {
+  const {
+    queryBuildOptions: { prefixes },
+    createEntityIRI,
+    typeNameToTypeIRI,
+    jsonLDConfig: { defaultPrefix },
+  } = useAdbContext();
   const workSheet = useCashedWorkSheet({
     workSheet: workSheetOriginal,
     autoCache: true,
@@ -605,6 +630,11 @@ export const GoogleSpeadSheetWorkSheetView: FC<
     },
   });
 
+  const typeName = "Exhibition";
+  const classIRI = useMemo(
+    () => typeNameToTypeIRI(typeName),
+    [typeName, typeNameToTypeIRI],
+  );
   const loadedSchema = useExtendedSchema({ typeName, classIRI });
   const { saveMutation } = useCRUDWithQueryClient({
     schema: loadedSchema,
@@ -620,7 +650,7 @@ export const GoogleSpeadSheetWorkSheetView: FC<
     setRawMappedData([]);
     for (const row of rows) {
       const targetData = {
-        "@id": `${slent().value}${uuidv4()}`,
+        "@id": createEntityIRI(typeName),
         "@type": classIRI,
       };
       let mappedData: any;
@@ -634,6 +664,12 @@ export const GoogleSpeadSheetWorkSheetView: FC<
           spreadSheetMapping.mapping,
           makeDefaultMappingStrategyContext(
             crudOptions?.selectFetch,
+            {
+              defaultPrefix,
+              prefixes,
+            },
+            defaultPrefix,
+            createEntityIRI,
             declarativeMappings,
           ),
         );
@@ -690,6 +726,11 @@ export const GoogleSpeadSheetWorkSheetView: FC<
     columnDesc,
     saveMutation,
     writeToSpreadSheet,
+    typeName,
+    classIRI,
+    createEntityIRI,
+    defaultPrefix,
+    prefixes,
   ]);
 
   const handleMapping = useCallback(async () => {
@@ -705,8 +746,8 @@ export const GoogleSpeadSheetWorkSheetView: FC<
         try {
           const targetData = {
             __index: row - 1,
-            "@id": `${slent().value}${uuidv4()}`,
-            "@type": sladb.Exhibition.value,
+            "@id": createEntityIRI(typeName),
+            "@type": classIRI,
           };
           mappedData = await mapByConfigFlat(
             (col: number | string) => {
@@ -717,6 +758,12 @@ export const GoogleSpeadSheetWorkSheetView: FC<
             spreadSheetMapping.mapping,
             makeDefaultMappingStrategyContext(
               crudOptions?.selectFetch,
+              {
+                defaultPrefix,
+                prefixes,
+              },
+              defaultPrefix,
+              createEntityIRI,
               declarativeMappings,
             ),
           );
@@ -735,6 +782,10 @@ export const GoogleSpeadSheetWorkSheetView: FC<
     rawMappedData,
     setRawMappedData,
     spreadSheetMapping,
+    classIRI,
+    createEntityIRI,
+    defaultPrefix,
+    prefixes,
   ]);
 
   return loaded ? (

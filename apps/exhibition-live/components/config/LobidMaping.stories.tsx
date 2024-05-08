@@ -10,7 +10,7 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import React, { useEffect, useState } from "react";
 import { declarativeMappings, lobidTypemap } from "./lobidMappings";
-import { useGlobalCRUDOptions } from "@slub/edb-state-hooks";
+import { useAdbContext, useGlobalCRUDOptions } from "@slub/edb-state-hooks";
 import { JsonView } from "react-json-view-lite";
 import { Grid, List, TextField } from "@mui/material";
 import ClassicResultListItem from "../form/result/ClassicResultListItem";
@@ -27,6 +27,12 @@ const LobidMappingTester = ({
   gndID: string;
   typeName: string;
 }) => {
+  const {
+    queryBuildOptions: { prefixes, primaryFields },
+    createEntityIRI,
+    typeNameToTypeIRI,
+    jsonLDConfig: { defaultPrefix },
+  } = useAdbContext();
   const { data: allProps } = useQuery(["lobid", gndID], () =>
     findEntityWithinLobidByIRI(gndID),
   );
@@ -47,6 +53,13 @@ const LobidMappingTester = ({
         mappingConfig,
         makeDefaultMappingStrategyContext(
           crudOptions?.selectFetch,
+          {
+            defaultPrefix,
+            prefixes,
+          },
+          defaultPrefix,
+          createEntityIRI,
+          primaryFields,
           declarativeMappings,
         ),
       ).then((mappedData_) => {
@@ -54,7 +67,16 @@ const LobidMappingTester = ({
       });
     } catch (e) {}
     return;
-  }, [allProps, crudOptions?.selectFetch, typeName]);
+  }, [
+    allProps,
+    crudOptions?.selectFetch,
+    typeName,
+    createEntityIRI,
+    defaultPrefix,
+    prefixes,
+    primaryFields,
+  ]);
+
   return (
     <div>
       <h1>Mapping for {gndID}</h1>

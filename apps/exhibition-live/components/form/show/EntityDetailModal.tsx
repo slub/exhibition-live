@@ -12,9 +12,8 @@ import {
 } from "@mui/material";
 import { Close as CloseIcon } from "@mui/icons-material";
 import useExtendedSchema from "../../state/useExtendedSchema";
-import { useCRUDWithQueryClient } from "@slub/edb-state-hooks";
+import { useAdbContext, useCRUDWithQueryClient } from "@slub/edb-state-hooks";
 import { useCallback, useMemo, useState } from "react";
-import { primaryFields, typeIRItoTypeName } from "../../config";
 import { applyToEachField, extractFieldIfString } from "@slub/edb-ui-utils";
 import { EntityDetailCard } from "./EntityDetailCard";
 import { useTypeIRIFromEntity } from "@slub/edb-state-hooks";
@@ -40,10 +39,17 @@ export const EntityDetailModal = NiceModal.create(
     readonly,
     disableInlineEditing,
   }: EntityDetailModalProps) => {
+    const {
+      queryBuildOptions: { primaryFields },
+      typeIRIToTypeName,
+    } = useAdbContext();
     const modal = useModal();
     const typeIRIs = useTypeIRIFromEntity(entityIRI);
     const classIRI: string | undefined = typeIRI || typeIRIs?.[0];
-    const typeName = useMemo(() => typeIRItoTypeName(classIRI), [classIRI]);
+    const typeName = useMemo(
+      () => typeIRIToTypeName(classIRI),
+      [classIRI, typeIRIToTypeName],
+    );
     const loadedSchema = useExtendedSchema({ typeName, classIRI });
     const {
       loadQuery: { data: rawData },
@@ -80,7 +86,7 @@ export const EntityDetailModal = NiceModal.create(
 
     const fieldDeclaration = useMemo(
       () => primaryFields[typeName] as PrimaryField,
-      [typeName],
+      [typeName, primaryFields],
     );
     const disabledProperties = useMemo(
       () => filterUndefOrNull(Object.values(fieldDeclaration || {})),

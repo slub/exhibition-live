@@ -1,14 +1,8 @@
-import {
-  defaultPrefix,
-  defaultQueryBuilderOptions,
-  sladb,
-  slent,
-} from "../../form/formConfigs";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import schema from "../../../public/schema/Exhibition.schema.json";
 import { v4 as uuidv4 } from "uuid";
-import { useGlobalCRUDOptions } from "@slub/edb-state-hooks";
+import { useAdbContext, useGlobalCRUDOptions } from "@slub/edb-state-hooks";
 import {
   Backdrop,
   Box,
@@ -44,7 +38,6 @@ import {
   NoteAdd,
   OpenInNew,
 } from "@mui/icons-material";
-import { primaryFields } from "../../config";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { SemanticFormsModal } from "../../renderer/SemanticFormsModal";
 import NiceModal from "@ebay/nice-modal-react";
@@ -87,8 +80,6 @@ const getFlavour = (endpoint?: SparqlEndpoint): SPARQLFlavour => {
   }
 };
 
-const alwaysDisplayColumns = ["mrt-row-actions", "IRI"];
-
 const csvConfig = mkConfig({
   fieldSeparator: ",",
   decimalSeparator: ".",
@@ -126,9 +117,17 @@ const ExportMenuButton = ({ children }: { children: React.ReactNode }) => {
 };
 
 export const TypedList = ({ typeName }: Props) => {
+  const {
+    queryBuildOptions,
+    jsonLDConfig: { defaultPrefix },
+    typeNameToTypeIRI,
+    createEntityIRI,
+  } = useAdbContext();
+
   const typeIRI = useMemo(() => {
-    return sladb(typeName).value;
-  }, [typeName]);
+    return typeNameToTypeIRI(typeName);
+  }, [typeName, typeNameToTypeIRI]);
+
   const { t } = useTranslation();
   const { t: t2 } = useTranslation("table");
 
@@ -162,7 +161,7 @@ export const TypedList = ({ typeName }: Props) => {
           typeIRI,
           [],
           {
-            primaryFields: primaryFields,
+            primaryFields: queryBuildOptions.primaryFields,
             orderBy: sorting.map((s) => ({
               orderBy: s.id,
               descending: s.desc,
@@ -198,11 +197,24 @@ export const TypedList = ({ typeName }: Props) => {
   );
 
   const displayColumns = useMemo<MRT_ColumnDef<any>[]>(() => {
-    const cols = computeColumns(loadedSchema, typeName, t2, conf?.matcher);
+    const cols = computeColumns(
+      loadedSchema,
+      typeName,
+      t2,
+      conf?.matcher,
+      [],
+      queryBuildOptions.primaryFields,
+    );
     //const entries = Object.fromEntries(cols.map(c => [c.header, ""]))
     //console.log(JSON.stringify(entries, null, 2))
     return cols;
-  }, [loadedSchema, typeName, t2, conf?.matcher]);
+  }, [
+    loadedSchema,
+    typeName,
+    t2,
+    conf?.matcher,
+    queryBuildOptions.primaryFields,
+  ]);
 
   const columnOrder = useMemo(
     () => ["mrt-row-select", ...displayColumns.map((col) => col.id)],
@@ -241,7 +253,7 @@ export const TypedList = ({ typeName }: Props) => {
           throw new Error("entityIRI or updateFetch is not defined");
         return moveToTrash(id, typeIRI, loadedSchema, crudOptions.updateFetch, {
           defaultPrefix,
-          queryBuildOptions: defaultQueryBuilderOptions,
+          queryBuildOptions,
         });
       },
       {
@@ -261,7 +273,7 @@ export const TypedList = ({ typeName }: Props) => {
         throw new Error("entityIRI or updateFetch is not defined");
       return remove(id, typeIRI, loadedSchema, crudOptions.updateFetch, {
         defaultPrefix,
-        queryBuildOptions: defaultQueryBuilderOptions,
+        queryBuildOptions,
       });
     },
     {
@@ -280,12 +292,12 @@ export const TypedList = ({ typeName }: Props) => {
       NiceModal.show(GenericModal, {
         type: "delete",
       }).then(async () => {
-        enqueueSnackbar("About to remove", { variant: "info" });
-        return await removeEntity(id);
-        enqueueSnackbar("Removed", { variant: "success" });
+        enqueueSnackbar(t("about to remove"), { variant: "info" });
+        await removeEntity(id);
+        enqueueSnackbar(t("removed"), { variant: "success" });
       });
     },
-    [removeEntity, enqueueSnackbar],
+    [removeEntity, enqueueSnackbar, t],
   );
   const handleMoveToTrash = useCallback(
     async (id: string) => {
@@ -358,25 +370,6 @@ export const TypedList = ({ typeName }: Props) => {
     },
     [setColumnVisibility],
   );
-
-  /*useEffect(() => {
-    const disableList = Object.fromEntries(
-      columns
-        .filter(
-          (col) =>
-            !(
-              !headerVars ||
-              headerVars.includes(col.id) ||
-              alwaysDisplayColumns.includes(col.id)
-            ),
-        )
-        .map((col) => [col.id, false]),
-    );
-    setColumnVisibility({
-      ...disableList,
-    });
-  }, [columnVisibility, headerVars, columns, setColumnVisibility]);
-*/
   const handleRemoveSelected = useCallback(
     (table_: MRT_TableInstance<any>) => {
       const selectedRows = table_.getSelectedRowModel().rows;
@@ -480,13 +473,13 @@ export const TypedList = ({ typeName }: Props) => {
     localization,
     rowCount: resultList.length,
     enableRowActions: true,
-    renderCreateRowDialogContent: ({ table, row, internalEditComponents }) => {
+    renderCreateRowDialogContent: ({ table, row }) => {
       return (
         <SemanticFormsModal
           open={true}
           askClose={() => table.setCreatingRow(row)}
           schema={extendedSchema as JsonSchema}
-          entityIRI={slent(uuidv4()).value}
+          entityIRI={createEntityIRI(uuidv4())}
           typeIRI={typeIRI}
         >
           <MRT_EditActionButtons variant="text" table={table} row={row} />
@@ -500,7 +493,7 @@ export const TypedList = ({ typeName }: Props) => {
           color={"primary"}
           startIcon={<NoteAdd />}
           onClick={() => {
-            editEntry(slent(uuidv4()).value);
+            editEntry(createEntityIRI(uuidv4()));
           }}
         >
           {t("create new", { item: t(typeName) })}
@@ -556,7 +549,7 @@ export const TypedList = ({ typeName }: Props) => {
     getRowId: (row) =>
       (row as any)?.entity?.value ||
       (row as any)?.originalValue?.entity?.value ||
-      slent(uuidv4()).value,
+      `urn:${uuidv4()}`,
     displayColumnDefOptions: {
       "mrt-row-actions": {
         header: "",

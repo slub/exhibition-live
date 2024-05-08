@@ -1,7 +1,11 @@
 import namespace from "@rdfjs/namespace";
 import { SparqlBuildOptions } from "@slub/edb-core-types";
 import { v4 as uuidv4 } from "uuid";
-import { primaryFields, typeIRItoTypeName } from "../config";
+import {
+  primaryFieldExtracts,
+  primaryFields,
+  typeIRItoTypeName,
+} from "../config";
 
 export const sladb = namespace("http://ontologies.slub-dresden.de/exhibition#");
 export const slent = namespace(
@@ -23,6 +27,7 @@ export const defaultQueryBuilderOptions: SparqlBuildOptions = {
   },
   typeIRItoTypeName: typeIRItoTypeName,
   primaryFields: primaryFields,
+  primaryFieldExtracts: primaryFieldExtracts,
 };
 
 export const createNewIRI = () => slent(uuidv4()).value;

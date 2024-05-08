@@ -2,12 +2,11 @@ import { Box, Grid } from "@mui/material";
 import { JSONSchema7 } from "json-schema";
 import React, { useCallback, useMemo, useState } from "react";
 
-import { BASE_IRI } from "../../config";
-import { defaultJsonldContext, defaultPrefix } from "../../form/formConfigs";
 import { uischemata } from "../../form/uischemaForType";
 import { uischemas } from "../../form/uischemas";
 import { materialCategorizationStepperLayoutWithPortal } from "../../renderer/MaterialCategorizationStepperLayoutWithPortal";
 import {
+  useAdbContext,
   useFormEditor,
   useGlobalSearch,
   useRightDrawerState,
@@ -82,6 +81,10 @@ export type MainFormProps = {
   classIRI: string;
 };
 const TypedForm = ({ typeName, entityIRI, classIRI }: MainFormProps) => {
+  const {
+    typeIRIToTypeName,
+    jsonLDConfig: { defaultPrefix, jsonldContext },
+  } = useAdbContext();
   //const { formData: data, setFormData: setData } = useFormData();
   const { formData: data, setFormData: setData } = useFormDataStore({
     entityIRI,
@@ -98,10 +101,10 @@ const TypedForm = ({ typeName, entityIRI, classIRI }: MainFormProps) => {
       if (!entityIRI || !typeIRI) {
         return;
       }
-      const typeName = typeIRI.substring(BASE_IRI.length, typeIRI.length);
+      const typeName = typeIRIToTypeName(typeIRI);
       router.push(`/create/${typeName}?encID=${encodeIRI(entityIRI)}`);
     },
-    [router],
+    [router, typeIRIToTypeName],
   );
   const loadedSchema = useExtendedSchema({ typeName, classIRI });
 
@@ -114,10 +117,13 @@ const TypedForm = ({ typeName, entityIRI, classIRI }: MainFormProps) => {
 
   //const { stepperRef, actionRef } = useFormRefsContext();
   const handleChangeData = useCallback(
-    (data: any) => {
-      setData(data);
+    (_data: any) => {
+      if (typeof _data === "function") {
+        const newData = _data(data);
+        setData(newData);
+      } else setData(_data);
     },
-    [setData],
+    [setData, data],
   );
   const mainFormRenderers = useMemo(() => {
     return [
@@ -145,7 +151,7 @@ const TypedForm = ({ typeName, entityIRI, classIRI }: MainFormProps) => {
             typeIRI={classIRI}
             onEntityDataChange={handleChange}
             defaultPrefix={defaultPrefix}
-            jsonldContext={defaultJsonldContext}
+            jsonldContext={jsonldContext}
             schema={loadedSchema as JSONSchema7}
             jsonFormsProps={{
               uischema,

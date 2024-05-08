@@ -9,13 +9,12 @@ import { FormControl, Hidden } from "@mui/material";
 import merge from "lodash/merge";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 
-import { primaryFields, typeIRItoTypeName } from "../config";
 import { AutocompleteSuggestion } from "../form/DebouncedAutoComplete";
 import { extractFieldIfString } from "@slub/edb-ui-utils";
 import { makeFormsPath } from "@slub/edb-ui-utils";
 import { useTranslation } from "next-i18next";
 import { PreloadedOptionSelect } from "../form/PreloadedOptionSelect";
-import { useGlobalCRUDOptions } from "@slub/edb-state-hooks";
+import { useAdbContext, useGlobalCRUDOptions } from "@slub/edb-state-hooks";
 import { PrimaryField } from "@slub/edb-core-types";
 import { findEntityByClass } from "@slub/sparql-schema";
 
@@ -32,6 +31,10 @@ const InlineDropdownRenderer = (props: ControlProps) => {
     rootSchema,
     label,
   } = props;
+  const {
+    typeIRIToTypeName,
+    queryBuildOptions: { primaryFields },
+  } = useAdbContext();
   const appliedUiSchemaOptions = merge({}, config, uischema.options);
   const ctx = useJsonForms();
   const [realLabel, setRealLabel] = useState("");
@@ -47,22 +50,6 @@ const InlineDropdownRenderer = (props: ControlProps) => {
     [data, realLabel],
   );
   const { $ref, typeIRI } = appliedUiSchemaOptions.context || {};
-  const subSchema = useMemo(() => {
-    if (!$ref) return;
-    const schema2 = {
-      ...schema,
-      $ref,
-    };
-    const resolvedSchema = resolveSchema(
-      schema2 as JsonSchema,
-      "",
-      rootSchema as JsonSchema,
-    );
-    return {
-      ...rootSchema,
-      ...resolvedSchema,
-    };
-  }, [$ref, schema, rootSchema]);
 
   useEffect(() => {
     if (!data) setRealLabel("");
@@ -108,8 +95,8 @@ const InlineDropdownRenderer = (props: ControlProps) => {
   }, [data, ctx?.core?.data, path, setRealLabel]);
 
   const typeName = useMemo(
-    () => typeIRI && typeIRItoTypeName(typeIRI),
-    [typeIRI],
+    () => typeIRI && typeIRIToTypeName(typeIRI),
+    [typeIRI, typeIRIToTypeName],
   );
 
   const limit = useMemo(() => {

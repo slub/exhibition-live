@@ -3,17 +3,20 @@ import { FC } from "react";
 import { create } from "zustand";
 
 type UseModalRegistryType = {
-  modalRegistry: Set<string>;
+  modalRegistry: Array<string>;
   registerModal: (modalName: string, element: FC<NiceModalHocProps>) => void;
 };
 
-export const useModalRegistry = create<UseModalRegistryType>((set, get) => ({
-  modalRegistry: new Set<string>(),
-  registerModal: (modalName, element) => {
-    if (get().modalRegistry.has(modalName)) {
-      return;
-    }
-    NiceModal.register(modalName, element);
-    get().modalRegistry.add(modalName);
-  },
-}));
+export const useModalRegistry = (nc: typeof NiceModal) =>
+  create<UseModalRegistryType>((set, get) => ({
+    modalRegistry: [],
+    registerModal: (modalName, element) => {
+      if (get().modalRegistry.includes(modalName)) {
+        return;
+      }
+      nc.register(modalName, element);
+      set((state) => ({
+        modalRegistry: [...state.modalRegistry, modalName],
+      }));
+    },
+  }))();

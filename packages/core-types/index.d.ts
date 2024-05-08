@@ -25,12 +25,15 @@ export type PrimaryFieldExtract<T> = Partial<{
   description: FieldExtractDeclaration;
   image: FieldExtractDeclaration;
 }>;
-export type PrimaryFieldDeclaration = {
-  [typeName: string]: PrimaryField;
+export type PrimaryFieldDeclaration<Key extends string = string> = {
+  [typeName: Key]: PrimaryField;
 };
 
-export type PrimaryFieldExtractDeclaration<T = any> = {
-  [typeName: string]: PrimaryFieldExtract<T>;
+export type PrimaryFieldExtractDeclaration<
+  T = any,
+  Key extends string = string,
+> = {
+  [typeName: Key]: PrimaryFieldExtract<T>;
 };
 
 export type PrimaryFieldResults<T> = {
@@ -55,6 +58,7 @@ export interface SparqlBuildOptions {
   propertyToIRI: StringToIRIFn;
   typeIRItoTypeName: IRIToStringFn;
   primaryFields: PrimaryFieldDeclaration;
+  primaryFieldExtracts: PrimaryFieldExtractDeclaration;
 }
 export interface SelectFetchOptions {
   withHeaders?: boolean;

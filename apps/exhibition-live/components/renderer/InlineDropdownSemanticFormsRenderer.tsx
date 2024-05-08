@@ -18,20 +18,18 @@ import merge from "lodash/merge";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 
 import DiscoverAutocompleteInput from "../form/discover/DiscoverAutocompleteInput";
-import { primaryFields, typeIRItoTypeName } from "../config";
 import { AutocompleteSuggestion } from "../form/DebouncedAutoComplete";
 import { extractFieldIfString } from "@slub/edb-ui-utils";
 import {
+  useAdbContext,
   useGlobalSearchWithHelper,
   useRightDrawerState,
-  useKeyEventForSimilarityFinder,
 } from "@slub/edb-state-hooks";
 import { makeFormsPath } from "@slub/edb-ui-utils";
 import { SearchbarWithFloatingButton } from "../layout/main-layout/Searchbar";
 import SimilarityFinder from "../form/SimilarityFinder";
 import { JSONSchema7 } from "json-schema";
 import { useRouter } from "next/router";
-import { useTranslation } from "next-i18next";
 import { EntityDetailListItem } from "../form/show";
 import { PrimaryField } from "@slub/edb-core-types";
 
@@ -49,11 +47,15 @@ const InlineDropdownSemanticFormsRenderer = (props: ControlProps) => {
     rootSchema,
     label,
   } = props;
+  const {
+    typeIRIToTypeName,
+    queryBuildOptions: { primaryFields },
+  } = useAdbContext();
   const appliedUiSchemaOptions = merge({}, config, uischema.options);
   const { $ref, typeIRI } = appliedUiSchemaOptions.context || {};
   const typeName = useMemo(
-    () => typeIRI && typeIRItoTypeName(typeIRI),
-    [typeIRI],
+    () => typeIRI && typeIRIToTypeName(typeIRI),
+    [typeIRI, typeIRIToTypeName],
   );
   const ctx = useJsonForms();
   const [realLabel, setRealLabel] = useState("");
@@ -119,7 +121,7 @@ const InlineDropdownSemanticFormsRenderer = (props: ControlProps) => {
       }
       return label;
     });
-  }, [data, ctx?.core?.data, path, setRealLabel]);
+  }, [data, ctx?.core?.data, path, setRealLabel, primaryFields]);
 
   const handleExistingEntityAccepted = useCallback(
     (entityIRI: string, data: any) => {
@@ -133,12 +135,11 @@ const InlineDropdownSemanticFormsRenderer = (props: ControlProps) => {
   );
 
   const router = useRouter();
-  const locale = router.query.locale || "";
 
   const searchOnDataPath = useMemo(() => {
-    const typeName = typeIRItoTypeName(typeIRI);
+    const typeName = typeIRIToTypeName(typeIRI);
     return primaryFields[typeName]?.label;
-  }, [typeIRI]);
+  }, [typeIRI, typeIRIToTypeName]);
 
   const labelKey = useMemo(() => {
     const fieldDecl = primaryFields[typeName] as PrimaryField | undefined;
@@ -179,8 +180,6 @@ const InlineDropdownSemanticFormsRenderer = (props: ControlProps) => {
     },
     [handleMappedData, closeDrawer],
   );
-
-  const { t } = useTranslation();
 
   const showAsFocused = useMemo(
     () => isActive && sidebarOpen,

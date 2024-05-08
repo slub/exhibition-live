@@ -8,12 +8,11 @@ import React, {
   useState,
 } from "react";
 
-import { BASE_IRI, primaryFieldExtracts } from "../config";
 import { applyToEachField, extractFieldIfString } from "@slub/edb-ui-utils";
 import { JSONSchema7 } from "json-schema";
 import { useJsonForms } from "@jsonforms/react";
 import dot from "dot";
-import { useCRUDWithQueryClient } from "@slub/edb-state-hooks";
+import { useAdbContext, useCRUDWithQueryClient } from "@slub/edb-state-hooks";
 import get from "lodash/get";
 import NiceModal from "@ebay/nice-modal-react";
 import { EntityDetailModal } from "../form/show/EntityDetailModal";
@@ -51,8 +50,12 @@ export const SimpleChipRenderer = (
     ...chipProps
   } = props;
   const typeIRI = schema.properties?.["@type"]?.const;
+  const {
+    typeIRIToTypeName,
+    queryBuildOptions: { primaryFieldExtracts },
+  } = useAdbContext();
   const typeName = useMemo(
-    () => typeIRI && typeIRI.substring(BASE_IRI.length, typeIRI.length),
+    () => typeIRI && typeIRIToTypeName(typeIRI),
     [typeIRI],
   );
   const onData = useCallback((_data) => {

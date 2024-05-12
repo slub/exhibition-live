@@ -172,3 +172,134 @@ wie Tree-Shaking, Code-Splitting, Minification, etc.
 ---
 
 # Ereignisdatenbank
+
+Die Ereignisdatenbank gliedert sich in ein mehrschichtiges Komponentenbasiertes Frontendbuilding System ein. Dabei stellt den Anfangspunkt das Datenschema in form
+eine LinkML bzw. JSON-Schemas. Um dieses Schema herum fügen sich deklarativ die Komponenten und Mapper zusammen, um eine dynamische und flexible Oberfläche zu schaffen.
+
+---
+
+# Die manuelle Dateneingabe
+
+Frmulare sind die serste Säule der CRUD-Architektur, bei dem die Daten händisch von ein oder mehreren Bearbeiter:innen eingegeben werden. Dabei wird das Schema
+mit die Entitäten bzw. Klassen des Schemas mit Hilfe von Forumlar-Zentrierten UI-Schemata beschrieben, diese geben dem eigentlichen Formular Renderer die Informationen
+wie die einzelnen Attribute des Schema in der Erfassungsmaske dargestellt werden sollen. Es ist jedoch nicht notwendig alles bis ins kleisnte zu beschreiben. Auch gänzlich
+ohne UI-Schema wird bereits ein ready-to-use Formular generiert. Das JSON-Forms eigene Konzept der `Raks` und `Renderer` ermöglicht es sehr allgemeine bis hin zu hochspezialisierte
+Formulareinheiten (Eingabefelder,...) zu darzustellen.
+
+---
+
+# Renderer
+
+Ein Renderer ist eine Komponente, die ein Formularfeld darstellt. Dabei kann ein Renderer ein einfaches Textfeld sein, oder auch ein komplexes Formularfeld, wie eine
+Straßenkarte oder eine Datumseingabe. Mithilfe eines `tester` wird ein Rang ermittelt auf Basis aller zur Laufzeit zur Verfügung stehenden Informationen aus dem Schema,
+den bereits eingegebenen Daten und den UI-Schema Konfigurationen. Dieser Rang wird dann genutzt um den besten Renderer für das aktuelle Formularfeld zu ermitteln.
+
+Ähnlich wie bei CSS wird dabei das spezifischste Renderer-Element gewählt, welches die Anforderungen des Formularfeldes am besten erfüllt.
+Möchte man einen bestimmten Renderer enforcen, so muss man lediglich auf eine eindeutige zuordnung und einen innerhalb der Applikation wahrscheinlichen hohen Rang setzen.
+
+---
+
+## Beispiel
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "title": "Name"
+    },
+    "age": {
+      "type": "integer",
+      "title": "Age"
+    }
+  }
+}
+```
+
+Um einen Renderer für das Feld `age` zu erstellen können wir Folgende Komponente kreieren:
+
+```tsx:
+import { Renderer } from '@jsonforms/core';
+import { ControlProps } from '@jsonforms/react';
+import { TextField } from '@mui/material';
+
+export const AgeRenderer = ({
+  data,
+  id,
+  enabled,
+  handleChange,
+  errors,
+  path,
+  config,
+}: ControlProps) => {
+
+  const handleValueChange = useCallback(
+    (ev: React.ChangeEvent) => {
+      handleChange(path, Number(ev.target.value));
+    },
+    [path, handleChange],
+  );
+
+  return <TextField
+      value={Number(data)}
+      type="number"
+      min={0}
+      max={150}
+      step={1}
+      onChange={handleValueChange}
+      className={className}
+      color={isEmpty(errors) ? "error" : "primary"}
+      id={id}
+      disabled={!enabled}
+      />
+}
+
+export const ageRendererTester: RankedTester = rankWith(2, scopeEndsWith('age'));
+```
+
+---
+
+Nun wird der Renderer in der `index.ts` registriert:
+
+```tsx:
+import { AgeRenderer, ageRendererTester } from './AgeRenderer';
+
+export const aaditionalRenderers: JsonFormsRendererRegistryEntry[] = [
+  {
+    tester: ageRendererTester,
+    renderer: AgeRenderer,
+  },
+];
+```
+
+DIes lässt sich auf verschiedene Art un dWeise mit dem Framework koppeln, der einfachhalthalber wollen wir den emben erstellten Render nicht gleich
+in die Gesamtapplikation einbinden sondern zunächst mit einem einfach JSON-Forms Formular testen.
+
+---
+
+# Formular
+
+```tsx:
+import { JsonForms } from '@jsonforms/react';
+import { materialRenderers, materialCells } from '@jsonforms/material-renderers';
+import { additionalRenderers } from './additionalRenderers';
+import schema from './schema.json';
+
+const renderers = [
+  ...materialRenderers,
+  ...additionalRenderers,
+];
+
+const App = () => {
+  const [data, setData] = useState({ name: 'Max', age: 42 });
+  return (
+    <JsonForms
+      schema={schema}
+      data={data}
+      renderers={renderers}
+      cells={materialCells}
+    />
+  );
+};
+```

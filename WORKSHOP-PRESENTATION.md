@@ -10,7 +10,7 @@ slideOptions:
 
 ## Workshop Ereignisdatenbanken
 
-12.Mai 2024
+13.Mai 2024
 Sebastian Tilsch
 SLUB - sächsische Staats- und Universitätsbibliothek
 www.slub-dresden.de
@@ -21,14 +21,6 @@ www.slub-dresden.de
 
 - Verständnis für das Ereignisdatenbank Framework entwickeln
 - Entwicklung weiterer Fachdatenbank ermöglichen
-
----
-
-## Aufbau
-
-- Grundlagenvermittlung
-- Frontend-Architektur
-- Backendkommunikation/Datenbank
 
 ---
 
@@ -66,7 +58,7 @@ Storybooks, Schema-Dokumentation
 
 ## Das `exhibition-live` Mono Repo
 
-```
+```bash
 .
 ├── apps # Komandozeilenanwendungen, Server und Frontends
 ├── bun.lockb # Lockfile für das Build-Tool `bun` (npm replacement)
@@ -93,7 +85,7 @@ Storybooks, Schema-Dokumentation
 
 ### Apps
 
-```
+```bash
 .
 ├── apps # Komandozeilenanwendungen, Server und Frontends
 │   ├── edb-api # API für die Ereignisdatenbank (SPARQL Implementierung)
@@ -108,7 +100,7 @@ Storybooks, Schema-Dokumentation
 
 ### Packages
 
-```
+```bash
 .
 ├── packages # Wiederverwendbare Bibliotheken (NPM-Pakete)
 │   ├── build-helper # Hilfsfunktionen für den Build-Prozess
@@ -173,18 +165,68 @@ wie Tree-Shaking, Code-Splitting, Minification, etc.
 
 # Ereignisdatenbank
 
-Die Ereignisdatenbank gliedert sich in ein mehrschichtiges Komponentenbasiertes Frontendbuilding System ein. Dabei stellt den Anfangspunkt das Datenschema in form
-eine LinkML bzw. JSON-Schemas. Um dieses Schema herum fügen sich deklarativ die Komponenten und Mapper zusammen, um eine dynamische und flexible Oberfläche zu schaffen.
+Die Ereignisdatenbank gliedert sich in ein mehrschichtiges Komponentenbasiertes Frontendbuilding System ein. Dabei stellt den Anfangspunkt das Datenschema in Form
+eines LinkML- bzw. JSON-Schemas dar. Um dieses Schema herum fügen sich deklarativ die Komponenten und Mapper zusammen, um eine dynamische und flexible Oberfläche zu schaffen.
+
+Es gibt Deklarationen für
+
+- Formulare
+- Norm-Datenmappings
+- Import-Mappings
+- Tabellen- und Listenansichten (Spalten, Filter, Sortierung)
+- Detailansichten
+
+---
+
+# Backendkommunikation
+
+Die Ereignisdatenbank kann mit verschiedenen Backend-Implementierungen betrieben werden. Die SPARQL-Implementierung ist die Referenzimplementierung und kommt
+mit einem Datenbankserver aus - braucht also keine API. Die Prisma-Implementierung ist eine Implementierung, die auf einer relationalen Datenbank aufbaut. Wir wollen uns zunächst
+auf die SPARQL-Implementierung konzentrieren.
+
+---
+
+## Pakete
+
+- Pakete mit reiner Business-Logik und Typdefinitionen können in Node.js und Browser-Umgebungen verwendet werden
+- React und MUI - Komponenten für die Oberfläche liegen in Form von
+  teils unabhängigen, teils aufeinander aufbauenden NPM-Paketen vor.
+- bisher nicht in einer Paket-Registry veröffentlicht
+- können in Applikationen und anderen Paketen zu den `dependencies` hinzugefügt werden
+
+---
+
+Lokale Pakete können in Projekten in die `package.json` hinzugefügt werden:
+
+```json
+{
+  "dependencies": {
+    "@slub/sparql-schema": "workspace:*",
+    "@slub/sparql-db-impl": "workspace:*",
+    "@slub/edb-ui-utils": "workspace:*"
+  }
+}
+```
+
+Diese Workspace-Abhängigkeiten werden dann von `bun` automatisch aufgelöst und über `turbo` in den Build-Prozess eingebunden.
+
+---
+
+# Zur Verwendung von Next.JS
+
+Die React-Komponenten können in verschiedenen Frontend-Frameworks verwendet werden. Die Ereignisdatenbank verwendet Next.JS als Frontend-Framework. Next.JS ist ein React-Framework, das
+Server-Side-Rendering und Static-Site-Generation unterstützt. Es ist sehr flexibel und kann auch als reines Single-Page-Application-Framework verwendet werden.
 
 ---
 
 # Die manuelle Dateneingabe
 
-Frmulare sind die serste Säule der CRUD-Architektur, bei dem die Daten händisch von ein oder mehreren Bearbeiter:innen eingegeben werden. Dabei wird das Schema
-mit die Entitäten bzw. Klassen des Schemas mit Hilfe von Forumlar-Zentrierten UI-Schemata beschrieben, diese geben dem eigentlichen Formular Renderer die Informationen
-wie die einzelnen Attribute des Schema in der Erfassungsmaske dargestellt werden sollen. Es ist jedoch nicht notwendig alles bis ins kleisnte zu beschreiben. Auch gänzlich
+Formulare sind die erste Säule der CRUD-Architektur, um Daten händisch, aber unterstützt durch Normdaten einzugeben. Das Ereignisdatenframework kann
+für alle Entitäten bzw. Klassen des Schemas optional gestützt durch Forumlar-zentrierten UI-Schemata , Formulare generieren. Schema, UI-Schema und die in der Applikation
+eingegebundenen Renderer bilden die Informationsbasis dafür,
+wie die einzelnen Attribute der Entität in der Erfassungsmaske dargestellt werden sollen. Es ist jedoch nicht notwendig alles bis ins kleinste zu beschreiben. Auch gänzlich
 ohne UI-Schema wird bereits ein ready-to-use Formular generiert. Das JSON-Forms eigene Konzept der `Raks` und `Renderer` ermöglicht es sehr allgemeine bis hin zu hochspezialisierte
-Formulareinheiten (Eingabefelder,...) zu darzustellen.
+Formulareinheiten (Eingabefelder,...) darzustellen.
 
 ---
 
@@ -217,55 +259,57 @@ Möchte man einen bestimmten Renderer enforcen, so muss man lediglich auf eine e
 }
 ```
 
+---
+
 Um einen Renderer für das Feld `age` zu erstellen können wir Folgende Komponente kreieren:
 
 ```tsx:
-import { Renderer } from '@jsonforms/core';
-import { ControlProps } from '@jsonforms/react';
-import { TextField } from '@mui/material';
-
-export const AgeRenderer = ({
+const AgeRendererComponent = ({
   data,
   id,
   enabled,
   handleChange,
   errors,
   path,
-  config,
-}: ControlProps) => {
-
-  const handleValueChange = useCallback(
-    (ev: React.ChangeEvent) => {
-      handleChange(path, Number(ev.target.value));
-    },
-    [path, handleChange],
-  );
-
-  return <TextField
-      value={Number(data)}
-      type="number"
-      min={0}
-      max={150}
-      step={1}
-      onChange={handleValueChange}
-      className={className}
-      color={isEmpty(errors) ? "error" : "primary"}
-      id={id}
-      disabled={!enabled}
-      />
-}
-
-export const ageRendererTester: RankedTester = rankWith(2, scopeEndsWith('age'));
+}: ControlProps) => (
+  <input
+    value={Number(data)}
+    type="number"
+    min={schema.minimum || 0}
+    max={schema.maximum || undefined}
+    onChange={(e) => handleChange(path, Number(e.target.value))}
+    style={{ backgroundColor: errors?.length > 0 ? "red" : "initial" }}
+    id={id}
+    disabled={!enabled}
+  />
+);
 ```
 
 ---
 
-Nun wird der Renderer in der `index.ts` registriert:
+Damit dem Renderer aus dem JSON-Forms Context die entsprechenden Props weiteregereicht bekommt, muss der Renderer noch mithilfe des `withJsonFormsControlProps` HOC dekoriert werden:
+
+```tsx:
+export const AgeRenderer = withJsonFormsControlProps(AgeRendererComponent);
+```
+
+Nun schreiben wir einen einfachen Tester, der auf alle Attribute, die mit age enden zutrifft:
+
+```tsx:
+export const ageRendererTester: RankedTester = rankWith(
+  4,
+  scopeEndsWith("age"),
+);
+```
+
+---
+
+Nun wird der Renderer in der Datei `additionalRenderers.ts` registriert:
 
 ```tsx:
 import { AgeRenderer, ageRendererTester } from './AgeRenderer';
 
-export const aaditionalRenderers: JsonFormsRendererRegistryEntry[] = [
+export const additionalRenderers: JsonFormsRendererRegistryEntry[] = [
   {
     tester: ageRendererTester,
     renderer: AgeRenderer,
@@ -273,7 +317,7 @@ export const aaditionalRenderers: JsonFormsRendererRegistryEntry[] = [
 ];
 ```
 
-DIes lässt sich auf verschiedene Art un dWeise mit dem Framework koppeln, der einfachhalthalber wollen wir den emben erstellten Render nicht gleich
+Der einfachheithalber wollen wir den eben erstellten Renderer nicht gleich
 in die Gesamtapplikation einbinden sondern zunächst mit einem einfach JSON-Forms Formular testen.
 
 ---

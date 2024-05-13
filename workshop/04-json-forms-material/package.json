@@ -1,5 +1,5 @@
 {
-  "name": "edb-workshop-json-forms",
+  "name": "edb-workshop-json-forms-material",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -11,8 +11,8 @@
   },
   "dependencies": {
     "@jsonforms/core": "^3.2.1",
+    "@jsonforms/material-renderers": "^3.2.1",
     "@jsonforms/react": "^3.2.1",
-    "@jsonforms/vanilla-renderers": "^3.2.1",
     "@mui/material": "^5.15.17",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"

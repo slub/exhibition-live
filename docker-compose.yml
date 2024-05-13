@@ -7,10 +7,9 @@ services:
       dockerfile: Dockerfile.develop
     container_name: exhibition-dev
     env_file: .env
-    ports:
-      - "3000:3000"
+    network_mode: "host"
     volumes:
       - .:/app
     stdin_open: true
     tty: true
-    command: /bin/bash -c 'bun i &&  bun run dev --filter="./packages/*" & (sleep 10 && bun run dev --filter="/apps/exhibition-live")'
+    command: /bin/bash -c 'bun i &&  bun run build:packages  && bun run dev:exhibition'

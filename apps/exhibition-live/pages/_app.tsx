@@ -56,6 +56,8 @@ const QueryClientProviderWrapper = ({
   );
 };
 
+const sparqlEndpoint = envToSparqlEndpoint(getConfig().publicRuntimeConfig);
+
 function App({ Component, pageProps }: AppProps) {
   const { i18n } = useTranslation();
   useEffect(() => {
@@ -78,16 +80,12 @@ function App({ Component, pageProps }: AppProps) {
                   iri?.substring(BASE_IRI.length, iri.length)
                 }
                 createEntityIRI={createNewIRI}
-                lockedSPARQLEndpoint={{
-                  label: "Local",
-                  endpoint: "urn:local",
-                  active: true,
-                }}
                 jsonLDConfig={{
                   defaultPrefix: defaultPrefix,
                   jsonldContext: defaultJsonldContext,
                   allowUnsafeSourceIRIs: false,
                 }}
+                lockedSPARQLEndpoint={sparqlEndpoint}
                 normDataMapping={{
                   gnd: {
                     mapping: declarativeMappings,

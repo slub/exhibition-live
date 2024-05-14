@@ -30,7 +30,6 @@ export const useLocalStorage: <T>(
         setState((oldState) => {
           const newValue =
             typeof value === "function" ? value(oldState) : value;
-          console.log("newValue", newValue);
           localStorage.setItem(key, JSON.stringify(newValue));
           return newValue;
         });

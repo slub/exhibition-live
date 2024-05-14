@@ -1,13 +1,29 @@
 version: '3'
 
 services:
+  nginx:
+    image: nginx:alpine
+    volumes:
+      - ./nginx.config:/etc/nginx/conf.d/default.conf
+    ports:
+      - "7878:80"
+    depends_on:
+      - oxigraph
+  oxigraph:
+    image: ghcr.io/oxigraph/oxigraph:latest
+    platform: linux/amd64
+    volumes:
+      - ./docker/data:/data
   nodejs:
     build:
       context: .
       dockerfile: Dockerfile.develop
     container_name: exhibition-dev
     env_file: .env
-    network_mode: "host"
+    ports:
+      - 3000:3000
+      - 5173:5173
+      - 6006:6006
     volumes:
       - .:/app
     stdin_open: true

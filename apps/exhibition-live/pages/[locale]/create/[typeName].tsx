@@ -1,20 +1,22 @@
 import Head from "next/head";
 import { useSearchParams } from "next/navigation";
-import { useRouter } from "next/router";
 import React, { useEffect, useMemo, useState } from "react";
 
 import TypedForm from "../../../components/content/main/TypedForm";
-import { sladb, slent } from "../../../components/form/formConfigs";
 import { MainLayout } from "../../../components/layout/main-layout";
 import schema from "../../../public/schema/Exhibition.schema.json";
 import { BASE_IRI } from "../../../components/config";
 import { v4 as uuidv4 } from "uuid";
 import { useTranslation } from "next-i18next";
 import { getI18nProps, mixinStaticPathsParams } from "../../../components/i18n";
-import { Button, Hidden, ToggleButton } from "@mui/material";
+import { Button, Hidden } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { decodeIRI } from "@slub/edb-core-utils";
-import { useFormEditor, useSettings } from "@slub/edb-state-hooks";
+import {
+  useAdbContext,
+  useFormEditor,
+  useSettings,
+} from "@slub/edb-state-hooks";
 
 type Props = {
   typeName: string;
@@ -42,18 +44,21 @@ export async function getStaticProps(ctx) {
 export default (props: Props) => {
   const { t } = useTranslation("translation");
   const { typeName } = props;
-  const classIRI: string | undefined = useMemo(
-    () => (typeof typeName === "string" ? sladb(typeName).value : undefined),
-    [typeName],
+
+  const { typeNameToTypeIRI, createEntityIRI } = useAdbContext();
+  const typeIRI: string | undefined = useMemo(
+    () =>
+      typeof typeName === "string" ? typeNameToTypeIRI(typeName) : undefined,
+    [typeName, typeNameToTypeIRI],
   );
-  const [entityIRI, setEntityIRI] = useState(`${BASE_IRI}${uuidv4()}`);
+  const [entityIRI, setEntityIRI] = useState<string | undefined>();
   const searchParam = useSearchParams();
   useEffect(() => {
     const encID = searchParam.get("encID");
     const id = typeof encID === "string" ? decodeIRI(encID) : undefined;
-    const newURI = id || `${BASE_IRI}${typeName}-${uuidv4()}`;
+    const newURI = id || createEntityIRI(typeName);
     setEntityIRI(newURI);
-  }, [setEntityIRI, typeName, searchParam]);
+  }, [setEntityIRI, typeName, searchParam, createEntityIRI]);
 
   const title = `Neue ${t(typeName)} anlegen - Ausstellungserfassung`;
   const { features } = useSettings();
@@ -79,13 +84,13 @@ export default (props: Props) => {
           </Hidden>
         }
       >
-        {classIRI && typeName && (
+        {typeIRI && typeName && (
           <>
             <TypedForm
               key={entityIRI}
               entityIRI={entityIRI}
               typeName={typeName}
-              classIRI={classIRI}
+              classIRI={typeIRI}
             />
           </>
         )}

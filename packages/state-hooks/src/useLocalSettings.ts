@@ -1,10 +1,4 @@
-import {
-  SetStateAction,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import { SetStateAction, useCallback, useMemo } from "react";
 import { create } from "zustand";
 import {
   ExternalAuthorityConfig,
@@ -81,25 +75,26 @@ const initalState = {
 };
 export const useSettings: () => UseSettings = () => {
   const { lockedSPARQLEndpoint } = useAdbContext();
-  const [settingsLocalStorage = initalState, setLocalSettings] =
-    useLocalStorage<Settings>("settings", initalState);
-
-  const settings2 = useMemo<Settings>(
-    () =>
-      lockedSPARQLEndpoint
-        ? {
-            ...settingsLocalStorage,
-            lockedEndpoint: true,
-            sparqlEndpoints: [
-              {
-                ...lockedSPARQLEndpoint,
-                active: true,
-              },
-            ],
-          }
-        : settingsLocalStorage,
-    [lockedSPARQLEndpoint, settingsLocalStorage],
+  const [settingsLocalStorage, setLocalSettings] = useLocalStorage<Settings>(
+    "settings",
+    initalState,
   );
+
+  const settings = useMemo<Settings>(() => {
+    const localSettings = settingsLocalStorage || initalState;
+    return lockedSPARQLEndpoint
+      ? {
+          ...localSettings,
+          lockedEndpoint: true,
+          sparqlEndpoints: [
+            {
+              ...lockedSPARQLEndpoint,
+              active: true,
+            },
+          ],
+        }
+      : localSettings;
+  }, [lockedSPARQLEndpoint, settingsLocalStorage]);
 
   const setSettings = useCallback(
     (settings: SetStateAction<Settings>) => {
@@ -169,12 +164,12 @@ export const useSettings: () => UseSettings = () => {
 
   const activeEndpoint = useMemo(
     () =>
-      lockedSPARQLEndpoint || settings2.sparqlEndpoints.find((e) => e.active),
-    [settings2.sparqlEndpoints, lockedSPARQLEndpoint],
+      lockedSPARQLEndpoint || settings.sparqlEndpoints.find((e) => e.active),
+    [settings.sparqlEndpoints, lockedSPARQLEndpoint],
   );
 
   return {
-    ...settingsLocalStorage,
+    ...(settings || settingsLocalStorage || initalState),
     setSparqlEndpoints,
     setFeatures,
     activeEndpoint,

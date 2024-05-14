@@ -6,6 +6,8 @@ import {
 import { WalkerOptions } from "@slub/edb-graph-traversal";
 import { NamespaceBuilder } from "@rdfjs/namespace";
 import { JSONSchema7 } from "json-schema";
+import { UrlObject } from "url";
+import { ParsedUrlQuery } from "querystring";
 
 export type EdbConfRaw = {
   BASE_IRI: string;
@@ -105,7 +107,16 @@ export type EditEntityModalProps = {
   disableLoad?: boolean;
 };
 
-type EntityDetailModalProps = EditEntityModalProps & {
+export type EntityDetailModalProps = EditEntityModalProps & {
   readonly?: boolean;
   disableInlineEditing?: boolean;
+};
+export type Url = UrlObject | string;
+
+export type ModRouter = {
+  query: ParsedUrlQuery;
+  asPath: string;
+  replace: (url: Url, as?: Url) => Promise<void | boolean>;
+  push: (url: Url, as?: Url) => Promise<void | boolean>;
+  pathname: string;
 };

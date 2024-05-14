@@ -10,6 +10,7 @@ import { JsonLdContext } from "jsonld-context-parser";
 import {
   EditEntityModalProps,
   EntityDetailModalProps,
+  ModRouter,
 } from "@slub/edb-global-types";
 import { NiceModalHocProps } from "@ebay/nice-modal-react";
 
@@ -46,6 +47,7 @@ type AdbContextValue = {
     EditEntityModal: React.FC<EditEntityModalProps & NiceModalHocProps>;
     EntityDetailModal: React.FC<EntityDetailModalProps & NiceModalHocProps>;
   };
+  useRouterHook: () => ModRouter;
 };
 
 type EdbGlobalContextProps = AdbContextValue & {

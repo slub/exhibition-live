@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import schema from "../../../public/schema/Exhibition.schema.json";
+import schema from "../../../public/schema/Kulinarik.schema.json";
 import { v4 as uuidv4 } from "uuid";
 import { useAdbContext, useGlobalCRUDOptions } from "@slub/edb-state-hooks";
 import {

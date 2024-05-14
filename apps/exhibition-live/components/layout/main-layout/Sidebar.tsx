@@ -3,7 +3,7 @@ import { useMediaQuery, useTheme, List, Divider, Toolbar } from "@mui/material";
 import { JSONSchema7 } from "json-schema";
 import React, { useCallback, useMemo } from "react";
 
-import loadedSchema from "../../../public/schema/Exhibition.schema.json";
+import loadedSchema from "../../../public/schema/Kulinarik.schema.json";
 import SettingsModal from "../../content/settings/SettingsModal";
 import { useLocalSettings } from "@slub/edb-state-hooks";
 import { MenuGroup, NavGroup, NavItem, Drawer } from "./menu";

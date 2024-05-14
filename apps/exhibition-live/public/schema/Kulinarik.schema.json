@@ -1,0 +1,43 @@
+{
+  "$defs": {
+    "Festmahl": {
+      "type": "object",
+      "properties": {
+        "anlass": {
+          "type": "string"
+        },
+        "beschreibung": {
+          "type": "string"
+        },
+        "zeit": {
+          "type": "number"
+        },
+        "essen": {
+          "$ref": "#/$defs/Essen"
+        }
+      }
+    },
+    "Essen": {
+      "type": "object",
+      "properties": {
+        "gang": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Rezept"
+          }
+        }
+      }
+    },
+    "Rezept": {
+      "type": "object",
+      "properties": {
+        "zutat": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

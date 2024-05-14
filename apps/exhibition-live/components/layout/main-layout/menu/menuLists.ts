@@ -1,6 +1,7 @@
 import {
   Face as IconFaceId,
   FormatPaint as IconPaint,
+  NoFood,
   Theaters as IconDots,
 } from "@mui/icons-material";
 import { JSONSchema7 } from "json-schema";
@@ -34,19 +35,11 @@ const lists: (
   children: [
     {
       id: "list_default",
-      title: "Ausstellungen",
+      title: "Festmahl",
       type: "item",
-      icon: IconPaint as any,
-      typeName: "Exhibition",
-      readOnly: !getPermission("Exhibition").edit,
-    },
-    {
-      id: "list_person",
-      title: "Personen",
-      type: "item",
-      icon: IconFaceId as any,
-      typeName: "Person",
-      readOnly: !getPermission("Person").edit,
+      icon: NoFood as any,
+      typeName: "Festmahl",
+      readOnly: !getPermission("Festmahl").edit,
     },
     {
       id: "list_other",

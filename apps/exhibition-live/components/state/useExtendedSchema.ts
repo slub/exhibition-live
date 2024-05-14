@@ -1,7 +1,7 @@
 import { JSONSchema7 } from "json-schema";
 import { useMemo } from "react";
 
-import schema from "../../public/schema/Exhibition.schema.json";
+import schema from "../../public/schema/Kulinarik.schema.json";
 import genSlubJSONLDSemanticProperties from "../form/genSlubJSONLDSemanticProperties";
 import { prepareStubbedSchema } from "@slub/json-schema-utils";
 

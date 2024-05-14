@@ -1,7 +1,7 @@
 import {
   Face as IconFaceId,
+  FoodBank,
   FormatPaint as IconPaint,
-  NoFood,
   Theaters as IconDots,
 } from "@mui/icons-material";
 import { JSONSchema7 } from "json-schema";
@@ -37,7 +37,7 @@ const lists: (
       id: "list_default",
       title: "Festmahl",
       type: "item",
-      icon: NoFood as any,
+      icon: FoodBank as any,
       typeName: "Festmahl",
       readOnly: !getPermission("Festmahl").edit,
     },

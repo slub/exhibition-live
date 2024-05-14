@@ -28,4 +28,4 @@ services:
       - .:/app
     stdin_open: true
     tty: true
-    command: /bin/bash -c 'bun i &&  bun run build:packages  && bun run dev:exhibition'
+    command: /bin/bash -c 'bun i && bun run build:packages && bun run dev:vite'

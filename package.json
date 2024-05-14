@@ -30,6 +30,7 @@
     "build:pages": "turbo run build:pages",
     "dev": "turbo run dev --parallel",
     "dev:exhibition": "turbo run dev --parallel --filter='./apps/exhibition-live'",
+    "dev:vite": "turbo run dev:vite --parallel --filter='./apps/exhibition-live'",
     "dev:packages": "turbo run dev --parallel --filter='./packages/*'",
     "test": "turbo run test",
     "lint": "turbo run lint",

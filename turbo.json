@@ -11,6 +11,7 @@
       "outputs": ["_site"]
     },
     "build:watch": {},
+    "dev:vite": {},
     "test": {
       "dependsOn": ["^test"]
     },

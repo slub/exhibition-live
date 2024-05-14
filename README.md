@@ -149,3 +149,17 @@ that provide additional information for the frontend, like:
 
 - the UI-Schemata for form layout and style hints
 - data mapping declarations for data conversion from and to norm data repositories
+
+
+# Helpful Commands
+
+Complete rebuild without cache:
+
+```
+docker compose down
+docker compose rm -f
+docker compose pull
+docker compose up --build -d
+```
+
+Deletes all images, reloads all images from repository, starts all images with building in daemon-mode, may add `docker compose logs -f` for output in following mode.

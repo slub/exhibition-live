@@ -1,17 +1,17 @@
-import exhibitionSchema from "../../public/schema/Exhibition.schema.json";
+import kulinarik from "../../public/schema/Kulinarik.schema.json";
 import {
   PrimaryField,
   PrimaryFieldDeclaration,
   PrimaryFieldExtractDeclaration,
 } from "@slub/edb-core-types";
 
-type ExhibitionPrimaryFieldDeclaration = PrimaryFieldDeclaration<
-  keyof typeof exhibitionSchema.$defs
+type KulinarikPrimaryFieldDeclaration = PrimaryFieldDeclaration<
+  keyof typeof kulinarik.$defs
 >;
 
-type ExhibitionPrimaryFieldExtractDeclaration = PrimaryFieldExtractDeclaration<
+type KulinarikPrimaryFieldExtractDeclaration = PrimaryFieldExtractDeclaration<
   any,
-  keyof typeof exhibitionSchema.$defs
+  keyof typeof kulinarik.$defs
 >;
 
 const defaultMapping: PrimaryField = {
@@ -25,57 +25,18 @@ const defaultMappingWithImg: PrimaryField = {
   image: "image",
 };
 
-export const primaryFields: Partial<ExhibitionPrimaryFieldDeclaration> = {
-  Exhibition: defaultMappingWithImg,
-  Tag: defaultMappingWithImg,
+export const primaryFields: Partial<KulinarikPrimaryFieldDeclaration> = {
   Person: {
-    ...defaultMappingWithImg,
     label: "name",
   },
-  Corporation: {
-    ...defaultMapping,
-    label: "name",
+  Festmahl: {
+    label: "anlass",
   },
-  ExhibitionExponat: defaultMappingWithImg,
-  Genre: defaultMappingWithImg,
-  Place: defaultMappingWithImg,
-  Location: defaultMappingWithImg,
-  CorporationRole: defaultMapping,
-  PersonRole: defaultMapping,
-  ExhibitionSeries: defaultMapping,
-  SeriesType: defaultMapping,
-  EventType: defaultMapping,
-  Resource: defaultMapping,
-  Occupation: defaultMapping,
-  ExhibitionCategory: {
-    ...defaultMapping,
-    label: "name",
+  Essen: {
+    label: "title",
   },
+  Rezept: defaultMapping,
 };
 
-export const primaryFieldExtracts: Partial<ExhibitionPrimaryFieldExtractDeclaration> =
-  {
-    ...primaryFields,
-    InvolvedPerson: {
-      label: {
-        path: "person.name",
-      },
-      description: {
-        path: "role.title",
-      },
-      image: {
-        path: "person.image",
-      },
-    },
-    InvolvedCorporation: {
-      label: {
-        path: "corporation.name",
-      },
-      description: {
-        path: "role.title",
-      },
-      image: {
-        path: "corporation.image",
-      },
-    },
-  };
+export const primaryFieldExtracts: Partial<KulinarikPrimaryFieldExtractDeclaration> =
+  primaryFields;

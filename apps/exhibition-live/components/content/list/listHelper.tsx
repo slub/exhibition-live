@@ -47,13 +47,13 @@ type PathKeyMap = {
     defaultValue?: any;
   };
 };
-export const urlSuffix = (uri: string) => {
+const urlSuffix = (uri: string) => {
   return uri.substring(
     (uri.includes("#") ? uri.lastIndexOf("#") : uri.lastIndexOf("/")) + 1 ?? 0,
     uri.length,
   );
 };
-export const mkMultiAccessor = (pathKeysMap: PathKeyMap) => (row: any) => {
+const mkMultiAccessor = (pathKeysMap: PathKeyMap) => (row: any) => {
   return Object.fromEntries(
     Object.entries(pathKeysMap).map(([key, { path, defaultValue }]) => [
       key,

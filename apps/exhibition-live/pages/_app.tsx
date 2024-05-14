@@ -44,6 +44,7 @@ import {
 import { AdbProvider, store } from "@slub/edb-state-hooks";
 import { EntityDetailModal } from "../components/form/show";
 import { EditEntityModal } from "../components/form/edit/EditEntityModal";
+import { useRouter } from "next/router";
 
 export const queryClient = new QueryClient();
 const QueryClientProviderWrapper = ({
@@ -100,6 +101,7 @@ function App({ Component, pageProps }: AppProps) {
                   EntityDetailModal: EntityDetailModal,
                   EditEntityModal: EditEntityModal,
                 }}
+                useRouterHook={useRouter}
               >
                 <NiceModal.Provider>
                   <GoogleOAuthProvider

@@ -1,6 +1,6 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useMemo } from "react";
 import NextLink, { LinkProps } from "next/link";
-import { Router, useRouter } from "next/router";
+import { useModifiedRouter } from "./useModifiedRouter";
 
 type ExtendedLinkProps = Omit<
   React.AnchorHTMLAttributes<HTMLAnchorElement>,
@@ -15,7 +15,7 @@ export const Link = ({
   skipLocaleHandling,
   ...rest
 }: ExtendedLinkProps) => {
-  const router = useRouter();
+  const router = useModifiedRouter();
 
   let href = useMemo(() => {
     const locale = rest.locale || router.query.locale || "";

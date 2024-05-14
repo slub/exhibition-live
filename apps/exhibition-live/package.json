@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "dev:vite": "vite",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
@@ -48,7 +49,7 @@
     "@reduxjs/toolkit": "^2.2.3",
     "react-redux": "^9.1.1",
     "@rdfjs/data-model": "^2.0.2",
-    "@rdfjs/dataset": "^2.0.1",
+    "@rdfjs/dataset": "^2.0.2",
     "@rdfjs/namespace": "^2.0.0",
     "@rdfjs/parser-n3": "^2.0.1",
     "@rdfjs/types": "^1.1.0",
@@ -94,6 +95,7 @@
     "graphql-tag": "^2.12.6",
     "html-react-parser": "^3.0.7",
     "i18next": "^23.7.7",
+    "i18next-http-backend": "^2.5.1",
     "json-schema": "^0.4.0",
     "json-schema-to-ts": "^3.0.1",
     "jsonld": "^8.1.0",
@@ -119,6 +121,7 @@
     "react": "18.2.0",
     "react-collapse-pane": "^3.0.1",
     "react-dom": "18.2.0",
+    "react-router-dom": "^6.23.1",
     "react-i18next": "^13.5.0",
     "react-json-view-lite": "^0.9.4",
     "react-virtuoso": "^4.6.2",
@@ -135,6 +138,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.20.12",
+    "@esbuild-plugins/node-globals-polyfill": "^0.2.3",
     "@graphql-codegen/cli": "^3.0.0",
     "@graphql-codegen/typescript": "^3.0.0",
     "@graphql-codegen/typescript-graphql-request": "^4.5.8",
@@ -175,6 +179,7 @@
     "cypress": "^13.2.0",
     "clownface": "^1.5.1",
     "eslint-config-edb": "workspace:*",
+    "eslint-plugin-react-refresh": "^0.4.7",
     "@slub/edb-core-types": "workspace:*",
     "@slub/edb-global-types": "workspace:*",
     "@slub/json-schema-utils": "workspace:*",
@@ -192,6 +197,8 @@
     "ts-morph": "^17.0.1",
     "ts-node": "^10.9.1",
     "typescript": "5.1.6",
-    "webpack": "^5.75.0"
+    "webpack": "^5.75.0",
+    "vite": "^5.2.0",
+    "@vitejs/plugin-react-swc": "^3.5.0"
   }
 }

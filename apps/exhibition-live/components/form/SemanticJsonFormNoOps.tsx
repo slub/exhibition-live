@@ -15,7 +15,11 @@ import {
   materialCells,
   materialRenderers,
 } from "@jsonforms/material-renderers";
-import { JsonForms, JsonFormsInitStateProps } from "@jsonforms/react";
+import {
+  JsonForms,
+  JsonFormsInitStateProps,
+  withJsonFormsControlProps,
+} from "@jsonforms/react";
 import { Card, CardContent, Grid } from "@mui/material";
 import { JSONSchema7 } from "json-schema";
 import { isEmpty, mixin, merge, assign } from "lodash";
@@ -57,7 +61,10 @@ import InlineDropdownRenderer from "../renderer/InlineDropdownRenderer";
 import { ErrorObject } from "ajv";
 import { OptionsModal } from "./OptionsModal";
 import { useTranslation } from "next-i18next";
-import { MarkdownTextFieldRenderer } from "@slub/edb-markdown-renderer";
+import {
+  MarkdownTextFieldRenderer,
+  MarkdownTextFieldRendererComponent,
+} from "@slub/edb-markdown-renderer";
 import { JsonView } from "react-json-view-lite";
 
 export type CRUDOpsType = {
@@ -165,7 +172,7 @@ const renderers = [
   },
   {
     tester: rankWith(10, scopeEndsWith("description")),
-    renderer: MarkdownTextFieldRenderer,
+    renderer: withJsonFormsControlProps(MarkdownTextFieldRendererComponent),
   },
 ];
 

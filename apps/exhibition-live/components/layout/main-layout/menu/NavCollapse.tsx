@@ -12,12 +12,12 @@ import {
   Typography,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
 import { useThemeSettings } from "../../../state";
 import { NavItem } from "./NavItem";
 import { MenuCollapse } from "./types";
+import { useModifiedRouter } from "../../../basic";
 
 type NavCollapseProps = {
   menu: MenuCollapse;
@@ -26,7 +26,7 @@ type NavCollapseProps = {
 export const NavCollapse = ({ menu, level }) => {
   const theme = useTheme();
   const customization = useThemeSettings();
-  const { push: navigate } = useRouter();
+  const { push: navigate, pathname } = useModifiedRouter();
 
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState(null);
@@ -39,7 +39,6 @@ export const NavCollapse = ({ menu, level }) => {
     }
   };
 
-  const { pathname } = useRouter();
   const checkOpenForParent = (child, id) => {
     child.forEach((item) => {
       if (item.url === pathname) {

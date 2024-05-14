@@ -1,5 +1,24 @@
 {
   "$defs": {
+    "Person": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "alter": {
+          "type": "number"
+        },
+        "geschlecht": {
+          "type": "string",
+          "enum": [
+            "männlich",
+            "weiblich",
+            "divers"
+          ]
+        }
+      }
+    },
     "Festmahl": {
       "type": "object",
       "properties": {
@@ -14,12 +33,32 @@
         },
         "essen": {
           "$ref": "#/$defs/Essen"
+        },
+        "rating": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "title": {
+                "type": "string"
+              },
+              "stars": {
+                "type": "number"
+              },
+              "ratedBy": {
+                "$ref": "#/$defs/Person"
+              }
+            }
+          }
         }
       }
     },
     "Essen": {
       "type": "object",
       "properties": {
+        "title": {
+          "type": "string"
+        },
         "gang": {
           "type": "array",
           "items": {
@@ -31,6 +70,9 @@
     "Rezept": {
       "type": "object",
       "properties": {
+        "title": {
+          "type": "string"
+        },
         "zutat": {
           "type": "array",
           "items": {

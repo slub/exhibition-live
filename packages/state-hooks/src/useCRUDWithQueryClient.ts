@@ -86,10 +86,6 @@ export const useCRUDWithQueryClient: UseCRUDHook<
       if (!Boolean(allowUnsafeSourceIRIs)) {
         if (!entityIRI || !typeIRI || !ready)
           console.warn("entryIRI or typeIRI not defined, will continue anyway");
-        console.log({ entityIRI, typeIRI, ready, data });
-        /*throw new Error(
-            "entityIRI or typeIRI or  updateFetch is not defined",
-          );*/
       }
       const dataWithId: NamedAndTypedEntity = {
         ...data,

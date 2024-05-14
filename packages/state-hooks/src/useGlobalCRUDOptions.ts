@@ -28,7 +28,6 @@ const localWorkerCRUD = (
     // @ts-ignore
     constructFetch: async (query) => {
       const result = await doQuery(query, "application/turtle");
-      console.log({ result });
       if (!result?.data) return;
       const reader = new N3.Parser();
       return await datasetFactory.dataset(reader.parse(result.data));

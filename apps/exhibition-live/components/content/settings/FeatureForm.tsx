@@ -39,17 +39,18 @@ const FeatureForm: FunctionComponent<Props> = (props) => {
     },
     [setFeatures],
   );
-  // a REACT MUI paper list with checkboxes
   return (
     <Box>
       <Typography variant="h2">Funktionen</Typography>
-      <JsonForms
-        data={features}
-        schema={schema}
-        renderers={materialRenderers}
-        cells={materialCells}
-        onChange={handleFormChange}
-      />
+      {features && (
+        <JsonForms
+          data={features}
+          schema={schema}
+          renderers={materialRenderers}
+          cells={materialCells}
+          onChange={handleFormChange}
+        />
+      )}
     </Box>
   );
 };

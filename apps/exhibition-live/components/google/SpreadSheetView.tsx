@@ -50,7 +50,6 @@ import TypedListItem from "../content/list/TypedListItem";
 import HorizontalNonLinearStepper from "../form/wizard/HorizontalNonLinearStepper";
 import { useCRUDWithQueryClient } from "@slub/edb-state-hooks";
 import useExtendedSchema from "../state/useExtendedSchema";
-import { useRouter } from "next/router";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import {
   DeclarativeFlatMapping,
@@ -63,6 +62,7 @@ import {
   DeclarativeMatchBasedFlatMappings,
 } from "@slub/edb-ui-utils";
 import { CRUDFunctions } from "@slub/edb-core-types";
+import { useModifiedRouter } from "../basic";
 
 //we will create a cashed worksheet, were selectively rows are preloaded and once loaded use for a certain stale time
 type CachedWorkSheet = {
@@ -497,7 +497,9 @@ export const GoogleSpeadSheetWorkSheetView: FC<
   const [writeToSpreadSheet, setWriteToSpreadSheet] = useState(false);
 
   const [rawMappedData, setRawMappedData] = useState<any[]>([]);
-  const locale = useRouter().locale ?? "de";
+  const {
+    query: { locale = "de" },
+  } = useModifiedRouter();
   const [selectedMapping, setSelectedMapping] = useState<string>(
     mappingsAvailable[0],
   );

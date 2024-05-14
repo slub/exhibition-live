@@ -3,8 +3,18 @@
   "ignorePatterns": [
     "components/renderer/**/*.tsx"
   ],
+  "plugins": ["react-refresh"],
   "rules": {
+    "react-refresh/only-export-components": "warn",
     "react/display-name": "off",
     "import/no-anonymous-default-export": "off"
-  }
+  },
+  "overrides": [
+    {
+      "files": ["pages/**"],
+      "rules": {
+        "react-refresh/only-export-components": "off"
+      }
+    }
+  ]
 }

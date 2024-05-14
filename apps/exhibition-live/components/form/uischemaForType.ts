@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
 
 import { BASE_IRI } from "../config";
+import EssenUISchema from "./uischema/Essen.uischema.json";
 import ExhibitionUISchema from "./uischema/Exhibition.uischema.json";
 import ExhibitionExponatUISchema from "./uischema/ExhibitionExponat.uischema.json";
 import ExhibtionSeriesUISchema from "./uischema/ExhibitionSeries.uischema.json";
@@ -26,12 +27,12 @@ import ResourceUISchema from "./uischema/Resource.uischema.json";
 import ResourceTypeUISchema from "./uischema/ResourceType.uischema.json";
 
 export const uischemata = {
+  Essen: EssenUISchema,
   Exhibition: ExhibitionUISchema,
   ExhibitionExponat: ExhibitionExponatUISchema,
   InvolvedPerson: InvolvedPersonUISchema,
   InvolvedCorporation: InvolvedCoporationUISchema,
   Location: LocationUISchema,
-  Person: PersonUISchema,
   Place: PlaceUISchema,
   Tag: TagUISchema,
   SeriesType: SeriesTypeUISchema,

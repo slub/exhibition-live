@@ -16,7 +16,7 @@ import rehypeSanitize from "rehype-sanitize";
 import MDEditor, { MDEditorMarkdown } from "./MDEditor";
 import TurndownService from "turndown";
 
-const MarkdownTextFieldRendererComponent = (props: ControlProps) => {
+export const MarkdownTextFieldRendererComponent = (props: ControlProps) => {
   const {
     id,
     errors,

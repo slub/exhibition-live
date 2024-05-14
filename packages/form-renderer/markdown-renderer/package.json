@@ -34,12 +34,12 @@
     "react": ">=18"
   },
   "peerDependencies": {
-    "next": ">14",
-    "@jsonforms/react": ">3",
-    "@jsonforms/core": ">3",
-    "@uiw/react-markdown-preview": ">5",
-    "@uiw/react-md-editor": ">4",
-    "@mui/icons-material": ">5",
+    "next": ">=14",
+    "@jsonforms/react": ">=3",
+    "@jsonforms/core": ">=3",
+    "@uiw/react-markdown-preview": ">=5",
+    "@uiw/react-md-editor": ">=4",
+    "@mui/icons-material": ">=5",
     "react": "^16.9.0 || ^17.0.0 || ^18"
   },
   "dependencies": {

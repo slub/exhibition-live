@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "dev:vite": "vite",
+    "dev:vite": "vite --host",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",

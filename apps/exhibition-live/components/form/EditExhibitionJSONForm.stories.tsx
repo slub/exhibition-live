@@ -1,6 +1,6 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { JSONSchema7 } from "json-schema";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 import useExtendedSchema from "../state/useExtendedSchema";
 import {
@@ -10,6 +10,8 @@ import {
   slent,
 } from "./formConfigs";
 import NewSemanticJsonForm from "./SemanticJsonForm";
+import { uischemata } from "./uischemaForType";
+import { uischemas } from "./uischemas";
 
 const queryClient = new QueryClient();
 
@@ -24,6 +26,10 @@ const SemanticJsonFormOneShot = () => {
   const [data, setData] = useState<any>(exampleData);
   const typeName = "Exhibition";
   const loadedSchema = useExtendedSchema({ typeName });
+  const uischema = useMemo(
+    () => uischemata[typeName] || uischemas[typeName],
+    [typeName],
+  );
 
   return (
     <NewSemanticJsonForm
@@ -36,7 +42,10 @@ const SemanticJsonFormOneShot = () => {
       shouldLoadInitially
       jsonldContext={defaultJsonldContext}
       schema={loadedSchema as JSONSchema7}
-      jsonFormsProps={{}}
+      jsonFormsProps={{
+        uischema,
+        uischemas: uischemas,
+      }}
     />
   );
 };

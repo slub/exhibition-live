@@ -61,17 +61,7 @@ import InlineDropdownRenderer from "../renderer/InlineDropdownRenderer";
 import { ErrorObject } from "ajv";
 import { OptionsModal } from "./OptionsModal";
 import { useTranslation } from "next-i18next";
-import {
-  MarkdownTextFieldRenderer,
-  MarkdownTextFieldRendererComponent,
-} from "@slub/edb-markdown-renderer";
-import { JsonView } from "react-json-view-lite";
-
-export type CRUDOpsType = {
-  load: () => Promise<void>;
-  save: () => Promise<void>;
-  remove: () => Promise<void>;
-};
+import { MarkdownTextFieldRendererComponent } from "@slub/edb-markdown-renderer";
 
 export type ChangeCause = "user" | "mapping" | "reload";
 

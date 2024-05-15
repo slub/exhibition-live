@@ -26,6 +26,7 @@ import { useRouterHook } from "./useRouterHook";
 import ThemeComponent from "../components/theme/ThemeComponent";
 import React from "react";
 import { LocalizationProvider } from "@mui/x-date-pickers";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 export const queryClient = new QueryClient();
 
@@ -74,6 +75,7 @@ export const App = ({ children }: { children?: React.ReactNode }) => {
               </AdbProvider>
             </SnackbarProvider>
           </ThemeComponent>
+          <ReactQueryDevtools initialIsOpen={false} />
         </Provider>
       </LocalizationProvider>
     </QueryClientProvider>

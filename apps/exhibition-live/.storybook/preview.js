@@ -44,6 +44,20 @@ const finalTheme = theme({
 });
 const queryClient = new QueryClient();
 
+export const useRouterMock = () => {
+  return {
+    push: async (url) => {
+      console.log("push", url);
+    },
+    replace: async (url) => {
+      console.log("replace", url);
+    },
+    asPath: "",
+    pathname: "",
+    query: {},
+  };
+};
+
 export const withMuiTheme = (Story) => {
   return (
     <Provider store={store}>
@@ -75,6 +89,7 @@ export const withMuiTheme = (Story) => {
           EntityDetailModal: EntityDetailModal,
           EditEntityModal: EditEntityModal,
         }}
+        useRouterHook={useRouterMock}
       >
         <ThemeProvider theme={finalTheme}>
           <QueryClientProvider client={queryClient}>

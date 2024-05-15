@@ -150,7 +150,6 @@ that provide additional information for the frontend, like:
 - the UI-Schemata for form layout and style hints
 - data mapping declarations for data conversion from and to norm data repositories
 
-
 # Helpful Commands
 
 Complete rebuild without cache:

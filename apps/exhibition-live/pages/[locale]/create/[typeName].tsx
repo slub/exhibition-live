@@ -5,8 +5,6 @@ import React, { useEffect, useMemo, useState } from "react";
 import TypedForm from "../../../components/content/main/TypedForm";
 import { MainLayout } from "../../../components/layout/main-layout";
 import schema from "../../../public/schema/Exhibition.schema.json";
-import { BASE_IRI } from "../../../components/config";
-import { v4 as uuidv4 } from "uuid";
 import { useTranslation } from "next-i18next";
 import { getI18nProps, mixinStaticPathsParams } from "../../../components/i18n";
 import { Button, Hidden } from "@mui/material";

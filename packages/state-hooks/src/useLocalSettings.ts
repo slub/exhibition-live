@@ -10,7 +10,7 @@ import {
   UseLocalSettings,
 } from "@slub/edb-core-types";
 import { useAdbContext } from "./provider";
-import useLocalStorage from "use-local-storage";
+import { useLocalStorage } from "./useLocalStorage";
 
 const defaultSparqlEndpoints: SparqlEndpoint[] = [
   {

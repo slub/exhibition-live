@@ -97,6 +97,11 @@ export type AbstractDatastore<
     limit?: number,
     cb?: (document: any) => Promise<DocumentResult>,
   ) => Promise<FindResult>;
+  findDocumentsAsFlatResultSet?: (
+    typeName: string,
+    query: QueryType,
+    limit?: number,
+  ) => Promise<any>;
   iterableImplementation?: AbstractDatastoreIterable<DocumentResult>;
 };
 

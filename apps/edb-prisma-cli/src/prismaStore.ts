@@ -1,5 +1,8 @@
 import { PrismaClient } from "@prisma/client";
-import { jsonSchema2PrismaSelect } from "@slub/json-schema-prisma-utils";
+import {
+  jsonSchema2PrismaFlatSelect,
+  jsonSchema2PrismaSelect,
+} from "@slub/json-schema-prisma-utils";
 import { JSONSchema7 } from "json-schema";
 import { toJSONLD } from "./toJSONLD";
 import { AbstractDatastore } from "@slub/edb-global-types";
@@ -34,6 +37,24 @@ export const prismaStore: (
       select,
     });
     return entries.map((entry: any) => toJSONLD(entry));
+  };
+
+  const loadManyFlat = async (
+    typeName: string,
+    limit?: number,
+    innerLimit?: number,
+  ) => {
+    const query = jsonSchema2PrismaFlatSelect(
+      typeName,
+      rootSchema,
+      primaryFields,
+      { takeLimit: innerLimit ?? limit ?? 0 },
+    );
+    const entries = await prisma[typeName].findMany({
+      take: limit,
+      ...query,
+    });
+    return entries;
   };
 
   const searchMany = async (
@@ -108,6 +129,9 @@ export const prismaStore: (
         }
       }
       return entries;
+    },
+    findDocumentsAsFlatResultSet: async (typeName, query, limit) => {
+      return await loadManyFlat(typeName, limit, 2);
     },
   };
 

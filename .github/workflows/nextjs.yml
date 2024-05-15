@@ -61,7 +61,9 @@ jobs:
           NEXT_PUBLIC_GAPI_OAUTH_CLIENT_ID: ${{ secrets.NEXT_PUBLIC_GAPI_OAUTH_CLIENT_ID }}
           NEXT_PUBLIC_BASE_PATH:  /${{ github.event.repository.name }}
         run: |
+          rm ./apps/exhibition-live/.env*
           touch ./apps/exhibition-live/.env
+          echo "${{ vars.LOCAL_ENV_FILE }}" >> .env
           echo NEXT_PUBLIC_GAPI_OAUTH_CLIENT_ID="${{ secrets.NEXT_PUBLIC_GAPI_OAUTH_CLIENT_ID  }}" >> ./apps/exhibition-live/.env
           echo NEXT_PUBLIC_BASE_PATH="/${{ github.event.repository.name }}" >> ./apps/exhibition-live/.env
       - name: Build with Next.js

@@ -45,7 +45,6 @@
     "@mui/system": "^5.14.15",
     "@mui/base": "^5.0.0-beta.40",
     "@mui/x-date-pickers": "^6.16.3",
-    "@phntms/use-local-state": "^0.1.4",
     "@reduxjs/toolkit": "^2.2.3",
     "react-redux": "^9.1.1",
     "@rdfjs/data-model": "^2.0.2",

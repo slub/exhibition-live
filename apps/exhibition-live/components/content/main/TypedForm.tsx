@@ -9,13 +9,13 @@ import {
   useAdbContext,
   useFormEditor,
   useGlobalSearch,
+  useModifiedRouter,
   useRightDrawerState,
   useSettings,
 } from "@slub/edb-state-hooks";
 import useExtendedSchema from "../../state/useExtendedSchema";
 import { encodeIRI, irisToData } from "@slub/edb-ui-utils";
 import NewSemanticJsonForm from "../../form/SemanticJsonForm";
-import { useModifiedRouter } from "../../basic";
 import { EntityDetailElement } from "../../form/show";
 import { useFormDataStore } from "@slub/edb-state-hooks";
 import { useCRUDWithQueryClient } from "@slub/edb-state-hooks";
@@ -133,8 +133,8 @@ const TypedForm = ({ typeName, entityIRI, classIRI }: MainFormProps) => {
   }, []);
 
   const uischema = useMemo(
-    () => uischemata[typeName] || (uischemas as any)[typeName],
-    [typeName],
+    () => uischemata[typeName] || (uischemas(loadedSchema) as any)[typeName],
+    [typeName, loadedSchema],
   );
 
   return (
@@ -155,7 +155,6 @@ const TypedForm = ({ typeName, entityIRI, classIRI }: MainFormProps) => {
             schema={loadedSchema as JSONSchema7}
             jsonFormsProps={{
               uischema,
-              uischemas: uischemas,
               renderers: mainFormRenderers,
               config: {
                 useCRUDHook: useCRUDWithQueryClient,

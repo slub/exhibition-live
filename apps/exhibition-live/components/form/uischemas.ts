@@ -1,5 +1,4 @@
 import { JsonFormsUISchemaRegistryEntry } from "@jsonforms/core";
-import schema from "../../public/schema/Exhibition.schema.json";
 
 import { BASE_IRI } from "../config";
 import { defs } from "@slub/json-schema-utils";
@@ -70,6 +69,9 @@ const createUiSchema: (
   uischema: createStubLayout(key, baseIRI, label),
 });
 
-export const uischemas: JsonFormsUISchemaRegistryEntry[] = Object.keys(
-  defs(schema as JSONSchema7),
-).map((key) => createUiSchema(key, BASE_IRI));
+export const uischemas: (
+  schema: JSONSchema7,
+) => JsonFormsUISchemaRegistryEntry[] = (schema) =>
+  Object.keys(defs(schema as JSONSchema7)).map((key) =>
+    createUiSchema(key, BASE_IRI),
+  );

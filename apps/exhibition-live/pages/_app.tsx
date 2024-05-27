@@ -40,11 +40,14 @@ import {
   declarativeMappings,
   lobidTypemap,
   PUBLIC_BASE_PATH,
+  schema,
 } from "../components/config";
 import { AdbProvider, store } from "@slub/edb-state-hooks";
 import { EntityDetailModal } from "../components/form/show";
 import { EditEntityModal } from "../components/form/edit/EditEntityModal";
 import { useRouter } from "next/router";
+import SemanticJsonForm from "../components/form/SemanticJsonForm";
+import { JSONSchema7 } from "json-schema";
 
 export const queryClient = new QueryClient();
 const QueryClientProviderWrapper = ({
@@ -93,6 +96,7 @@ function App({ Component, pageProps }: AppProps) {
                     typeToTypeMap: lobidTypemap,
                   },
                 }}
+                schema={schema}
                 env={{
                   publicBasePath: PUBLIC_BASE_PATH,
                   baseIRI: BASE_IRI,
@@ -100,6 +104,7 @@ function App({ Component, pageProps }: AppProps) {
                 components={{
                   EntityDetailModal: EntityDetailModal,
                   EditEntityModal: EditEntityModal,
+                  SemanticJsonForm: SemanticJsonForm,
                 }}
                 useRouterHook={useRouter}
               >

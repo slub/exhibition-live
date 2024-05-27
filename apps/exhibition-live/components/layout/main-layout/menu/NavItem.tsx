@@ -12,13 +12,12 @@ import {
 } from "@mui/material";
 import { v4 as uuidv4 } from "uuid";
 import { useTheme } from "@mui/material/styles";
-import { useModifiedRouter } from "../../../basic";
 import { useEffect, useCallback } from "react";
 
 import { useThemeSettings } from "../../../state";
 import { MenuItem } from "./types";
 import { encodeIRI } from "@slub/edb-ui-utils";
-import { useAdbContext } from "@slub/edb-state-hooks";
+import { useAdbContext, useModifiedRouter } from "@slub/edb-state-hooks";
 
 type NavItemProps = {
   item: MenuItem;

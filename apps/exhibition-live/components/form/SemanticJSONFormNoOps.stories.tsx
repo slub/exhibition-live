@@ -1,7 +1,6 @@
 import { JSONSchema7 } from "json-schema";
 import { useMemo, useState } from "react";
 import { uischemata } from "./uischemaForType";
-import { uischemas } from "./uischemas";
 import type { Meta, StoryObj } from "@storybook/react";
 
 import useExtendedSchema from "../state/useExtendedSchema";
@@ -45,10 +44,7 @@ const SemanticJsonFormNoOperationsExample = ({
   const { typeIRI, data: initialData } = makeExampleData(typeName, defaultData);
   const [data, setData] = useState<any>(initialData);
   const loadedSchema = useExtendedSchema({ typeName });
-  const uischema = useMemo(
-    () => uischemata[typeName] || uischemas[typeName],
-    [typeName],
-  );
+  const uischema = useMemo(() => uischemata[typeName], [typeName]);
 
   return (
     <SemanticJsonFormNoOps
@@ -59,7 +55,6 @@ const SemanticJsonFormNoOperationsExample = ({
       schema={loadedSchema as JSONSchema7}
       jsonFormsProps={{
         uischema,
-        uischemas: uischemas,
       }}
     />
   );
@@ -73,10 +68,7 @@ export const SemanticJsonFormNoOperationsExhibition = () => {
   const { typeIRI, typeName, data: initialData } = exhibitionExample;
   const [data, setData] = useState<any>(initialData);
   const loadedSchema = useExtendedSchema({ typeName });
-  const uischema = useMemo(
-    () => uischemata[typeName] || uischemas[typeName],
-    [typeName],
-  );
+  const uischema = useMemo(() => uischemata[typeName], [typeName]);
 
   return (
     <SemanticJsonFormNoOps
@@ -87,7 +79,6 @@ export const SemanticJsonFormNoOperationsExhibition = () => {
       schema={loadedSchema as JSONSchema7}
       jsonFormsProps={{
         uischema,
-        uischemas: uischemas,
       }}
     />
   );

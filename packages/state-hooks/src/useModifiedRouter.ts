@@ -1,18 +1,17 @@
 import { useCallback } from "react";
-import { ParsedUrlQuery } from "querystring";
 import { ModRouter, Url } from "@slub/edb-global-types";
-import { useAdbContext } from "@slub/edb-state-hooks";
+import { useAdbContext } from "./provider";
 
-const locale = "de";
-const asPath = "";
-const pathname = "";
-const query: ParsedUrlQuery = {
-  locale,
+type Options = {
+  locale: string;
 };
-
-export const useModifiedRouter: () => ModRouter = () => {
+export const useModifiedRouter: (options?: Options) => ModRouter = (
+  options,
+) => {
   const { useRouterHook } = useAdbContext();
   const router = useRouterHook();
+
+  const { locale = "de" } = options || {};
 
   const push = useCallback(
     async (url: string, as: Url) => {

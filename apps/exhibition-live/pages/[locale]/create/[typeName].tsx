@@ -4,7 +4,6 @@ import React, { useEffect, useMemo, useState } from "react";
 
 import TypedForm from "../../../components/content/main/TypedForm";
 import { MainLayout } from "../../../components/layout/main-layout";
-import schema from "../../../public/schema/Exhibition.schema.json";
 import { useTranslation } from "next-i18next";
 import { getI18nProps, mixinStaticPathsParams } from "../../../components/i18n";
 import { Button, Hidden } from "@mui/material";
@@ -15,6 +14,7 @@ import {
   useFormEditor,
   useSettings,
 } from "@slub/edb-state-hooks";
+import { schema } from "../../../components/config";
 
 type Props = {
   typeName: string;

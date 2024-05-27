@@ -13,13 +13,13 @@ import {
 } from "@mui/material";
 import { useTranslation } from "next-i18next";
 import LobidAllPropTable from "../lobid/LobidAllPropTable";
-import { useModifiedRouter } from "../../basic";
 import { encodeIRI } from "@slub/edb-ui-utils";
 
 import NiceModal from "@ebay/nice-modal-react";
 import {
   useAdbContext,
   useModalRegistry,
+  useModifiedRouter,
   useSettings,
 } from "@slub/edb-state-hooks";
 import { EntityDetailCardProps } from "./EntityDetailCardProps";

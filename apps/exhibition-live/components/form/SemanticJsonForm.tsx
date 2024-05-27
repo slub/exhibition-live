@@ -12,7 +12,6 @@ import React, {
   useState,
 } from "react";
 
-import GenericModal from "./GenericModal";
 import { useAdbContext, useCRUDWithQueryClient } from "@slub/edb-state-hooks";
 import { useSnackbar } from "notistack";
 import { ChangeCause, SemanticJsonFormNoOps } from "./SemanticJsonFormNoOps";
@@ -24,29 +23,9 @@ import { create } from "zustand";
 import { useTranslation } from "next-i18next";
 import { cleanJSONLD, LoadResult } from "@slub/sparql-schema";
 import { FormDebuggingTools } from "@slub/edb-debug-utils";
-
-export interface SemanticJsonFormsProps {
-  entityIRI?: string | undefined;
-  data: any;
-  onChange: (data: any) => void;
-  shouldLoadInitially?: boolean;
-  typeIRI: string;
-  schema: JSONSchema7;
-  jsonldContext: JsonLdContext;
-  debugEnabled?: boolean;
-  jsonFormsProps?: Partial<JsonFormsInitStateProps>;
-  onEntityChange?: (entityIRI: string | undefined) => void;
-  onEntityDataChange?: (entityData: any) => void;
-  defaultPrefix: string;
-  hideToolbar?: boolean;
-  forceEditMode?: boolean;
-  defaultEditMode?: boolean;
-  searchText?: string;
-  toolbarChildren?: React.ReactNode;
-  disableSimilarityFinder?: boolean;
-  enableSidebar?: boolean;
-  wrapWithinCard?: boolean;
-}
+import { SemanticJsonFormProps } from "@slub/edb-global-types";
+import { GenericModal } from "@slub/edb-basic-components";
+import { uischemas } from "./uischemas";
 
 type SemanticJsonFormStateType = {
   isSaving: boolean;
@@ -75,7 +54,7 @@ const useSemanticJsonFormState = create<SemanticJsonFormStateType>(
     },
   }),
 );
-const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> = ({
+const SemanticJsonForm: FunctionComponent<SemanticJsonFormProps> = ({
   entityIRI,
   data,
   onChange,
@@ -271,6 +250,10 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> = ({
     [onChange, editMode, isLoading, isReloading],
   );
 
+  const uischemasCached = useMemo(() => {
+    return uischemas(schema);
+  }, [schema]);
+
   return (
     <Box sx={{ minHeight: "100%", width: "100%" }}>
       <Backdrop
@@ -286,6 +269,7 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormsProps> = ({
         schema={schema}
         formsPath="root"
         jsonFormsProps={{
+          uischemas: uischemasCached,
           readonly: !editMode || !initiallyLoaded,
           ...(jsonFormsProps || {}),
         }}

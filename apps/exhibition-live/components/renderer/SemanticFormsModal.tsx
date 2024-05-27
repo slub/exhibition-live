@@ -3,23 +3,22 @@ import { JSONSchema7 } from "json-schema";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 
 import { useUISchemaForType } from "../form/uischemaForType";
-import { uischemas } from "../form/uischemas";
 import MuiEditDialog from "./MuiEditDialog";
 import { useControlled } from "@mui/material";
 import { useCRUDWithQueryClient } from "@slub/edb-state-hooks";
 import { useSnackbar } from "notistack";
 import NiceModal from "@ebay/nice-modal-react";
-import GenericModal from "../form/GenericModal";
 import { SemanticJsonFormNoOps } from "../form/SemanticJsonFormNoOps";
 import { irisToData } from "@slub/edb-ui-utils";
-import { SemanticJsonFormsProps } from "../form/SemanticJsonForm";
+import { SemanticJsonFormProps } from "@slub/edb-global-types";
+import { GenericModal } from "@slub/edb-basic-components";
 
 type SemanticFormsModalProps = {
   label?: string;
   open: boolean;
   askClose: () => void;
   askCancel?: () => void;
-  semanticJsonFormsProps?: Partial<SemanticJsonFormsProps>;
+  semanticJsonFormsProps?: Partial<SemanticJsonFormProps>;
   schema: JsonSchema;
   entityIRI?: string;
   typeIRI: string;
@@ -141,7 +140,6 @@ export const SemanticFormsModal = (props: SemanticFormsModalProps) => {
             schema={schema as JSONSchema7}
             jsonFormsProps={{
               uischema: uischemaExternal || undefined,
-              uischemas: uischemas,
             }}
             onEntityChange={onChange}
             formsPath={formsPath}

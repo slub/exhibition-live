@@ -1,8 +1,11 @@
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import schema from "../../../public/schema/Exhibition.schema.json";
 import { v4 as uuidv4 } from "uuid";
-import { useAdbContext, useGlobalCRUDOptions } from "@slub/edb-state-hooks";
+import {
+  useAdbContext,
+  useGlobalCRUDOptions,
+  useModifiedRouter,
+} from "@slub/edb-state-hooks";
 import {
   Backdrop,
   Box,
@@ -41,13 +44,11 @@ import {
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { SemanticFormsModal } from "../../renderer/SemanticFormsModal";
 import NiceModal from "@ebay/nice-modal-react";
-import GenericModal from "../../form/GenericModal";
 import { useSnackbar } from "notistack";
 import { JsonSchema } from "@jsonforms/core";
 import useExtendedSchema from "../../state/useExtendedSchema";
 import Button from "@mui/material/Button";
 import { download, generateCsv, mkConfig } from "export-to-csv";
-import { useModifiedRouter } from "../../basic";
 import { useSettings } from "@slub/edb-state-hooks";
 import { useTranslation } from "next-i18next";
 import {
@@ -61,6 +62,7 @@ import { computeColumns } from "./listHelper";
 import { tableConfig } from "../../config/tableConfig";
 import { encodeIRI, filterUndefOrNull } from "@slub/edb-ui-utils";
 import { bringDefinitionToTop } from "@slub/json-schema-utils";
+import { GenericModal } from "@slub/edb-basic-components";
 
 type Props = {
   typeName: string;
@@ -121,6 +123,7 @@ export const TypedList = ({ typeName }: Props) => {
     jsonLDConfig: { defaultPrefix },
     typeNameToTypeIRI,
     createEntityIRI,
+    schema,
     components: { EntityDetailModal },
   } = useAdbContext();
 
@@ -321,7 +324,7 @@ export const TypedList = ({ typeName }: Props) => {
         row.getAllCells().map((cell) => [cell.column.id, cell.getValue()]),
       ),
     );
-    const csv = generateCsv(csvConfig)(rowData);
+    const csv = generateCsv(csvConfig)(rowData as any);
     download(csvConfig)(csv);
   };
 

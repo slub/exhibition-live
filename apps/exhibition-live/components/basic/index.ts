@@ -1,3 +1,3 @@
 export * from "./Link";
 export * from "./Img";
-export * from "./useModifiedRouter";
+export { useModalRegistry } from "@slub/edb-state-hooks";

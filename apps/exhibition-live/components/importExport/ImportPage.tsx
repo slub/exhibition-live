@@ -2,12 +2,12 @@ import React, { FunctionComponent, useCallback } from "react";
 import { Box, Button } from "@mui/material";
 import Grid2 from "@mui/material/Unstable_Grid2";
 import { Login } from "../google/GoogleOAuth";
-import { useModifiedRouter } from "../basic";
 import { hasGrantedAnyScopeGoogle } from "@react-oauth/google";
 import { useGoogleToken } from "../google/useGoogleToken";
 import NiceModal from "@ebay/nice-modal-react";
 import { GoogleDrivePickerModal } from "../google/GoogleDrivePicker";
 import { GoogleSpreadSheetView } from "../google/SpreadSheetView";
+import { useModifiedRouter } from "@slub/edb-state-hooks";
 
 const scopes: [string, string, string] = [
   "https://www.googleapis.com/auth/drive.readonly.metadata",

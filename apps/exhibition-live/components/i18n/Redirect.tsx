@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import languageDetector from "./languageDetector";
-import { useModifiedRouter } from "../basic";
+import { useModifiedRouter } from "@slub/edb-state-hooks";
 
 export const useRedirect = (to?: string) => {
   const router = useModifiedRouter();

@@ -11,7 +11,6 @@ import {
 } from "./formConfigs";
 import NewSemanticJsonForm from "./SemanticJsonForm";
 import { uischemata } from "./uischemaForType";
-import { uischemas } from "./uischemas";
 
 const queryClient = new QueryClient();
 
@@ -26,10 +25,7 @@ const SemanticJsonFormOneShot = () => {
   const [data, setData] = useState<any>(exampleData);
   const typeName = "Exhibition";
   const loadedSchema = useExtendedSchema({ typeName });
-  const uischema = useMemo(
-    () => uischemata[typeName] || uischemas[typeName],
-    [typeName],
-  );
+  const uischema = useMemo(() => uischemata[typeName], [typeName]);
 
   return (
     <NewSemanticJsonForm
@@ -44,7 +40,6 @@ const SemanticJsonFormOneShot = () => {
       schema={loadedSchema as JSONSchema7}
       jsonFormsProps={{
         uischema,
-        uischemas: uischemas,
       }}
     />
   );

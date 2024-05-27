@@ -11,8 +11,10 @@ import {
   EditEntityModalProps,
   EntityDetailModalProps,
   ModRouter,
+  SemanticJsonFormProps,
 } from "@slub/edb-global-types";
 import { NiceModalHocProps } from "@ebay/nice-modal-react";
+import { JSONSchema7 } from "json-schema";
 
 export type JSONLDConfig = {
   defaultPrefix: string;
@@ -39,6 +41,7 @@ type AdbContextValue = {
   normDataMapping: {
     [authorityIRI: string]: NormDataMapping;
   };
+  schema: JSONSchema7;
   env: {
     publicBasePath: string;
     baseIRI: string;
@@ -46,6 +49,7 @@ type AdbContextValue = {
   components: {
     EditEntityModal: React.FC<EditEntityModalProps & NiceModalHocProps>;
     EntityDetailModal: React.FC<EntityDetailModalProps & NiceModalHocProps>;
+    SemanticJsonForm: React.FC<SemanticJsonFormProps>;
   };
   useRouterHook: () => ModRouter;
 };

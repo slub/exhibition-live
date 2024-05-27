@@ -6,7 +6,6 @@ import {
   DialogActions,
   DialogContent,
   DialogContentText,
-  DialogTitle,
   IconButton,
   Toolbar,
   Typography,
@@ -14,12 +13,6 @@ import {
 import { Close as CloseIcon } from "@mui/icons-material";
 import NiceModal, { useModal } from "@ebay/nice-modal-react";
 import { useTranslation } from "next-i18next";
-
-type GenericModalProps = {
-  type: string;
-  id?: string;
-  extraMessage?: string;
-};
 
 const modalContent = [
   {
@@ -72,7 +65,13 @@ const modalContent = [
   },
 ];
 
-const GenericModal = NiceModal.create(
+export type GenericModalProps = {
+  type: (typeof modalContent)[number]["modalType"];
+  id?: string;
+  extraMessage?: string;
+};
+
+export const GenericModal = NiceModal.create(
   ({ type, id, extraMessage }: GenericModalProps) => {
     const modal = useModal();
     const { t } = useTranslation();
@@ -128,5 +127,3 @@ const GenericModal = NiceModal.create(
     );
   },
 );
-
-export default GenericModal;

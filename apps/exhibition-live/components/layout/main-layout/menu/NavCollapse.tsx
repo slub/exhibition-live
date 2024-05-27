@@ -17,7 +17,7 @@ import { useEffect, useState } from "react";
 import { useThemeSettings } from "../../../state";
 import { NavItem } from "./NavItem";
 import { MenuCollapse } from "./types";
-import { useModifiedRouter } from "../../../basic";
+import { useModifiedRouter } from "@slub/edb-state-hooks";
 
 type NavCollapseProps = {
   menu: MenuCollapse;

@@ -1,17 +1,14 @@
-import exhibitionSchema from "../../public/schema/Exhibition.schema.json";
 import {
   PrimaryField,
   PrimaryFieldDeclaration,
   PrimaryFieldExtractDeclaration,
 } from "@slub/edb-core-types";
 
-type ExhibitionPrimaryFieldDeclaration = PrimaryFieldDeclaration<
-  keyof typeof exhibitionSchema.$defs
->;
+type ExhibitionPrimaryFieldDeclaration = PrimaryFieldDeclaration<string>;
 
 type ExhibitionPrimaryFieldExtractDeclaration = PrimaryFieldExtractDeclaration<
   any,
-  keyof typeof exhibitionSchema.$defs
+  string
 >;
 
 const defaultMapping: PrimaryField = {

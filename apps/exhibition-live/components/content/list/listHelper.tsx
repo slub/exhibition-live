@@ -1,12 +1,11 @@
 import get from "lodash/get";
 import { JSONSchema7, JSONSchema7Definition } from "json-schema";
 import { MRT_ColumnDef, MRT_TableInstance } from "material-react-table";
-import { OverflowContainer } from "../../lists";
+import { OverflowContainer, OverflowChip } from "../../lists";
 import { Avatar, Box, Checkbox, Grid, Link, Typography } from "@mui/material";
 import isNil from "lodash/isNil";
 import maxBy from "lodash/maxBy";
 import { filterUndefOrNull, parseMarkdownLinks } from "@slub/edb-ui-utils";
-import { OverflowChip } from "../../lists/OverflowChip";
 import * as React from "react";
 import { TFunction } from "i18next";
 import { MouseEvent, useCallback, useMemo } from "react";

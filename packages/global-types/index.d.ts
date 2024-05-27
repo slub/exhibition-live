@@ -125,3 +125,26 @@ export type ModRouter = {
   push: (url: Url, as?: Url) => Promise<void | boolean>;
   pathname: string;
 };
+
+export interface SemanticJsonFormProps {
+  entityIRI?: string | undefined;
+  data: any;
+  onChange: (data: any) => void;
+  shouldLoadInitially?: boolean;
+  typeIRI: string;
+  schema: JSONSchema7;
+  jsonldContext: JsonLdContext;
+  debugEnabled?: boolean;
+  jsonFormsProps?: Partial<JsonFormsInitStateProps>;
+  onEntityChange?: (entityIRI: string | undefined) => void;
+  onEntityDataChange?: (entityData: any) => void;
+  defaultPrefix: string;
+  hideToolbar?: boolean;
+  forceEditMode?: boolean;
+  defaultEditMode?: boolean;
+  searchText?: string;
+  toolbarChildren?: React.ReactNode;
+  disableSimilarityFinder?: boolean;
+  enableSidebar?: boolean;
+  wrapWithinCard?: boolean;
+}

@@ -2,11 +2,7 @@ import React, { useEffect } from "react";
 import { useRemark } from "react-remark";
 import { Container } from "@mui/material";
 import rehypeDocument from "rehype-document";
-import rehypeKatex from "rehype-katex";
-import rehypeParse from "rehype-parse";
 import rehypeStringify from "rehype-stringify";
-import rehypeMermaid from "rehype-mermaid";
-import remarkMath from "remark-math";
 import rehypeVideo from "rehype-video";
 
 export type MarkdownContentProps = {
@@ -14,11 +10,10 @@ export type MarkdownContentProps = {
 };
 const MarkdownContent = ({ mdDocument }: MarkdownContentProps) => {
   const [reactContent, setMarkdownSource] = useRemark({
-    remarkPlugins: [remarkMath],
+    //remarkPlugins: [remarkMath],
     rehypePlugins: [
       //  [rehypeParse as any, { fragment: true }],
       rehypeDocument as any,
-      rehypeKatex as any,
       [
         rehypeVideo as any,
         {
@@ -34,7 +29,6 @@ const MarkdownContent = ({ mdDocument }: MarkdownContentProps) => {
           details: true,
         },
       ],
-      [rehypeMermaid as any, { strategy: "img-svg" }],
       rehypeStringify as any,
     ],
   });

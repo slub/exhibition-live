@@ -1,17 +1,16 @@
-import { JsonFormsCore, JsonSchema } from "@jsonforms/core";
+import { JsonSchema } from "@jsonforms/core";
 import { JSONSchema7 } from "json-schema";
-import React, { useCallback, useState } from "react";
+import React, { useCallback } from "react";
 
 import { useUISchemaForType } from "../form/uischemaForType";
-import { uischemas } from "../form/uischemas";
 import { useControlled } from "@mui/material";
 import { SemanticJsonFormNoOps } from "../form/SemanticJsonFormNoOps";
-import { SemanticJsonFormsProps } from "../form/SemanticJsonForm";
 import { ErrorObject } from "ajv";
+import { SemanticJsonFormProps } from "@slub/edb-global-types";
 
 type SemanticFormsInlineProps = {
   label?: string;
-  semanticJsonFormsProps?: Partial<SemanticJsonFormsProps>;
+  semanticJsonFormsProps?: Partial<SemanticJsonFormProps>;
   schema: JsonSchema;
   entityIRI?: string;
   typeIRI: string;
@@ -63,7 +62,6 @@ export const SemanticFormsInline = (props: SemanticFormsInlineProps) => {
           schema={schema as JSONSchema7}
           jsonFormsProps={{
             uischema: uischemaExternal || undefined,
-            uischemas: uischemas,
           }}
           onEntityChange={onChange}
           formsPath={formsPath}

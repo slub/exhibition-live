@@ -42,7 +42,11 @@ import { mapByConfigFlat } from "@slub/edb-ui-utils";
 import { spreadSheetMappings } from "../config/spreadSheetMappings";
 import { declarativeMappings } from "../config";
 import { makeDefaultMappingStrategyContext } from "../form/SimilarityFinder";
-import { useAdbContext, useGlobalCRUDOptions } from "@slub/edb-state-hooks";
+import {
+  useAdbContext,
+  useGlobalCRUDOptions,
+  useModifiedRouter,
+} from "@slub/edb-state-hooks";
 import { encodeIRI, filterUndefOrNull } from "@slub/edb-ui-utils";
 import { useQuery } from "@tanstack/react-query";
 import { OwnColumnDesc } from "./types";
@@ -62,7 +66,6 @@ import {
   DeclarativeMatchBasedFlatMappings,
 } from "@slub/edb-ui-utils";
 import { CRUDFunctions } from "@slub/edb-core-types";
-import { useModifiedRouter } from "../basic";
 
 //we will create a cashed worksheet, were selectively rows are preloaded and once loaded use for a certain stale time
 type CachedWorkSheet = {

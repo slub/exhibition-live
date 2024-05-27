@@ -1,4 +1,5 @@
 import theme from "../components/theme/berry-theme";
+import { schema } from "@slub/exhibition-schema";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
@@ -20,6 +21,7 @@ import { EntityDetailModal } from "../components/form/show";
 import { EditEntityModal } from "../components/form/edit/EditEntityModal";
 import { Provider } from "react-redux";
 import { AppRouterContext } from "next/dist/shared/lib/app-router-context.shared-runtime";
+import SemanticJsonForm from "../components/form/SemanticJsonForm";
 
 export const parameters = {
   nextRouter: {
@@ -81,6 +83,7 @@ export const withMuiTheme = (Story) => {
             typeToTypeMap: lobidTypemap,
           },
         }}
+        schema={schema}
         env={{
           publicBasePath: PUBLIC_BASE_PATH,
           baseIRI: BASE_IRI,
@@ -88,6 +91,7 @@ export const withMuiTheme = (Story) => {
         components={{
           EntityDetailModal: EntityDetailModal,
           EditEntityModal: EditEntityModal,
+          SemanticJsonForm: SemanticJsonForm,
         }}
         useRouterHook={useRouterMock}
       >

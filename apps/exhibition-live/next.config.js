@@ -3,10 +3,26 @@ const removeImports = require("next-remove-imports")({
   matchImports: "\\.(less|css|scss|sass|styl)$",
 });
 
+const withBundleAnalyzer = require("@next/bundle-analyzer")({
+  enabled: process.env.ANALYZE === "true",
+});
+
 /** @type {import('next').NextConfig} */
 const nextConfig = removeImports({
   reactStrictMode: true,
   output: "export",
+  modularizeImports: {
+    "@mui/icons-material": { transform: "@mui/icons-material/{{member}}" },
+    lodash: { transform: "lodash/{{member}}" },
+    "lodash-es": { transform: "lodash-es/{{member}}" },
+  },
+  experimental: {
+    optimizePackageImports: [
+      "@mui/material",
+      "@mui/icons-material",
+      "@mui/lab",
+    ],
+  },
   images: {
     unoptimized: true,
   },
@@ -24,4 +40,4 @@ const nextConfig = removeImports({
   },
 });
 
-module.exports = nextConfig;
+module.exports = withBundleAnalyzer(nextConfig);

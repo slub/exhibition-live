@@ -8,7 +8,6 @@ import { applyToEachField, extractFieldIfString } from "@slub/edb-ui-utils";
 import { Button, Stack } from "@mui/material";
 import { JSONSchema7 } from "json-schema";
 import { uischemata } from "../uischemaForType";
-import { uischemas } from "../uischemas";
 import { SemanticJsonFormNoOps } from "../SemanticJsonFormNoOps";
 import MuiEditDialog from "../../renderer/MuiEditDialog";
 import { useSnackbar } from "notistack";
@@ -74,10 +73,7 @@ export const EditEntityModal = NiceModal.create(
     useEffect(() => {
       setFormData(data);
     }, [data, setFormData]);
-    const uischema = useMemo(
-      () => uischemata[typeName] || (uischemas as any)[typeName],
-      [typeName],
-    );
+    const uischema = useMemo(() => uischemata[typeName], [typeName]);
     const { enqueueSnackbar } = useSnackbar();
 
     const handleSaveSuccess = useCallback(() => {
@@ -159,7 +155,6 @@ export const EditEntityModal = NiceModal.create(
           formsPath={"root"}
           jsonFormsProps={{
             uischema,
-            uischemas: uischemas,
           }}
           enableSidebar={false}
           disableSimilarityFinder={true}

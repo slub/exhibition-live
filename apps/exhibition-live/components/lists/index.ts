@@ -1,2 +1,2 @@
 export * from "./OverflowContainer";
-export * from "./DeclarativeDatagrid";
+export * from "./OverflowChip";

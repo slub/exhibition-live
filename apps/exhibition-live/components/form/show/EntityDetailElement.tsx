@@ -5,7 +5,6 @@ import { useMemo } from "react";
 import { applyToEachField, extractFieldIfString } from "@slub/edb-ui-utils";
 import { EntityDetailCard } from "./EntityDetailCard";
 import { useTypeIRIFromEntity } from "@slub/edb-state-hooks";
-import { useTranslation } from "next-i18next";
 import { PrimaryField, PrimaryFieldResults } from "@slub/edb-core-types";
 import { filterUndefOrNull } from "@slub/edb-ui-utils";
 

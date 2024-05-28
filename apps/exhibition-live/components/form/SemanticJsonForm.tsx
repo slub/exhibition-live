@@ -25,7 +25,6 @@ import { cleanJSONLD, LoadResult } from "@slub/sparql-schema";
 import { FormDebuggingTools } from "@slub/edb-debug-utils";
 import { SemanticJsonFormProps } from "@slub/edb-global-types";
 import { GenericModal } from "@slub/edb-basic-components";
-import { uischemas } from "./uischemas";
 
 type SemanticJsonFormStateType = {
   isSaving: boolean;
@@ -250,10 +249,6 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormProps> = ({
     [onChange, editMode, isLoading, isReloading],
   );
 
-  const uischemasCached = useMemo(() => {
-    return uischemas(schema);
-  }, [schema]);
-
   return (
     <Box sx={{ minHeight: "100%", width: "100%" }}>
       <Backdrop
@@ -269,7 +264,6 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormProps> = ({
         schema={schema}
         formsPath="root"
         jsonFormsProps={{
-          uischemas: uischemasCached,
           readonly: !editMode || !initiallyLoaded,
           ...(jsonFormsProps || {}),
         }}

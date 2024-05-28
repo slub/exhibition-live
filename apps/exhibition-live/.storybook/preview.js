@@ -9,12 +9,15 @@ import {
   defaultPrefix,
   defaultQueryBuilderOptions,
   sladb,
-} from "../components/form/formConfigs";
+} from "../components/config/formConfigs";
 import {
   BASE_IRI,
   declarativeMappings,
   lobidTypemap,
+  primaryFieldsRegistry,
   PUBLIC_BASE_PATH,
+  rendererRegistry,
+  makeDefaultUiSchemaForAllDefinitions,
 } from "../components/config";
 import { AdbProvider, store } from "@slub/edb-state-hooks";
 import { EntityDetailModal } from "../components/form/show";
@@ -22,6 +25,7 @@ import { EditEntityModal } from "../components/form/edit/EditEntityModal";
 import { Provider } from "react-redux";
 import { AppRouterContext } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import SemanticJsonForm from "../components/form/SemanticJsonForm";
+import { materialCells } from "@jsonforms/material-renderers";
 
 export const parameters = {
   nextRouter: {
@@ -84,6 +88,12 @@ export const withMuiTheme = (Story) => {
           },
         }}
         schema={schema}
+        uiSchemaDefaultRegistry={makeDefaultUiSchemaForAllDefinitions(schema)}
+        rendererRegistry={rendererRegistry}
+        cellRendererRegistry={materialCells}
+        primaryFieldRendererRegistry={(typeIRI) =>
+          primaryFieldsRegistry(typeIRI, (name) => sladb(name).value)
+        }
         env={{
           publicBasePath: PUBLIC_BASE_PATH,
           baseIRI: BASE_IRI,

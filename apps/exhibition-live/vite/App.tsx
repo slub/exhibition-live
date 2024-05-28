@@ -12,12 +12,15 @@ import {
   defaultPrefix,
   defaultQueryBuilderOptions,
   sladb,
-} from "../components/form/formConfigs";
+} from "../components/config/formConfigs";
 import {
   BASE_IRI,
   declarativeMappings,
   lobidTypemap,
+  makeDefaultUiSchemaForAllDefinitions,
+  primaryFieldsRegistry,
   PUBLIC_BASE_PATH,
+  rendererRegistry,
 } from "../components/config";
 import { EntityDetailModal } from "../components/form/show";
 import { EditEntityModal } from "../components/form/edit/EditEntityModal";
@@ -27,9 +30,9 @@ import ThemeComponent from "../components/theme/ThemeComponent";
 import React from "react";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { SemanticJsonFormProps } from "@slub/edb-global-types";
 import SemanticJsonForm from "../components/form/SemanticJsonForm";
 import { JSONSchema7 } from "json-schema";
+import { materialCells } from "@jsonforms/material-renderers";
 
 export const queryClient = new QueryClient();
 
@@ -65,6 +68,17 @@ export const App = ({ children }: { children?: React.ReactNode }) => {
                   },
                 }}
                 schema={schema as JSONSchema7}
+                uiSchemaDefaultRegistry={makeDefaultUiSchemaForAllDefinitions(
+                  schema as JSONSchema7,
+                )}
+                rendererRegistry={rendererRegistry}
+                cellRendererRegistry={materialCells}
+                primaryFieldRendererRegistry={(typeIRI: string) =>
+                  primaryFieldsRegistry(
+                    typeIRI,
+                    (name: string) => sladb(name).value,
+                  )
+                }
                 env={{
                   publicBasePath: PUBLIC_BASE_PATH,
                   baseIRI: BASE_IRI,

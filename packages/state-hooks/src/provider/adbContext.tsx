@@ -1,5 +1,10 @@
 import { createContext, useContext } from "react";
 import {
+  JsonFormsUISchemaRegistryEntry,
+  JsonFormsRendererRegistryEntry,
+  JsonFormsCellRendererRegistryEntry,
+} from "@jsonforms/core";
+import {
   IRIToStringFn,
   NormDataMapping,
   SparqlBuildOptions,
@@ -42,6 +47,12 @@ type AdbContextValue = {
     [authorityIRI: string]: NormDataMapping;
   };
   schema: JSONSchema7;
+  uiSchemaDefaultRegistry?: JsonFormsUISchemaRegistryEntry[];
+  rendererRegistry?: JsonFormsRendererRegistryEntry[];
+  primaryFieldRendererRegistry?: (
+    typeIRI: string,
+  ) => JsonFormsRendererRegistryEntry[];
+  cellRendererRegistry?: JsonFormsCellRendererRegistryEntry[];
   env: {
     publicBasePath: string;
     baseIRI: string;

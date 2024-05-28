@@ -1,7 +1,7 @@
 import React from "react";
 
 import LobidSearchTable from "./LobidSearchTable";
-import { sladb } from "../formConfigs";
+import { sladb } from "../../config/formConfigs";
 
 export default {
   title: "form/lobid/LobidSearchTable",

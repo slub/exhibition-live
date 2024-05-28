@@ -1,4 +1,3 @@
-import { Check, MoreVert as MoreVertIcon } from "@mui/icons-material";
 import {
   Accordion,
   AccordionDetails,
@@ -35,7 +34,6 @@ import WikidataAllPropTable from "../wikidata/WikidataAllPropTable";
 import { OverflowContainer } from "../../lists";
 import { specialDate2LocalDate } from "@slub/edb-ui-utils";
 import { useTranslation } from "next-i18next";
-import isNil from "lodash/isNil";
 import { isValidUrl } from "@slub/edb-ui-utils";
 import { Image } from "mui-image";
 

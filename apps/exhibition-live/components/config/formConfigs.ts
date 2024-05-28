@@ -5,7 +5,7 @@ import {
   primaryFieldExtracts,
   primaryFields,
   typeIRItoTypeName,
-} from "../config";
+} from "./index";
 
 export const sladb = namespace("http://ontologies.slub-dresden.de/exhibition#");
 export const slent = namespace(

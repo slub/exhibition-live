@@ -1,6 +1,6 @@
 import { JsonFormsUISchemaRegistryEntry } from "@jsonforms/core";
 
-import { BASE_IRI } from "../config";
+import { BASE_IRI } from "./index";
 import { defs } from "@slub/json-schema-utils";
 import { JSONSchema7 } from "json-schema";
 
@@ -32,7 +32,11 @@ const additionalOptions: Record<string, any> = {
     dropdown: true,
   },
 };
-const createStubLayout = (defs: string, baseIRI: string, label?: string) => ({
+export const createStubLayout = (
+  defs: string,
+  baseIRI: string,
+  label?: string,
+) => ({
   type: "VerticalLayout",
   elements: [
     {
@@ -69,7 +73,7 @@ const createUiSchema: (
   uischema: createStubLayout(key, baseIRI, label),
 });
 
-export const uischemas: (
+export const makeDefaultUiSchemaForAllDefinitions: (
   schema: JSONSchema7,
 ) => JsonFormsUISchemaRegistryEntry[] = (schema) =>
   Object.keys(defs(schema as JSONSchema7)).map((key) =>

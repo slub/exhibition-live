@@ -1,5 +1,5 @@
 import TypedForm from "../content/main/TypedForm";
-import { sladb } from "./formConfigs";
+import { sladb } from "../config/formConfigs";
 
 export default {
   title: "forms/Form",

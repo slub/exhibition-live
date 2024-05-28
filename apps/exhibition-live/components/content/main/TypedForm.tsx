@@ -3,7 +3,6 @@ import { JSONSchema7 } from "json-schema";
 import React, { useCallback, useMemo, useState } from "react";
 
 import { uischemata } from "../../form/uischemaForType";
-import { uischemas } from "../../form/uischemas";
 import { materialCategorizationStepperLayoutWithPortal } from "../../renderer/MaterialCategorizationStepperLayoutWithPortal";
 import {
   useAdbContext,
@@ -132,10 +131,7 @@ const TypedForm = ({ typeName, entityIRI, classIRI }: MainFormProps) => {
     ];
   }, []);
 
-  const uischema = useMemo(
-    () => uischemata[typeName] || (uischemas(loadedSchema) as any)[typeName],
-    [typeName, loadedSchema],
-  );
+  const uischema = useMemo(() => uischemata[typeName], [typeName]);
 
   return (
     <WithPreviewForm data={data} classIRI={classIRI} entityIRI={entityIRI}>

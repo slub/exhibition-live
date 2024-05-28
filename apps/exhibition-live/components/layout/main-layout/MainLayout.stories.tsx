@@ -3,7 +3,7 @@ import React, { useMemo } from "react";
 
 import { MainLayout } from "./MainLayout";
 import TypedForm from "../../content/main/TypedFormNoSSR";
-import { sladb, slent } from "../../form/formConfigs";
+import { sladb, slent } from "../../config/formConfigs";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 
 export default {

@@ -1,5 +1,5 @@
 import { DeclarativeFlatMappings } from "@slub/edb-ui-utils";
-import { sladb } from "../form/formConfigs";
+import { sladb } from "./formConfigs";
 import { OwnColumnDesc } from "../google/types";
 import { gndBaseIRI } from "@slub/edb-ui-utils";
 import {

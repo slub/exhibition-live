@@ -8,7 +8,7 @@ import {
   defaultPrefix,
   sladb,
   slent,
-} from "./formConfigs";
+} from "../config/formConfigs";
 import NewSemanticJsonForm from "./SemanticJsonForm";
 import { uischemata } from "./uischemaForType";
 

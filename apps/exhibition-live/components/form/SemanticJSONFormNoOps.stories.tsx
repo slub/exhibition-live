@@ -4,7 +4,7 @@ import { uischemata } from "./uischemaForType";
 import type { Meta, StoryObj } from "@storybook/react";
 
 import useExtendedSchema from "../state/useExtendedSchema";
-import { sladb, slent } from "./formConfigs";
+import { sladb, slent } from "../config/formConfigs";
 import { SemanticJsonFormNoOps } from "./SemanticJsonFormNoOps";
 
 export default {

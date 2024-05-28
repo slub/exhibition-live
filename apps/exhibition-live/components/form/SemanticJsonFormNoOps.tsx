@@ -1,67 +1,20 @@
-import "react-json-view-lite/dist/index.css";
-
-import {
-  and,
-  isObjectArray,
-  isObjectArrayControl,
-  JsonFormsCore,
-  JsonSchema,
-  rankWith,
-  schemaMatches,
-  scopeEndsWith,
-  UISchemaElement,
-} from "@jsonforms/core";
-import {
-  materialCells,
-  materialRenderers,
-} from "@jsonforms/material-renderers";
-import {
-  JsonForms,
-  JsonFormsInitStateProps,
-  withJsonFormsControlProps,
-} from "@jsonforms/react";
+import { JsonFormsCore, JsonSchema } from "@jsonforms/core";
+import { JsonForms, JsonFormsInitStateProps } from "@jsonforms/react";
 import { Card, CardContent, Grid } from "@mui/material";
 import { JSONSchema7 } from "json-schema";
-import { isEmpty, mixin, merge, assign } from "lodash";
+import { merge } from "lodash";
 import React, { FunctionComponent, useCallback, useMemo } from "react";
-
-import AdbSpecialDateRenderer, {
-  adbSpecialDateControlTester,
-} from "../renderer/AdbSpecialDateRenderer";
-import AutoIdentifierRenderer from "../renderer/AutoIdentifierRenderer";
-import ImageRenderer from "../renderer/ImageRenderer";
-import InlineCondensedSemanticFormsRenderer from "../renderer/InlineCondensedSemanticFormsRenderer";
-import MaterialArrayOfLinkedItemRenderer from "../renderer/MaterialArrayOfLinkedItemRenderer";
-import MaterialCustomAnyOfRenderer, {
-  materialCustomAnyOfControlTester,
-} from "../renderer/MaterialCustomAnyOfRenderer";
-import MaterialLinkedObjectRenderer, {
-  materialLinkedObjectControlTester,
-} from "../renderer/MaterialLinkedObjectRenderer";
-import TypeOfRenderer from "../renderer/TypeOfRenderer";
 import SimilarityFinder from "./SimilarityFinder";
 import { SearchbarWithFloatingButton } from "../layout/main-layout/Searchbar";
-import MaterialBooleanControl, {
-  materialBooleanControlTester,
-} from "../renderer/MaterialBooleanControl";
 import NiceModal from "@ebay/nice-modal-react";
-import {
-  primaryTextFieldControlTester,
-  PrimaryTextFieldRenderer,
-} from "../renderer/PrimaryFieldTextRenderer";
 import {
   useAdbContext,
   useGlobalSearch,
   useRightDrawerState,
 } from "@slub/edb-state-hooks";
-import MaterialArrayOfLinkedItemChipsRenderer, {
-  materialArrayLayoutChipsTester,
-} from "../renderer/MaterialArrayOfLinkedItemChipsRenderer";
-import InlineDropdownRenderer from "../renderer/InlineDropdownRenderer";
 import { ErrorObject } from "ajv";
 import { OptionsModal } from "./OptionsModal";
 import { useTranslation } from "next-i18next";
-import { MarkdownTextFieldRendererComponent } from "@slub/edb-markdown-renderer";
 
 export type ChangeCause = "user" | "mapping" | "reload";
 
@@ -84,88 +37,6 @@ export interface SemanticJsonFormsNoOpsProps {
   formsPath?: string;
 }
 
-const renderers = [
-  ...materialRenderers,
-  {
-    tester: materialCustomAnyOfControlTester,
-    renderer: MaterialCustomAnyOfRenderer,
-  },
-  {
-    tester: rankWith(10, scopeEndsWith("image")),
-    renderer: ImageRenderer,
-  },
-  {
-    tester: rankWith(10, scopeEndsWith("@id")),
-    renderer: AutoIdentifierRenderer,
-  },
-  {
-    tester: rankWith(10, scopeEndsWith("@type")),
-    renderer: TypeOfRenderer,
-  },
-  {
-    tester: rankWith(
-      5,
-      and(
-        isObjectArray,
-        schemaMatches((schema) => {
-          if (
-            !(
-              schema.type === "array" &&
-              typeof schema.items === "object" &&
-              (schema.items as JSONSchema7).properties
-            )
-          ) {
-            return Boolean((schema.items as JSONSchema7).$ref);
-          }
-          const props = (schema.items as JSONSchema7).properties;
-          return Boolean(props["@id"] && props["@type"]);
-        }),
-      ),
-    ),
-    renderer: MaterialArrayOfLinkedItemRenderer,
-  },
-  {
-    tester: materialArrayLayoutChipsTester,
-    renderer: MaterialArrayOfLinkedItemChipsRenderer,
-  },
-  {
-    tester: rankWith(14, (uischema: UISchemaElement, schema, ctx): boolean => {
-      if (isEmpty(uischema) || isObjectArrayControl(uischema, schema, ctx)) {
-        return false;
-      }
-      const options = uischema.options;
-      return !isEmpty(options) && options["inline"];
-    }),
-    renderer: InlineCondensedSemanticFormsRenderer,
-  },
-  {
-    tester: rankWith(15, (uischema: UISchemaElement, schema, ctx): boolean => {
-      if (isEmpty(uischema) || isObjectArrayControl(uischema, schema, ctx)) {
-        return false;
-      }
-      const options = uischema.options;
-      return !isEmpty(options) && options["dropdown"] === true;
-    }),
-    renderer: InlineDropdownRenderer,
-  },
-  {
-    tester: materialLinkedObjectControlTester,
-    renderer: MaterialLinkedObjectRenderer,
-  },
-  {
-    tester: adbSpecialDateControlTester,
-    renderer: AdbSpecialDateRenderer,
-  },
-  {
-    tester: materialBooleanControlTester,
-    renderer: MaterialBooleanControl,
-  },
-  {
-    tester: rankWith(10, scopeEndsWith("description")),
-    renderer: withJsonFormsControlProps(MarkdownTextFieldRendererComponent),
-  },
-];
-
 export const SemanticJsonFormNoOps: FunctionComponent<
   SemanticJsonFormsNoOpsProps
 > = ({
@@ -186,6 +57,10 @@ export const SemanticJsonFormNoOps: FunctionComponent<
   const {
     queryBuildOptions: { primaryFields },
     typeIRIToTypeName,
+    uiSchemaDefaultRegistry,
+    rendererRegistry,
+    cellRendererRegistry,
+    primaryFieldRendererRegistry,
   } = useAdbContext();
   const searchOnDataPath = useMemo(() => {
     const typeName = typeIRIToTypeName(typeIRI);
@@ -193,15 +68,10 @@ export const SemanticJsonFormNoOps: FunctionComponent<
   }, [typeIRI, typeIRIToTypeName, primaryFields]);
   const primaryFieldRenderer = useMemo(
     () =>
-      primaryFields[typeIRIToTypeName(typeIRI)]?.label
-        ? [
-            {
-              tester: primaryTextFieldControlTester(typeIRIToTypeName(typeIRI)),
-              renderer: PrimaryTextFieldRenderer,
-            },
-          ]
+      primaryFieldRendererRegistry
+        ? primaryFieldRendererRegistry(typeIRI) || []
         : [],
-    [typeIRI, typeIRIToTypeName, primaryFields],
+    [typeIRI, primaryFieldRendererRegistry],
   );
 
   const handleFormChange = useCallback(
@@ -279,9 +149,15 @@ export const SemanticJsonFormNoOps: FunctionComponent<
         ),
     [wrapWithinCard],
   );
-  const { renderers: jfpRenderers, config, ...jfpProps } = jsonFormsProps;
+  const {
+    cells: jfpCells,
+    renderers: jfpRenderers,
+    config,
+    ...jfpProps
+  } = jsonFormsProps;
   const finalJsonFormsProps = {
     ...jfpProps,
+    uischemas: uiSchemaDefaultRegistry,
     config: {
       ...config,
       formsPath,
@@ -289,8 +165,16 @@ export const SemanticJsonFormNoOps: FunctionComponent<
     },
   };
   const allRenderer = useMemo(
-    () => [...renderers, ...(jfpRenderers || []), ...primaryFieldRenderer],
-    [jfpRenderers, primaryFieldRenderer],
+    () => [
+      ...(rendererRegistry || []),
+      ...(jfpRenderers || []),
+      ...primaryFieldRenderer,
+    ],
+    [jfpRenderers, primaryFieldRenderer, rendererRegistry],
+  );
+  const allCellRenderer = useMemo(
+    () => [...(cellRendererRegistry || []), ...(jfpCells || [])],
+    [cellRendererRegistry, jfpCells],
   );
   const { path: globalPath } = useGlobalSearch();
 
@@ -309,7 +193,7 @@ export const SemanticJsonFormNoOps: FunctionComponent<
               <JsonForms
                 data={data}
                 renderers={allRenderer}
-                cells={materialCells}
+                cells={allCellRenderer}
                 onChange={handleFormChange}
                 schema={schema as JsonSchema}
                 {...finalJsonFormsProps}

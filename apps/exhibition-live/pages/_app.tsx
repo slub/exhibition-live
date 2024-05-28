@@ -32,14 +32,17 @@ import {
   defaultPrefix,
   defaultQueryBuilderOptions,
   sladb,
-} from "../components/form/formConfigs";
+} from "../components/config/formConfigs";
 import { envToSparqlEndpoint } from "../components/config/envToSparqlEndpoint";
 import getConfig from "next/config";
 import {
   BASE_IRI,
   declarativeMappings,
   lobidTypemap,
+  makeDefaultUiSchemaForAllDefinitions,
+  primaryFieldsRegistry,
   PUBLIC_BASE_PATH,
+  rendererRegistry,
   schema,
 } from "../components/config";
 import { AdbProvider, store } from "@slub/edb-state-hooks";
@@ -48,6 +51,7 @@ import { EditEntityModal } from "../components/form/edit/EditEntityModal";
 import { useRouter } from "next/router";
 import SemanticJsonForm from "../components/form/SemanticJsonForm";
 import { JSONSchema7 } from "json-schema";
+import { materialCells } from "@jsonforms/material-renderers";
 
 export const queryClient = new QueryClient();
 const QueryClientProviderWrapper = ({
@@ -96,7 +100,18 @@ function App({ Component, pageProps }: AppProps) {
                     typeToTypeMap: lobidTypemap,
                   },
                 }}
-                schema={schema}
+                schema={schema as JSONSchema7}
+                uiSchemaDefaultRegistry={makeDefaultUiSchemaForAllDefinitions(
+                  schema as JSONSchema7,
+                )}
+                rendererRegistry={rendererRegistry}
+                cellRendererRegistry={materialCells}
+                primaryFieldRendererRegistry={(typeIRI: string) =>
+                  primaryFieldsRegistry(
+                    typeIRI,
+                    (name: string) => sladb(name).value,
+                  )
+                }
                 env={{
                   publicBasePath: PUBLIC_BASE_PATH,
                   baseIRI: BASE_IRI,

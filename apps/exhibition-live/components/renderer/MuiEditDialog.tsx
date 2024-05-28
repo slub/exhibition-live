@@ -17,7 +17,6 @@ import {
   Box,
   Hidden,
   IconButton,
-  InputBase,
   styled,
   Toolbar,
   Typography,

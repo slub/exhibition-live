@@ -187,6 +187,10 @@ export const schema: JSONSchema7 = {
         description: {
           type: "string",
         },
+        image: {
+          type: "string",
+          format: "uri",
+        },
         parent: {
           title: "Übergeordneter Ort",
           $ref: "#/$defs/Location",
@@ -253,12 +257,6 @@ export const schema: JSONSchema7 = {
         },
         description: {
           type: "string",
-        },
-        tags: {
-          type: "array",
-          items: {
-            $ref: "#/$defs/Tag",
-          },
         },
       },
     },
@@ -387,7 +385,12 @@ export const schema: JSONSchema7 = {
             },
             dateModifier: {
               type: "integer",
+              title: "Art der Zeitangabe",
               oneOf: [
+                {
+                  const: 0,
+                  title: "exakt",
+                },
                 {
                   const: 1,
                   title: "ca.",
@@ -414,7 +417,12 @@ export const schema: JSONSchema7 = {
             },
             dateModifier: {
               type: "integer",
+              title: "Art der Zeitangabe",
               oneOf: [
+                {
+                  const: 0,
+                  title: "exakt",
+                },
                 {
                   const: 1,
                   title: "ca.",
@@ -537,7 +545,12 @@ export const schema: JSONSchema7 = {
             },
             dateModifier: {
               type: "integer",
+              title: "Art der Zeitangabe",
               oneOf: [
+                {
+                  const: 0,
+                  title: "exakt",
+                },
                 {
                   const: 1,
                   title: "ca.",
@@ -564,7 +577,12 @@ export const schema: JSONSchema7 = {
             },
             dateModifier: {
               type: "integer",
+              title: "Art der Zeitangabe",
               oneOf: [
+                {
+                  const: 0,
+                  title: "exakt",
+                },
                 {
                   const: 1,
                   title: "ca.",
@@ -601,6 +619,10 @@ export const schema: JSONSchema7 = {
             $ref: "#/$defs/Genre",
           },
         },
+        parent: {
+          title: "Übergeordnete Ausstellung",
+          $ref: "#/$defs/Exhibition",
+        },
         externalId: {
           type: "string",
           maxLength: 50,
@@ -614,6 +636,9 @@ export const schema: JSONSchema7 = {
         editorNote: {
           type: "string",
           maxLength: 300,
+        },
+        placesUnknown: {
+          type: "boolean",
         },
         places: {
           type: "array",
@@ -633,10 +658,28 @@ export const schema: JSONSchema7 = {
             $ref: "#/$defs/Tag",
           },
         },
+        exposedArtists: {
+          type: "array",
+          items: {
+            $ref: "#/$defs/Person",
+          },
+        },
+        curators: {
+          type: "array",
+          items: {
+            $ref: "#/$defs/Person",
+          },
+        },
         involvedPersons: {
           type: "array",
           items: {
             $ref: "#/$defs/InvolvedPerson",
+          },
+        },
+        organizers: {
+          type: "array",
+          items: {
+            $ref: "#/$defs/Corporation",
           },
         },
         involvedCorporations: {
@@ -683,6 +726,12 @@ export const schema: JSONSchema7 = {
           type: "array",
           items: {
             $ref: "#/$defs/ExhibitionExponat",
+          },
+        },
+        catalogs: {
+          type: "array",
+          items: {
+            $ref: "#/$defs/Resource",
           },
         },
         resources: {

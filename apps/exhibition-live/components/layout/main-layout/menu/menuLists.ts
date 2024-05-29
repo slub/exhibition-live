@@ -31,42 +31,17 @@ const lists: (
       url: `/list/${key}`,
       typeName: key,
   })),*/
-  children: [
-    {
-      id: "list_default",
-      title: "Ausstellungen",
+  children: Object.entries(
+    exhibitionSchema.definitions || exhibitionSchema["$defs"] || {},
+  )
+    .filter(([key]) => !topLevel.includes(key))
+    .map(([key, value]) => ({
+      id: `list_${key}`,
+      title: t(key),
       type: "item",
-      icon: IconPaint as any,
-      typeName: "Exhibition",
-      readOnly: !getPermission("Exhibition").edit,
-    },
-    {
-      id: "list_person",
-      title: "Personen",
-      type: "item",
-      icon: IconFaceId as any,
-      typeName: "Person",
-      readOnly: !getPermission("Person").edit,
-    },
-    {
-      id: "list_other",
-      title: "Entitäten",
-      type: "collapse",
-      //@ts-ignore
-      icon: icons.IconDots,
-      children: Object.entries(
-        exhibitionSchema.definitions || exhibitionSchema["$defs"] || {},
-      )
-        .filter(([key]) => !topLevel.includes(key))
-        .map(([key, value]) => ({
-          id: `list_${key}`,
-          title: t(key),
-          type: "item",
-          typeName: key,
-          readOnly: !getPermission(key).edit,
-        })),
-    },
-  ],
+      typeName: key,
+      readOnly: !getPermission(key).edit,
+    })),
 });
 
 export default lists;

@@ -1,5 +1,7 @@
 import {
   IRIToStringFn,
+  NormDataMapping,
+  SparqlBuildOptions,
   SparqlEndpoint,
   StringToIRIFn,
 } from "@slub/edb-core-types";
@@ -8,6 +10,12 @@ import { NamespaceBuilder } from "@rdfjs/namespace";
 import { JSONSchema7 } from "json-schema";
 import { UrlObject } from "url";
 import { ParsedUrlQuery } from "querystring";
+import {
+  JsonFormsCellRendererRegistryEntry,
+  JsonFormsRendererRegistryEntry,
+  JsonFormsUISchemaRegistryEntry,
+} from "@jsonforms/core";
+import { JSONLDConfig } from "@slub/edb-state-hooks/src";
 
 export type EdbConfRaw = {
   BASE_IRI: string;
@@ -148,3 +156,24 @@ export interface SemanticJsonFormProps {
   enableSidebar?: boolean;
   wrapWithinCard?: boolean;
 }
+
+export type GlobalAppConfig = {
+  queryBuildOptions: SparqlBuildOptions;
+  typeNameToTypeIRI: StringToIRIFn;
+  typeIRIToTypeName: IRIToStringFn;
+  createEntityIRI: (typeName: string, id?: string) => string;
+  propertyNameToIRI: StringToIRIFn;
+  propertyIRIToPropertyName: IRIToStringFn;
+  jsonLDConfig: JSONLDConfig;
+  normDataMapping: {
+    [authorityIRI: string]: NormDataMapping;
+  };
+  schema: JSONSchema7;
+  makeStubSchema?: (schema: JSONSchema7) => JSONSchema7;
+  uiSchemaDefaultRegistry?: JsonFormsUISchemaRegistryEntry[];
+  rendererRegistry?: JsonFormsRendererRegistryEntry[];
+  primaryFieldRendererRegistry?: (
+    typeIRI: string,
+  ) => JsonFormsRendererRegistryEntry[];
+  cellRendererRegistry?: JsonFormsCellRendererRegistryEntry[];
+};

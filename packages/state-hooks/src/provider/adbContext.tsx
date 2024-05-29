@@ -1,25 +1,14 @@
 import { createContext, useContext } from "react";
-import {
-  JsonFormsUISchemaRegistryEntry,
-  JsonFormsRendererRegistryEntry,
-  JsonFormsCellRendererRegistryEntry,
-} from "@jsonforms/core";
-import {
-  IRIToStringFn,
-  NormDataMapping,
-  SparqlBuildOptions,
-  SparqlEndpoint,
-  StringToIRIFn,
-} from "@slub/edb-core-types";
 import { JsonLdContext } from "jsonld-context-parser";
 import {
   EditEntityModalProps,
   EntityDetailModalProps,
+  GlobalAppConfig,
   ModRouter,
   SemanticJsonFormProps,
 } from "@slub/edb-global-types";
 import { NiceModalHocProps } from "@ebay/nice-modal-react";
-import { JSONSchema7 } from "json-schema";
+import { SparqlEndpoint } from "@slub/edb-core-types";
 
 export type JSONLDConfig = {
   defaultPrefix: string;
@@ -34,25 +23,8 @@ export type JSONLDConfig = {
  * @param typeNameToTypeIRI Mapping from type name within Schema to a class IRI
  * @param lockedSPARQLEndpoint Optional locked SPARQL endpoint
  */
-type AdbContextValue = {
-  queryBuildOptions: SparqlBuildOptions;
-  typeNameToTypeIRI: StringToIRIFn;
-  typeIRIToTypeName: IRIToStringFn;
-  createEntityIRI: (typeName: string, id?: string) => string;
-  propertyNameToIRI: StringToIRIFn;
-  propertyIRIToPropertyName: IRIToStringFn;
+type AdbContextValue = GlobalAppConfig & {
   lockedSPARQLEndpoint?: SparqlEndpoint;
-  jsonLDConfig: JSONLDConfig;
-  normDataMapping: {
-    [authorityIRI: string]: NormDataMapping;
-  };
-  schema: JSONSchema7;
-  uiSchemaDefaultRegistry?: JsonFormsUISchemaRegistryEntry[];
-  rendererRegistry?: JsonFormsRendererRegistryEntry[];
-  primaryFieldRendererRegistry?: (
-    typeIRI: string,
-  ) => JsonFormsRendererRegistryEntry[];
-  cellRendererRegistry?: JsonFormsCellRendererRegistryEntry[];
   env: {
     publicBasePath: string;
     baseIRI: string;

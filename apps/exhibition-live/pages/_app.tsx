@@ -52,6 +52,8 @@ import { useRouter } from "next/router";
 import SemanticJsonForm from "../components/form/SemanticJsonForm";
 import { JSONSchema7 } from "json-schema";
 import { materialCells } from "@jsonforms/material-renderers";
+import { makeStubSchema } from "../components/config/makeStubSchema";
+import { exhibitionConfig } from "../components/config/exhibitionAppConfig";
 
 export const queryClient = new QueryClient();
 const QueryClientProviderWrapper = ({
@@ -78,40 +80,8 @@ function App({ Component, pageProps }: AppProps) {
           <ThemeComponent>
             <SnackbarProvider>
               <AdbProvider
-                queryBuildOptions={defaultQueryBuilderOptions}
-                typeNameToTypeIRI={(name: string) => sladb(name).value}
-                propertyNameToIRI={(name: string) => sladb(name).value}
-                typeIRIToTypeName={(iri: string) =>
-                  iri?.substring(BASE_IRI.length, iri.length)
-                }
-                propertyIRIToPropertyName={(iri: string) =>
-                  iri?.substring(BASE_IRI.length, iri.length)
-                }
-                createEntityIRI={createNewIRI}
-                jsonLDConfig={{
-                  defaultPrefix: defaultPrefix,
-                  jsonldContext: defaultJsonldContext,
-                  allowUnsafeSourceIRIs: false,
-                }}
+                {...exhibitionConfig}
                 lockedSPARQLEndpoint={sparqlEndpoint}
-                normDataMapping={{
-                  gnd: {
-                    mapping: declarativeMappings,
-                    typeToTypeMap: lobidTypemap,
-                  },
-                }}
-                schema={schema as JSONSchema7}
-                uiSchemaDefaultRegistry={makeDefaultUiSchemaForAllDefinitions(
-                  schema as JSONSchema7,
-                )}
-                rendererRegistry={rendererRegistry}
-                cellRendererRegistry={materialCells}
-                primaryFieldRendererRegistry={(typeIRI: string) =>
-                  primaryFieldsRegistry(
-                    typeIRI,
-                    (name: string) => sladb(name).value,
-                  )
-                }
                 env={{
                   publicBasePath: PUBLIC_BASE_PATH,
                   baseIRI: BASE_IRI,

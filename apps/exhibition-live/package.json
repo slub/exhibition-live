@@ -64,6 +64,7 @@
     "@slub/edb-state-hooks": "workspace:*",
     "@slub/edb-markdown-renderer": "workspace:*",
     "@slub/exhibition-schema": "workspace:*",
+    "@slub/musiconn-schema": "workspace:*",
     "@tanstack/table-core": "^8.16.0",
     "@tanstack/react-query": "^4.24.6",
     "@tanstack/react-query-devtools": "^5.8.2",

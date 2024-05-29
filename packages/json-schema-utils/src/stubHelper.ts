@@ -30,11 +30,13 @@ export const recursivelyFindRefsAndAppendStub: (
   schema: JSONSchema7,
   options: RefAppendOptions,
   rootSchema?: JSONSchema7,
+  isProperty?: boolean,
 ) => JSONSchema7 = (
   field,
   schema: JSONSchema7,
   options,
   rootSchema = schema,
+  isProperty = false,
 ) => {
   if (options?.excludeField?.includes(field)) {
     return schema;
@@ -80,6 +82,7 @@ export const recursivelyFindRefsAndAppendStub: (
                 s as JSONSchema7,
                 options,
                 rootSchema,
+                true,
               ),
             ] as [string, JSONSchema7Definition],
           options,
@@ -87,7 +90,7 @@ export const recursivelyFindRefsAndAppendStub: (
       ),
     };
   }
-  if (defs(schema)) {
+  if (defs(schema) && !isProperty) {
     return {
       ...schema,
       [definitionsKey]: Object.fromEntries(
@@ -150,7 +153,7 @@ export const withJSONLDProperties: (
       ...schema.properties,
       ...(genJSONLDSemanticProperties ? genJSONLDSemanticProperties(name) : {}),
     },
-    required: requiredProperties ? requiredProperties(name) : undefined,
+    ...(requiredProperties ? { required: requiredProperties(name) } : {}),
   }) as JSONSchema7;
 
 export const prepareStubbedSchema = (

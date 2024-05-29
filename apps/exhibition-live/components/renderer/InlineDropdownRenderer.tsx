@@ -1,9 +1,4 @@
-import {
-  ControlProps,
-  JsonSchema,
-  Resolve,
-  resolveSchema,
-} from "@jsonforms/core";
+import { ControlProps, Resolve } from "@jsonforms/core";
 import { useJsonForms, withJsonFormsControlProps } from "@jsonforms/react";
 import { FormControl, Hidden } from "@mui/material";
 import merge from "lodash/merge";
@@ -33,8 +28,10 @@ const InlineDropdownRenderer = (props: ControlProps) => {
   } = props;
   const {
     typeIRIToTypeName,
-    queryBuildOptions: { primaryFields },
+    queryBuildOptions,
+    jsonLDConfig: { defaultPrefix },
   } = useAdbContext();
+  const { primaryFields } = queryBuildOptions;
   const appliedUiSchemaOptions = merge({}, config, uischema.options);
   const ctx = useJsonForms();
   const [realLabel, setRealLabel] = useState("");
@@ -114,6 +111,10 @@ const InlineDropdownRenderer = (props: ControlProps) => {
               searchString || null,
               typeIRI,
               crudOptions.selectFetch,
+              {
+                defaultPrefix,
+                queryBuildOptions,
+              },
               limit,
             )
           ).map(({ name = "", value }: { name: string; value: any }) => {

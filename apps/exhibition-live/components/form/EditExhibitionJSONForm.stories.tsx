@@ -2,7 +2,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { JSONSchema7 } from "json-schema";
 import { useMemo, useState } from "react";
 
-import useExtendedSchema from "../state/useExtendedSchema";
 import {
   defaultJsonldContext,
   defaultPrefix,
@@ -11,6 +10,7 @@ import {
 } from "../config/formConfigs";
 import NewSemanticJsonForm from "./SemanticJsonForm";
 import { uischemata } from "./uischemaForType";
+import { useExtendedSchema } from "@slub/edb-state-hooks";
 
 const queryClient = new QueryClient();
 

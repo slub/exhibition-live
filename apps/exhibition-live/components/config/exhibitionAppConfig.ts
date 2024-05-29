@@ -35,11 +35,9 @@ export const exhibitionConfig = {
       typeToTypeMap: lobidTypemap,
     },
   },
-  schema: schema as JSONSchema7,
+  schema: schema,
   makeStubSchema: makeStubSchema,
-  uiSchemaDefaultRegistry: makeDefaultUiSchemaForAllDefinitions(
-    schema as JSONSchema7,
-  ),
+  uiSchemaDefaultRegistry: makeDefaultUiSchemaForAllDefinitions(schema),
   rendererRegistry: rendererRegistry,
   cellRendererRegistry: materialCells,
   primaryFieldRendererRegistry: (typeIRI: string) =>

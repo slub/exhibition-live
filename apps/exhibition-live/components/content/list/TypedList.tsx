@@ -46,10 +46,9 @@ import { SemanticFormsModal } from "../../renderer/SemanticFormsModal";
 import NiceModal from "@ebay/nice-modal-react";
 import { useSnackbar } from "notistack";
 import { JsonSchema } from "@jsonforms/core";
-import useExtendedSchema from "../../state/useExtendedSchema";
 import Button from "@mui/material/Button";
 import { download, generateCsv, mkConfig } from "export-to-csv";
-import { useSettings } from "@slub/edb-state-hooks";
+import { useSettings, useExtendedSchema } from "@slub/edb-state-hooks";
 import { useTranslation } from "next-i18next";
 import {
   jsonSchema2Select,

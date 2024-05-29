@@ -1,8 +1,10 @@
 import NiceModal, { useModal } from "@ebay/nice-modal-react";
 import { useAdbContext, useTypeIRIFromEntity } from "@slub/edb-state-hooks";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import useExtendedSchema from "../../state/useExtendedSchema";
-import { useCRUDWithQueryClient } from "@slub/edb-state-hooks";
+import {
+  useCRUDWithQueryClient,
+  useExtendedSchema,
+} from "@slub/edb-state-hooks";
 import { useTranslation } from "next-i18next";
 import { applyToEachField, extractFieldIfString } from "@slub/edb-ui-utils";
 import { Button, Stack } from "@mui/material";

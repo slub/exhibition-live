@@ -1,10 +1,9 @@
 import { Box, BoxProps } from "@mui/material";
-import useExtendedSchema from "../../state/useExtendedSchema";
 import { useAdbContext, useCRUDWithQueryClient } from "@slub/edb-state-hooks";
 import { useMemo } from "react";
 import { applyToEachField, extractFieldIfString } from "@slub/edb-ui-utils";
 import { EntityDetailCard } from "./EntityDetailCard";
-import { useTypeIRIFromEntity } from "@slub/edb-state-hooks";
+import { useTypeIRIFromEntity, useExtendedSchema } from "@slub/edb-state-hooks";
 import { PrimaryField, PrimaryFieldResults } from "@slub/edb-core-types";
 import { filterUndefOrNull } from "@slub/edb-ui-utils";
 

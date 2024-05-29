@@ -3,9 +3,9 @@ import { useMemo, useState } from "react";
 import { uischemata } from "./uischemaForType";
 import type { Meta, StoryObj } from "@storybook/react";
 
-import useExtendedSchema from "../state/useExtendedSchema";
 import { sladb, slent } from "../config/formConfigs";
 import { SemanticJsonFormNoOps } from "./SemanticJsonFormNoOps";
+import { useExtendedSchema } from "@slub/edb-state-hooks";
 
 export default {
   title: "form/exhibition/SemanticJsonFormNoOps",

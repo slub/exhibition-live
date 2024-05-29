@@ -68,9 +68,7 @@ export const SemanticJsonFormNoOps: FunctionComponent<
   }, [typeIRI, typeIRIToTypeName, primaryFields]);
   const primaryFieldRenderer = useMemo(
     () =>
-      primaryFieldRendererRegistry
-        ? primaryFieldRendererRegistry(typeIRI) || []
-        : [],
+      primaryFieldRendererRegistry ? primaryFieldRendererRegistry(typeIRI) : [],
     [typeIRI, primaryFieldRendererRegistry],
   );
 

@@ -52,8 +52,10 @@ import { useQuery } from "@tanstack/react-query";
 import { OwnColumnDesc } from "./types";
 import TypedListItem from "../content/list/TypedListItem";
 import HorizontalNonLinearStepper from "../form/wizard/HorizontalNonLinearStepper";
-import { useCRUDWithQueryClient } from "@slub/edb-state-hooks";
-import useExtendedSchema from "../state/useExtendedSchema";
+import {
+  useCRUDWithQueryClient,
+  useExtendedSchema,
+} from "@slub/edb-state-hooks";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import {
   DeclarativeFlatMapping,

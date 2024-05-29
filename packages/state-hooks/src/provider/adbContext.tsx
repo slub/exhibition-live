@@ -22,6 +22,7 @@ export type JSONLDConfig = {
  * @param queryBuildOptions Options passed to the query builder
  * @param typeNameToTypeIRI Mapping from type name within Schema to a class IRI
  * @param lockedSPARQLEndpoint Optional locked SPARQL endpoint
+ * @param useRouterHook Pass the hook needed for your framework specific routing (next router, react-router-dom,...)
  */
 type AdbContextValue = GlobalAppConfig & {
   lockedSPARQLEndpoint?: SparqlEndpoint;

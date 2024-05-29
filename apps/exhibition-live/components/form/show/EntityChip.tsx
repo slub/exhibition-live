@@ -1,7 +1,9 @@
 import { useAdbContext, useTypeIRIFromEntity } from "@slub/edb-state-hooks";
 import React, { MouseEvent, useCallback, useMemo, useState } from "react";
-import useExtendedSchema from "../../state/useExtendedSchema";
-import { useCRUDWithQueryClient } from "@slub/edb-state-hooks";
+import {
+  useCRUDWithQueryClient,
+  useExtendedSchema,
+} from "@slub/edb-state-hooks";
 import { applyToEachField, extractFieldIfString } from "@slub/edb-ui-utils";
 import { ellipsis } from "@slub/edb-ui-utils";
 import NiceModal from "@ebay/nice-modal-react";

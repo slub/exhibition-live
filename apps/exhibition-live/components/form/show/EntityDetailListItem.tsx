@@ -9,8 +9,10 @@ import {
 } from "@mui/material";
 import React, { useCallback, useMemo } from "react";
 import { useAdbContext, useTypeIRIFromEntity } from "@slub/edb-state-hooks";
-import useExtendedSchema from "../../state/useExtendedSchema";
-import { useCRUDWithQueryClient } from "@slub/edb-state-hooks";
+import {
+  useCRUDWithQueryClient,
+  useExtendedSchema,
+} from "@slub/edb-state-hooks";
 import { applyToEachField, extractFieldIfString } from "@slub/edb-ui-utils";
 import NiceModal from "@ebay/nice-modal-react";
 import { Clear, HideImage } from "@mui/icons-material";

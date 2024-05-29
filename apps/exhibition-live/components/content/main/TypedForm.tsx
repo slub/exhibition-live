@@ -12,11 +12,10 @@ import {
   useRightDrawerState,
   useSettings,
 } from "@slub/edb-state-hooks";
-import useExtendedSchema from "../../state/useExtendedSchema";
 import { encodeIRI, irisToData } from "@slub/edb-ui-utils";
 import NewSemanticJsonForm from "../../form/SemanticJsonForm";
 import { EntityDetailElement } from "../../form/show";
-import { useFormDataStore } from "@slub/edb-state-hooks";
+import { useFormDataStore, useExtendedSchema } from "@slub/edb-state-hooks";
 import { useCRUDWithQueryClient } from "@slub/edb-state-hooks";
 
 type Props = {

@@ -46,6 +46,7 @@ import {
   useLoadQuery,
   useModalRegistry,
   useSimilarityFinderState,
+  useExtendedSchema,
 } from "@slub/edb-state-hooks";
 import { useTranslation } from "next-i18next";
 import { searchEntityByLabel } from "@slub/edb-ui-utils";
@@ -62,7 +63,6 @@ import ClassicEntityCard from "./lobid/ClassicEntityCard";
 import { debounce } from "lodash";
 import { filterUndefOrNull } from "@slub/edb-ui-utils";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import useExtendedSchema from "../state/useExtendedSchema";
 import {
   BasicThingInformation,
   PrimaryField,

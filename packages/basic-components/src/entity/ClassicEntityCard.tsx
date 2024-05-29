@@ -29,7 +29,9 @@ type Props = {
   cardActionChildren?: React.ReactNode;
 };
 
-const ClassicEntityCard: FunctionComponent<Props & Partial<BoxProps>> = ({
+export type ClassicEntityCardProps = Props & Partial<BoxProps>;
+
+export const ClassicEntityCard: FunctionComponent<ClassicEntityCardProps> = ({
   data,
   id,
   onBack,
@@ -69,4 +71,3 @@ const ClassicEntityCard: FunctionComponent<Props & Partial<BoxProps>> = ({
     </Box>
   );
 };
-export default ClassicEntityCard;

@@ -13,8 +13,8 @@ import { declarativeMappings, lobidTypemap } from "./lobidMappings";
 import { useAdbContext, useGlobalCRUDOptions } from "@slub/edb-state-hooks";
 import { JsonView } from "react-json-view-lite";
 import { Grid, List, TextField } from "@mui/material";
-import ClassicResultListItem from "../form/result/ClassicResultListItem";
 import { sladb } from "./formConfigs";
+import { ClassicResultListItem } from "@slub/edb-basic-components";
 
 export default {
   title: "forms/mapping/LobidMapping",

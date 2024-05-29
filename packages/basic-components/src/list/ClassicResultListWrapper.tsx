@@ -5,22 +5,19 @@ import {
   Paper,
   Grid,
 } from "@mui/material";
-import { FunctionComponent, useCallback, useState } from "react";
+import { FunctionComponent } from "react";
 import { useTranslation } from "next-i18next";
 
-type Props = {
+export type ClassicResultListWrapperProps = {
   label?: string;
   children?: React.ReactNode;
   handleClick?: (id: undefined) => void;
   hitCount?: number;
 };
 
-const ClassicResultListWrapper: FunctionComponent<Props> = ({
-  label,
-  children,
-  handleClick,
-  hitCount,
-}) => {
+export const ClassicResultListWrapper: FunctionComponent<
+  ClassicResultListWrapperProps
+> = ({ label, children, handleClick, hitCount }) => {
   const { t } = useTranslation();
   return (
     <Paper sx={{ width: "100%" }}>
@@ -73,5 +70,3 @@ const ClassicResultListWrapper: FunctionComponent<Props> = ({
     </Paper>
   );
 };
-
-export default ClassicResultListWrapper;

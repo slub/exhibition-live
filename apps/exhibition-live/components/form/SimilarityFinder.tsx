@@ -17,7 +17,6 @@ import {
   TextField,
   TextFieldProps,
 } from "@mui/material";
-import ClassicResultListWrapper from "./result/ClassicResultListWrapper";
 import { JSONSchema7 } from "json-schema";
 import * as React from "react";
 import {
@@ -51,7 +50,6 @@ import {
 import { useTranslation } from "next-i18next";
 import { searchEntityByLabel } from "@slub/edb-ui-utils";
 import NiceModal from "@ebay/nice-modal-react";
-import ClassicResultListItem from "./result/ClassicResultListItem";
 import { EntityDetailElement } from "./show";
 import {
   findEntityWithinLobid,
@@ -59,7 +57,6 @@ import {
 } from "@slub/edb-ui-utils";
 import LobidAllPropTable from "./lobid/LobidAllPropTable";
 import WikidataAllPropTable from "./wikidata/WikidataAllPropTable";
-import ClassicEntityCard from "./lobid/ClassicEntityCard";
 import { debounce } from "lodash";
 import { filterUndefOrNull } from "@slub/edb-ui-utils";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -71,12 +68,17 @@ import {
 } from "@slub/edb-core-types";
 import { NumberInput } from "./NumberInput";
 import { dcterms } from "@tpluscode/rdf-ns-builders";
-import { findFirstInProps } from "./k10plus/K10PlusSearchTable";
 import { Img } from "../basic";
 import { findEntityByClass } from "@slub/sparql-schema";
 import { findEntityWithinK10Plus, KXPEntry } from "@slub/edb-kxp-utils";
 import { fabio } from "@slub/edb-marc-to-rdf";
 import { typeIRItoTypeName } from "../config";
+import { findFirstInProps } from "@slub/edb-graph-traversal";
+import {
+  ClassicEntityCard,
+  ClassicResultListItem,
+  ClassicResultListWrapper,
+} from "@slub/edb-basic-components";
 
 export type KnowledgeSources = "kb" | "gnd" | "wikidata" | "k10plus" | "ai";
 // @ts-ignore

@@ -1,19 +1,21 @@
 import React, { useState, MouseEvent, useCallback } from "react";
-import { Box, Tooltip, Typography, TypographyOwnProps } from "@mui/material";
+import { Box, Tooltip, TypographyOwnProps } from "@mui/material";
 
-type OverflowContainerProps = {
+type Props = {
   children: React.ReactNode;
   tooltip?: React.ReactNode;
   density?: "comfortable" | "compact" | "spacious";
   useParentTarget?: boolean;
 };
+
+export type OverflowContainerProps = Props & Partial<TypographyOwnProps>;
 export const OverflowContainer = ({
   children,
   tooltip,
   useParentTarget,
   density,
   ...props
-}: OverflowContainerProps & Partial<TypographyOwnProps>) => {
+}: OverflowContainerProps) => {
   const [tooltipEnabled, setTooltipEnabled] = useState(false);
 
   const handleShouldShow = useCallback(

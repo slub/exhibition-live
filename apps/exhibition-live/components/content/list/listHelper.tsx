@@ -1,7 +1,7 @@
 import get from "lodash/get";
 import { JSONSchema7, JSONSchema7Definition } from "json-schema";
 import { MRT_ColumnDef, MRT_TableInstance } from "material-react-table";
-import { OverflowContainer, OverflowChip } from "../../lists";
+import { OverflowContainer, OverflowChip } from "@slub/edb-basic-components";
 import { Avatar, Box, Checkbox, Grid, Link, Typography } from "@mui/material";
 import isNil from "lodash/isNil";
 import maxBy from "lodash/maxBy";

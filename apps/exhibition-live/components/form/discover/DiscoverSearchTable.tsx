@@ -8,9 +8,9 @@ import React, {
 } from "react";
 
 import { useAdbContext, useGlobalCRUDOptions } from "@slub/edb-state-hooks";
-import ClassicResultListItem from "../result/ClassicResultListItem";
 import { EntityDetailElement } from "../show";
 import { findEntityByClass } from "@slub/sparql-schema";
+import { ClassicResultListItem } from "@slub/edb-basic-components";
 
 type Props = {
   searchString: string;

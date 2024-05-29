@@ -20,11 +20,16 @@
     "lint-fix": "eslint --fix \"**/*.ts*\""
   },
   "dependencies": {
+    "@slub/edb-state-hooks": "workspace:*",
     "@ebay/nice-modal-react": "^1.2",
-    "next-i18next": "^15"
+    "next-i18next": "^15.3.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.3"
   },
   "peerDependencies": {
     "@mui/material": "^5",
-    "@mui/icons-material": "^5"
+    "@mui/icons-material": "^5",
+    "react": "^18"
   }
 }

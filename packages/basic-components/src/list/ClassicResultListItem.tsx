@@ -1,28 +1,21 @@
-// @flow
 import {
   Avatar,
-  Divider,
-  IconButton,
   ListItem,
   ListItemAvatar,
   ListItemButton,
   ListItemButtonProps,
   ListItemProps,
   ListItemText,
-  Stack,
-  Typography,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import * as React from "react";
 import { FunctionComponent, useCallback, useEffect, useState } from "react";
-import { ClassicResultPopperItem } from "./ClassicResultPopperItem";
 import {
   useKeyEventForSimilarityFinder,
   useSimilarityFinderState,
 } from "@slub/edb-state-hooks";
-import { Check } from "@mui/icons-material";
-import { OverflowContainer } from "../../lists";
-import { OverflowChip } from "../../lists/OverflowChip";
+import { OverflowChip, OverflowContainer } from "../overflow";
+import { ClassicResultPopperItem } from "../entity";
 
 type OwnProps = {
   id: string;
@@ -40,9 +33,11 @@ type OwnProps = {
   popperClosed?: boolean;
 };
 
-type Props = OwnProps & ListItemButtonProps;
+export type ClassicResultListItemProps = OwnProps & ListItemButtonProps;
 
-const ClassicResultListItem: FunctionComponent<Props> = ({
+export const ClassicResultListItem: FunctionComponent<
+  ClassicResultListItemProps
+> = ({
   id,
   index,
   onSelected,
@@ -146,5 +141,3 @@ const ClassicResultListItem: FunctionComponent<Props> = ({
     </ListItem>
   );
 };
-
-export default ClassicResultListItem;

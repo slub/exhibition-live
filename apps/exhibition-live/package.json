@@ -63,6 +63,7 @@
     "@slub/edb-kxp-utils": "workspace:*",
     "@slub/edb-state-hooks": "workspace:*",
     "@slub/edb-markdown-renderer": "workspace:*",
+    "@slub/edb-basic-components": "workspace:*",
     "@slub/exhibition-schema": "workspace:*",
     "@tanstack/table-core": "^8.16.0",
     "@tanstack/react-query": "^4.24.6",

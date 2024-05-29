@@ -1,22 +1,19 @@
-import { useState, MouseEvent, useMemo, useCallback } from "react";
-import { Chip, Tooltip, Typography } from "@mui/material";
+import { useState, MouseEvent, useCallback } from "react";
+import { Chip, Tooltip } from "@mui/material";
 import NiceModal from "@ebay/nice-modal-react";
 import { useAdbContext } from "@slub/edb-state-hooks";
 
-type OverflowContainerProps = {
+export type OverflowChipProps = {
   label: React.ReactNode;
   secondary?: React.ReactNode;
   entityIRI?: string;
 };
 
-const OverflowText = ({ children }: { children: string }) => {
-  return <Typography noWrap>{children}</Typography>;
-};
 export const OverflowChip = ({
   label,
   entityIRI,
   secondary,
-}: OverflowContainerProps) => {
+}: OverflowChipProps) => {
   const [tooltipEnabled, setTooltipEnabled] = useState(false);
   const {
     components: { EntityDetailModal },

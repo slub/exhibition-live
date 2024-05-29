@@ -13,7 +13,7 @@ import {
   CommonPropertyValues,
   getCommonPropsFromWikidata,
 } from "@slub/edb-ui-utils";
-import { OverflowContainer } from "../../lists";
+import { OverflowContainer } from "@slub/edb-basic-components";
 
 interface OwnProps {
   thingIRI?: string;

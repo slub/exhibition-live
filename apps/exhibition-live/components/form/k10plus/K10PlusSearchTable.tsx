@@ -13,8 +13,8 @@ import {
   tooltipClasses,
   TooltipProps,
 } from "@mui/material";
-import { BlankNode, NamedNode } from "@rdfjs/types";
-import { dcterms, foaf, geo, rdfs, skos } from "@tpluscode/rdf-ns-builders";
+import { BlankNode } from "@rdfjs/types";
+import { dcterms, foaf, rdfs, skos } from "@tpluscode/rdf-ns-builders";
 import React, {
   FunctionComponent,
   useCallback,
@@ -25,12 +25,14 @@ import React, {
 
 import { useLocalHistory } from "@slub/edb-state-hooks";
 import { useSettings } from "@slub/edb-state-hooks";
-import ClassicEntityCard from "../lobid/ClassicEntityCard";
-import ClassicResultListItem from "../result/ClassicResultListItem";
-import { NodePropertyTree } from "@slub/edb-graph-traversal";
+import { findFirstInProps, NodePropertyTree } from "@slub/edb-graph-traversal";
 import { useTranslation } from "next-i18next";
 import { findEntityWithinK10Plus, KXPEntry } from "@slub/edb-kxp-utils";
 import { fabio, geonames, radatana } from "@slub/edb-marc-to-rdf";
+import {
+  ClassicEntityCard,
+  ClassicResultListItem,
+} from "@slub/edb-basic-components";
 
 type Props = {
   searchString: string;
@@ -39,18 +41,6 @@ type Props = {
   onAcceptItem?: (id: string | undefined, data: any) => void;
 };
 
-export const findFirstInProps = (
-  props: NodePropertyTree,
-  ...predicates: NamedNode[]
-): string | undefined => {
-  for (const predicate of predicates) {
-    const value = props[predicate.value];
-    if (value?.[0]) {
-      return value[0].value;
-    }
-  }
-  return undefined;
-};
 const K10PlusSearchTable: FunctionComponent<Props> = ({
   searchString,
   typeName = "Person",
@@ -240,7 +230,7 @@ const LabeledBNode = ({
     </LightTooltip>
   );
 };
-const KXPAllPropTable = ({ entry }: { entry: KXPEntry }) => {
+export const KXPAllPropTable = ({ entry }: { entry: KXPEntry }) => {
   return (
     <TableContainer component={Container}>
       <Table sx={{ minWidth: "100%" }} aria-label="custom table">
@@ -295,5 +285,3 @@ const KXPAllPropTable = ({ entry }: { entry: KXPEntry }) => {
     </TableContainer>
   );
 };
-
-export default K10PlusSearchTable;

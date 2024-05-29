@@ -23,7 +23,6 @@ import {
   useSettings,
 } from "@slub/edb-state-hooks";
 import { EntityDetailCardProps } from "./EntityDetailCardProps";
-import { StylizedDetailCard } from "./StylizedDetailCard";
 import { isString } from "lodash";
 import MarkdownContent from "./MarkdownContentNoSSR";
 import { Edit } from "@mui/icons-material";
@@ -80,16 +79,38 @@ export const EntityDetailCard: FunctionComponent<EntityDetailCardProps> = ({
 
   return (
     <>
-      {cardInfo.image && cardInfo.description && enableStylizedCard ? (
-        <StylizedDetailCard
-          typeIRI={typeIRI}
-          entityIRI={entityIRI}
-          cardInfo={cardInfo}
-          data={data}
-          cardActionChildren={
-            typeof cardActionChildren !== "undefined"
-              ? cardActionChildren
-              : !readonly && (
+      <Card>
+        <CardActionArea>
+          {cardInfo.image && (
+            <CardMedia
+              component="img"
+              sx={{ maxHeight: "24em", objectFit: "contain" }}
+              image={cardInfo.image}
+              alt={cardInfo.label}
+            />
+          )}
+          <CardContent>
+            <Typography gutterBottom variant="h1" component="div">
+              {cardInfo.label}
+            </Typography>
+            {isString(data?.originalTitle) ||
+              isString(data?.subtitle) ||
+              (cardInfo.description?.length < 300 && (
+                <Typography variant="body2" color="text.secondary">
+                  {data?.subtitle ||
+                    data?.originalTitle ||
+                    cardInfo.description}
+                </Typography>
+              ))}
+          </CardContent>
+        </CardActionArea>
+        {cardActionChildren !== null && (
+          <CardActions>
+            {typeof cardActionChildren !== "undefined" ? (
+              cardActionChildren
+            ) : (
+              <>
+                {!readonly && (
                   <IconButton
                     component={Button}
                     size="small"
@@ -100,60 +121,13 @@ export const EntityDetailCard: FunctionComponent<EntityDetailCardProps> = ({
                   >
                     {!disableInlineEditing ? t("edit inline") : t("edit")}
                   </IconButton>
-                )
-          }
-        />
-      ) : (
-        <Card>
-          <CardActionArea>
-            {cardInfo.image && (
-              <CardMedia
-                component="img"
-                sx={{ maxHeight: "24em", objectFit: "contain" }}
-                image={cardInfo.image}
-                alt={cardInfo.label}
-              />
+                )}
+              </>
             )}
-            <CardContent>
-              <Typography gutterBottom variant="h1" component="div">
-                {cardInfo.label}
-              </Typography>
-              {isString(data?.originalTitle) ||
-                isString(data?.subtitle) ||
-                (cardInfo.description?.length < 300 && (
-                  <Typography variant="body2" color="text.secondary">
-                    {data?.subtitle ||
-                      data?.originalTitle ||
-                      cardInfo.description}
-                  </Typography>
-                ))}
-            </CardContent>
-          </CardActionArea>
-          {cardActionChildren !== null && (
-            <CardActions>
-              {typeof cardActionChildren !== "undefined" ? (
-                cardActionChildren
-              ) : (
-                <>
-                  {!readonly && (
-                    <IconButton
-                      component={Button}
-                      size="small"
-                      color="primary"
-                      variant={"outlined"}
-                      onClick={editEntry}
-                      startIcon={<Edit />}
-                    >
-                      {!disableInlineEditing ? t("edit inline") : t("edit")}
-                    </IconButton>
-                  )}
-                </>
-              )}
-            </CardActions>
-          )}
-          <Box>{<MarkdownContent mdDocument={cardInfo.description} />}</Box>
-        </Card>
-      )}
+          </CardActions>
+        )}
+        <Box>{<MarkdownContent mdDocument={cardInfo.description} />}</Box>
+      </Card>
       <LobidAllPropTable
         allProps={data}
         disableContextMenu

@@ -28,7 +28,7 @@ export const uischemata = {
   Location: LocationUISchema,
   Person: PersonUISchema,
   Place: PlaceUISchema,
-  Tag: TagUISchema,
+  //Tag: TagUISchema,
   SeriesType: SeriesTypeUISchema,
   Workplace: WorkplaceUISchema,
   ExhibitionSeries: ExhibitionSeriesUISchema,

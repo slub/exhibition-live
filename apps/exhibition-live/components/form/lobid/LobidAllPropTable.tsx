@@ -25,13 +25,12 @@ import React, {
   useState,
 } from "react";
 
-import { MappingConfigurationDialog } from "../../mapping/MappingConfigurationDialog";
 import { gndBaseIRI } from "@slub/edb-ui-utils";
 import { EntityChip } from "../show";
 import { useQuery } from "@tanstack/react-query";
 import { findEntityWithinLobidByIRI } from "@slub/edb-ui-utils";
 import WikidataAllPropTable from "../wikidata/WikidataAllPropTable";
-import { OverflowContainer } from "../../lists";
+import { OverflowContainer } from "@slub/edb-basic-components";
 import { specialDate2LocalDate } from "@slub/edb-ui-utils";
 import { useTranslation } from "next-i18next";
 import { isValidUrl } from "@slub/edb-ui-utils";
@@ -123,11 +122,6 @@ const PropertyContextMenu = ({
 
   return (
     <>
-      <MappingConfigurationDialog
-        mapping={{ source: { path: property } }}
-        open={mappingModalOpen}
-        onClose={handleMappingModalClose}
-      />
       <MenuList dense>
         <MenuItem onClick={handleCreateMapping}>create Mapping</MenuItem>
         <MenuItem onClick={onClose}>Property info</MenuItem>

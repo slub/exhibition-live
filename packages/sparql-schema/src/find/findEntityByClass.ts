@@ -63,9 +63,10 @@ export const findEntityByClass: (
         `;
   if (typeof limit === "number") query = query.LIMIT(limit);
   query = query.GROUP().BY(subjectV).ORDER().BY(firstOneOfTitleV);
-  const queryString = `PREFIX : <${defaultPrefix}>
-          ${fixSparqlOrder(query.build(queryBuildOptions))}
-          `;
+  const fixedQuery = fixSparqlOrder(query.build(queryBuildOptions));
+  const queryString = defaultPrefix
+    ? `PREFIX : <${defaultPrefix}> \n\n ${fixedQuery}`
+    : fixedQuery;
   try {
     const bindings = await doQuery(queryString);
     return bindings.map((binding: any) => ({

@@ -14,7 +14,7 @@ import {
   useFormEditor,
   useSettings,
 } from "@slub/edb-state-hooks";
-import { schema } from "../../../components/config";
+import { schema } from "@slub/exhibition-schema";
 
 type Props = {
   typeName: string;

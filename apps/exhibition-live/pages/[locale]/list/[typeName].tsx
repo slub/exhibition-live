@@ -6,7 +6,7 @@ import { MainLayout } from "../../../components/layout/main-layout";
 import { TypedList } from "../../../components/content/list/TypedList";
 import { useTranslation } from "next-i18next";
 import { getI18nProps, mixinStaticPathsParams } from "../../../components/i18n";
-import { schema } from "../../../components/config";
+import { schema } from "@slub/exhibition-schema";
 
 type Props = {
   typeName: string;

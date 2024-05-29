@@ -1,0 +1,28 @@
+{
+  "name": "@slub/musiconn-schema",
+  "version": "1.0.0",
+  "description": "Schema for the musiconn database",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs",
+      "default": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "build:doc": "mkdir -p docs/reference && jsonschema2md -o docs/reference -d schemas/jsonschema",
+    "build:typebox": "mkdir -p typebox && schema2typebox --input schemas/jsonschema/Musiconn.schema.json --output typebox/generated-typebox.ts"
+  },
+  "devDependencies": {
+    "json-schema": "^0.4.0",
+    "@adobe/jsonschema2md": "^7.1.5",
+    "schema2typebox": "^1.7.1"
+  }
+}

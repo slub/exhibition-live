@@ -30,8 +30,11 @@ import {
 
 import { lobidTypemap } from "../config/lobidMappings";
 import { useAdbContext } from "@slub/edb-state-hooks";
-import { mapByConfig } from "@slub/edb-ui-utils";
-import { DeclarativeMapping, StrategyContext } from "@slub/edb-ui-utils";
+import {
+  DeclarativeMapping,
+  mapByConfig,
+  StrategyContext,
+} from "@slub/edb-ui-utils";
 import {
   gndEntryFromSuggestion,
   gndEntryWithMainInfo,

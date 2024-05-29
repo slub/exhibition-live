@@ -1,44 +1,41 @@
-import { JSONSchema7 } from "json-schema";
 import { useMemo } from "react";
-
-import genSlubJSONLDSemanticProperties from "../form/genSlubJSONLDSemanticProperties";
-import { defs, prepareStubbedSchema } from "@slub/json-schema-utils";
 import { useAdbContext } from "@slub/edb-state-hooks";
+import { JSONSchema7 } from "json-schema";
+import {
+  bringDefinitionToTop,
+  prepareStubbedSchema,
+} from "@slub/json-schema-utils";
+import { StringToIRIFn } from "@slub/edb-core-types";
 
 type UseExtendedSchemaProps = {
   typeName: string;
 };
-
-const genSlubRequiredProperties = (_modelName: string) => {
-  return ["@type", "@id"];
-};
-
-export const makeStubSchema: (
-  typeName: string,
+const defaultMakeStubSchema = (
   schema: JSONSchema7,
-) => JSONSchema7 = (typeName, schema) => {
-  const preparedSchema = prepareStubbedSchema(
+  typeNameToTypeIRI: StringToIRIFn,
+) => {
+  return prepareStubbedSchema(
     schema,
-    genSlubJSONLDSemanticProperties,
-    genSlubRequiredProperties,
-    {
-      excludeType: ["InvolvedPerson", "InvolvedCorporation", "AuthorityEntry"],
-      excludeSemanticPropertiesForType: ["AuthorityEntry"],
-    },
+    (modelName) => ({
+      "@type": {
+        const: typeNameToTypeIRI(modelName.replace(/Stub$/, "")),
+        type: "string",
+      },
+      "@id": {
+        type: "string",
+      },
+    }),
+    () => ["@type", "@id"],
   );
-  const definitions = defs(preparedSchema);
-  const specificModel = (definitions[typeName] as object | undefined) || {};
-  return {
-    ...(typeof preparedSchema === "object" ? preparedSchema : {}),
-    ...specificModel,
-  };
 };
-
 const useExtendedSchema = ({ typeName }: UseExtendedSchemaProps) => {
-  const { schema } = useAdbContext();
+  const { schema, typeNameToTypeIRI, makeStubSchema } = useAdbContext();
   return useMemo(() => {
-    return makeStubSchema(typeName, schema);
-  }, [typeName, schema]);
+    const defaultFn = (schema: JSONSchema7) =>
+      defaultMakeStubSchema(schema, typeNameToTypeIRI);
+    const prepareSchema = makeStubSchema || defaultFn;
+    return bringDefinitionToTop(prepareSchema(schema), typeName);
+  }, [typeName, schema, makeStubSchema, typeNameToTypeIRI]);
 };
 
 export default useExtendedSchema;

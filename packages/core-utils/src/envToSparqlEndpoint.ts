@@ -1,6 +1,21 @@
 import { SparqlEndpoint } from "@slub/edb-core-types";
 
 const p = (key: string, prefix?: string) => (prefix ? `${prefix}_${key}` : key);
+
+/**
+ * Convert environment variables to a SparqlEndpoint object.
+ *
+ * environment variables:
+ * - SPARQL_ENDPOINT
+ * - SPARQL_ENDPOINT_LABEL
+ * - SPARQL_ENDPOINT_PROVIDER
+ * - SPARQL_ENDPOINT_USERNAME
+ * - SPARQL_ENDPOINT_PASSWORD
+ * - SPARQL_ENDPOINT_TOKEN
+ *
+ * @param env
+ * @param prefix if the environment variables are beeing prefixed (NEXT_PUBLIC_*, ...)
+ */
 export const envToSparqlEndpoint = (
   env: Record<string, string>,
   prefix?: string,

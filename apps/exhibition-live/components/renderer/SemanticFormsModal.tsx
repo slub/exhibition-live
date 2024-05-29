@@ -2,10 +2,9 @@ import { JsonSchema } from "@jsonforms/core";
 import { JSONSchema7 } from "json-schema";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 
-import { useUISchemaForType } from "../form/uischemaForType";
 import MuiEditDialog from "./MuiEditDialog";
 import { useControlled } from "@mui/material";
-import { useCRUDWithQueryClient } from "@slub/edb-state-hooks";
+import { useAdbContext, useCRUDWithQueryClient } from "@slub/edb-state-hooks";
 import { useSnackbar } from "notistack";
 import NiceModal from "@ebay/nice-modal-react";
 import { SemanticJsonFormNoOps } from "../form/SemanticJsonFormNoOps";
@@ -52,7 +51,11 @@ export const SemanticFormsModal = (props: SemanticFormsModalProps) => {
 
   const [editMode, setEditMode] = useState(true);
 
-  const uischemaExternal = typeIRI && useUISchemaForType(typeIRI);
+  const { typeIRIToTypeName, uischemata } = useAdbContext();
+  const uischema = useMemo(
+    () => uischemata?.[typeIRIToTypeName(typeIRI)],
+    [typeIRI, typeIRIToTypeName],
+  );
 
   const { loadQuery, saveMutation, removeMutation } = useCRUDWithQueryClient({
     entityIRI,
@@ -139,7 +142,7 @@ export const SemanticFormsModal = (props: SemanticFormsModalProps) => {
             typeIRI={typeIRI}
             schema={schema as JSONSchema7}
             jsonFormsProps={{
-              uischema: uischemaExternal || undefined,
+              uischema: uischema,
             }}
             onEntityChange={onChange}
             formsPath={formsPath}

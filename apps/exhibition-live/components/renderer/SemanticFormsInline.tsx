@@ -1,12 +1,12 @@
 import { JsonSchema } from "@jsonforms/core";
 import { JSONSchema7 } from "json-schema";
-import React, { useCallback } from "react";
+import React, { useCallback, useMemo } from "react";
 
-import { useUISchemaForType } from "../form/uischemaForType";
 import { useControlled } from "@mui/material";
 import { SemanticJsonFormNoOps } from "../form/SemanticJsonFormNoOps";
 import { ErrorObject } from "ajv";
 import { SemanticJsonFormProps } from "@slub/edb-global-types";
+import { useAdbContext } from "@slub/edb-state-hooks";
 
 type SemanticFormsInlineProps = {
   label?: string;
@@ -39,7 +39,11 @@ export const SemanticFormsInline = (props: SemanticFormsInlineProps) => {
     default: entityIRI ? { "@id": entityIRI } : {},
   });
 
-  const uischemaExternal = typeIRI && useUISchemaForType(typeIRI);
+  const { typeIRIToTypeName, uischemata } = useAdbContext();
+  const uischema = useMemo(
+    () => uischemata?.[typeIRIToTypeName(typeIRI)],
+    [typeIRI, typeIRIToTypeName],
+  );
 
   const handleDataChange = useCallback(
     (data_: any) => {
@@ -61,7 +65,7 @@ export const SemanticFormsInline = (props: SemanticFormsInlineProps) => {
           typeIRI={typeIRI}
           schema={schema as JSONSchema7}
           jsonFormsProps={{
-            uischema: uischemaExternal || undefined,
+            uischema: uischema,
           }}
           onEntityChange={onChange}
           formsPath={formsPath}

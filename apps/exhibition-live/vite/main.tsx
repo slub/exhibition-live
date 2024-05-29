@@ -1,6 +1,5 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { envToSparqlEndpoint } from "../components/config/envToSparqlEndpoint";
 import { App } from "./App";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { CreatePage } from "./pages/Create";
@@ -8,8 +7,6 @@ import { initReactI18next } from "react-i18next";
 import i18n from "i18next";
 import { ListPage } from "./pages/List";
 import Backend from "i18next-http-backend";
-
-const sparqlEndpoint = envToSparqlEndpoint(import.meta.env, "VITE");
 
 const Home = () => {
   return (

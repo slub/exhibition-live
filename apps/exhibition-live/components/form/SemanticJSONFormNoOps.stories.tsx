@@ -1,11 +1,11 @@
 import { JSONSchema7 } from "json-schema";
 import { useMemo, useState } from "react";
-import { uischemata } from "./uischemaForType";
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta } from "@storybook/react";
 
 import { sladb, slent } from "../config/formConfigs";
 import { SemanticJsonFormNoOps } from "./SemanticJsonFormNoOps";
 import { useExtendedSchema } from "@slub/edb-state-hooks";
+import { uischemata } from "../config/uischemata";
 
 export default {
   title: "form/exhibition/SemanticJsonFormNoOps",

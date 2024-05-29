@@ -14,6 +14,7 @@ import { makeDefaultUiSchemaForAllDefinitions } from "./makeDefaultUiSchemaForAl
 import { rendererRegistry } from "./rendererRegistry";
 import { materialCells } from "@jsonforms/material-renderers";
 import { primaryFieldsRegistry } from "./primaryFieldsRegistry";
+import { uischemata } from "./uischemata";
 
 export const exhibitionConfig = {
   queryBuildOptions: defaultQueryBuilderOptions,
@@ -35,11 +36,14 @@ export const exhibitionConfig = {
       typeToTypeMap: lobidTypemap,
     },
   },
-  schema: schema,
+  schema: schema as JSONSchema7,
   makeStubSchema: makeStubSchema,
-  uiSchemaDefaultRegistry: makeDefaultUiSchemaForAllDefinitions(schema),
+  uiSchemaDefaultRegistry: makeDefaultUiSchemaForAllDefinitions(
+    schema as JSONSchema7,
+  ),
   rendererRegistry: rendererRegistry,
   cellRendererRegistry: materialCells,
   primaryFieldRendererRegistry: (typeIRI: string) =>
     primaryFieldsRegistry(typeIRI, (name: string) => sladb(name).value),
+  uischemata: uischemata,
 };

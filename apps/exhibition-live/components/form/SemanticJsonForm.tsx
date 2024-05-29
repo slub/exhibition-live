@@ -1,9 +1,6 @@
 import "react-json-view-lite/dist/index.css";
 
 import NiceModal from "@ebay/nice-modal-react";
-import { JsonFormsInitStateProps } from "@jsonforms/react";
-import { JSONSchema7 } from "json-schema";
-import { JsonLdContext } from "jsonld-context-parser";
 import React, {
   FunctionComponent,
   useCallback,

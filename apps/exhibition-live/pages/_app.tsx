@@ -26,34 +26,15 @@ import "dayjs/locale/en";
 import { useEffect } from "react";
 import { Provider } from "react-redux";
 import { OptionalLiveDemoEndpoint } from "../components/state/useOptionalLiveDemoEndpoint";
-import {
-  createNewIRI,
-  defaultJsonldContext,
-  defaultPrefix,
-  defaultQueryBuilderOptions,
-  sladb,
-} from "../components/config/formConfigs";
-import { envToSparqlEndpoint } from "../components/config/envToSparqlEndpoint";
 import getConfig from "next/config";
-import {
-  BASE_IRI,
-  declarativeMappings,
-  lobidTypemap,
-  makeDefaultUiSchemaForAllDefinitions,
-  primaryFieldsRegistry,
-  PUBLIC_BASE_PATH,
-  rendererRegistry,
-  schema,
-} from "../components/config";
+import { BASE_IRI, PUBLIC_BASE_PATH } from "../components/config";
 import { AdbProvider, store } from "@slub/edb-state-hooks";
 import { EntityDetailModal } from "../components/form/show";
 import { EditEntityModal } from "../components/form/edit/EditEntityModal";
 import { useRouter } from "next/router";
 import SemanticJsonForm from "../components/form/SemanticJsonForm";
-import { JSONSchema7 } from "json-schema";
-import { materialCells } from "@jsonforms/material-renderers";
-import { makeStubSchema } from "../components/config/makeStubSchema";
 import { exhibitionConfig } from "../components/config/exhibitionAppConfig";
+import { envToSparqlEndpoint } from "@slub/edb-core-utils";
 
 export const queryClient = new QueryClient();
 const QueryClientProviderWrapper = ({

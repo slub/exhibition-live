@@ -164,7 +164,7 @@ export const primaryTextFieldControlTester: (
 ) => RankedTester = (typeName) =>
   rankWith(
     10,
-    and(isStringControl, scopeEndsWith(primaryFields[typeName].label)),
+    and(isStringControl, scopeEndsWith(primaryFields[typeName]?.label)),
   );
 export const PrimaryTextFieldRenderer =
   withJsonFormsControlProps(PrimaryTextField);

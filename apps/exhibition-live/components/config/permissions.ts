@@ -1,4 +1,3 @@
-import { schema as exhibitionSchema } from "@slub/exhibition-schema";
 import { Permission, PermissionDeclaration } from "@slub/edb-core-types";
 
 export const fullPermission: Permission = {

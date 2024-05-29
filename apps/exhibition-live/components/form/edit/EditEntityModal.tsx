@@ -9,7 +9,6 @@ import { useTranslation } from "next-i18next";
 import { applyToEachField, extractFieldIfString } from "@slub/edb-ui-utils";
 import { Button, Stack } from "@mui/material";
 import { JSONSchema7 } from "json-schema";
-import { uischemata } from "../uischemaForType";
 import { SemanticJsonFormNoOps } from "../SemanticJsonFormNoOps";
 import MuiEditDialog from "../../renderer/MuiEditDialog";
 import { useSnackbar } from "notistack";
@@ -29,6 +28,7 @@ export const EditEntityModal = NiceModal.create(
       jsonLDConfig,
       typeIRIToTypeName,
       queryBuildOptions: { primaryFieldExtracts },
+      uischemata,
     } = useAdbContext();
     const modal = useModal();
     const typeIRIs = useTypeIRIFromEntity(entityIRI);
@@ -75,7 +75,7 @@ export const EditEntityModal = NiceModal.create(
     useEffect(() => {
       setFormData(data);
     }, [data, setFormData]);
-    const uischema = useMemo(() => uischemata[typeName], [typeName]);
+    const uischema = useMemo(() => uischemata?.[typeName], [typeName]);
     const { enqueueSnackbar } = useSnackbar();
 
     const handleSaveSuccess = useCallback(() => {

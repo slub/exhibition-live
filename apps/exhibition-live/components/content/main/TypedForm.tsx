@@ -2,7 +2,6 @@ import { Box, Grid } from "@mui/material";
 import { JSONSchema7 } from "json-schema";
 import React, { useCallback, useMemo, useState } from "react";
 
-import { uischemata } from "../../form/uischemaForType";
 import { materialCategorizationStepperLayoutWithPortal } from "../../renderer/MaterialCategorizationStepperLayoutWithPortal";
 import {
   useAdbContext,
@@ -82,6 +81,7 @@ const TypedForm = ({ typeName, entityIRI, classIRI }: MainFormProps) => {
   const {
     typeIRIToTypeName,
     jsonLDConfig: { defaultPrefix, jsonldContext },
+    uischemata,
   } = useAdbContext();
   //const { formData: data, setFormData: setData } = useFormData();
   const { formData: data, setFormData: setData } = useFormDataStore({
@@ -130,7 +130,7 @@ const TypedForm = ({ typeName, entityIRI, classIRI }: MainFormProps) => {
     ];
   }, []);
 
-  const uischema = useMemo(() => uischemata[typeName], [typeName]);
+  const uischema = useMemo(() => uischemata?.[typeName], [typeName]);
 
   return (
     <WithPreviewForm data={data} classIRI={classIRI} entityIRI={entityIRI}>

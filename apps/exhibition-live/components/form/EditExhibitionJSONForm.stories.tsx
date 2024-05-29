@@ -9,8 +9,8 @@ import {
   slent,
 } from "../config/formConfigs";
 import NewSemanticJsonForm from "./SemanticJsonForm";
-import { uischemata } from "./uischemaForType";
 import { useExtendedSchema } from "@slub/edb-state-hooks";
+import { uischemata } from "../config/uischemata";
 
 const queryClient = new QueryClient();
 
@@ -25,7 +25,7 @@ const SemanticJsonFormOneShot = () => {
   const [data, setData] = useState<any>(exampleData);
   const typeName = "Exhibition";
   const loadedSchema = useExtendedSchema({ typeName });
-  const uischema = useMemo(() => uischemata[typeName], [typeName]);
+  const uischema = useMemo(() => uischemata?.[typeName], [typeName]);
 
   return (
     <NewSemanticJsonForm

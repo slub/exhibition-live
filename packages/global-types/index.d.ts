@@ -176,4 +176,5 @@ export type GlobalAppConfig = {
     typeIRI: string,
   ) => JsonFormsRendererRegistryEntry[];
   cellRendererRegistry?: JsonFormsCellRendererRegistryEntry[];
+  uischemata?: Record<string, any>;
 };

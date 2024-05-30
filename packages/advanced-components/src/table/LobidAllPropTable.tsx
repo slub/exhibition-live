@@ -25,16 +25,16 @@ import React, {
   useState,
 } from "react";
 
-import { gndBaseIRI } from "@slub/edb-ui-utils";
-import { EntityChip } from "../show";
-import { useQuery } from "@tanstack/react-query";
+import { camelCaseToTitleCase, gndBaseIRI } from "@slub/edb-ui-utils";
 import { findEntityWithinLobidByIRI } from "@slub/edb-ui-utils";
-import WikidataAllPropTable from "../wikidata/WikidataAllPropTable";
+import { WikidataAllPropTable } from "../wikidata";
 import { OverflowContainer } from "@slub/edb-basic-components";
 import { specialDate2LocalDate } from "@slub/edb-ui-utils";
 import { useTranslation } from "next-i18next";
 import { isValidUrl } from "@slub/edb-ui-utils";
 import { Image } from "mui-image";
+import { EntityChip } from "../show";
+import { useQuery } from "@tanstack/react-query";
 
 export interface AllPropTableProps {
   allProps?: any;
@@ -45,12 +45,6 @@ export interface AllPropTableProps {
 }
 
 type Props = AllPropTableProps;
-
-const camelCaseToTitleCase = (str: string) => {
-  return str.replace(/([A-Z])/g, " $1").replace(/^./, function (str) {
-    return str.toUpperCase();
-  });
-};
 
 const LabledLink = ({
   uri,
@@ -64,8 +58,9 @@ const LabledLink = ({
   const urlSuffix = useMemo(
     () =>
       uri.substring(
-        (uri.includes("#") ? uri.lastIndexOf("#") : uri.lastIndexOf("/")) + 1 ??
-          0,
+        uri.includes("#")
+          ? uri.lastIndexOf("#")
+          : uri.lastIndexOf("/") + 1 || 0,
         uri.length,
       ),
     [uri],
@@ -276,7 +271,7 @@ const PropertyItem = ({
     </TableRow>
   );
 };
-const LobidAllPropTable: FunctionComponent<Props> = ({
+export const LobidAllPropTable: FunctionComponent<Props> = ({
   allProps,
   disableContextMenu,
   inlineEditing,
@@ -287,11 +282,12 @@ const LobidAllPropTable: FunctionComponent<Props> = ({
     if (typeof gndIRI_ !== "string") return undefined;
     return gndIRI_.startsWith(gndBaseIRI) ? gndIRI_ : undefined;
   }, [allProps]);
-  const { data: rawEntry } = useQuery(
+  const { data: rawEntry } = { data: {} }; /*useQuery(
     ["lobid", gndIRI],
     () => findEntityWithinLobidByIRI(gndIRI),
-    { enabled: !!gndIRI },
-  );
+    // @ts-ignore
+    { enabled: !!gndIRI}
+  );*/
 
   return (
     <>
@@ -336,7 +332,7 @@ const LobidAllPropTable: FunctionComponent<Props> = ({
               <LobidAllPropTable allProps={rawEntry} disableContextMenu />
             </AccordionDetails>
           </Accordion>
-          {(rawEntry.sameAs || [])
+          {((rawEntry as any)?.sameAs || [])
             .filter(({ id }) =>
               id.startsWith("http://www.wikidata.org/entity/"),
             )
@@ -355,5 +351,3 @@ const LobidAllPropTable: FunctionComponent<Props> = ({
     </>
   );
 };
-
-export default LobidAllPropTable;

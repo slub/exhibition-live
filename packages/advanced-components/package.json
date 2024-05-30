@@ -1,0 +1,45 @@
+{
+  "name": "@slub/edb-advanced-components",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs",
+      "default": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsup src/index.tsx --format esm,cjs --dts --external react",
+    "dev": "tsup src/index.tsx --format esm,cjs --watch --dts --external react",
+    "lint": "eslint \"**/*.ts*\"",
+    "lint-fix": "eslint --fix \"**/*.ts*\""
+  },
+  "peerDependencies": {
+    "@mui/material": "^5",
+    "@mui/icons-material": "^5",
+    "react": "^18"
+  },
+  "dependencies": {
+    "@slub/edb-state-hooks": "workspace:*",
+    "@slub/edb-ui-utils": "workspace:*",
+    "@slub/edb-core-types": "workspace:*",
+    "@slub/edb-global-types": "workspace:*",
+    "@slub/edb-basic-components": "workspace:*",
+    "@ebay/nice-modal-react": "^1.2",
+    "react-json-view-lite": "^1.4",
+    "next-i18next": "^15",
+    "lodash": "^4.17",
+    "mui-image": "^1.0.7"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.3",
+    "@types/lodash": "^4.17.4",
+    "@types/mui-image": "^1.0.5",
+    "@tanstack/react-query": "=4.24.6"
+  }
+

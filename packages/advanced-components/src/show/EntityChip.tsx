@@ -10,7 +10,7 @@ import NiceModal from "@ebay/nice-modal-react";
 import { Avatar, Chip, ChipProps, Tooltip } from "@mui/material";
 import { PrimaryFieldResults } from "@slub/edb-core-types";
 
-type EntityChipProps = {
+export type EntityChipProps = {
   index?: number;
   entityIRI: string;
   typeIRI?: string;

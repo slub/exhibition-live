@@ -12,7 +12,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useTranslation } from "next-i18next";
-import LobidAllPropTable from "../lobid/LobidAllPropTable";
+import { AllPropTableProps, LobidAllPropTable } from "../table";
 import { encodeIRI } from "@slub/edb-ui-utils";
 
 import NiceModal from "@ebay/nice-modal-react";
@@ -22,11 +22,23 @@ import {
   useModifiedRouter,
   useSettings,
 } from "@slub/edb-state-hooks";
-import { EntityDetailCardProps } from "./EntityDetailCardProps";
 import { isString } from "lodash";
-import MarkdownContent from "./MarkdownContentNoSSR";
 import { Edit } from "@mui/icons-material";
+import { PrimaryFieldResults } from "@slub/edb-core-types";
 
+type OwnProps = {
+  typeIRI: string;
+  entityIRI: string;
+  cardInfo: PrimaryFieldResults<string>;
+  cardActionChildren?: React.ReactNode;
+  data: any;
+  readonly?: boolean;
+  disableInlineEditing?: boolean;
+  onEditClicked?: () => void;
+  tableProps?: Partial<AllPropTableProps>;
+};
+
+export type EntityDetailCardProps = OwnProps;
 export const EntityDetailCard: FunctionComponent<EntityDetailCardProps> = ({
   typeIRI,
   entityIRI,
@@ -126,7 +138,11 @@ export const EntityDetailCard: FunctionComponent<EntityDetailCardProps> = ({
             )}
           </CardActions>
         )}
-        <Box>{<MarkdownContent mdDocument={cardInfo.description} />}</Box>
+        <Box>
+          {/*
+        <MarkdownContent mdDocument={cardInfo.description} />
+          */}
+        </Box>
       </Card>
       <LobidAllPropTable
         allProps={data}
@@ -136,8 +152,8 @@ export const EntityDetailCard: FunctionComponent<EntityDetailCardProps> = ({
       />
       {enableDebug && (
         <>
-          <JsonView data={cardInfo} shouldInitiallyExpand={(lvl) => lvl < 3} />
-          <JsonView data={data} shouldInitiallyExpand={(lvl) => lvl < 3} />
+          <JsonView data={cardInfo} shouldExpandNode={(lvl) => lvl < 3} />
+          <JsonView data={data} shouldExpandNode={(lvl) => lvl < 3} />
         </>
       )}
     </>

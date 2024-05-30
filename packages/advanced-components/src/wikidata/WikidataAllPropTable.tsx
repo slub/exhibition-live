@@ -19,9 +19,11 @@ interface OwnProps {
   thingIRI?: string;
 }
 
-type Props = OwnProps;
+export type WikidataAllPropTableProps = OwnProps;
 
-const WikidataAllPropTable: FunctionComponent<Props> = ({ thingIRI }) => {
+export const WikidataAllPropTable: FunctionComponent<
+  WikidataAllPropTableProps
+> = ({ thingIRI }) => {
   const [allProps, setAllProps] = useState<CommonPropertyValues>({});
   useEffect(() => {
     if (!thingIRI) return;
@@ -87,5 +89,3 @@ const WikidataAllPropTable: FunctionComponent<Props> = ({ thingIRI }) => {
     </TableContainer>
   );
 };
-
-export default WikidataAllPropTable;

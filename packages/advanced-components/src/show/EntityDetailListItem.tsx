@@ -19,7 +19,7 @@ import { Clear, HideImage } from "@mui/icons-material";
 import { ellipsis } from "@slub/edb-ui-utils";
 import { PrimaryFieldResults } from "@slub/edb-core-types";
 
-type EntityDetailListItemProps = {
+export type EntityDetailListItemProps = {
   entityIRI: string;
   typeIRI?: string;
   onClear?: () => void;

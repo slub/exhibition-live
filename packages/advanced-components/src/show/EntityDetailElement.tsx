@@ -7,7 +7,7 @@ import { useTypeIRIFromEntity, useExtendedSchema } from "@slub/edb-state-hooks";
 import { PrimaryField, PrimaryFieldResults } from "@slub/edb-core-types";
 import { filterUndefOrNull } from "@slub/edb-ui-utils";
 
-type EntityDetailElementProps = {
+export type EntityDetailElementProps = {
   typeIRI: string | undefined;
   entityIRI: string;
   data: any;

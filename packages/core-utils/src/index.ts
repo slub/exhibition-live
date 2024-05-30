@@ -13,3 +13,4 @@ export * from "./filterJSONLD";
 export * from "./numeric2JSDate";
 export * from "./permissions";
 export * from "./envToSparqlEndpoint";
+export * from "./camelCaseToTitleCase";

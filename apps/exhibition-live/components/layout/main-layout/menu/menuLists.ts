@@ -5,13 +5,19 @@ import {
 } from "@mui/icons-material";
 import { JSONSchema7 } from "json-schema";
 
-import { MenuGroup } from "./types";
+import { MenuGroup, MenuItem } from "./types";
 import { TFunction } from "i18next";
 import { Permission } from "@slub/edb-core-types";
 
 const icons = { IconFaceId, IconPaint, IconDots };
 
 const topLevel = ["Exhibition", "Person"];
+const disabledTypes = [
+  "InvolvedPerson",
+  "InvolvedCorporation",
+  "ExponatsAndPersons",
+  "ExponatsAndCorporations",
+];
 
 const lists: (
   schema: JSONSchema7,
@@ -31,17 +37,34 @@ const lists: (
       url: `/list/${key}`,
       typeName: key,
   })),*/
-  children: Object.entries(
-    exhibitionSchema.definitions || exhibitionSchema["$defs"] || {},
-  )
-    .filter(([key]) => !topLevel.includes(key))
-    .map(([key, value]) => ({
-      id: `list_${key}`,
-      title: t(key),
-      type: "item",
-      typeName: key,
-      readOnly: !getPermission(key).edit,
-    })),
+  children: [
+    ...topLevel.map(
+      (key) =>
+        ({
+          id: `list_${key}`,
+          title: t(key),
+          type: "item",
+          typeName: key,
+          readOnly: !getPermission(key).edit,
+        }) as MenuItem,
+    ),
+    ...Object.entries(
+      exhibitionSchema.definitions || exhibitionSchema["$defs"] || {},
+    )
+      .filter(
+        ([key]) => !topLevel.includes(key) && disabledTypes.indexOf(key) === -1,
+      )
+      .map(
+        ([key, value]) =>
+          ({
+            id: `list_${key}`,
+            title: t(key),
+            type: "item",
+            typeName: key,
+            readOnly: !getPermission(key).edit,
+          }) as MenuItem,
+      ),
+  ],
 });
 
 export default lists;

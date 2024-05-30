@@ -1,7 +1,6 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AdbProvider, store } from "@slub/edb-state-hooks";
 import { Provider } from "react-redux";
-import { envToSparqlEndpoint } from "../components/config/envToSparqlEndpoint";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import "dayjs/locale/de";
 import "dayjs/locale/en";
@@ -16,6 +15,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import SemanticJsonForm from "../components/form/SemanticJsonForm";
 import { exhibitionConfig } from "../components/config/exhibitionAppConfig";
+import { envToSparqlEndpoint } from "@slub/edb-ui-utils";
 
 export const queryClient = new QueryClient();
 

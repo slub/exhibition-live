@@ -46,20 +46,7 @@ const Search = styled("div")(({ theme }) => ({
   },
 }));
 
-export default function MuiEditDialog({
-  children,
-  open,
-  title,
-  onSave,
-  onCancel,
-  onClose,
-  onReload,
-  onRemove,
-  onEdit,
-  editMode,
-  search,
-  actions,
-}: {
+export type MuiEditDialogProps = {
   onCancel?: () => void;
   onSave?: () => void;
   onClose?: () => void;
@@ -72,7 +59,21 @@ export default function MuiEditDialog({
   search?: React.ReactNode;
   children?: React.ReactNode;
   actions?: React.ReactNode;
-}) {
+};
+export const MuiEditDialog = ({
+  children,
+  open,
+  title,
+  onSave,
+  onCancel,
+  onClose,
+  onReload,
+  onRemove,
+  onEdit,
+  editMode,
+  search,
+  actions,
+}: MuiEditDialogProps) => {
   const theme = useTheme();
   const [forceFullscreen, setForceFullscreen] = useState(false);
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
@@ -209,4 +210,4 @@ export default function MuiEditDialog({
       </Hidden>
     </Dialog>
   );
-}
+};

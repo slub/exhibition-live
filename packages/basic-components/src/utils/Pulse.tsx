@@ -55,13 +55,15 @@ const PulsatingDot = styled.div<PulsatingDotProps>`
   }
 `;
 
+export type PulseProps = PulsatingDotProps & { children: React.ReactNode };
+
 export const Pulse = ({
   dotColor,
   borderRadius,
   boxHeight,
   pulse,
   children,
-}: PulsatingDotProps & { children: React.ReactNode }) =>
+}: PulseProps) =>
   pulse ? (
     <PulsatingDot
       pulse={pulse}

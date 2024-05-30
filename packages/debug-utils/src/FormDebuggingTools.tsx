@@ -19,7 +19,7 @@ export const FormDebuggingTools = ({ jsonData }: FormDebuggingToolsProps) => {
         return (
           <Grid item key={key}>
             <Typography variant={"h3"}>{key}</Typography>
-            <JsonView data={value} shouldInitiallyExpand={(lvl) => lvl < 5} />
+            <JsonView data={value} shouldExpandNode={(lvl) => lvl < 5} />
             <Divider />
           </Grid>
         );

@@ -13,9 +13,9 @@ import {
 } from "@slub/edb-state-hooks";
 import { encodeIRI, irisToData } from "@slub/edb-ui-utils";
 import NewSemanticJsonForm from "../../form/SemanticJsonForm";
-import { EntityDetailElement } from "../../form/show";
 import { useFormDataStore, useExtendedSchema } from "@slub/edb-state-hooks";
 import { useCRUDWithQueryClient } from "@slub/edb-state-hooks";
+import { EntityDetailElement } from "@slub/edb-advanced-components";
 
 type Props = {
   children: React.ReactChild;

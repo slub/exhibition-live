@@ -50,13 +50,10 @@ import {
 import { useTranslation } from "next-i18next";
 import { searchEntityByLabel } from "@slub/edb-ui-utils";
 import NiceModal from "@ebay/nice-modal-react";
-import { EntityDetailElement } from "./show";
 import {
   findEntityWithinLobid,
   findEntityWithinLobidByIRI,
 } from "@slub/edb-ui-utils";
-import LobidAllPropTable from "./lobid/LobidAllPropTable";
-import WikidataAllPropTable from "./wikidata/WikidataAllPropTable";
 import { debounce } from "lodash";
 import { filterUndefOrNull } from "@slub/edb-ui-utils";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -79,6 +76,11 @@ import {
   ClassicResultListItem,
   ClassicResultListWrapper,
 } from "@slub/edb-basic-components";
+import {
+  EntityDetailElement,
+  LobidAllPropTable,
+  WikidataAllPropTable,
+} from "@slub/edb-advanced-components";
 
 export type KnowledgeSources = "kb" | "gnd" | "wikidata" | "k10plus" | "ai";
 // @ts-ignore

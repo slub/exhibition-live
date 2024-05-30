@@ -1,6 +1,5 @@
-import { EntityDetailCard } from "./";
-import { Box } from "@mui/material";
 import { Meta, StoryObj } from "@storybook/react";
+import { EntityDetailCard } from "@slub/edb-advanced-components";
 
 export default {
   title: "presentation/kb/EntityDetailCard",

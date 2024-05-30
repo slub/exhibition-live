@@ -48,7 +48,6 @@ import { SimpleExpandPanelRenderer } from "./SimpleExpandPanelRenderer";
 import { SemanticFormsModal } from "./SemanticFormsModal";
 import { irisToData, makeFormsPath, validate } from "@slub/edb-ui-utils";
 import { JSONSchema7 } from "json-schema";
-import { v4 as uuidv4 } from "uuid";
 import { Grid, IconButton, List, Paper } from "@mui/material";
 import { SemanticFormsInline } from "./SemanticFormsInline";
 import CheckIcon from "@mui/icons-material/Check";
@@ -62,8 +61,8 @@ import { ErrorObject } from "ajv";
 import { applyToEachField, extractFieldIfString } from "@slub/edb-ui-utils";
 import { JSONSchema } from "json-schema-to-ts";
 import { useTranslation } from "next-i18next";
-import { Pulse } from "../form/utils";
 import { bringDefinitionToTop } from "@slub/json-schema-utils";
+import { Pulse } from "@slub/edb-basic-components";
 
 const uiSchemaOptionsSchema = {
   type: "object",

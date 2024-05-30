@@ -10,8 +10,6 @@ import {
   findEntityWithinLobid,
   findEntityWithinLobidByIRI,
 } from "@slub/edb-ui-utils";
-import LobidAllPropTable from "./LobidAllPropTable";
-import WikidataAllPropTable from "../wikidata/WikidataAllPropTable";
 import { filterUndefOrNull } from "@slub/edb-ui-utils";
 import { applyToEachField, extractFieldIfString } from "@slub/edb-ui-utils";
 import { useQuery } from "@tanstack/react-query";
@@ -27,6 +25,10 @@ import {
   ClassicEntityCard,
   ClassicResultListItem,
 } from "@slub/edb-basic-components";
+import {
+  LobidAllPropTable,
+  WikidataAllPropTable,
+} from "@slub/edb-advanced-components";
 
 type Props = {
   searchString: string;

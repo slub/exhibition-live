@@ -24,9 +24,9 @@ import React, {
 } from "react";
 
 import { wikidataPrefixes } from "@slub/edb-ui-utils";
-import WikidataAllPropTable from "./WikidataAllPropTable";
 import { sparqlSelectViaFieldMappings } from "@slub/sparql-schema";
 import { remoteSparqlQuery } from "@slub/remote-query-implementations";
+import { WikidataAllPropTable } from "@slub/edb-advanced-components";
 
 interface OwnProps {
   personIRI?: string | null;

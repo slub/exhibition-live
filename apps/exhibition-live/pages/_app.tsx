@@ -29,12 +29,12 @@ import { OptionalLiveDemoEndpoint } from "../components/state/useOptionalLiveDem
 import getConfig from "next/config";
 import { BASE_IRI, PUBLIC_BASE_PATH } from "../components/config";
 import { AdbProvider, store } from "@slub/edb-state-hooks";
-import { EntityDetailModal } from "../components/form/show";
 import { EditEntityModal } from "../components/form/edit/EditEntityModal";
 import { useRouter } from "next/router";
 import SemanticJsonForm from "../components/form/SemanticJsonForm";
 import { exhibitionConfig } from "../components/config/exhibitionAppConfig";
 import { envToSparqlEndpoint } from "@slub/edb-core-utils";
+import { EntityDetailModal } from "@slub/edb-advanced-components";
 
 export const queryClient = new QueryClient();
 const QueryClientProviderWrapper = ({

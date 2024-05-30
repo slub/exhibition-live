@@ -29,8 +29,8 @@ import { makeFormsPath } from "@slub/edb-ui-utils";
 import { SearchbarWithFloatingButton } from "../layout/main-layout/Searchbar";
 import SimilarityFinder from "../form/SimilarityFinder";
 import { JSONSchema7 } from "json-schema";
-import { EntityDetailListItem } from "../form/show";
 import { PrimaryField } from "@slub/edb-core-types";
+import { EntityDetailListItem } from "@slub/edb-advanced-components";
 
 const InlineDropdownSemanticFormsRenderer = (props: ControlProps) => {
   const {

@@ -10,12 +10,12 @@ import { applyToEachField, extractFieldIfString } from "@slub/edb-ui-utils";
 import { Button, Stack } from "@mui/material";
 import { JSONSchema7 } from "json-schema";
 import { SemanticJsonFormNoOps } from "../SemanticJsonFormNoOps";
-import MuiEditDialog from "../../renderer/MuiEditDialog";
 import { useSnackbar } from "notistack";
 import { useFormDataStore } from "@slub/edb-state-hooks";
 import { PrimaryFieldResults } from "@slub/edb-core-types";
 import { cleanJSONLD } from "@slub/sparql-schema";
 import { EditEntityModalProps } from "@slub/edb-global-types";
+import { MuiEditDialog } from "@slub/edb-basic-components";
 
 export const EditEntityModal = NiceModal.create(
   ({

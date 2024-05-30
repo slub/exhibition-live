@@ -2,7 +2,6 @@ import { JsonSchema } from "@jsonforms/core";
 import { JSONSchema7 } from "json-schema";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 
-import MuiEditDialog from "./MuiEditDialog";
 import { useControlled } from "@mui/material";
 import { useAdbContext, useCRUDWithQueryClient } from "@slub/edb-state-hooks";
 import { useSnackbar } from "notistack";
@@ -10,7 +9,7 @@ import NiceModal from "@ebay/nice-modal-react";
 import { SemanticJsonFormNoOps } from "../form/SemanticJsonFormNoOps";
 import { irisToData } from "@slub/edb-ui-utils";
 import { SemanticJsonFormProps } from "@slub/edb-global-types";
-import { GenericModal } from "@slub/edb-basic-components";
+import { GenericModal, MuiEditDialog } from "@slub/edb-basic-components";
 
 type SemanticFormsModalProps = {
   label?: string;

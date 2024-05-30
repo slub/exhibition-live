@@ -1,9 +1,9 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Box, Fab, styled, Typography } from "@mui/material";
-import { EntityDetailCardProps } from "./EntityDetailCardProps";
 import ColorThief from "color-thief-ts";
 import MarkdownContent from "./MarkdownContentNoSSR";
 import { ArrowLeft, ArrowRight } from "@mui/icons-material";
+import { EntityDetailCardProps } from "@slub/edb-advanced-components";
 
 type ColorArray = [number, number, number];
 

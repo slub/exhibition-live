@@ -307,8 +307,9 @@ export const TypedList = ({ typeName }: Props) => {
         type: "moveToTrash",
       }).then(async () => {
         enqueueSnackbar("About to move to trash", { variant: "info" });
-        return await moveToTrashAsync(id);
+        await moveToTrashAsync(id);
         enqueueSnackbar("Moved to trash", { variant: "success" });
+        return;
       });
     },
     [moveToTrashAsync, enqueueSnackbar],

@@ -1,8 +1,8 @@
 import React from "react";
+import { WikidataAllPropTable } from "@slub/edb-advanced-components";
 
 import WikidataThingCard from "./WikidataThingCard";
 import WikidataHumanCard from "./WikidataHumanCard";
-import WikidateAllPropTable from "./WikidataAllPropTable";
 
 export default {
   title: "form/wikidata/WikidataThingCard",
@@ -22,7 +22,7 @@ export const WikidataHumanCardDschuong = () => (
 );
 
 export const WikidateAllPropTableDschuang = () => (
-  <WikidateAllPropTable thingIRI={"Q47739"} />
+  <WikidataAllPropTable thingIRI={"Q47739"} />
 );
 export const WikidataThingCardHuman = () => (
   <WikidataThingCard thingIRI={"http://www.wikidata.org/entity/Q5"} />

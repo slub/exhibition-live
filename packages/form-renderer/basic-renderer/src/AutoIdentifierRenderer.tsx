@@ -12,7 +12,7 @@ import merge from "lodash/merge";
 import React, { useCallback, useState } from "react";
 import { useSettings } from "@slub/edb-state-hooks";
 
-const AutoIdentifierRenderer = (props: ControlProps) => {
+const AutoIdentifierRendererComponent = (props: ControlProps) => {
   const {
     id,
     errors,
@@ -73,4 +73,6 @@ const AutoIdentifierRenderer = (props: ControlProps) => {
   );
 };
 
-export default withJsonFormsControlProps(AutoIdentifierRenderer);
+export const AutoIdentifierRenderer = withJsonFormsControlProps(
+  AutoIdentifierRendererComponent,
+);

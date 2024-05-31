@@ -12,13 +12,8 @@ import {
   scopeEndsWith,
   UISchemaElement,
 } from "@jsonforms/core";
-import AutoIdentifierRenderer from "../renderer/AutoIdentifierRenderer";
 import { JSONSchema7 } from "json-schema";
 import { isEmpty } from "lodash";
-import InlineDropdownRenderer from "../renderer/InlineDropdownRenderer";
-import MaterialLinkedObjectRenderer, {
-  materialLinkedObjectControlTester,
-} from "../renderer/MaterialLinkedObjectRenderer";
 import { withJsonFormsControlProps } from "@jsonforms/react";
 import { MarkdownTextFieldRendererComponent } from "@slub/edb-markdown-renderer";
 import {
@@ -28,15 +23,19 @@ import {
 import {
   adbSpecialDateControlTester,
   AdbSpecialDateRenderer,
+  AutoIdentifierRenderer,
   ImageRenderer,
   materialBooleanControlTester,
   TypeOfRenderer,
 } from "@slub/edb-basic-renderer";
 import {
   InlineCondensedSemanticFormsRenderer,
+  InlineDropdownRenderer,
   materialArrayChipsLayoutTester,
   MaterialArrayOfLinkedItemChipsRenderer,
   MaterialArrayOfLinkedItemRenderer,
+  materialLinkedObjectControlTester,
+  MaterialLinkedObjectRenderer,
 } from "@slub/edb-linked-data-renderer";
 
 export const rendererRegistry: JsonFormsRendererRegistryEntry[] = [

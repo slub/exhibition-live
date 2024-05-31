@@ -8,12 +8,12 @@ import { AutocompleteSuggestion } from "@slub/edb-core-types";
 import { extractFieldIfString } from "@slub/edb-ui-utils";
 import { makeFormsPath } from "@slub/edb-ui-utils";
 import { useTranslation } from "next-i18next";
-import { PreloadedOptionSelect } from "../form/PreloadedOptionSelect";
 import { useAdbContext, useGlobalCRUDOptions } from "@slub/edb-state-hooks";
 import { PrimaryField } from "@slub/edb-core-types";
 import { findEntityByClass } from "@slub/sparql-schema";
+import { PreloadedOptionSelect } from "@slub/edb-advanced-components";
 
-const InlineDropdownRenderer = (props: ControlProps) => {
+const InlineDropdownRendererComponent = (props: ControlProps) => {
   const {
     id,
     schema,
@@ -152,4 +152,6 @@ const InlineDropdownRenderer = (props: ControlProps) => {
   );
 };
 
-export default withJsonFormsControlProps(InlineDropdownRenderer);
+export const InlineDropdownRenderer = withJsonFormsControlProps(
+  InlineDropdownRendererComponent,
+);

@@ -6,8 +6,8 @@ import {
 import { JsonForms } from "@jsonforms/react";
 import { useCallback, useState } from "react";
 
-import { MarkdownTextFieldRenderer } from "@slub/edb-markdown-renderer";
 import { materialCustomAnyOfControlTester } from "@slub/edb-layout-renderer";
+import { MarkdownTextFieldRenderer } from "./MarkdownTextFieldRenderer";
 
 export default {
   title: "form/exhibition/MarkdownTextFieldRenderer",

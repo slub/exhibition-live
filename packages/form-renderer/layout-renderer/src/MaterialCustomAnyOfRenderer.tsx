@@ -1,10 +1,7 @@
 import {
   CombinatorKeyword,
   createCombinatorRenderInfos,
-  isAnyOfControl,
   JsonSchema,
-  RankedTester,
-  rankWith,
   resolveSchema,
   StatePropsOfCombinator,
 } from "@jsonforms/core";
@@ -35,7 +32,7 @@ export const resolveSubSchemas = (
 };
 
 const anyOf = "anyOf";
-export const MaterialCustomAnyOfRenderer = ({
+const MaterialCustomAnyOfRendererComponent = ({
   schema,
   rootSchema,
   indexOfFittingSchema,
@@ -96,9 +93,6 @@ export const MaterialCustomAnyOfRenderer = ({
   );
 };
 
-export const materialCustomAnyOfControlTester: RankedTester = rankWith(
-  5,
-  isAnyOfControl,
+export const MaterialCustomAnyOfRenderer = withJsonFormsAnyOfProps(
+  MaterialCustomAnyOfRendererComponent,
 );
-
-export default withJsonFormsAnyOfProps(MaterialCustomAnyOfRenderer);

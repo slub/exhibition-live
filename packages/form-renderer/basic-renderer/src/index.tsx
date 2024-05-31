@@ -6,3 +6,4 @@ export * from "./MaterialBooleanControlRenderer";
 export * from "./materialBooleanControlTester";
 export * from "./MaterialDateRenderer";
 export * from "./materialDateRendererTester";
+export * from "./AutoIdentifierRenderer";

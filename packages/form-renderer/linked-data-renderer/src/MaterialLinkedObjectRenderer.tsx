@@ -2,10 +2,7 @@ import isEmpty from "lodash/isEmpty";
 import {
   findUISchema,
   Generate,
-  isObjectControl,
   Layout,
-  RankedTester,
-  rankWith,
   Scopable,
   StatePropsOfControlWithDetail,
   UISchemaElement,
@@ -14,7 +11,7 @@ import { JsonFormsDispatch, withJsonFormsDetailProps } from "@jsonforms/react";
 import { Hidden } from "@mui/material";
 import React, { useMemo } from "react";
 
-export const MaterialLinkedObjectRenderer = ({
+const MaterialLinkedObjectRendererComponent = ({
   renderers,
   cells,
   uischemas,
@@ -74,9 +71,6 @@ export const MaterialLinkedObjectRenderer = ({
   );
 };
 
-export const materialLinkedObjectControlTester: RankedTester = rankWith(
-  4,
-  isObjectControl,
+export const MaterialLinkedObjectRenderer = withJsonFormsDetailProps(
+  MaterialLinkedObjectRendererComponent,
 );
-
-export default withJsonFormsDetailProps(MaterialLinkedObjectRenderer);

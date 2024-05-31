@@ -32,7 +32,7 @@ import {
 } from "@slub/edb-advanced-components";
 import { SearchbarWithFloatingButton } from "@slub/edb-basic-components";
 
-const InlineDropdownSemanticFormsRenderer = (props: ControlProps) => {
+const InlineDropdownSemanticFormsRendererComponent = (props: ControlProps) => {
   const {
     id,
     errors,
@@ -269,4 +269,6 @@ const InlineDropdownSemanticFormsRenderer = (props: ControlProps) => {
   );
 };
 
-export default withJsonFormsControlProps(InlineDropdownSemanticFormsRenderer);
+export const InlineDropdownSemanticFormsRenderer = withJsonFormsControlProps(
+  InlineDropdownSemanticFormsRendererComponent,
+);

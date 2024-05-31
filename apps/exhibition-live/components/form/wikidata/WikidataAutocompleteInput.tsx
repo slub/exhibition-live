@@ -1,4 +1,3 @@
-import { Typography } from "@mui/material";
 import parse from "html-react-parser";
 import React, {
   FunctionComponent,

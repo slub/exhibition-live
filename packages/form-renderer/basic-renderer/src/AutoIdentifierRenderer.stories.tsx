@@ -6,7 +6,7 @@ import {
 import { JsonForms } from "@jsonforms/react";
 import { useCallback, useState } from "react";
 
-import AutoIdentifierRenderer from "./AutoIdentifierRenderer";
+import { AutoIdentifierRenderer } from "./AutoIdentifierRenderer";
 
 export default {
   title: "form/exhibition/AutoIdentifierRenderer",

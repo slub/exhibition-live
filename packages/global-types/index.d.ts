@@ -16,6 +16,9 @@ import {
   JsonFormsUISchemaRegistryEntry,
 } from "@jsonforms/core";
 import { JSONLDConfig } from "@slub/edb-state-hooks/src";
+import { ErrorObject } from "ajv";
+import { JsonFormsInitStateProps } from "@jsonforms/react";
+import React from "react";
 
 export type EdbConfRaw = {
   BASE_IRI: string;
@@ -134,7 +137,7 @@ export type ModRouter = {
   pathname: string;
 };
 
-export interface SemanticJsonFormProps {
+export type SemanticJsonFormProps = {
   entityIRI?: string | undefined;
   data: any;
   onChange: (data: any) => void;
@@ -155,7 +158,42 @@ export interface SemanticJsonFormProps {
   disableSimilarityFinder?: boolean;
   enableSidebar?: boolean;
   wrapWithinCard?: boolean;
-}
+};
+
+export type SemanticJsonFormNoOpsProps = {
+  typeIRI: string;
+  data: any;
+  onChange?: (data: any, reason: ChangeCause) => void;
+  onError?: (errors: ErrorObject[]) => void;
+  schema: JSONSchema7;
+  jsonFormsProps?: Partial<JsonFormsInitStateProps>;
+  onEntityChange?: (entityIRI: string | undefined) => void;
+  onEntityDataChange?: (entityData: any) => void;
+  toolbar?: React.ReactNode;
+  forceEditMode?: boolean;
+  defaultEditMode?: boolean;
+  searchText?: string;
+  disableSimilarityFinder?: boolean;
+  enableSidebar?: boolean;
+  wrapWithinCard?: boolean;
+  formsPath?: string;
+};
+
+export type KnowledgeSources = "kb" | "gnd" | "wikidata" | "k10plus" | "ai";
+
+export type SimilarityFinderProps = {
+  finderId: string;
+  data: any;
+  classIRI: string;
+  jsonSchema: JSONSchema7;
+  onEntityIRIChange?: (entityIRI: string | undefined) => void;
+  onMappedDataAccepted?: (data: any) => void;
+  onExistingEntityAccepted?: (entityIRI: string, data: any) => void;
+  searchOnDataPath?: string;
+  search?: string;
+  hideFooter?: boolean;
+  additionalKnowledgeSources?: KnowledgeSources[];
+};
 
 export type GlobalAppConfig = {
   queryBuildOptions: SparqlBuildOptions;

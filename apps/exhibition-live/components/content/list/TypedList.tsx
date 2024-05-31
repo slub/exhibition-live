@@ -42,10 +42,8 @@ import {
   OpenInNew,
 } from "@mui/icons-material";
 import { useMutation, useQuery, useQueryClient } from "@slub/edb-state-hooks";
-import { SemanticFormsModal } from "../../renderer/SemanticFormsModal";
 import NiceModal from "@ebay/nice-modal-react";
 import { useSnackbar } from "notistack";
-import { JsonSchema } from "@jsonforms/core";
 import Button from "@mui/material/Button";
 import { download, generateCsv, mkConfig } from "export-to-csv";
 import { useSettings, useExtendedSchema } from "@slub/edb-state-hooks";
@@ -476,19 +474,6 @@ export const TypedList = ({ typeName }: Props) => {
     localization,
     rowCount: resultList.length,
     enableRowActions: true,
-    renderCreateRowDialogContent: ({ table, row }) => {
-      return (
-        <SemanticFormsModal
-          open={true}
-          askClose={() => table.setCreatingRow(row)}
-          schema={extendedSchema as JsonSchema}
-          entityIRI={createEntityIRI(uuidv4())}
-          typeIRI={typeIRI}
-        >
-          <MRT_EditActionButtons variant="text" table={table} row={row} />
-        </SemanticFormsModal>
-      );
-    },
     renderTopToolbarCustomActions: ({ table }) => (
       <Box sx={{ display: "flex", gap: "1rem" }}>
         <Button

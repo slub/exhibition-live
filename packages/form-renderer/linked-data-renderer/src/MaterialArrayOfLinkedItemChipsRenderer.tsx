@@ -1,19 +1,11 @@
-import {
-  and,
-  ArrayLayoutProps,
-  isObjectArray,
-  optionIs,
-  RankedTester,
-  rankWith,
-} from "@jsonforms/core";
+import { ArrayLayoutProps } from "@jsonforms/core";
 import { withJsonFormsArrayLayoutProps } from "@jsonforms/react";
 import { Hidden } from "@mui/material";
 import React, { useCallback } from "react";
 
-import { MaterialArrayLayout } from "./MaterialArrayLayout";
 import { MaterialArrayChipsLayout } from "./MaterialArrayChipsLayout";
 
-export const MaterialArrayOfLinkedItemChipsRenderer = ({
+const MaterialArrayOfLinkedItemChipsRendererComponent = ({
   visible,
   enabled,
   id,
@@ -59,10 +51,7 @@ export const MaterialArrayOfLinkedItemChipsRenderer = ({
   );
 };
 
-export const materialArrayLayoutChipsTester: RankedTester = rankWith(
-  6,
-  and(optionIs("chips", true), isObjectArray),
-);
-export default withJsonFormsArrayLayoutProps(
-  MaterialArrayOfLinkedItemChipsRenderer,
-);
+export const MaterialArrayOfLinkedItemChipsRenderer =
+  withJsonFormsArrayLayoutProps(
+    MaterialArrayOfLinkedItemChipsRendererComponent,
+  );

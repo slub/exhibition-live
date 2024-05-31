@@ -80,8 +80,8 @@ const uiSchemaOptionsSchema = {
 
 export const MaterialArrayLayout = (props: ArrayLayoutProps) => {
   const innerCreateDefaultValue = useCallback(
-    () => createDefaultValue(props.schema),
-    [props.schema],
+    () => createDefaultValue(props.schema, props.rootSchema),
+    [props.schema, props.rootSchema],
   );
   const {
     data,

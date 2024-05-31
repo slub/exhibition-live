@@ -15,10 +15,11 @@ import { useRouterHook } from "./useRouterHook";
 import ThemeComponent from "../components/theme/ThemeComponent";
 import React from "react";
 import { LocalizationProvider } from "@mui/x-date-pickers";
-import SemanticJsonForm from "../components/form/SemanticJsonForm";
 import { exhibitionConfig } from "../components/config/exhibitionAppConfig";
 import { envToSparqlEndpoint } from "@slub/edb-ui-utils";
 import { EntityDetailModal } from "@slub/edb-advanced-components";
+import { SimilarityFinder } from "../components/form/SimilarityFinder";
+import { SemanticJsonFormNoOps } from "@slub/edb-linked-data-renderer";
 
 export const queryClient = new QueryClient();
 
@@ -40,7 +41,8 @@ export const App = ({ children }: { children?: React.ReactNode }) => {
                 components={{
                   EntityDetailModal: EntityDetailModal,
                   EditEntityModal: EditEntityModal,
-                  SemanticJsonForm: SemanticJsonForm,
+                  SemanticJsonForm: SemanticJsonFormNoOps,
+                  SimilarityFinder: SimilarityFinder,
                 }}
                 useRouterHook={useRouterHook}
               >

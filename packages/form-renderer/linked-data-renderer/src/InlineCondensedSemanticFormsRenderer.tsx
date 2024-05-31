@@ -26,13 +26,12 @@ import {
   useAdbContext,
 } from "@slub/edb-state-hooks";
 import { makeFormsPath } from "@slub/edb-ui-utils";
-import SimilarityFinder from "../form/SimilarityFinder";
 import { JSONSchema7 } from "json-schema";
 import { PrimaryField } from "@slub/edb-core-types";
 import { EntityDetailListItem } from "@slub/edb-advanced-components";
 import { SearchbarWithFloatingButton } from "@slub/edb-basic-components";
 
-const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
+const InlineCondensedSemanticFormsRendererComponent = (props: ControlProps) => {
   const {
     id,
     errors,
@@ -49,6 +48,7 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
   const {
     typeIRIToTypeName,
     queryBuildOptions: { primaryFields },
+    components: { SimilarityFinder },
   } = useAdbContext();
   const appliedUiSchemaOptions = merge({}, config, uischema.options);
   const { $ref, typeIRI } = appliedUiSchemaOptions.context || {};
@@ -265,4 +265,6 @@ const InlineCondensedSemanticFormsRenderer = (props: ControlProps) => {
   );
 };
 
-export default withJsonFormsControlProps(InlineCondensedSemanticFormsRenderer);
+export const InlineCondensedSemanticFormsRenderer = withJsonFormsControlProps(
+  InlineCondensedSemanticFormsRendererComponent,
+);

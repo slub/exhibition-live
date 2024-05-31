@@ -5,7 +5,8 @@ import {
   EntityDetailModalProps,
   GlobalAppConfig,
   ModRouter,
-  SemanticJsonFormProps,
+  SemanticJsonFormNoOpsProps,
+  SimilarityFinderProps,
 } from "@slub/edb-global-types";
 import { NiceModalHocProps } from "@ebay/nice-modal-react";
 import { SparqlEndpoint } from "@slub/edb-core-types";
@@ -33,7 +34,8 @@ type AdbContextValue = GlobalAppConfig & {
   components: {
     EditEntityModal: React.FC<EditEntityModalProps & NiceModalHocProps>;
     EntityDetailModal: React.FC<EntityDetailModalProps & NiceModalHocProps>;
-    SemanticJsonForm: React.FC<SemanticJsonFormProps>;
+    SemanticJsonForm: React.FC<SemanticJsonFormNoOpsProps>;
+    SimilarityFinder: React.FC<SimilarityFinderProps>;
   };
   useRouterHook: () => ModRouter;
 };

@@ -3,7 +3,6 @@ import { JSONSchema7 } from "json-schema";
 import React, { useCallback, useMemo } from "react";
 
 import { useControlled } from "@mui/material";
-import { SemanticJsonFormNoOps } from "../form/SemanticJsonFormNoOps";
 import { ErrorObject } from "ajv";
 import { SemanticJsonFormProps } from "@slub/edb-global-types";
 import { useAdbContext } from "@slub/edb-state-hooks";
@@ -39,7 +38,11 @@ export const SemanticFormsInline = (props: SemanticFormsInlineProps) => {
     default: entityIRI ? { "@id": entityIRI } : {},
   });
 
-  const { typeIRIToTypeName, uischemata } = useAdbContext();
+  const {
+    typeIRIToTypeName,
+    uischemata,
+    components: { SemanticJsonForm },
+  } = useAdbContext();
   const uischema = useMemo(
     () => uischemata?.[typeIRIToTypeName(typeIRI)],
     [typeIRI, typeIRIToTypeName],
@@ -56,7 +59,7 @@ export const SemanticFormsInline = (props: SemanticFormsInlineProps) => {
   return (
     <>
       {schema && (
-        <SemanticJsonFormNoOps
+        <SemanticJsonForm
           {...semanticJsonFormsProps}
           data={formData}
           forceEditMode={true}

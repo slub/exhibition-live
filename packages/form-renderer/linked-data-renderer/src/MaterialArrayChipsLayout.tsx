@@ -12,7 +12,6 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 
 import { ArrayLayoutToolbar } from "./ArrayToolbar";
 import { useJsonForms } from "@jsonforms/react";
-import { memo } from "./config";
 import { uniqBy, orderBy } from "lodash";
 import { SemanticFormsModal } from "./SemanticFormsModal";
 import { irisToData, makeFormsPath } from "@slub/edb-ui-utils";
@@ -31,8 +30,8 @@ type OwnProps = {
 };
 const MaterialArrayChipsLayoutComponent = (props: ArrayLayoutProps & {}) => {
   const innerCreateDefaultValue = useCallback(
-    () => createDefaultValue(props.schema),
-    [props.schema],
+    () => createDefaultValue(props.schema, props.rootSchema),
+    [props.schema, props.rootSchema],
   );
   const { createEntityIRI, typeIRIToTypeName } = useAdbContext();
   const {
@@ -235,4 +234,4 @@ const MaterialArrayChipsLayoutComponent = (props: ArrayLayoutProps & {}) => {
   );
 };
 
-export const MaterialArrayChipsLayout = memo(MaterialArrayChipsLayoutComponent);
+export const MaterialArrayChipsLayout = MaterialArrayChipsLayoutComponent;

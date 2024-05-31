@@ -66,6 +66,8 @@
     "@slub/edb-basic-components": "workspace:*",
     "@slub/edb-advanced-components": "workspace:*",
     "@slub/edb-layout-renderer": "workspace:*",
+    "@slub/edb-linked-data-renderer": "workspace:*",
+    "@slub/edb-basic-renderer": "workspace:*",
     "@slub/exhibition-schema": "workspace:*",
     "@tanstack/table-core": "^8.16.0",
     "@tanstack/react-query": "^4.24.6",

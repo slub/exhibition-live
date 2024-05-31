@@ -6,7 +6,6 @@ import { useControlled } from "@mui/material";
 import { useAdbContext, useCRUDWithQueryClient } from "@slub/edb-state-hooks";
 import { useSnackbar } from "notistack";
 import NiceModal from "@ebay/nice-modal-react";
-import { SemanticJsonFormNoOps } from "../form/SemanticJsonFormNoOps";
 import { irisToData } from "@slub/edb-ui-utils";
 import { SemanticJsonFormProps } from "@slub/edb-global-types";
 import { GenericModal, MuiEditDialog } from "@slub/edb-basic-components";
@@ -50,7 +49,11 @@ export const SemanticFormsModal = (props: SemanticFormsModalProps) => {
 
   const [editMode, setEditMode] = useState(true);
 
-  const { typeIRIToTypeName, uischemata } = useAdbContext();
+  const {
+    typeIRIToTypeName,
+    uischemata,
+    components: { SemanticJsonForm },
+  } = useAdbContext();
   const uischema = useMemo(
     () => uischemata?.[typeIRIToTypeName(typeIRI)],
     [typeIRI, typeIRIToTypeName],
@@ -133,7 +136,7 @@ export const SemanticFormsModal = (props: SemanticFormsModalProps) => {
     >
       <>
         {schema && (
-          <SemanticJsonFormNoOps
+          <SemanticJsonForm
             {...semanticJsonFormsProps}
             data={formData}
             forceEditMode={Boolean(editMode)}

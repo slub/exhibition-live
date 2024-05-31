@@ -11,7 +11,6 @@ import React, {
 
 import { useAdbContext, useCRUDWithQueryClient } from "@slub/edb-state-hooks";
 import { useSnackbar } from "notistack";
-import { ChangeCause, SemanticJsonFormNoOps } from "./SemanticJsonFormNoOps";
 import { SemanticJsonFormToolbar } from "./SemanticJsonFormToolbar";
 import { useSettings } from "@slub/edb-state-hooks";
 import { useLoadQuery, useQueryKeyResolver } from "@slub/edb-state-hooks";
@@ -22,6 +21,7 @@ import { cleanJSONLD, LoadResult } from "@slub/sparql-schema";
 import { FormDebuggingTools } from "@slub/edb-debug-utils";
 import { SemanticJsonFormProps } from "@slub/edb-global-types";
 import { GenericModal } from "@slub/edb-basic-components";
+import { ChangeCause } from "@slub/edb-linked-data-renderer";
 
 type SemanticJsonFormStateType = {
   isSaving: boolean;
@@ -50,7 +50,7 @@ const useSemanticJsonFormState = create<SemanticJsonFormStateType>(
     },
   }),
 );
-const SemanticJsonForm: FunctionComponent<SemanticJsonFormProps> = ({
+const SemanticJsonFormOperational: FunctionComponent<SemanticJsonFormProps> = ({
   entityIRI,
   data,
   onChange,
@@ -76,7 +76,7 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormProps> = ({
   const { enqueueSnackbar } = useSnackbar();
 
   const {
-    components: { EntityDetailModal },
+    components: { EntityDetailModal, SemanticJsonForm },
   } = useAdbContext();
 
   const { saveMutation, removeMutation } = useCRUDWithQueryClient({
@@ -254,7 +254,7 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormProps> = ({
       >
         <CircularProgress color="inherit" />
       </Backdrop>
-      <SemanticJsonFormNoOps
+      <SemanticJsonForm
         typeIRI={typeIRI}
         data={data}
         onChange={handleOnChange}
@@ -291,4 +291,4 @@ const SemanticJsonForm: FunctionComponent<SemanticJsonFormProps> = ({
   );
 };
 
-export default SemanticJsonForm;
+export default SemanticJsonFormOperational;

@@ -1,6 +1,6 @@
 import { ControlProps, showAsRequired } from "@jsonforms/core";
 import { withJsonFormsControlProps } from "@jsonforms/react";
-import { Edit, EditOff, Visibility, VisibilityOff } from "@mui/icons-material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 import {
   FormControl,
   FormLabel,

@@ -8,8 +8,9 @@ import { EditEntityModal } from "../components/form/edit/EditEntityModal";
 import { EntityDetailModal } from "@slub/edb-advanced-components";
 import { Provider } from "react-redux";
 import { AppRouterContext } from "next/dist/shared/lib/app-router-context.shared-runtime";
-import SemanticJsonForm from "../components/form/SemanticJsonForm";
 import { exhibitionConfig } from "../components/config/exhibitionAppConfig";
+import { SemanticJsonFormNoOps } from "@slub/edb-linked-data-renderer";
+import { SimilarityFinder } from "../components/form/SimilarityFinder";
 
 export const parameters = {
   nextRouter: {
@@ -60,7 +61,8 @@ export const withMuiTheme = (Story) => {
         components={{
           EntityDetailModal: EntityDetailModal,
           EditEntityModal: EditEntityModal,
-          SemanticJsonForm: SemanticJsonForm,
+          SemanticJsonForm: SemanticJsonFormNoOps,
+          SimilarityFinder: SimilarityFinder,
         }}
         useRouterHook={useRouterMock}
       >

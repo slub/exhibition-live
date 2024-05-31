@@ -8,7 +8,7 @@ import {
   sladb,
   slent,
 } from "../config/formConfigs";
-import NewSemanticJsonForm from "./SemanticJsonForm";
+import NewSemanticJsonForm from "./SemanticJsonFormOperational";
 import { useExtendedSchema } from "@slub/edb-state-hooks";
 import { uischemata } from "../config/uischemata";
 

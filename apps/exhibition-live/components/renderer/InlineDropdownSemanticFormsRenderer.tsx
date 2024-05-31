@@ -24,7 +24,6 @@ import {
   useRightDrawerState,
 } from "@slub/edb-state-hooks";
 import { makeFormsPath } from "@slub/edb-ui-utils";
-import SimilarityFinder from "../form/SimilarityFinder";
 import { JSONSchema7 } from "json-schema";
 import { PrimaryField } from "@slub/edb-core-types";
 import {
@@ -50,6 +49,7 @@ const InlineDropdownSemanticFormsRenderer = (props: ControlProps) => {
   const {
     typeIRIToTypeName,
     queryBuildOptions: { primaryFields },
+    components: { SimilarityFinder },
   } = useAdbContext();
   const appliedUiSchemaOptions = merge({}, config, uischema.options);
   const { $ref, typeIRI } = appliedUiSchemaOptions.context || {};

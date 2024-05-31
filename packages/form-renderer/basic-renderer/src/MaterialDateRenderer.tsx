@@ -1,10 +1,4 @@
-import {
-  ControlProps,
-  isDateControl,
-  isDescriptionHidden,
-  RankedTester,
-  rankWith,
-} from "@jsonforms/core";
+import { ControlProps, isDescriptionHidden } from "@jsonforms/core";
 import {
   createOnChangeHandler,
   getData,
@@ -17,7 +11,7 @@ import merge from "lodash/merge";
 import React, { useMemo } from "react";
 import { useTranslation } from "next-i18next";
 
-export const MaterialDateControl = (props: ControlProps) => {
+const MaterialDateControl = (props: ControlProps) => {
   const [focused, onFocus, onBlur] = useFocus();
   const {
     description,
@@ -97,9 +91,5 @@ export const MaterialDateControl = (props: ControlProps) => {
   );
 };
 
-export const materialDateControlTester: RankedTester = rankWith(
-  6,
-  isDateControl,
-);
-
-export default withJsonFormsControlProps(MaterialDateControl);
+export const MaterialDateRenderer =
+  withJsonFormsControlProps(MaterialDateControl);

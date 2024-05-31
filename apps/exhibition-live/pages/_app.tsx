@@ -34,10 +34,12 @@ import {
 } from "@slub/edb-state-hooks";
 import { EditEntityModal } from "../components/form/edit/EditEntityModal";
 import { useRouter } from "next/router";
-import SemanticJsonForm from "../components/form/SemanticJsonForm";
+import SemanticJsonFormOperational from "../components/form/SemanticJsonFormOperational";
 import { exhibitionConfig } from "../components/config/exhibitionAppConfig";
 import { envToSparqlEndpoint } from "@slub/edb-core-utils";
 import { EntityDetailModal } from "@slub/edb-advanced-components";
+import { SemanticJsonFormNoOps } from "@slub/edb-linked-data-renderer";
+import { SimilarityFinder } from "../components/form/SimilarityFinder";
 
 export const queryClient = new QueryClient();
 const QueryClientProviderWrapper = ({
@@ -73,7 +75,8 @@ function App({ Component, pageProps }: AppProps) {
                 components={{
                   EntityDetailModal: EntityDetailModal,
                   EditEntityModal: EditEntityModal,
-                  SemanticJsonForm: SemanticJsonForm,
+                  SemanticJsonForm: SemanticJsonFormNoOps,
+                  SimilarityFinder: SimilarityFinder,
                 }}
                 useRouterHook={useRouter}
               >

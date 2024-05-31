@@ -1,20 +1,11 @@
-import {
-  and,
-  ControlProps,
-  isDescriptionHidden,
-  isIntegerControl,
-  or,
-  RankedTester,
-  rankWith,
-  scopeEndsWith,
-} from "@jsonforms/core";
+import { ControlProps, isDescriptionHidden } from "@jsonforms/core";
 import { useFocus } from "@jsonforms/material-renderers";
 import { withJsonFormsControlProps } from "@jsonforms/react";
 import { FormControl, FormHelperText, FormLabel, Hidden } from "@mui/material";
 import React, { useMemo } from "react";
 import { AdbSpecialDateFormGroup } from "./AdbSpecialDateFormGroup";
 
-export const AdbSpecialDateControl = (props: ControlProps) => {
+const AdbSpecialDateControlComponent = (props: ControlProps) => {
   const [focused] = useFocus();
   const {
     description,
@@ -65,9 +56,6 @@ export const AdbSpecialDateControl = (props: ControlProps) => {
   );
 };
 
-export const adbSpecialDateControlTester: RankedTester = rankWith(
-  6,
-  and(isIntegerControl, or(scopeEndsWith("dateValue"), scopeEndsWith("Date"))),
+export const AdbSpecialDateRenderer = withJsonFormsControlProps(
+  AdbSpecialDateControlComponent,
 );
-
-export default withJsonFormsControlProps(AdbSpecialDateControl);

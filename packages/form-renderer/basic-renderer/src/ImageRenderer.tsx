@@ -13,7 +13,7 @@ import merge from "lodash/merge";
 import React, { useCallback, useState } from "react";
 import { useTranslation } from "next-i18next";
 
-const ImageRenderer = (props: ControlProps) => {
+const ImageRendererComponent = (props: ControlProps) => {
   const {
     id,
     errors,
@@ -80,4 +80,4 @@ const ImageRenderer = (props: ControlProps) => {
   );
 };
 
-export default withJsonFormsControlProps(ImageRenderer);
+export const ImageRenderer = withJsonFormsControlProps(ImageRendererComponent);

@@ -9,7 +9,6 @@ import { useTranslation } from "next-i18next";
 import { applyToEachField, extractFieldIfString } from "@slub/edb-ui-utils";
 import { Button, Stack } from "@mui/material";
 import { JSONSchema7 } from "json-schema";
-import { SemanticJsonFormNoOps } from "../SemanticJsonFormNoOps";
 import { useSnackbar } from "notistack";
 import { useFormDataStore } from "@slub/edb-state-hooks";
 import { PrimaryFieldResults } from "@slub/edb-core-types";
@@ -29,6 +28,7 @@ export const EditEntityModal = NiceModal.create(
       typeIRIToTypeName,
       queryBuildOptions: { primaryFieldExtracts },
       uischemata,
+      components: { SemanticJsonForm },
     } = useAdbContext();
     const modal = useModal();
     const typeIRIs = useTypeIRIFromEntity(entityIRI);
@@ -147,7 +147,7 @@ export const EditEntityModal = NiceModal.create(
           </Stack>
         }
       >
-        <SemanticJsonFormNoOps
+        <SemanticJsonForm
           data={formData}
           onChange={handleFormDataChange}
           typeIRI={typeIRI}

@@ -1,4 +1,7 @@
-import { materialRenderers } from "@jsonforms/material-renderers";
+import {
+  MaterialBooleanControl,
+  materialRenderers,
+} from "@jsonforms/material-renderers";
 import {
   and,
   isObjectArray,
@@ -9,31 +12,32 @@ import {
   scopeEndsWith,
   UISchemaElement,
 } from "@jsonforms/core";
-import ImageRenderer from "../renderer/ImageRenderer";
 import AutoIdentifierRenderer from "../renderer/AutoIdentifierRenderer";
-import TypeOfRenderer from "../renderer/TypeOfRenderer";
 import { JSONSchema7 } from "json-schema";
-import MaterialArrayOfLinkedItemRenderer from "../renderer/MaterialArrayOfLinkedItemRenderer";
-import { materialArrayLayoutChipsTester } from "../renderer";
-import MaterialArrayOfLinkedItemChipsRenderer from "../renderer/MaterialArrayOfLinkedItemChipsRenderer";
 import { isEmpty } from "lodash";
-import InlineCondensedSemanticFormsRenderer from "../renderer/InlineCondensedSemanticFormsRenderer";
 import InlineDropdownRenderer from "../renderer/InlineDropdownRenderer";
 import MaterialLinkedObjectRenderer, {
   materialLinkedObjectControlTester,
 } from "../renderer/MaterialLinkedObjectRenderer";
-import AdbSpecialDateRenderer, {
-  adbSpecialDateControlTester,
-} from "../renderer/AdbSpecialDateRenderer";
-import MaterialBooleanControl, {
-  materialBooleanControlTester,
-} from "../renderer/MaterialBooleanControl";
 import { withJsonFormsControlProps } from "@jsonforms/react";
 import { MarkdownTextFieldRendererComponent } from "@slub/edb-markdown-renderer";
 import {
   materialCustomAnyOfControlTester,
   MaterialCustomAnyOfRenderer,
 } from "@slub/edb-layout-renderer";
+import {
+  adbSpecialDateControlTester,
+  AdbSpecialDateRenderer,
+  ImageRenderer,
+  materialBooleanControlTester,
+  TypeOfRenderer,
+} from "@slub/edb-basic-renderer";
+import {
+  InlineCondensedSemanticFormsRenderer,
+  materialArrayChipsLayoutTester,
+  MaterialArrayOfLinkedItemChipsRenderer,
+  MaterialArrayOfLinkedItemRenderer,
+} from "@slub/edb-linked-data-renderer";
 
 export const rendererRegistry: JsonFormsRendererRegistryEntry[] = [
   ...materialRenderers,
@@ -76,7 +80,7 @@ export const rendererRegistry: JsonFormsRendererRegistryEntry[] = [
     renderer: MaterialArrayOfLinkedItemRenderer,
   },
   {
-    tester: materialArrayLayoutChipsTester,
+    tester: materialArrayChipsLayoutTester,
     renderer: MaterialArrayOfLinkedItemChipsRenderer,
   },
   {

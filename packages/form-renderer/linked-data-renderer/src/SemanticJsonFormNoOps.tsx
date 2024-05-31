@@ -1,44 +1,23 @@
 import { JsonFormsCore, JsonSchema } from "@jsonforms/core";
-import { JsonForms, JsonFormsInitStateProps } from "@jsonforms/react";
+import { JsonForms } from "@jsonforms/react";
 import { Card, CardContent, Grid } from "@mui/material";
-import { JSONSchema7 } from "json-schema";
 import { merge } from "lodash";
 import React, { FunctionComponent, useCallback, useMemo } from "react";
-import SimilarityFinder from "./SimilarityFinder";
 import NiceModal from "@ebay/nice-modal-react";
 import {
   useAdbContext,
   useGlobalSearch,
   useRightDrawerState,
 } from "@slub/edb-state-hooks";
-import { ErrorObject } from "ajv";
 import { OptionsModal } from "./OptionsModal";
 import { useTranslation } from "next-i18next";
 import { SearchbarWithFloatingButton } from "@slub/edb-basic-components";
+import { SemanticJsonFormNoOpsProps } from "@slub/edb-global-types";
 
 export type ChangeCause = "user" | "mapping" | "reload";
 
-export interface SemanticJsonFormsNoOpsProps {
-  typeIRI: string;
-  data: any;
-  onChange?: (data: any, reason: ChangeCause) => void;
-  onError?: (errors: ErrorObject[]) => void;
-  schema: JSONSchema7;
-  jsonFormsProps?: Partial<JsonFormsInitStateProps>;
-  onEntityChange?: (entityIRI: string | undefined) => void;
-  onEntityDataChange?: (entityData: any) => void;
-  toolbar?: React.ReactNode;
-  forceEditMode?: boolean;
-  defaultEditMode?: boolean;
-  searchText?: string;
-  disableSimilarityFinder?: boolean;
-  enableSidebar?: boolean;
-  wrapWithinCard?: boolean;
-  formsPath?: string;
-}
-
 export const SemanticJsonFormNoOps: FunctionComponent<
-  SemanticJsonFormsNoOpsProps
+  SemanticJsonFormNoOpsProps
 > = ({
   data,
   onChange,
@@ -61,6 +40,7 @@ export const SemanticJsonFormNoOps: FunctionComponent<
     rendererRegistry,
     cellRendererRegistry,
     primaryFieldRendererRegistry,
+    components: { SimilarityFinder },
   } = useAdbContext();
   const searchOnDataPath = useMemo(() => {
     const typeName = typeIRIToTypeName(typeIRI);

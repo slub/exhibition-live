@@ -8,10 +8,10 @@ import {
   Hidden,
   IconButton,
 } from "@mui/material";
-import merge from "lodash/merge";
+import merge from "lodash-es/merge";
 import React, { useCallback, useEffect, useState } from "react";
 
-const TypeOfRenderer = (props: ControlProps) => {
+const TypeOfRendererComponent = (props: ControlProps) => {
   const {
     id,
     errors,
@@ -75,4 +75,6 @@ const TypeOfRenderer = (props: ControlProps) => {
   );
 };
 
-export default withJsonFormsControlProps(TypeOfRenderer);
+export const TypeOfRenderer = withJsonFormsControlProps(
+  TypeOfRendererComponent,
+);

@@ -2,10 +2,11 @@ import { JSONSchema7 } from "json-schema";
 import { useMemo, useState } from "react";
 import type { Meta } from "@storybook/react";
 
-import { sladb, slent } from "../config/formConfigs";
-import { SemanticJsonFormNoOps } from "./SemanticJsonFormNoOps";
 import { useExtendedSchema } from "@slub/edb-state-hooks";
-import { uischemata } from "../config/uischemata";
+import { SemanticJsonFormNoOps } from "./SemanticJsonFormNoOps";
+import namespace from "@rdfjs/namespace";
+const sladb = namespace("http://ontologies.slub-dresden.de/exhibition#");
+const slent = namespace("http://ontologies.slub-dresden.de/exhibition/entity#");
 
 export default {
   title: "form/exhibition/SemanticJsonFormNoOps",
@@ -44,7 +45,6 @@ const SemanticJsonFormNoOperationsExample = ({
   const { typeIRI, data: initialData } = makeExampleData(typeName, defaultData);
   const [data, setData] = useState<any>(initialData);
   const loadedSchema = useExtendedSchema({ typeName });
-  const uischema = useMemo(() => uischemata[typeName], [typeName]);
 
   return (
     <SemanticJsonFormNoOps
@@ -53,9 +53,6 @@ const SemanticJsonFormNoOperationsExample = ({
       typeIRI={typeIRI}
       searchText={""}
       schema={loadedSchema as JSONSchema7}
-      jsonFormsProps={{
-        uischema,
-      }}
     />
   );
 };
@@ -68,7 +65,6 @@ export const SemanticJsonFormNoOperationsExhibition = () => {
   const { typeIRI, typeName, data: initialData } = exhibitionExample;
   const [data, setData] = useState<any>(initialData);
   const loadedSchema = useExtendedSchema({ typeName });
-  const uischema = useMemo(() => uischemata[typeName], [typeName]);
 
   return (
     <SemanticJsonFormNoOps
@@ -77,9 +73,6 @@ export const SemanticJsonFormNoOperationsExhibition = () => {
       typeIRI={typeIRI}
       searchText={""}
       schema={loadedSchema as JSONSchema7}
-      jsonFormsProps={{
-        uischema,
-      }}
     />
   );
 };

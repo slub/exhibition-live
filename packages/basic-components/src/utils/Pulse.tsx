@@ -39,7 +39,7 @@ const PulsatingDot = styled.div<PulsatingDotProps>`
   &:before {
     animation: pulseRing 1.25s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
     background-color: ${({ dotColor, theme }) =>
-      dotColor || (theme as Theme).palette.primary.main};
+      dotColor || (theme as Theme).palette?.primary?.main};
     border-radius: ${({ borderRadius }) => borderRadius || "50%"};
     content: "";
     display: block;

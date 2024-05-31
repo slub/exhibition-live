@@ -81,22 +81,10 @@ import {
   LobidAllPropTable,
   WikidataAllPropTable,
 } from "@slub/edb-advanced-components";
-
-export type KnowledgeSources = "kb" | "gnd" | "wikidata" | "k10plus" | "ai";
-// @ts-ignore
-type Props = {
-  finderId: string;
-  data: any;
-  classIRI: string;
-  jsonSchema: JSONSchema7;
-  onEntityIRIChange?: (entityIRI: string | undefined) => void;
-  onMappedDataAccepted?: (data: any) => void;
-  onExistingEntityAccepted?: (entityIRI: string, data: any) => void;
-  searchOnDataPath?: string;
-  search?: string;
-  hideFooter?: boolean;
-  additionalKnowledgeSources?: KnowledgeSources[];
-};
+import {
+  KnowledgeSources,
+  SimilarityFinderProps,
+} from "@slub/edb-global-types";
 
 type SelectedEntity = {
   id: string;
@@ -689,7 +677,7 @@ const performSearch = (
   });
 };
 
-const SimilarityFinder: FunctionComponent<Props> = ({
+export const SimilarityFinder: FunctionComponent<SimilarityFinderProps> = ({
   finderId,
   data,
   classIRI: preselectedClassIRI,
@@ -1113,5 +1101,3 @@ const SimilarityFinder: FunctionComponent<Props> = ({
     )
   );
 };
-
-export default SimilarityFinder;

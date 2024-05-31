@@ -8,7 +8,7 @@ import {
   ListItemText,
   Stack,
 } from "@mui/material";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo } from "react";
 
 import { Clear, Save } from "@mui/icons-material";
 import { applyToEachField, extractFieldIfString } from "@slub/edb-ui-utils";

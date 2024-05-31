@@ -17,6 +17,7 @@ const nextConfig = removeImports({
     "lodash-es": { transform: "lodash-es/{{member}}" },
   },
   experimental: {
+    externalDir: true,
     optimizePackageImports: [
       "@mui/material",
       "@mui/icons-material",

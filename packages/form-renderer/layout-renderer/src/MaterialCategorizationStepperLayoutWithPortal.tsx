@@ -222,7 +222,7 @@ const withAjvProps =
   ) =>
   (props: P) => {
     const ctx = useJsonForms();
-    const ajv = getAjv({ jsonforms: { ...ctx } }) as AjvProps["ajv"];
+    const ajv = getAjv({ jsonforms: { ...ctx } }) as unknown as AjvProps["ajv"];
 
     return <Component {...props} ajv={ajv} actionContainer={actionContainer} />;
   };

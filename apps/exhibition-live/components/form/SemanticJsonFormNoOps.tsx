@@ -5,7 +5,6 @@ import { JSONSchema7 } from "json-schema";
 import { merge } from "lodash";
 import React, { FunctionComponent, useCallback, useMemo } from "react";
 import SimilarityFinder from "./SimilarityFinder";
-import { SearchbarWithFloatingButton } from "../layout/main-layout/Searchbar";
 import NiceModal from "@ebay/nice-modal-react";
 import {
   useAdbContext,
@@ -15,6 +14,7 @@ import {
 import { ErrorObject } from "ajv";
 import { OptionsModal } from "./OptionsModal";
 import { useTranslation } from "next-i18next";
+import { SearchbarWithFloatingButton } from "@slub/edb-basic-components";
 
 export type ChangeCause = "user" | "mapping" | "reload";
 

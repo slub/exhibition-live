@@ -5,10 +5,10 @@ import {
 } from "@jsonforms/material-renderers";
 import { JsonForms } from "@jsonforms/react";
 import { useCallback, useState } from "react";
-
-import MaterialCustomAnyOfRenderer, {
+import {
   materialCustomAnyOfControlTester,
-} from "./MaterialCustomAnyOfRenderer";
+  MaterialCustomAnyOfRenderer,
+} from "@slub/edb-layout-renderer";
 
 export default {
   title: "form/exhibition/MaterialCustomAnyOfRenderer",

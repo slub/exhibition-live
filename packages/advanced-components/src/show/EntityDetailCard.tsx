@@ -22,7 +22,7 @@ import {
   useModifiedRouter,
   useSettings,
 } from "@slub/edb-state-hooks";
-import { isString } from "lodash";
+import isString from "lodash-es/isString";
 import { Edit } from "@mui/icons-material";
 import { PrimaryFieldResults } from "@slub/edb-core-types";
 

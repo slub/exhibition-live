@@ -9,7 +9,6 @@ import {
 import * as React from "react";
 import { useTranslation } from "next-i18next";
 
-import DiscoverAutocompleteInput from "../form/discover/DiscoverAutocompleteInput";
 import { useCallback, useMemo } from "react";
 import { JsonSchema7 } from "@jsonforms/core";
 import { memo } from "./config";
@@ -19,12 +18,13 @@ import {
   useKeyEventForSimilarityFinder,
   useRightDrawerState,
 } from "@slub/edb-state-hooks";
-import { SearchbarWithFloatingButton } from "../layout/main-layout/Searchbar";
 import SimilarityFinder, { KnowledgeSources } from "../form/SimilarityFinder";
 import { JSONSchema7 } from "json-schema";
-import { AutocompleteSuggestion } from "../form/DebouncedAutoComplete";
+import { AutocompleteSuggestion } from "@slub/edb-core-types";
 import { NoteAdd } from "@mui/icons-material";
 import { PrimaryField, PrimaryFieldDeclaration } from "@slub/edb-core-types";
+import { SearchbarWithFloatingButton } from "@slub/edb-basic-components";
+import { DiscoverAutocompleteInput } from "@slub/edb-advanced-components";
 
 export interface ArrayLayoutToolbarProps {
   label: string;

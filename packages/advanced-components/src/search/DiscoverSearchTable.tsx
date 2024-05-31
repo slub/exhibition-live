@@ -12,20 +12,16 @@ import { findEntityByClass } from "@slub/sparql-schema";
 import { ClassicResultListItem } from "@slub/edb-basic-components";
 import { EntityDetailElement } from "@slub/edb-advanced-components";
 
-type Props = {
+export type DiscoverSearchTableProps = {
   searchString: string;
   typeName?: string;
-  classIRI?: string;
   onAcceptItem?: (id: string | undefined, data: any) => void;
   selectedIndex?: number;
 };
 
-const DiscoverSearchTable: FunctionComponent<Props> = ({
-  searchString,
-  typeName = "Person",
-  onAcceptItem,
-  selectedIndex,
-}) => {
+export const DiscoverSearchTable: FunctionComponent<
+  DiscoverSearchTableProps
+> = ({ searchString, typeName = "Person", onAcceptItem, selectedIndex }) => {
   const [resultTable, setResultTable] = useState<any | undefined>();
   const {
     typeNameToTypeIRI,
@@ -34,12 +30,14 @@ const DiscoverSearchTable: FunctionComponent<Props> = ({
   } = useAdbContext();
   const { crudOptions } = useGlobalCRUDOptions();
   const typeIRI = useMemo(
-    () => typeNameToTypeIRI[typeName],
+    () => typeNameToTypeIRI(typeName),
     [typeName, typeNameToTypeIRI],
   );
 
   const fetchData = useCallback(async () => {
-    if (!searchString || searchString.length < 1 || !crudOptions) return;
+    console.log("fetch data");
+    if (!searchString || searchString.length < 1 || !crudOptions || !typeIRI)
+      return;
     setResultTable(
       (
         await findEntityByClass(
@@ -104,5 +102,3 @@ const DiscoverSearchTable: FunctionComponent<Props> = ({
     </List>
   );
 };
-
-export default DiscoverSearchTable;

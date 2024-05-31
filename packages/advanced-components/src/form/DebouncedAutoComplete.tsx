@@ -1,23 +1,18 @@
 import { Link, Search } from "@mui/icons-material";
 import { CircularProgress } from "@mui/material";
 import Autocomplete, { AutocompleteProps } from "@mui/material/Autocomplete";
-import { debounce } from "lodash";
+import debounce from "lodash-es/debounce";
 import React, {
   FunctionComponent,
   useCallback,
   useEffect,
-  useMemo,
   useState,
 } from "react";
 
 import { TextField } from "./TextField";
 import { useQuery } from "@slub/edb-state-hooks";
 import { useTranslation } from "next-i18next";
-
-export type AutocompleteSuggestion = {
-  label: string;
-  value: string | null;
-};
+import { AutocompleteSuggestion } from "@slub/edb-core-types";
 
 export type DebouncedAutocompleteProps = {
   load: (value?: string) => Promise<AutocompleteSuggestion[]>;

@@ -12,14 +12,12 @@ import {
   findPersonWithinWikidataUsingREST,
   wikidataPrefixes,
 } from "@slub/edb-ui-utils";
-import {
-  AutocompleteSuggestion,
-  DebouncedAutocomplete,
-} from "../DebouncedAutoComplete";
 import WikidataHumanCard from "./WikidataHumanCard";
 import WikidataThingCard from "./WikidataThingCard";
 import { sparqlSelectViaFieldMappings } from "@slub/sparql-schema";
 import { remoteSparqlQuery } from "@slub/remote-query-implementations";
+import { DebouncedAutocomplete } from "@slub/edb-advanced-components";
+import { AutocompleteSuggestion } from "@slub/edb-core-types";
 
 interface OwnProps {
   selected?: AutocompleteSuggestion | null;

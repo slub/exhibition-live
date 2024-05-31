@@ -2,7 +2,6 @@ import { Box, Grid } from "@mui/material";
 import { JSONSchema7 } from "json-schema";
 import React, { useCallback, useMemo, useState } from "react";
 
-import { materialCategorizationStepperLayoutWithPortal } from "../../renderer/MaterialCategorizationStepperLayoutWithPortal";
 import {
   useAdbContext,
   useFormEditor,
@@ -16,6 +15,7 @@ import NewSemanticJsonForm from "../../form/SemanticJsonForm";
 import { useFormDataStore, useExtendedSchema } from "@slub/edb-state-hooks";
 import { useCRUDWithQueryClient } from "@slub/edb-state-hooks";
 import { EntityDetailElement } from "@slub/edb-advanced-components";
+import { materialCategorizationStepperLayoutWithPortal } from "@slub/edb-layout-renderer";
 
 type Props = {
   children: React.ReactChild;

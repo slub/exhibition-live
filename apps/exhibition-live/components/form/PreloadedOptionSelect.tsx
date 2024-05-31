@@ -8,11 +8,7 @@ import {
 import React, { FunctionComponent, useCallback, useId } from "react";
 
 import { useQuery } from "@slub/edb-state-hooks";
-
-export type AutocompleteSuggestion = {
-  label: string;
-  value: string | null;
-};
+import { AutocompleteSuggestion } from "@slub/edb-core-types";
 
 export type PreloadedOptionSelect = {
   title: string;

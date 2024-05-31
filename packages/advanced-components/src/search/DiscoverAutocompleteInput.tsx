@@ -1,14 +1,12 @@
 import { TextFieldProps, useControlled } from "@mui/material";
 import parse from "html-react-parser";
-import React, { FunctionComponent, useCallback, useId } from "react";
+import React, { FunctionComponent, useCallback } from "react";
 
 import { useAdbContext, useGlobalCRUDOptions } from "@slub/edb-state-hooks";
-import {
-  AutocompleteSuggestion,
-  DebouncedAutocomplete,
-} from "../DebouncedAutoComplete";
 import { useQuery } from "@slub/edb-state-hooks";
 import { findEntityByClass, loadEntityBasics } from "@slub/sparql-schema";
+import { AutocompleteSuggestion } from "@slub/edb-core-types";
+import { DebouncedAutocomplete } from "@slub/edb-advanced-components";
 
 interface OwnProps {
   selected?: AutocompleteSuggestion | null;
@@ -29,9 +27,11 @@ interface OwnProps {
   autocompleteDisabled?: boolean;
 }
 
-type Props = OwnProps;
+export type DiscoverAutocompleteInputProps = OwnProps;
 
-const DiscoverAutocompleteInput: FunctionComponent<Props> = ({
+export const DiscoverAutocompleteInput: FunctionComponent<
+  DiscoverAutocompleteInputProps
+> = ({
   title = "",
   typeName,
   readonly,
@@ -183,5 +183,3 @@ const DiscoverAutocompleteInput: FunctionComponent<Props> = ({
     />
   );
 };
-
-export default DiscoverAutocompleteInput;

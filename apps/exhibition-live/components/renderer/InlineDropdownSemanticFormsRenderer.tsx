@@ -10,15 +10,13 @@ import {
   FormControl,
   Hidden,
   List,
-  TextField,
   Theme,
   Typography,
 } from "@mui/material";
 import merge from "lodash/merge";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 
-import DiscoverAutocompleteInput from "../form/discover/DiscoverAutocompleteInput";
-import { AutocompleteSuggestion } from "../form/DebouncedAutoComplete";
+import { AutocompleteSuggestion } from "@slub/edb-core-types";
 import { extractFieldIfString } from "@slub/edb-ui-utils";
 import {
   useAdbContext,
@@ -26,11 +24,14 @@ import {
   useRightDrawerState,
 } from "@slub/edb-state-hooks";
 import { makeFormsPath } from "@slub/edb-ui-utils";
-import { SearchbarWithFloatingButton } from "../layout/main-layout/Searchbar";
 import SimilarityFinder from "../form/SimilarityFinder";
 import { JSONSchema7 } from "json-schema";
 import { PrimaryField } from "@slub/edb-core-types";
-import { EntityDetailListItem } from "@slub/edb-advanced-components";
+import {
+  DiscoverAutocompleteInput,
+  EntityDetailListItem,
+} from "@slub/edb-advanced-components";
+import { SearchbarWithFloatingButton } from "@slub/edb-basic-components";
 
 const InlineDropdownSemanticFormsRenderer = (props: ControlProps) => {
   const {

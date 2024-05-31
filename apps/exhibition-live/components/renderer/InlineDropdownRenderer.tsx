@@ -4,7 +4,7 @@ import { FormControl, Hidden } from "@mui/material";
 import merge from "lodash/merge";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 
-import { AutocompleteSuggestion } from "../form/DebouncedAutoComplete";
+import { AutocompleteSuggestion } from "@slub/edb-core-types";
 import { extractFieldIfString } from "@slub/edb-ui-utils";
 import { makeFormsPath } from "@slub/edb-ui-utils";
 import { useTranslation } from "next-i18next";

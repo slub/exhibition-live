@@ -8,13 +8,13 @@ import { useTranslation } from "next-i18next";
 
 // third-party
 // project imports
-import DiscoverAutocompleteInput from "../../form/discover/DiscoverAutocompleteInput";
 import {
   useAdbContext,
   useGlobalSearch,
   useModifiedRouter,
 } from "@slub/edb-state-hooks";
 import { encodeIRI } from "@slub/edb-ui-utils";
+import { DiscoverAutocompleteInput } from "@slub/edb-advanced-components";
 
 // styles
 const PopperStyle = styled(Popper, { shouldForwardProp })(({ theme }) => ({

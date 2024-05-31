@@ -1,5 +1,5 @@
 import React, { ComponentType, useCallback, useState } from "react";
-import merge from "lodash/merge";
+import merge from "lodash-es/merge";
 import {
   Box,
   Button,
@@ -30,9 +30,9 @@ import {
   MaterialLayoutRenderer,
   MaterialLayoutRendererProps,
 } from "@jsonforms/material-renderers";
-import { optionallyCreatePortal } from "../helper/optionallyCreatePortal";
 import { KeyboardArrowLeft, KeyboardArrowRight } from "@mui/icons-material";
 import { useTranslation } from "next-i18next";
+import { optionallyCreatePortal } from "@slub/edb-ui-utils";
 
 export const materialCategorizationStepperTester: RankedTester = rankWith(
   4,

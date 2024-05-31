@@ -1,7 +1,4 @@
 import { materialRenderers } from "@jsonforms/material-renderers";
-import MaterialCustomAnyOfRenderer, {
-  materialCustomAnyOfControlTester,
-} from "../renderer/MaterialCustomAnyOfRenderer";
 import {
   and,
   isObjectArray,
@@ -33,6 +30,10 @@ import MaterialBooleanControl, {
 } from "../renderer/MaterialBooleanControl";
 import { withJsonFormsControlProps } from "@jsonforms/react";
 import { MarkdownTextFieldRendererComponent } from "@slub/edb-markdown-renderer";
+import {
+  materialCustomAnyOfControlTester,
+  MaterialCustomAnyOfRenderer,
+} from "@slub/edb-layout-renderer";
 
 export const rendererRegistry: JsonFormsRendererRegistryEntry[] = [
   ...materialRenderers,

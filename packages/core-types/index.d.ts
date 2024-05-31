@@ -140,3 +140,8 @@ export type NormDataMapping = {
   mapping: DeclarativeMapping;
   typeToTypeMap: Record<string, string | string[]>;
 };
+
+export type AutocompleteSuggestion = {
+  label: string;
+  value: string | null;
+};

@@ -6,11 +6,9 @@ import React, {
 } from "react";
 
 import { findEntityWithinLobid } from "@slub/edb-ui-utils";
-import {
-  AutocompleteSuggestion,
-  DebouncedAutocomplete,
-} from "../DebouncedAutoComplete";
 import { lobidTypemap } from "../../config";
+import { DebouncedAutocomplete } from "@slub/edb-advanced-components";
+import { AutocompleteSuggestion } from "@slub/edb-core-types";
 
 interface OwnProps {
   selected?: AutocompleteSuggestion | null;

@@ -1,6 +1,6 @@
 import { Generate, JsonSchema, Layout, UISchemaElement } from "@jsonforms/core";
 import { JsonFormsDispatch } from "@jsonforms/react";
-import omit from "lodash/omit";
+import omit from "lodash-es/omit";
 import React from "react";
 
 interface CombinatorPropertiesProps {

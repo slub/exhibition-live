@@ -1,5 +1,5 @@
 import { JSONSchema7 } from "json-schema";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import type { Meta } from "@storybook/react";
 
 import { useExtendedSchema } from "@slub/edb-state-hooks";

@@ -5,6 +5,7 @@ const config: StorybookConfig = {
     "../components/**/*.mdx",
     "../components/**/*.stories.@(js|jsx|ts|tsx)",
     "../../../packages/**/*.stories.@(js|jsx|ts|tsx)",
+    "../../../packages/**/*.mdx",
   ],
 
   addons: [
@@ -35,6 +36,15 @@ const config: StorybookConfig = {
         },
       ],
     });
+    config.resolve = {
+      ...config.resolve,
+      fallback: {
+        ...(config.resolve || {}).fallback,
+        fs: false,
+        stream: false,
+        os: false,
+      },
+    };
     return config;
   },
   /*

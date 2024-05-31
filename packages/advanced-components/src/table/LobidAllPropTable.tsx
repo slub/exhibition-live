@@ -34,7 +34,7 @@ import { useTranslation } from "next-i18next";
 import { isValidUrl } from "@slub/edb-ui-utils";
 import { Image } from "mui-image";
 import { EntityChip } from "../show";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery } from "@slub/edb-state-hooks";
 
 export interface AllPropTableProps {
   allProps?: any;
@@ -282,12 +282,12 @@ export const LobidAllPropTable: FunctionComponent<Props> = ({
     if (typeof gndIRI_ !== "string") return undefined;
     return gndIRI_.startsWith(gndBaseIRI) ? gndIRI_ : undefined;
   }, [allProps]);
-  const { data: rawEntry } = { data: {} }; /*useQuery(
+  const { data: rawEntry } = useQuery(
     ["lobid", gndIRI],
     () => findEntityWithinLobidByIRI(gndIRI),
     // @ts-ignore
-    { enabled: !!gndIRI}
-  );*/
+    { enabled: !!gndIRI },
+  );
 
   return (
     <>

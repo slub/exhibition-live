@@ -11,7 +11,7 @@ import React, {
 } from "react";
 
 import { TextField } from "./TextField";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery } from "@slub/edb-state-hooks";
 import { useTranslation } from "next-i18next";
 
 export type AutocompleteSuggestion = {

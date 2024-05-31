@@ -12,7 +12,7 @@ import {
 } from "@slub/edb-ui-utils";
 import { filterUndefOrNull } from "@slub/edb-ui-utils";
 import { applyToEachField, extractFieldIfString } from "@slub/edb-ui-utils";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery } from "@slub/edb-state-hooks";
 import { lobidTypemap, typeIRItoTypeName } from "../../config";
 import Ajv from "ajv";
 import { useTranslation } from "next-i18next";

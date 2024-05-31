@@ -48,7 +48,7 @@ import {
   useModifiedRouter,
 } from "@slub/edb-state-hooks";
 import { encodeIRI, filterUndefOrNull } from "@slub/edb-ui-utils";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery } from "@slub/edb-state-hooks";
 import { OwnColumnDesc } from "./types";
 import TypedListItem from "../content/list/TypedListItem";
 import HorizontalNonLinearStepper from "../form/wizard/HorizontalNonLinearStepper";

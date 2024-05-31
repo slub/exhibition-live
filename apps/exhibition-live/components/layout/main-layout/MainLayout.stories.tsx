@@ -4,7 +4,7 @@ import React, { useMemo } from "react";
 import { MainLayout } from "./MainLayout";
 import TypedForm from "../../content/main/TypedFormNoSSR";
 import { sladb, slent } from "../../config/formConfigs";
-import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
+import { QueryClientProvider, QueryClient } from "@slub/edb-state-hooks";
 
 export default {
   title: "layout/MainLayout",

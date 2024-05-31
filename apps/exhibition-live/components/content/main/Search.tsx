@@ -5,7 +5,7 @@ import IconButton from "@mui/material/IconButton";
 import SearchIcon from "@mui/icons-material/Search";
 import { ParentSize } from "@visx/responsive";
 import { useCallback, useMemo, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery } from "@slub/edb-state-hooks";
 import { useAdbContext, useGlobalCRUDOptions } from "@slub/edb-state-hooks";
 import { SELECT } from "@tpluscode/sparql-builder";
 import df from "@rdfjs/data-model";

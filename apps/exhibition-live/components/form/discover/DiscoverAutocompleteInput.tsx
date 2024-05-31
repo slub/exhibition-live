@@ -7,7 +7,7 @@ import {
   AutocompleteSuggestion,
   DebouncedAutocomplete,
 } from "../DebouncedAutoComplete";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery } from "@slub/edb-state-hooks";
 import { findEntityByClass, loadEntityBasics } from "@slub/sparql-schema";
 
 interface OwnProps {

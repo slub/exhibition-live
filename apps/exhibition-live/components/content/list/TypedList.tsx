@@ -41,7 +41,7 @@ import {
   NoteAdd,
   OpenInNew,
 } from "@mui/icons-material";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@slub/edb-state-hooks";
 import { SemanticFormsModal } from "../../renderer/SemanticFormsModal";
 import NiceModal from "@ebay/nice-modal-react";
 import { useSnackbar } from "notistack";

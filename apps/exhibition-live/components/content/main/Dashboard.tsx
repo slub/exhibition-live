@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import Grid2 from "@mui/material/Unstable_Grid2";
 import { TrendingDown, TrendingUp } from "@mui/icons-material";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery } from "@slub/edb-state-hooks";
 import { useAdbContext, useGlobalCRUDOptions } from "@slub/edb-state-hooks";
 import { SELECT } from "@tpluscode/sparql-builder";
 import { orderBy } from "lodash";

@@ -56,7 +56,7 @@ import {
 } from "@slub/edb-ui-utils";
 import { debounce } from "lodash";
 import { filterUndefOrNull } from "@slub/edb-ui-utils";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@slub/edb-state-hooks";
 import {
   BasicThingInformation,
   PrimaryField,

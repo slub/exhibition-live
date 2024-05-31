@@ -1,4 +1,4 @@
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider } from "@slub/edb-state-hooks";
 import { JSONSchema7 } from "json-schema";
 import { useMemo, useState } from "react";
 

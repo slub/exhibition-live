@@ -13,7 +13,7 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery } from "@slub/edb-state-hooks";
 import { useGoogleToken } from "./useGoogleToken";
 import { GenericMaterialListItem } from "../content/main/GenericVirtualizedList";
 import NiceModal, { useModal } from "@ebay/nice-modal-react";

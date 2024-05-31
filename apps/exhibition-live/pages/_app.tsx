@@ -8,13 +8,11 @@ import "@uiw/react-md-editor/markdown-editor.css";
 import "@triply/yasgui/build/yasgui.min.css";
 import "leaflet/dist/leaflet.css";
 
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import type { AppProps } from "next/app";
 
 import ThemeComponent from "../components/theme/ThemeComponent";
 import NiceModal from "@ebay/nice-modal-react";
 import { SnackbarProvider } from "notistack";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { appWithTranslation, UserConfig, useTranslation } from "next-i18next";
 import nextI18NextConfig from "../next-i18next.config";
 import { GoogleOAuthProvider } from "@react-oauth/google";
@@ -25,10 +23,15 @@ import "dayjs/locale/de";
 import "dayjs/locale/en";
 import { useEffect } from "react";
 import { Provider } from "react-redux";
-import { OptionalLiveDemoEndpoint } from "../components/state/useOptionalLiveDemoEndpoint";
+import { OptionalLiveDemoEndpoint } from "../components/state";
 import getConfig from "next/config";
 import { BASE_IRI, PUBLIC_BASE_PATH } from "../components/config";
-import { AdbProvider, store } from "@slub/edb-state-hooks";
+import {
+  AdbProvider,
+  QueryClient,
+  QueryClientProvider,
+  store,
+} from "@slub/edb-state-hooks";
 import { EditEntityModal } from "../components/form/edit/EditEntityModal";
 import { useRouter } from "next/router";
 import SemanticJsonForm from "../components/form/SemanticJsonForm";
@@ -86,7 +89,6 @@ function App({ Component, pageProps }: AppProps) {
               </AdbProvider>
             </SnackbarProvider>
           </ThemeComponent>
-          <ReactQueryDevtools initialIsOpen={false} />
         </Provider>
       </LocalizationProvider>
     </QueryClientProviderWrapper>

@@ -1,21 +1,24 @@
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { AdbProvider, store } from "@slub/edb-state-hooks";
+import {
+  AdbProvider,
+  QueryClient,
+  QueryClientProvider,
+  store,
+} from "@slub/edb-state-hooks";
 import { Provider } from "react-redux";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import "dayjs/locale/de";
 import "dayjs/locale/en";
 import { BASE_IRI, PUBLIC_BASE_PATH } from "../components/config";
-import { EntityDetailModal } from "../components/form/show";
 import { EditEntityModal } from "../components/form/edit/EditEntityModal";
 import { SnackbarProvider } from "notistack";
 import { useRouterHook } from "./useRouterHook";
 import ThemeComponent from "../components/theme/ThemeComponent";
 import React from "react";
 import { LocalizationProvider } from "@mui/x-date-pickers";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import SemanticJsonForm from "../components/form/SemanticJsonForm";
 import { exhibitionConfig } from "../components/config/exhibitionAppConfig";
 import { envToSparqlEndpoint } from "@slub/edb-ui-utils";
+import { EntityDetailModal } from "@slub/edb-advanced-components";
 
 export const queryClient = new QueryClient();
 
@@ -45,7 +48,6 @@ export const App = ({ children }: { children?: React.ReactNode }) => {
               </AdbProvider>
             </SnackbarProvider>
           </ThemeComponent>
-          <ReactQueryDevtools initialIsOpen={false} />
         </Provider>
       </LocalizationProvider>
     </QueryClientProvider>

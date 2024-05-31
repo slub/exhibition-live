@@ -7,7 +7,7 @@ import {
 } from "@mui/material";
 import React, { FunctionComponent, useCallback, useId } from "react";
 
-import { useQuery } from "@tanstack/react-query";
+import { useQuery } from "@slub/edb-state-hooks";
 
 export type AutocompleteSuggestion = {
   label: string;

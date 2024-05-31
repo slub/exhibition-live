@@ -33,7 +33,7 @@
     "ajv": "^8.14.0",
     "json-schema-to-ts": "^3.1.0",
     "@ebay/nice-modal-react": "^1.2.13",
-    "dot": "^1.1.2"
+    "dot": "2.0.0-beta.1"
   },
   "devDependencies": {
     "@types/react": "^18.3.3",

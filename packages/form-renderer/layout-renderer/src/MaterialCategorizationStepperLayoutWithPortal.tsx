@@ -87,7 +87,7 @@ export const MaterialCategorizationStepperLayout = (
     marginRight: "1em",
   };
   const categories = categorization.elements.filter((category: Category) =>
-    isVisible(category, data, undefined, ajv),
+    isVisible(category, data, undefined, ajv as any),
   );
   const { t } = useTranslation();
   const childProps: MaterialLayoutRendererProps = {

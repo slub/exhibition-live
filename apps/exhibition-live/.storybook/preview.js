@@ -1,11 +1,11 @@
 import theme from "../components/theme/berry-theme";
 import { CssBaseline, ThemeProvider } from "@mui/material";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider } from "@slub/edb-state-hooks";
 
 import { BASE_IRI, PUBLIC_BASE_PATH } from "../components/config";
 import { AdbProvider, store } from "@slub/edb-state-hooks";
-import { EntityDetailModal } from "../components/form/show";
 import { EditEntityModal } from "../components/form/edit/EditEntityModal";
+import { EntityDetailModal } from "@slub/edb-advanced-components";
 import { Provider } from "react-redux";
 import { AppRouterContext } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import SemanticJsonForm from "../components/form/SemanticJsonForm";

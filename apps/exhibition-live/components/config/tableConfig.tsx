@@ -1,17 +1,7 @@
-import { VisibilityState } from "@tanstack/table-core";
-import { ColumnDefMatcher, mkAccessor } from "../content/list/listHelper";
 import { MRT_ColumnDef } from "material-react-table";
-import { numeric2JSDate } from "@slub/edb-ui-utils";
 import { TFunction } from "i18next";
 import { specialDate2LocalDate } from "@slub/edb-ui-utils";
-export type ListConfigType = {
-  columnVisibility: VisibilityState;
-  matcher: ColumnDefMatcher;
-};
-export type TableConfigRegistry = {
-  default: Partial<ListConfigType>;
-  [typeName: string]: Partial<ListConfigType>;
-};
+import { mkAccessor, TableConfigRegistry } from "@slub/edb-table-components";
 const p = (path: string[]) => path.join("_");
 const dateColDef: (
   key: string,

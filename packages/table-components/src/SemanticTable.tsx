@@ -3,8 +3,13 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import {
   useAdbContext,
+  useExtendedSchema,
   useGlobalCRUDOptions,
   useModifiedRouter,
+  useMutation,
+  useQuery,
+  useQueryClient,
+  useSettings,
 } from "@slub/edb-state-hooks";
 import {
   Backdrop,
@@ -12,7 +17,6 @@ import {
   CircularProgress,
   IconButton,
   ListItemIcon,
-  Menu,
   MenuItem,
   Skeleton,
 } from "@mui/material";
@@ -20,7 +24,6 @@ import {
   MaterialReactTable,
   MRT_ColumnDef,
   MRT_ColumnFiltersState,
-  MRT_EditActionButtons,
   MRT_Row,
   MRT_RowSelectionState,
   MRT_SortingState,
@@ -41,12 +44,10 @@ import {
   NoteAdd,
   OpenInNew,
 } from "@mui/icons-material";
-import { useMutation, useQuery, useQueryClient } from "@slub/edb-state-hooks";
 import NiceModal from "@ebay/nice-modal-react";
 import { useSnackbar } from "notistack";
 import Button from "@mui/material/Button";
-import { download, generateCsv, mkConfig } from "export-to-csv";
-import { useSettings, useExtendedSchema } from "@slub/edb-state-hooks";
+import { ConfigOptions, download, generateCsv, mkConfig } from "export-to-csv";
 import { useTranslation } from "next-i18next";
 import {
   jsonSchema2Select,
@@ -54,15 +55,18 @@ import {
   remove,
   withDefaultPrefix,
 } from "@slub/sparql-schema";
-import { SPARQLFlavour, SparqlEndpoint } from "@slub/edb-core-types";
+import { SparqlEndpoint, SPARQLFlavour } from "@slub/edb-core-types";
 import { computeColumns } from "./listHelper";
-import { tableConfig } from "../../config/tableConfig";
 import { encodeIRI, filterUndefOrNull } from "@slub/edb-ui-utils";
 import { bringDefinitionToTop } from "@slub/json-schema-utils";
 import { GenericModal } from "@slub/edb-basic-components";
+import { ExportMenuButton } from "./ExportMenuButton";
+import { TableConfigRegistry } from "./types";
 
-type Props = {
+export type SemanticTableProps = {
   typeName: string;
+  csvOptions?: ConfigOptions;
+  tableConfigRegistry?: TableConfigRegistry;
 };
 
 const getFlavour = (endpoint?: SparqlEndpoint): SPARQLFlavour => {
@@ -78,43 +82,17 @@ const getFlavour = (endpoint?: SparqlEndpoint): SPARQLFlavour => {
   }
 };
 
-const csvConfig = mkConfig({
+const defaultCsvOptions: ConfigOptions = {
   fieldSeparator: ",",
   decimalSeparator: ".",
   useKeysAsHeaders: true,
-});
-
-const ExportMenuButton = ({ children }: { children: React.ReactNode }) => {
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-  const open = Boolean(anchorEl);
-  return (
-    <>
-      <IconButton onClick={handleClick}>
-        <FileDownload />
-      </IconButton>
-      <Menu
-        id="export-menu"
-        anchorEl={anchorEl}
-        open={open}
-        onClose={handleClose}
-        MenuListProps={{
-          "aria-labelledby": "export-button",
-          role: "listbox",
-        }}
-      >
-        {children}
-      </Menu>
-    </>
-  );
 };
 
-export const TypedList = ({ typeName }: Props) => {
+export const SemanticTable = ({
+  typeName,
+  csvOptions,
+  tableConfigRegistry: tableConfig,
+}: SemanticTableProps) => {
   const {
     queryBuildOptions,
     jsonLDConfig: { defaultPrefix },
@@ -123,6 +101,11 @@ export const TypedList = ({ typeName }: Props) => {
     schema,
     components: { EntityDetailModal },
   } = useAdbContext();
+
+  const csvConfig = useMemo(
+    () => mkConfig(csvOptions || defaultCsvOptions),
+    [csvOptions],
+  );
 
   const typeIRI = useMemo(() => {
     return typeNameToTypeIRI(typeName);
@@ -192,7 +175,7 @@ export const TypedList = ({ typeName }: Props) => {
   );
 
   const conf = useMemo(
-    () => tableConfig[typeName] || tableConfig.default,
+    () => tableConfig?.[typeName] || tableConfig?.default,
     [typeName],
   );
 
@@ -326,7 +309,7 @@ export const TypedList = ({ typeName }: Props) => {
     download(csvConfig)(csv);
   };
 
-  const handleExportData = () => {
+  const handleExportData = useCallback(() => {
     //const rowData = table.getState().all  .map((row) => Object.fromEntries( row.getAllCells().map(cell => [cell.column.id, cell.getValue()])));
     const csv = generateCsv(csvConfig)(
       resultList.map((entity) =>
@@ -339,7 +322,7 @@ export const TypedList = ({ typeName }: Props) => {
       ),
     );
     download(csvConfig)(csv);
-  };
+  }, [resultList, csvConfig]);
 
   const [rowSelection, setRowSelection] = useState<MRT_RowSelectionState>({});
   const handleRowSelectionChange = useCallback(
@@ -362,7 +345,7 @@ export const TypedList = ({ typeName }: Props) => {
   );
 
   const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>(
-    conf.columnVisibility || tableConfig.default.columnVisibility,
+    conf?.columnVisibility || tableConfig?.default?.columnVisibility,
   );
 
   const handleChangeColumnVisibility = useCallback(
@@ -481,7 +464,7 @@ export const TypedList = ({ typeName }: Props) => {
           color={"primary"}
           startIcon={<NoteAdd />}
           onClick={() => {
-            editEntry(createEntityIRI(uuidv4()));
+            editEntry(createEntityIRI(typeName));
           }}
         >
           {t("create new", { item: t(typeName) })}
@@ -629,24 +612,3 @@ export const TypedList = ({ typeName }: Props) => {
     </Box>
   );
 };
-
-/*
-const ListDebuggingTools = ({ jsonData }: ListDebuggingToolsProps) => {
-    const { features } = useSettings();
-    const { doLocalQuery } = useGlobalCRUDOptions();
-    if (!features?.enableDebug) return null;
-    return (
-
-
-      <Grid item
-      sx={{
-      maxWidth: '1000px',
-      overflow: 'auto'
-      }}>
-
-          List all {typeName} here.
-          <pre>{sparqlQuery}</pre>
-          RESULT:
-          <JsonView data={resultList} shouldInitiallyExpand={(lvl) => lvl < 3} />
-      </Grid>)
-}*/

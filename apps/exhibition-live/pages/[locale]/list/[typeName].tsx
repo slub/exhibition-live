@@ -1,12 +1,12 @@
 import Head from "next/head";
-import { useRouter } from "next/router";
 import React from "react";
 
 import { MainLayout } from "../../../components/layout/main-layout";
-import { TypedList } from "../../../components/content/list/TypedList";
 import { useTranslation } from "next-i18next";
 import { getI18nProps, mixinStaticPathsParams } from "../../../components/i18n";
 import { schema } from "@slub/exhibition-schema";
+import { tableConfig } from "../../../components/config/tableConfig";
+import { SemanticTable } from "@slub/edb-table-components";
 
 type Props = {
   typeName: string;
@@ -45,7 +45,7 @@ export default (props: Props) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <MainLayout>
-        <TypedList typeName={typeName} />
+        <SemanticTable typeName={typeName} tableConfigRegistry={tableConfig} />
       </MainLayout>
     </>
   );

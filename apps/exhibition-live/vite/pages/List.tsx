@@ -1,8 +1,9 @@
 import { MainLayout } from "../../components/layout/main-layout";
-import { TypedList } from "../../components/content/list/TypedList";
 import React from "react";
 import NiceModal from "@ebay/nice-modal-react";
 import { useModifiedRouter } from "@slub/edb-state-hooks";
+import { SemanticTable } from "@slub/edb-table-components";
+import { tableConfig } from "../../components/config/tableConfig";
 
 export const ListPage = () => {
   const {
@@ -11,7 +12,11 @@ export const ListPage = () => {
   return (
     <NiceModal.Provider>
       <MainLayout>
-        <TypedList typeName={typeName as string} />
+        {/* eslint-disable-next-line react/jsx-no-undef */}
+        <SemanticTable
+          typeName={typeName as string}
+          tableConfigRegistry={tableConfig}
+        />
       </MainLayout>
     </NiceModal.Provider>
   );

@@ -1,0 +1,54 @@
+{
+  "name": "@slub/edb-table-components",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs",
+      "default": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsup src/index.tsx --format esm,cjs --dts --external react",
+    "dev": "tsup src/index.tsx --format esm,cjs --watch --dts --external react",
+    "typecheck": "tsc -b",
+    "lint": "eslint \"**/*.ts*\"",
+    "lint-fix": "eslint --fix \"**/*.ts*\""
+  },
+  "peerDependencies": {
+    "@mui/material": "^5",
+    "@mui/icons-material": "^5",
+    "react": "^18"
+  },
+  "dependencies": {
+    "@slub/edb-state-hooks": "workspace:*",
+    "@slub/sparql-schema": "workspace:*",
+    "@slub/edb-core-utils": "workspace:*",
+    "@slub/edb-ui-utils": "workspace:*",
+    "@slub/edb-core-types": "workspace:*",
+    "@slub/edb-basic-components": "workspace:*",
+    "@slub/json-schema-utils": "workspace:*",
+    "material-react-table": "^2.0.0",
+    "export-to-csv": "^1.2.1",
+    "@ebay/nice-modal-react": "^1.2",
+    "@jsonforms/core": "3.1.0",
+    "next-i18next": "^15",
+    "lodash-es": "^4.17.21",
+    "notistack": "^3",
+    "uuid": "^9",
+    "json-schema": "^0.4.0"
+  },
+  "devDependencies": {
+    "i18next": "^23.7.7",
+    "@slub/edb-tsconfig": "workspace:*",
+    "@types/react": "^18.3.3",
+    "@types/lodash-es": "^4.17.12",
+    "@tanstack/table-core": "^8"
+  }
+}
+

@@ -2,7 +2,7 @@ import { Divider, List, Typography, useTheme } from "@mui/material";
 
 import { NavCollapse } from "./NavCollapse";
 import { NavItem } from "./NavItem";
-import { MenuGroup, MenuItem } from "./types";
+import { MenuGroup } from "./types";
 
 type NavGroupProps = {
   item: MenuGroup;

@@ -1,8 +1,8 @@
 import {
   ArrowDownward as IconChevronDown,
   ArrowUpward as IconChevronUp,
+  FiberManualRecord as FiberManualRecordIcon,
 } from "@mui/icons-material";
-import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import {
   Collapse,
   List,
@@ -14,7 +14,6 @@ import {
 import { useTheme } from "@mui/material/styles";
 import { useEffect, useState } from "react";
 
-import { useThemeSettings } from "../../../state";
 import { NavItem } from "./NavItem";
 import { MenuCollapse } from "./types";
 import { useModifiedRouter } from "@slub/edb-state-hooks";
@@ -25,7 +24,6 @@ type NavCollapseProps = {
 };
 export const NavCollapse = ({ menu, level }) => {
   const theme = useTheme();
-  const customization = useThemeSettings();
   const { push: navigate, pathname } = useModifiedRouter();
 
   const [open, setOpen] = useState(false);

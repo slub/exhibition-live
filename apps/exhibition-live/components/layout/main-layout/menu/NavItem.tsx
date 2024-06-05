@@ -8,13 +8,10 @@ import {
   ListItemIcon,
   ListItemText,
   Typography,
-  useMediaQuery,
 } from "@mui/material";
-import { v4 as uuidv4 } from "uuid";
 import { useTheme } from "@mui/material/styles";
 import { useEffect, useCallback } from "react";
 
-import { useThemeSettings } from "../../../state";
 import { MenuItem } from "./types";
 import { encodeIRI } from "@slub/edb-ui-utils";
 import { useAdbContext, useModifiedRouter } from "@slub/edb-state-hooks";
@@ -35,8 +32,6 @@ export const NavItem = ({
   const router = useModifiedRouter();
   const { createEntityIRI } = useAdbContext();
   const { pathname } = router;
-  const customization = useThemeSettings();
-  const matchesSM = useMediaQuery(theme.breakpoints.down("lg"));
 
   const create = useCallback(
     (typeName: string) => {
@@ -114,14 +109,7 @@ export const NavItem = ({
             )}
             <ListItemText
               primary={
-                <Typography
-                  variant={
-                    customization.isOpen.findIndex((id) => id === item.id) > -1
-                      ? "h5"
-                      : "body1"
-                  }
-                  color="inherit"
-                >
+                <Typography variant={"body1"} color="inherit">
                   {item.title}
                 </Typography>
               }
@@ -174,7 +162,7 @@ export const NavItem = ({
             py: level > 1 ? 1 : 1.25,
             justifyContent: open ? "initial" : "center",
           }}
-          selected={customization.isOpen.findIndex((id) => id === item.id) > -1}
+          selected={false}
           onClick={() => (onClick ? onClick() : itemHandler(item.id))}
         >
           {itemIcon && (
@@ -184,14 +172,7 @@ export const NavItem = ({
           )}
           <ListItemText
             primary={
-              <Typography
-                variant={
-                  customization.isOpen.findIndex((id) => id === item.id) > -1
-                    ? "h5"
-                    : "body1"
-                }
-                color="inherit"
-              >
+              <Typography variant={"body1"} color="inherit">
                 {item.title}
               </Typography>
             }

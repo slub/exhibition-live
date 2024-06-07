@@ -5,9 +5,9 @@ import {
 } from "@mui/icons-material";
 import { JSONSchema7 } from "json-schema";
 
-import { MenuGroup, MenuItem } from "./types";
 import { TFunction } from "i18next";
 import { Permission } from "@slub/edb-core-types";
+import { MenuGroup, MenuItem } from "./menu";
 
 const icons = { IconFaceId, IconPaint, IconDots };
 
@@ -19,7 +19,7 @@ const disabledTypes = [
   "ExponatsAndCorporations",
 ];
 
-const lists: (
+export const createMenuListFromSchema: (
   schema: JSONSchema7,
   getPermission: (typeName: string) => Permission,
   t: TFunction,
@@ -66,5 +66,3 @@ const lists: (
       ),
   ],
 });
-
-export default lists;

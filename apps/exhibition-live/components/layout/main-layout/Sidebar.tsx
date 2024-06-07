@@ -8,10 +8,11 @@ import {
   useLocalSettings,
   useModifiedRouter,
 } from "@slub/edb-state-hooks";
-import { MenuGroup, NavGroup, NavItem, Drawer } from "./menu";
-import menuLists from "./menu/menuLists";
+import { Drawer } from "./menu";
 import { useTranslation } from "next-i18next";
 import { useGlobalAuth } from "../../state/useGlobalAuth";
+import { createMenuListFromSchema } from "./createMenuListFromSchema";
+import { MenuGroup, NavGroup, NavItem } from "@slub/edb-advanced-components";
 
 type SidebarProps = {
   open?: boolean;
@@ -72,7 +73,7 @@ const Navigation = ({ open }) => {
   const { getPermission } = useGlobalAuth();
   const { schema } = useAdbContext();
   const menuGroup = useMemo<MenuGroup | null>(() => {
-    return schema ? menuLists(schema, getPermission, t) : (null as MenuGroup);
+    return schema ? createMenuListFromSchema(schema, getPermission, t) : null;
   }, [schema, getPermission, t]);
   return (
     menuGroup && (

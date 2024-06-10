@@ -65,6 +65,7 @@
     "@slub/edb-markdown-renderer": "workspace:*",
     "@slub/edb-basic-components": "workspace:*",
     "@slub/edb-advanced-components": "workspace:*",
+    "@slub/edb-table-components": "workspace:*",
     "@slub/edb-layout-renderer": "workspace:*",
     "@slub/edb-linked-data-renderer": "workspace:*",
     "@slub/edb-basic-renderer": "workspace:*",

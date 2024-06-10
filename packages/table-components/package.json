@@ -1,21 +1,11 @@
 {
   "name": "@slub/edb-table-components",
   "version": "1.0.0",
-  "type": "module",
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "exports": {
-    ".": {
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs",
-      "default": "./dist/index.js",
-      "types": "./dist/index.d.ts"
-    }
-  },
+  "private": true,
+  "main": "src/index.tsx",
+  "types": "src/index.tsx",
+  "sideEffects": false,
   "scripts": {
-    "build": "tsup src/index.tsx --format esm,cjs --dts --external react",
-    "dev": "tsup src/index.tsx --format esm,cjs --watch --dts --external react",
     "typecheck": "tsc -b",
     "lint": "eslint \"**/*.ts*\"",
     "lint-fix": "eslint --fix \"**/*.ts*\""
@@ -23,6 +13,7 @@
   "peerDependencies": {
     "@mui/material": "^5",
     "@mui/icons-material": "^5",
+    "material-react-table": "^2.0.0",
     "react": "^18"
   },
   "dependencies": {
@@ -33,7 +24,6 @@
     "@slub/edb-core-types": "workspace:*",
     "@slub/edb-basic-components": "workspace:*",
     "@slub/json-schema-utils": "workspace:*",
-    "material-react-table": "^2.0.0",
     "export-to-csv": "^1.2.1",
     "@ebay/nice-modal-react": "^1.2",
     "@jsonforms/core": "3.1.0",

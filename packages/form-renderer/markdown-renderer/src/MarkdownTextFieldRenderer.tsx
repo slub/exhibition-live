@@ -1,4 +1,8 @@
-import { ControlProps, showAsRequired } from "@jsonforms/core";
+import {
+  ControlProps,
+  OwnPropsOfControl,
+  showAsRequired,
+} from "@jsonforms/core";
 import { withJsonFormsControlProps } from "@jsonforms/react";
 import { Edit, EditOff } from "@mui/icons-material";
 import {
@@ -120,6 +124,8 @@ const MarkdownTextFieldRendererComponent = (props: ControlProps) => {
   );
 };
 
-export const MarkdownTextFieldRenderer = withJsonFormsControlProps(
+export const MarkdownTextFieldRenderer:
+  | React.ComponentClass<OwnPropsOfControl>
+  | React.FunctionComponent<OwnPropsOfControl> = withJsonFormsControlProps(
   MarkdownTextFieldRendererComponent,
 );

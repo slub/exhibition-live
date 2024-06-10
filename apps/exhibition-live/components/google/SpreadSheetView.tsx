@@ -50,7 +50,6 @@ import {
 import { encodeIRI, filterUndefOrNull } from "@slub/edb-ui-utils";
 import { useQuery } from "@slub/edb-state-hooks";
 import { OwnColumnDesc } from "./types";
-import TypedListItem from "../content/list/TypedListItem";
 import HorizontalNonLinearStepper from "../form/wizard/HorizontalNonLinearStepper";
 import {
   useCRUDWithQueryClient,
@@ -68,6 +67,7 @@ import {
   DeclarativeMatchBasedFlatMappings,
 } from "@slub/edb-ui-utils";
 import { CRUDFunctions } from "@slub/edb-core-types";
+import { TypedListItem } from "@slub/edb-advanced-components";
 
 //we will create a cashed worksheet, were selectively rows are preloaded and once loaded use for a certain stale time
 type CachedWorkSheet = {

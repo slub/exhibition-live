@@ -2,14 +2,14 @@ import {
   CombinatorKeyword,
   createCombinatorRenderInfos,
   JsonSchema,
+  OwnPropsOfControl,
   resolveSchema,
   StatePropsOfCombinator,
 } from "@jsonforms/core";
 import { JsonFormsDispatch, withJsonFormsAnyOfProps } from "@jsonforms/react";
 import { Hidden, Tab, Tabs } from "@mui/material";
 import React, { useCallback, useMemo, useState } from "react";
-
-import CombinatorProperties from "./CombinatorProperties";
+import { CombinatorProperties } from "./CombinatorProperties";
 
 export const resolveSubSchemas = (
   schema: JsonSchema,
@@ -93,6 +93,9 @@ const MaterialCustomAnyOfRendererComponent = ({
   );
 };
 
-export const MaterialCustomAnyOfRenderer = withJsonFormsAnyOfProps(
+export const MaterialCustomAnyOfRenderer:
+  | React.ComponentClass<OwnPropsOfControl>
+  | React.FunctionComponent<OwnPropsOfControl> = withJsonFormsAnyOfProps(
+  // @ts-ignore
   MaterialCustomAnyOfRendererComponent,
 );

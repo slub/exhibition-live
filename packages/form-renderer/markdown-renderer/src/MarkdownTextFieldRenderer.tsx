@@ -125,7 +125,7 @@ const MarkdownTextFieldRendererComponent = (props: ControlProps) => {
 };
 
 export const MarkdownTextFieldRenderer:
-  | React.ComponentClass<OwnPropsOfControl>
-  | React.FunctionComponent<OwnPropsOfControl> = withJsonFormsControlProps(
+  | React.ComponentClass<any>
+  | React.FunctionComponent<any> = withJsonFormsControlProps(
   MarkdownTextFieldRendererComponent,
 );

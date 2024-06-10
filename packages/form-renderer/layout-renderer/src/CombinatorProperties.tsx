@@ -45,5 +45,3 @@ export class CombinatorProperties extends React.Component<
     return null;
   }
 }
-
-export default CombinatorProperties;

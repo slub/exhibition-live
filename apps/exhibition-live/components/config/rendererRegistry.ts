@@ -14,8 +14,7 @@ import {
 } from "@jsonforms/core";
 import { JSONSchema7 } from "json-schema";
 import { isEmpty } from "lodash";
-import { withJsonFormsControlProps } from "@jsonforms/react";
-import { MarkdownTextFieldRendererComponent } from "@slub/edb-markdown-renderer";
+import { MarkdownTextFieldRenderer } from "@slub/edb-markdown-renderer";
 import {
   materialCustomAnyOfControlTester,
   MaterialCustomAnyOfRenderer,
@@ -116,6 +115,6 @@ export const rendererRegistry: JsonFormsRendererRegistryEntry[] = [
   },
   {
     tester: rankWith(10, scopeEndsWith("description")),
-    renderer: withJsonFormsControlProps(MarkdownTextFieldRendererComponent),
+    renderer: MarkdownTextFieldRenderer,
   },
 ];

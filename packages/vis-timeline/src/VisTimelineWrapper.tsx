@@ -10,7 +10,6 @@ import {
   TimelineItem,
   TimelineOptions,
 } from "vis-timeline/types";
-import "vis-timeline/styles/vis-timeline-graph2d.css";
 
 import type {
   TimelineAnimationOptions,
@@ -95,7 +94,7 @@ type Props = {
   currentTime?: DateType;
 } & TimelineEventsHandlers;
 
-const VisTimelineWrapper = ({
+export const VisTimelineWrapper = ({
   items = [],
   options = {},
   selection,
@@ -204,5 +203,3 @@ const VisTimelineWrapper = ({
 
   return <div ref={timelineContainerRef}></div>;
 };
-
-export default VisTimelineWrapper;

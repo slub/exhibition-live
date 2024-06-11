@@ -1,3 +1,4 @@
+import "vis-timeline/styles/vis-timeline-graph2d.css";
 import "../styles/jquery.typeahead.min.css";
 import "../styles/jquery-ui.min.css";
 import "../styles/highlight.min.css";

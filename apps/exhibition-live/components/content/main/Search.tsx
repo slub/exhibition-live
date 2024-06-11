@@ -13,7 +13,6 @@ import { isString, orderBy, uniq } from "lodash";
 import { Box, Chip, Grid, Skeleton, Tab, Tabs } from "@mui/material";
 import { filterUndefOrNull } from "@slub/edb-ui-utils";
 import { Line, LineChart, Tooltip, XAxis, YAxis } from "recharts";
-import VisTimelineWrapper from "../visTimelineWrapper/VisTimelineWrapper";
 import { TimelineItem } from "vis-timeline/types";
 import get from "lodash/get";
 import { ListAlt, Polyline, Timeline } from "@mui/icons-material";
@@ -25,6 +24,7 @@ import { useTranslation } from "next-i18next";
 import NiceModal from "@ebay/nice-modal-react";
 import { fixSparqlOrder, withDefaultPrefix } from "@slub/sparql-schema";
 import { IRIToStringFn, PrimaryFieldDeclaration } from "@slub/edb-core-types";
+import { VisTimelineWrapper } from "@slub/edb-vis-timeline";
 
 const makeFilterUNION2 = (searchString: string, length: number) => {
   const filterUNION = [];

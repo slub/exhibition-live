@@ -29,48 +29,15 @@ const askFetch = (query: string, endpoint: string) =>
     cache: "no-cache",
   });
 
-const createCutomizedFetch: (
-  query: string,
-  accept?: string,
-  contentType?: string,
-) => (input: RequestInfo | URL, init?: RequestInit) => Promise<Response> =
-  (query, accept, contentType = "application/sparql-query") =>
-  async (input, init) => {
-    const headers = new Headers(init?.headers);
-    accept && headers.set("accept", accept);
-    contentType && headers.set("Content-Type", contentType);
-    const newInit = {
-      ...(typeof init === "object" ? init : {}),
-      headers,
-      body: query,
-      method: "POST",
-      catch: "no-cache",
-    };
-    return await fetch(input, newInit);
-  };
 const defaultQueryFetch =
   (endpoint: string, accept?: string, contentType?: string) =>
   async (query: string) => {
     const engine = new QueryEngine();
     const prepared = await engine.query(query, {
       sources: [endpoint] as [IDataSource],
-      fetch: createCutomizedFetch(
-        query,
-        accept || "application/sparql-results+json",
-        contentType,
-      ),
     });
     return await prepared.execute();
   };
-const defaultQuerySelect: (
-  query: string,
-  endpoint: string,
-) => Promise<any[]> = async (query: string, endpoint) => {
-  const sFetch = createCutomizedFetch(query);
-  const prepared = await sFetch(endpoint);
-  return ((await prepared.json())?.results?.bindings || []) as any[];
-};
-
 export const oxigraphCrudOptions: (
   endpoint: SparqlEndpoint,
 ) => CRUDFunctions = ({ endpoint: url }: SparqlEndpoint) => ({

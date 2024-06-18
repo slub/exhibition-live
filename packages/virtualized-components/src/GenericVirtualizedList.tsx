@@ -7,39 +7,9 @@ import {
   ListItemText,
   Typography,
 } from "@mui/material";
-import { Components, ScrollerProps, Virtuoso } from "react-virtuoso";
+import { Components, Virtuoso } from "react-virtuoso";
 import { withEllipsis } from "@slub/edb-ui-utils";
-import React, {
-  ComponentType,
-  CSSProperties,
-  forwardRef,
-  ReactNode,
-  useEffect,
-  useRef,
-} from "react";
-import PerfectScrollbar from "perfect-scrollbar";
-
-const Scroller: ComponentType<ScrollerProps> = forwardRef<HTMLDivElement, any>(
-  ({ children, style, ...props }, ref) => {
-    const ps = useRef(null);
-
-    useEffect(() => {
-      if (!ref) return;
-      ps.current = new PerfectScrollbar((ref as any).current, {
-        minScrollbarLength: 25,
-      });
-      return () => {
-        ps.current.destroy();
-      };
-    }, [ref]);
-
-    return (
-      <div style={{ ...style }} ref={ref} {...props}>
-        {children}
-      </div>
-    );
-  },
-);
+import React, { CSSProperties, forwardRef, ReactNode } from "react";
 
 export type GenericListItem = {
   entry?: any;

@@ -102,6 +102,7 @@ function App({ Component, pageProps }: AppProps) {
               </AdbProvider>
             </SnackbarProvider>
           </ThemeComponent>
+          <ReactQueryDevtools initialIsOpen={false} />
         </Provider>
       </LocalizationProvider>
     </QueryClientProviderWrapper>

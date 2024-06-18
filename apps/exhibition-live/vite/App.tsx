@@ -32,6 +32,7 @@ const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 export const App = ({ children }: { children?: React.ReactNode }) => {
   return (
     <QueryClientProvider client={queryClient}>
+      <ReactQueryDevtools initialIsOpen={false} />
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <Provider store={store}>
           <ThemeComponent>

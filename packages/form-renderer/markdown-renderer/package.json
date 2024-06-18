@@ -28,7 +28,7 @@
     "@slub/edb-tsconfig": "workspace:*",
     "@slub/edb-tsup-config": "workspace:*",
     "@types/jest": "^29.5.12",
-    "@tanstack/react-query": "^4.36.1",
+    "@tanstack/react-query": "=4.36.1",
     "eslint-config-edb": "workspace:*",
     "typescript": "^5.3.3",
     "react": ">=18"

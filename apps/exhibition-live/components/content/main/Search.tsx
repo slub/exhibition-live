@@ -16,15 +16,15 @@ import { Line, LineChart, Tooltip, XAxis, YAxis } from "recharts";
 import { TimelineItem } from "vis-timeline/types";
 import get from "lodash/get";
 import { ListAlt, Polyline, Timeline } from "@mui/icons-material";
-import {
-  GenericListItem,
-  GenericVirtualizedList,
-} from "./GenericVirtualizedList";
 import { useTranslation } from "next-i18next";
 import NiceModal from "@ebay/nice-modal-react";
 import { fixSparqlOrder, withDefaultPrefix } from "@slub/sparql-schema";
 import { IRIToStringFn, PrimaryFieldDeclaration } from "@slub/edb-core-types";
 import { VisTimelineWrapper } from "@slub/edb-vis-timeline";
+import {
+  GenericListItem,
+  GenericVirtualizedList,
+} from "@slub/edb-virtualized-components";
 
 const makeFilterUNION2 = (searchString: string, length: number) => {
   const filterUNION = [];

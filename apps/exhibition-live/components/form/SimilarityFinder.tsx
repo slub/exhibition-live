@@ -17,7 +17,6 @@ import {
   TextField,
   TextFieldProps,
 } from "@mui/material";
-import { JSONSchema7 } from "json-schema";
 import * as React from "react";
 import {
   FunctionComponent,
@@ -28,48 +27,38 @@ import {
 } from "react";
 
 import { lobidTypemap } from "../config/lobidMappings";
-import { useAdbContext } from "@slub/edb-state-hooks";
 import {
-  DeclarativeMapping,
+  useAdbContext,
+  useExtendedSchema,
+  useGlobalCRUDOptions,
+  useGlobalSearch,
+  useLoadQuery,
+  useModalRegistry,
+  useQuery,
+  useQueryClient,
+  useSimilarityFinderState,
+} from "@slub/edb-state-hooks";
+import {
+  filterUndefOrNull,
+  findEntityWithinLobid,
+  findEntityWithinLobidByIRI,
+  makeDefaultMappingStrategyContext,
   mapByConfig,
-  StrategyContext,
 } from "@slub/edb-ui-utils";
 import {
   gndEntryFromSuggestion,
   gndEntryWithMainInfo,
 } from "./lobid/LobidSearchTable";
-import { findEntityByAuthorityIRI } from "@slub/edb-ui-utils";
-import { useGlobalCRUDOptions } from "@slub/edb-state-hooks";
-import {
-  useGlobalSearch,
-  useLoadQuery,
-  useModalRegistry,
-  useSimilarityFinderState,
-  useExtendedSchema,
-} from "@slub/edb-state-hooks";
 import { useTranslation } from "next-i18next";
-import { searchEntityByLabel } from "@slub/edb-ui-utils";
 import NiceModal from "@ebay/nice-modal-react";
-import {
-  findEntityWithinLobid,
-  findEntityWithinLobidByIRI,
-} from "@slub/edb-ui-utils";
 import { debounce } from "lodash";
-import { filterUndefOrNull } from "@slub/edb-ui-utils";
-import { useQuery, useQueryClient } from "@slub/edb-state-hooks";
-import {
-  BasicThingInformation,
-  PrimaryField,
-  PrimaryFieldDeclaration,
-  QueryBuilderOptions,
-} from "@slub/edb-core-types";
+import { BasicThingInformation, PrimaryField } from "@slub/edb-core-types";
 import { NumberInput } from "./NumberInput";
 import { dcterms } from "@tpluscode/rdf-ns-builders";
 import { Img } from "../basic";
 import { findEntityByClass } from "@slub/sparql-schema";
 import { findEntityWithinK10Plus, KXPEntry } from "@slub/edb-kxp-utils";
 import { fabio } from "@slub/edb-marc-to-rdf";
-import { typeIRItoTypeName } from "../config";
 import { findFirstInProps } from "@slub/edb-graph-traversal";
 import {
   ClassicEntityCard,
@@ -90,60 +79,6 @@ type SelectedEntity = {
   id: string;
   source: KnowledgeSources;
 };
-
-export const makeDefaultMappingStrategyContext: (
-  doQuery: (query) => Promise<any>,
-  queryBuilderOptions: QueryBuilderOptions,
-  defaultPrefix: string,
-  createEntityIRI: (typeIRI: string) => string,
-  primaryFields: PrimaryFieldDeclaration,
-  declarativeMappings?: DeclarativeMapping,
-) => StrategyContext = (
-  doQuery,
-  queryBuilderOptions,
-  defaultPrefix,
-  createEntityIRI,
-  primaryFields,
-  declarativeMappings,
-) => ({
-  getPrimaryIRIBySecondaryIRI: async (
-    secondaryIRI: string,
-    authorityIRI: string,
-    typeIRI?: string | undefined,
-  ) => {
-    // @ts-ignore
-    const ids = await findEntityByAuthorityIRI(
-      secondaryIRI,
-      typeIRI,
-      doQuery,
-      undefined,
-      { prefixes: queryBuilderOptions.prefixes, defaultPrefix },
-    );
-    if (ids.length > 0) {
-      console.warn("found more then one entity");
-    }
-    return ids[0] || null;
-  },
-  searchEntityByLabel: async (
-    label: string,
-    typeIRI: string,
-  ): Promise<string> => {
-    // @ts-ignore
-    const ids = await searchEntityByLabel(label, typeIRI, doQuery, undefined, {
-      prefixes: queryBuilderOptions.prefixes,
-      defaultPrefix,
-    });
-    if (ids.length > 0) {
-      console.warn("found more then one entity");
-    }
-    return ids[0] || null;
-  },
-  authorityIRI: "http://d-nb.info/gnd",
-  newIRI: createEntityIRI,
-  typeIRItoTypeName: typeIRItoTypeName,
-  primaryFields: primaryFields,
-  declarativeMappings,
-});
 
 type FindOptions = {
   limit?: number;
@@ -843,6 +778,7 @@ export const SimilarityFinder: FunctionComponent<SimilarityFinderProps> = ({
           },
           defaultPrefix,
           createEntityIRI,
+          typeNameToTypeIRI,
           primaryFields,
           declarativeMapping.mapping,
         );

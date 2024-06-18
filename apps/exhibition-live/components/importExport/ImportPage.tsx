@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useCallback } from "react";
+import React, { FunctionComponent, useCallback, useMemo } from "react";
 import { Box, Button } from "@mui/material";
 import Grid2 from "@mui/material/Unstable_Grid2";
 import { Login } from "../google/GoogleOAuth";
@@ -6,8 +6,8 @@ import { hasGrantedAnyScopeGoogle } from "@react-oauth/google";
 import { useGoogleToken } from "../google/useGoogleToken";
 import NiceModal from "@ebay/nice-modal-react";
 import { GoogleDrivePickerModal } from "../google/GoogleDrivePicker";
-import { GoogleSpreadSheetView } from "../google/SpreadSheetView";
 import { useModifiedRouter } from "@slub/edb-state-hooks";
+import { GoogleSpreadSheetContainer } from "../google/GoogleSpreadSheetContainer";
 
 const scopes: [string, string, string] = [
   "https://www.googleapis.com/auth/drive.readonly.metadata",
@@ -17,10 +17,16 @@ const scopes: [string, string, string] = [
 export const ImportPage: FunctionComponent = () => {
   const { credentials } = useGoogleToken();
   const router = useModifiedRouter();
-  const { documentId } = router.query;
+  const documentId = useMemo(
+    () => router.searchParams.get("documentId"),
+    [router.searchParams],
+  );
 
-  const hasAccess =
-    credentials && hasGrantedAnyScopeGoogle(credentials, ...scopes);
+  const hasAccess = useMemo(
+    () =>
+      Boolean(credentials) && hasGrantedAnyScopeGoogle(credentials, ...scopes),
+    [credentials],
+  );
   const openDrivePicker = useCallback(() => {
     NiceModal.show(GoogleDrivePickerModal, {}).then((documentId: string) => {
       console.log(documentId);
@@ -46,7 +52,7 @@ export const ImportPage: FunctionComponent = () => {
         </Grid2>
         <Grid2 lg={12}>
           {hasAccess && typeof documentId === "string" && (
-            <GoogleSpreadSheetView sheetId={documentId} />
+            <GoogleSpreadSheetContainer sheetId={documentId} />
           )}
         </Grid2>
       </Grid2>

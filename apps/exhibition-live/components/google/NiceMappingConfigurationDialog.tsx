@@ -19,10 +19,10 @@ import {
   DeclarativeMatchBasedFlatMapping,
   matchBased2DeclarativeFlatMapping,
 } from "@slub/edb-ui-utils";
-import { OwnColumnDesc } from "../google/types";
 import { JsonView } from "react-json-view-lite";
 import { DeclarativeFlatMapping } from "@slub/edb-ui-utils";
 import { parseJSONObject } from "@slub/edb-ui-utils";
+import { OwnColumnDesc } from "./types";
 
 type NiceMappingConfigurationDialogProps = {
   mapping: any;

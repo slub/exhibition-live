@@ -1,13 +1,7 @@
-import {
-  hasGrantedAnyScopeGoogle,
-  TokenResponse,
-  useGoogleLogin,
-} from "@react-oauth/google";
+import { TokenResponse, useGoogleLogin } from "@react-oauth/google";
 import { Button } from "@mui/material";
 import { FC, useCallback, useEffect } from "react";
 import { useGoogleToken } from "./useGoogleToken";
-import { GoogleDrivePicker, GoogleDrivePickerModal } from "./GoogleDrivePicker";
-import NiceModal from "@ebay/nice-modal-react";
 
 type LoginProps = {
   scopes: string[];

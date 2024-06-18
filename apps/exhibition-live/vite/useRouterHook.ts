@@ -5,6 +5,7 @@ import {
   useLocation,
   useNavigate,
   useParams,
+  useSearchParams,
 } from "react-router-dom";
 import { useCallback } from "react";
 
@@ -29,6 +30,7 @@ const getRoutePath = (location: Location<any>, params: Params): string => {
 
 export const useRouterHook: () => ModRouter = () => {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const push: ModRouter["push"] = useCallback(
     async (path, as) => navigate(path),
     [navigate],
@@ -47,5 +49,7 @@ export const useRouterHook: () => ModRouter = () => {
     asPath,
     pathname: location.pathname,
     query: params,
+    searchParams,
+    setSearchParams,
   };
 };

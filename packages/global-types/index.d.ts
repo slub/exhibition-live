@@ -135,6 +135,8 @@ export type ModRouter = {
   replace: (url: Url, as?: Url) => Promise<void | boolean>;
   push: (url: Url, as?: Url) => Promise<void | boolean>;
   pathname: string;
+  searchParams: URLSearchParams;
+  setSearchParams?: (searchParams: URLSearchParams) => void;
 };
 
 export type SemanticJsonFormProps = {

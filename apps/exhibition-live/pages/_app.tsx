@@ -41,6 +41,9 @@ import { envToSparqlEndpoint } from "@slub/edb-core-utils";
 import { EntityDetailModal } from "@slub/edb-advanced-components";
 import { SemanticJsonFormNoOps } from "@slub/edb-linked-data-renderer";
 import { SimilarityFinder } from "../components/form/SimilarityFinder";
+import { useSearchParams } from "next/navigation";
+import { ModRouter } from "@slub/edb-global-types";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 export const queryClient = new QueryClient();
 const QueryClientProviderWrapper = ({
@@ -54,6 +57,12 @@ const QueryClientProviderWrapper = ({
 };
 
 const sparqlEndpoint = envToSparqlEndpoint(getConfig().publicRuntimeConfig);
+
+const useNextRouterHook: () => ModRouter = () => {
+  const { query, asPath, push, replace, pathname } = useRouter();
+  const searchParams = useSearchParams();
+  return { query, asPath, push, replace, pathname, searchParams };
+};
 
 function App({ Component, pageProps }: AppProps) {
   const { i18n } = useTranslation();
@@ -79,17 +88,17 @@ function App({ Component, pageProps }: AppProps) {
                   SemanticJsonForm: SemanticJsonFormNoOps,
                   SimilarityFinder: SimilarityFinder,
                 }}
-                useRouterHook={useRouter}
+                useRouterHook={useNextRouterHook}
               >
-                <NiceModal.Provider>
-                  <GoogleOAuthProvider
-                    clientId={process.env.NEXT_PUBLIC_GAPI_OAUTH_CLIENT_ID}
-                  >
+                <GoogleOAuthProvider
+                  clientId={process.env.NEXT_PUBLIC_GAPI_OAUTH_CLIENT_ID}
+                >
+                  <NiceModal.Provider>
                     <OptionalLiveDemoEndpoint>
                       {<Component {...pageProps} />}
                     </OptionalLiveDemoEndpoint>
-                  </GoogleOAuthProvider>
-                </NiceModal.Provider>
+                  </NiceModal.Provider>
+                </GoogleOAuthProvider>
               </AdbProvider>
             </SnackbarProvider>
           </ThemeComponent>

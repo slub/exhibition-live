@@ -20,10 +20,15 @@ import { envToSparqlEndpoint } from "@slub/edb-ui-utils";
 import { EntityDetailModal } from "@slub/edb-advanced-components";
 import { SimilarityFinder } from "../components/form/SimilarityFinder";
 import { SemanticJsonFormNoOps } from "@slub/edb-linked-data-renderer";
+import { GoogleOAuthProvider } from "@react-oauth/google";
+import NiceModal from "@ebay/nice-modal-react";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 export const queryClient = new QueryClient();
 
 const sparqlEndpoint = envToSparqlEndpoint(import.meta.env, "VITE");
+const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+
 export const App = ({ children }: { children?: React.ReactNode }) => {
   return (
     <QueryClientProvider client={queryClient}>
@@ -46,7 +51,9 @@ export const App = ({ children }: { children?: React.ReactNode }) => {
                 }}
                 useRouterHook={useRouterHook}
               >
-                {children}
+                <GoogleOAuthProvider clientId={googleClientId}>
+                  <NiceModal.Provider>{children}</NiceModal.Provider>
+                </GoogleOAuthProvider>
               </AdbProvider>
             </SnackbarProvider>
           </ThemeComponent>

@@ -7,6 +7,7 @@ import { initReactI18next } from "react-i18next";
 import i18n from "i18next";
 import { ListPage } from "./pages/List";
 import Backend from "i18next-http-backend";
+import { ImportPage } from "../components/importExport/ImportPage";
 
 const Home = () => {
   return (
@@ -28,6 +29,10 @@ let router = createBrowserRouter([
   {
     path: ":locale/list/:typeName",
     element: <ListPage />,
+  },
+  {
+    path: ":locale/import",
+    element: <ImportPage />,
   },
 ]);
 

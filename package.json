@@ -39,7 +39,8 @@
     "precommit": "bun run lint-staged",
     "prepare": "husky install",
     "changeset:init": "changeset init",
-    "changeset": "changeset"
+    "changeset": "changeset",
+    "helper:deps": "bun ./packages/build-helper/get-dependencies.js"
   },
   "workspaces": [
     "packages/*",

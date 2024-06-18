@@ -6,17 +6,17 @@ import StepButton from "@mui/material/StepButton";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 
-type Step = {
+export type Step = {
   label: string;
   content: React.ReactNode;
 };
 
-type HorizontalNonLinearStepperProps = {
+export type HorizontalNonLinearStepperProps = {
   steps: Step[];
 };
-export default function HorizontalNonLinearStepper({
+export const HorizontalNonLinearStepper = ({
   steps,
-}: HorizontalNonLinearStepperProps) {
+}: HorizontalNonLinearStepperProps) => {
   const [activeStep, setActiveStep] = React.useState(0);
   const [completed, setCompleted] = React.useState<{
     [k: number]: boolean;
@@ -130,4 +130,4 @@ export default function HorizontalNonLinearStepper({
       {steps[activeStep]?.content}
     </Box>
   );
-}
+};

@@ -497,10 +497,13 @@ export const SemanticTable = ({
             {t("export selected rows only")}
           </MenuItem>
         </ExportMenuButton>
-        {table.getIsSomeRowsSelected() && (
+        {
           <>
             <IconButton
               onClick={() => handleMoveToTrashSelected(table)}
+              disabled={
+                !table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected()
+              }
               color="error"
               aria-label={t("move to trash")}
             >
@@ -508,13 +511,16 @@ export const SemanticTable = ({
             </IconButton>
             <IconButton
               onClick={() => handleRemoveSelected(table)}
+              disabled={
+                !table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected()
+              }
               color="error"
               aria-label={t("delete permanently")}
             >
               <DeleteForever />
             </IconButton>
           </>
-        )}
+        }
       </Box>
     ),
     getRowId: (row) =>

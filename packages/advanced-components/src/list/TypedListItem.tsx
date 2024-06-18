@@ -9,11 +9,13 @@ import {
 } from "@mui/material";
 import NiceModal from "@ebay/nice-modal-react";
 import { useAdbContext } from "@slub/edb-state-hooks";
+import { EntityDetailModal } from "../show";
 
 interface OwnProps {
   index: number;
   data: any;
   disableLoad?: boolean;
+  readonly?: boolean;
 }
 
 type Props = OwnProps;
@@ -22,11 +24,11 @@ export const TypedListItem: FunctionComponent<Props> = ({
   index,
   data,
   disableLoad,
+  readonly,
 }) => {
   const {
     typeIRIToTypeName,
     queryBuildOptions: { primaryFieldExtracts },
-    components: { EntityDetailModal },
   } = useAdbContext();
   const typeIRI = data["@type"] as string;
   const entityIRI = data["@id"] as string;
@@ -51,6 +53,7 @@ export const TypedListItem: FunctionComponent<Props> = ({
       data,
       disableLoad,
       disableInlineEditing: true,
+      readonly,
     });
   }, [typeIRI, entityIRI, data, disableLoad, EntityDetailModal]);
 

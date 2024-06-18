@@ -25,6 +25,7 @@ import {
 import isString from "lodash-es/isString";
 import { Edit } from "@mui/icons-material";
 import { PrimaryFieldResults } from "@slub/edb-core-types";
+import { ModRouter } from "@slub/edb-global-types";
 
 type OwnProps = {
   typeIRI: string;
@@ -56,10 +57,14 @@ export const EntityDetailCard: FunctionComponent<EntityDetailCardProps> = ({
     components: { EditEntityModal },
   } = useAdbContext();
 
-  const router = useModifiedRouter();
+  //FIXME: This is a workaround for the missing router in the context in some circumstances, yet to be researched
+  let router: ModRouter | undefined;
+  try {
+    router = useModifiedRouter();
+  } catch (e) {}
+
   const { registerModal } = useModalRegistry(NiceModal);
   const editEntry = useCallback(() => {
-    const typeName = typeIRIToTypeName(typeIRI);
     if (!disableInlineEditing) {
       const modalID = `edit-${typeIRI}-${entityIRI}`;
       registerModal(modalID, EditEntityModal);
@@ -70,11 +75,12 @@ export const EntityDetailCard: FunctionComponent<EntityDetailCardProps> = ({
         disableLoad: true,
       });
     } else {
-      router.push(`/create/${typeName}?encID=${encodeIRI(entityIRI)}`);
+      const typeName = typeIRIToTypeName(typeIRI);
+      router &&
+        router.push(`/create/${typeName}?encID=${encodeIRI(entityIRI)}`);
     }
     onEditClicked && onEditClicked();
   }, [
-    router,
     typeIRI,
     entityIRI,
     disableInlineEditing,
@@ -83,6 +89,7 @@ export const EntityDetailCard: FunctionComponent<EntityDetailCardProps> = ({
     data,
     onEditClicked,
     EditEntityModal,
+    router,
   ]);
 
   const {

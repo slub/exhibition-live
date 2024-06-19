@@ -7,6 +7,7 @@ import set from "lodash-es/set";
 import jsonpath from "jsonpath";
 
 import {
+  DeclarativeFlatMapping,
   DeclarativeFlatMappings,
   DeclarativeMappings,
   StrategyContext,
@@ -41,6 +42,57 @@ const getViaColumnPaths = (
   return values;
 };
 
+export const mapSingleByConfigFlat = async (
+  accessorFn: (col: number | string) => any,
+  mutableData: any,
+  mappingConfig: DeclarativeFlatMapping,
+  strategyContext: StrategyContext,
+  options: MappingOptions = {},
+): Promise<any> => {
+  const { source, target, mapping } = mappingConfig;
+  const { path: targetPath } = target;
+  if (!source?.columns || source.columns.length === 0)
+    throw new Error(
+      `No source path defined for mapping ${JSON.stringify(mapping)}`,
+    );
+  const isList = source.columns.length === 1 && source.columns[0];
+  if (!mapping?.strategy) {
+    //take value as is if no strategy is defined
+    const sourceValue = filterUndefOrNull(
+      getViaColumnPaths(accessorFn, source.columns),
+    );
+    if (sourceValue.length === 0) return;
+    if (isList) {
+      set(mutableData, targetPath, sourceValue[0]);
+    } else {
+      set(mutableData, targetPath, sourceValue);
+    }
+  } else {
+    const mappingFunction = strategyFunctionMap[mapping.strategy.id];
+    if (typeof mappingFunction !== "function") {
+      throw new Error(`Strategy ${mapping.strategy.id} is not implemented`);
+    }
+    const strategyOptions = (mapping.strategy as any).options;
+    let value: any;
+    if (isList) {
+      value = await mappingFunction(
+        getViaColumnPaths(accessorFn, source.columns)[0],
+        get(mutableData, targetPath),
+        strategyOptions,
+        strategyContext,
+      );
+    } else {
+      value = await mappingFunction(
+        getViaColumnPaths(accessorFn, source.columns),
+        get(mutableData, targetPath),
+        strategyOptions,
+        strategyContext,
+      );
+      if (Array.isArray(value)) value = filterUndefOrNull(value);
+    }
+    if (!isNil(value)) set(mutableData, targetPath, value);
+  }
+};
 export const mapByConfigFlat = async (
   accessorFn: (col: number | string) => any,
   targetData: any,
@@ -49,54 +101,19 @@ export const mapByConfigFlat = async (
   options: MappingOptions = {},
 ): Promise<any> => {
   const newData = cloneDeep(targetData); //clone targetData to not mutate it accidentally
-  for (const { source, target, mapping } of mappingConfig) {
+  for (const mapping of mappingConfig) {
     try {
-      const { path: targetPath } = target;
-      if (!source?.columns || source.columns.length === 0)
-        throw new Error(
-          `No source path defined for mapping ${JSON.stringify(mapping)}`,
-        );
-      const isList = source.columns.length === 1 && source.columns[0];
-      if (!mapping?.strategy) {
-        //take value as is if no strategy is defined
-        const sourceValue = filterUndefOrNull(
-          getViaColumnPaths(accessorFn, source.columns),
-        );
-        if (sourceValue.length === 0) continue;
-        if (isList) {
-          set(newData, targetPath, sourceValue[0]);
-        } else {
-          set(newData, targetPath, sourceValue);
-        }
-      } else {
-        const mappingFunction = strategyFunctionMap[mapping.strategy.id];
-        if (typeof mappingFunction !== "function") {
-          throw new Error(`Strategy ${mapping.strategy.id} is not implemented`);
-        }
-        const strategyOptions = (mapping.strategy as any).options;
-        let value: any;
-        if (isList) {
-          value = await mappingFunction(
-            getViaColumnPaths(accessorFn, source.columns)[0],
-            get(newData, targetPath),
-            strategyOptions,
-            strategyContext,
-          );
-        } else {
-          value = await mappingFunction(
-            getViaColumnPaths(accessorFn, source.columns),
-            get(newData, targetPath),
-            strategyOptions,
-            strategyContext,
-          );
-          if (Array.isArray(value)) value = filterUndefOrNull(value);
-        }
-        if (!isNil(value)) set(newData, targetPath, value);
-      }
+      mapSingleByConfigFlat(
+        accessorFn,
+        newData,
+        mapping,
+        strategyContext,
+        options,
+      );
     } catch (e) {
       if (options.throwOnAttributeError) throw e;
       console.error(
-        `Error while mapping source.columns: ${JSON.stringify(source.columns)} to target.path ${target.path}`,
+        `Error while mapping source.columns: ${JSON.stringify(mapping.source.columns)} to target.path ${mapping.target.path}`,
         e,
       );
     }

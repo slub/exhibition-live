@@ -4,6 +4,7 @@ import {
   ListItem,
   ListItemAvatar,
   ListItemButton,
+  ListItemButtonProps,
   ListItemText,
   Typography,
 } from "@mui/material";
@@ -23,16 +24,21 @@ export type GenericListItem = {
 type GenericMaterialListItemProps = GenericListItem & {
   index: number;
   onClick?: (entry: GenericListItem) => void;
+  listItemButtonProps?: ListItemButtonProps;
 };
 
 export const GenericMaterialListItem = ({
   index,
   onClick,
+  listItemButtonProps = {},
   ...item
 }: GenericMaterialListItemProps) => {
   const { primary, secondary, description, avatar } = item;
   return (
-    <ListItemButton onClick={() => onClick && onClick(item)}>
+    <ListItemButton
+      {...listItemButtonProps}
+      onClick={() => onClick && onClick(item)}
+    >
       <ListItemAvatar>
         <Avatar variant={"rounded"} aria-label="Index" src={avatar}>
           {index + 1}

@@ -1,4 +1,8 @@
-import { TokenResponse, useGoogleLogin } from "@react-oauth/google";
+import {
+  TokenResponse,
+  useGoogleLogin,
+  useGoogleOneTapLogin,
+} from "@react-oauth/google";
 import { Button } from "@mui/material";
 import { FC, useCallback, useEffect } from "react";
 import { useGoogleToken } from "./useGoogleToken";
@@ -11,6 +15,16 @@ export const Login: FC<LoginProps> = ({ scopes }) => {
   useEffect(() => {
     init();
   }, [init]);
+
+  useGoogleOneTapLogin({
+    onSuccess: (credentialResponse) => {
+      console.log(credentialResponse);
+    },
+    onError: () => {
+      console.log("Login Failed");
+    },
+    auto_select: true,
+  });
   const login = useGoogleLogin({
     scope: scopes.join(" "),
     onSuccess: (
@@ -25,6 +39,14 @@ export const Login: FC<LoginProps> = ({ scopes }) => {
       console.error("Login Failed");
     },
   });
+
+  useEffect(() => {
+    console.log({ credentials });
+    if (credentials?.access_token) {
+      //console.log("logged in");
+      //login();
+    }
+  }, [credentials, login]);
 
   const logout = useCallback(() => {
     clear();

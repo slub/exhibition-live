@@ -23,12 +23,14 @@ import { JsonView } from "react-json-view-lite";
 import { DeclarativeFlatMapping } from "@slub/edb-ui-utils";
 import { parseJSONObject } from "@slub/edb-ui-utils";
 import { OwnColumnDesc } from "./types";
+import { CachedWorkSheet } from "./useCachedWorkSheet";
 
 type NiceMappingConfigurationDialogProps = {
   mapping: any;
   rawMapping?: DeclarativeMatchBasedFlatMapping;
   fields?: OwnColumnDesc[];
   sourcePath: string | number;
+  worksheet?: CachedWorkSheet<any>;
   tablePreview?: (mapping: DeclarativeFlatMapping) => React.ReactElement;
 };
 
@@ -38,6 +40,7 @@ export const NiceMappingConfigurationDialog = NiceModal.create(
     sourcePath,
     rawMapping,
     fields,
+    worksheet,
     tablePreview,
   }: NiceMappingConfigurationDialogProps) => {
     const modal = useModal();
@@ -59,6 +62,8 @@ export const NiceMappingConfigurationDialog = NiceModal.create(
       } catch (e) {}
       return undefined;
     }, [fields, newRawMapping]);
+
+    const mappedExamples = useMemo(() => {});
 
     const handleMappingEditChange = (
       event: React.ChangeEvent<HTMLInputElement>,
@@ -138,6 +143,7 @@ export const NiceMappingConfigurationDialog = NiceModal.create(
                 {TablePreview}
               </Grid>
             )}
+            <Grid item flex={1}></Grid>
           </Grid>
         </DialogContent>
         <DialogActions>

@@ -1,15 +1,20 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import type { FC } from "react";
 import {
   AppBar,
+  Avatar,
   Box,
   Button,
   Dialog,
   DialogActions,
   DialogContent,
+  Grid,
   IconButton,
   List,
   ListItem,
+  ListItemAvatar,
+  ListItemButton,
+  ListItemText,
   Toolbar,
   Typography,
 } from "@mui/material";
@@ -20,6 +25,9 @@ import { useSettings } from "@slub/edb-state-hooks";
 import { useGoogleOAuth } from "@react-oauth/google";
 import NiceModal, { useModal } from "@ebay/nice-modal-react";
 import { GenericMaterialListItem } from "@slub/edb-virtualized-components";
+import { useGoogleSpreadSheet } from "./useGoogleSpreadSheet";
+import { mappingsAvailable } from "./mappingsAvailable";
+import { useTranslation } from "next-i18next";
 
 const googleApiURL = "https://content.googleapis.com/drive/v3/files";
 const mimeIconsBase =
@@ -44,7 +52,7 @@ const getMimeIcon = (mimeType: string, size: number = 128) => {
 
 type GoogleDrivePickerProps = {
   supportedMimeTypes?: string[];
-  onPicked: (documentId: string) => void;
+  onPicked: (documentId: string, sheetId: number, mappingId: string) => void;
 };
 export const GoogleDrivePicker: FC<GoogleDrivePickerProps> = ({
   onPicked,
@@ -53,6 +61,7 @@ export const GoogleDrivePicker: FC<GoogleDrivePickerProps> = ({
   const { credentials } = useGoogleToken();
   const { googleDrive } = useSettings();
   const { clientId } = useGoogleOAuth();
+  const { t } = useTranslation();
   const { data: files } = useQuery(
     ["files"],
     async () => {
@@ -91,34 +100,97 @@ export const GoogleDrivePicker: FC<GoogleDrivePickerProps> = ({
     }));
   }, [files]);
 
-  const handleOpenDocument = useCallback(
+  const [selectedFileID, setSelectedFileID] = useState<string | undefined>();
+
+  const { sheetsByIndex, loaded } = useGoogleSpreadSheet(selectedFileID);
+
+  const [selectedSheetID, setSelectedSheetID] = useState<number | undefined>(0);
+
+  const handleSelectFile = useCallback(
     (file: any) => {
-      onPicked(file.id);
+      setSelectedSheetID(undefined);
+      setSelectedFileID(file.id);
     },
-    [onPicked],
+    [setSelectedFileID, setSelectedSheetID],
+  );
+  const handleSelectSheet = useCallback(
+    (sheetID: number) => {
+      setSelectedSheetID(sheetID);
+    },
+    [setSelectedSheetID],
+  );
+  const handleOpenDocument = useCallback(
+    (mappingId: string) => {
+      onPicked(selectedFileID, selectedSheetID, mappingId);
+    },
+    [onPicked, selectedFileID, selectedSheetID],
   );
 
   return (
-    <Box>
-      <List>
-        {fileList?.map((file: any, index: number) => (
-          <ListItem key={file.id}>
-            <GenericMaterialListItem
-              index={index}
-              avatar={file.avatar}
-              onClick={
-                !supportedMimeTypes ||
-                supportedMimeTypes.includes(file.mimeType)
-                  ? () => handleOpenDocument(file)
-                  : undefined
-              }
-              id={file.id}
-              primary={file.name}
-            />
-          </ListItem>
-        ))}
-      </List>
-    </Box>
+    <Grid container justifyContent="left" direction={"row"} spacing={2}>
+      <Grid item xs={2}>
+        <Typography variant="h4">{t("Files")}</Typography>
+        <List>
+          {fileList?.map((file: any, index: number) => (
+            <ListItem key={file.id}>
+              <GenericMaterialListItem
+                index={index}
+                avatar={file.avatar}
+                listItemButtonProps={{
+                  selected: selectedFileID === file.id,
+                }}
+                onClick={
+                  !supportedMimeTypes ||
+                  supportedMimeTypes.includes(file.mimeType)
+                    ? () => handleSelectFile(file)
+                    : undefined
+                }
+                id={file.id}
+                primary={file.name}
+              />
+            </ListItem>
+          ))}
+        </List>
+      </Grid>
+      {selectedFileID && sheetsByIndex.length > 0 && (
+        <Grid item xs={2}>
+          <Typography variant="h4">{t("Worksheets")}</Typography>
+          <List>
+            {sheetsByIndex.map((sheet, index) => (
+              <ListItemButton
+                selected={sheet.sheetId === selectedSheetID}
+                key={sheet.sheetId + index}
+                onClick={() => handleSelectSheet(sheet.sheetId)}
+              >
+                <ListItemAvatar>
+                  <Avatar variant={"rounded"} aria-label="Index">
+                    {index + 1}
+                  </Avatar>
+                </ListItemAvatar>
+                <ListItemText>{sheet.title}</ListItemText>
+              </ListItemButton>
+            ))}
+          </List>
+        </Grid>
+      )}
+      {selectedFileID && selectedSheetID !== undefined && (
+        <Grid item xs={2}>
+          <Typography variant="h4">{t("Mappings")}</Typography>
+          <List>
+            {mappingsAvailable.map((key, index) => (
+              <ListItemButton key={key} onClick={() => handleOpenDocument(key)}>
+                <ListItemAvatar>
+                  <Avatar variant={"rounded"} aria-label="Index">
+                    {index + 1}
+                  </Avatar>
+                </ListItemAvatar>
+                <ListItemText>{key}</ListItemText>
+              </ListItemButton>
+            ))}
+          </List>
+        </Grid>
+      )}
+    </Grid>
   );
 };
 
@@ -130,6 +202,7 @@ export const GoogleDrivePickerModal = NiceModal.create(({}) => {
       open={modal.visible}
       onClose={() => modal.remove()}
       fullWidth={true}
+      maxWidth={false}
       scroll={"paper"}
       disableScrollLock={false}
     >
@@ -153,8 +226,8 @@ export const GoogleDrivePickerModal = NiceModal.create(({}) => {
       </AppBar>
       <DialogContent>
         <GoogleDrivePicker
-          onPicked={(documentId: string) => {
-            modal.resolve(documentId);
+          onPicked={(documentId: string, sheetId, mappingId) => {
+            modal.resolve({ documentId, sheetId, mappingId });
             modal.remove();
           }}
           supportedMimeTypes={["application/vnd.google-apps.spreadsheet"]}

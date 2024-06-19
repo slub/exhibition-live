@@ -50,14 +50,14 @@ export type SpreadSheetWorkSheetViewProps<
   RemoteWorksheet extends LoadableWorkSheet<CellType>,
 > = {
   workSheet: RemoteWorksheet;
-  selectedSheet: number;
+  mappingId: string;
 };
 export const SpreadSheetWorkSheetView = <
   CellType extends CellTypeLike,
   RemoteWorksheet extends LoadableWorkSheet<CellType>,
 >({
   workSheet: workSheetOriginal,
-  selectedSheet,
+  mappingId,
 }: SpreadSheetWorkSheetViewProps<CellType, RemoteWorksheet>) => {
   const {
     queryBuildOptions: { prefixes, primaryFields },
@@ -89,9 +89,11 @@ export const SpreadSheetWorkSheetView = <
   const {
     query: { locale = "de" },
   } = useModifiedRouter();
-  const [selectedMapping, setSelectedMapping] = useState<string>(
-    mappingsAvailable[0],
+  const selectedMapping = useMemo(
+    () => spreadSheetMappings[mappingId],
+    [mappingId],
   );
+
   const { crudOptions } = useGlobalCRUDOptions();
   const spreadSheetMapping = useMemo(() => {
     let final: {
@@ -101,7 +103,7 @@ export const SpreadSheetWorkSheetView = <
       mapping: [],
     };
     try {
-      const cSpreadSheetMapping = spreadSheetMappings[selectedMapping];
+      const cSpreadSheetMapping = selectedMapping;
       final =
         columnDesc.length <= 0 || !cSpreadSheetMapping
           ? final
@@ -149,10 +151,6 @@ export const SpreadSheetWorkSheetView = <
         };
       });
       setColumns(cols as MRT_ColumnDef<any>[]);
-      const sheetTitle = workSheet.title;
-      if (mappingsAvailable.includes(sheetTitle)) {
-        setSelectedMapping(sheetTitle);
-      }
     } catch (e) {
       console.log(e);
     }
@@ -163,8 +161,12 @@ export const SpreadSheetWorkSheetView = <
     spreadSheetMapping.mapping,
     setLoaded,
     setColumnDesc,
-    setSelectedMapping,
   ]);
+
+  useEffect(() => {
+    if (!loaded) return;
+    calculateMapping();
+  }, [loaded]);
 
   useEffect(() => {
     if (spreadSheetMapping.mapping.length <= 0) return;
@@ -409,21 +411,6 @@ export const SpreadSheetWorkSheetView = <
           />
         </Grid>
         <Grid item>
-          <FormControl>
-            <Select
-              label={"Select Mapping"}
-              value={selectedMapping}
-              onChange={(e) => setSelectedMapping(e.target.value)}
-            >
-              {mappingsAvailable.map((mapping) => {
-                return (
-                  <MenuItem key={mapping} value={mapping}>
-                    {mapping}
-                  </MenuItem>
-                );
-              })}
-            </Select>
-          </FormControl>
           <FormControl>
             <FormControlLabel
               control={

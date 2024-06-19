@@ -21,17 +21,39 @@ export const ImportPage: FunctionComponent = () => {
     () => router.searchParams.get("documentId"),
     [router.searchParams],
   );
-
-  const hasAccess = useMemo(
-    () =>
-      Boolean(credentials) && hasGrantedAnyScopeGoogle(credentials, ...scopes),
-    [credentials],
+  const sheetId = useMemo(() => {
+    const _id = Number(router.searchParams.get("sheetId"));
+    if (isNaN(_id)) {
+      return undefined;
+    }
+    return _id;
+  }, [router.searchParams]);
+  const mappingId = useMemo(
+    () => router.searchParams.get("mappingId"),
+    [router.searchParams],
   );
+
+  const hasAccess = useMemo(() => {
+    const hasAccess = hasGrantedAnyScopeGoogle(credentials, ...scopes);
+    console.log({ credentials, hasAccess });
+    return Boolean(credentials) && hasAccess;
+  }, [credentials]);
   const openDrivePicker = useCallback(() => {
-    NiceModal.show(GoogleDrivePickerModal, {}).then((documentId: string) => {
-      console.log(documentId);
-      router.push(`/import?documentId=${documentId}`);
-    });
+    NiceModal.show(GoogleDrivePickerModal, {}).then(
+      ({
+        documentId,
+        sheetId,
+        mappingId,
+      }: {
+        documentId: string;
+        sheetId: number;
+        mappingId: string;
+      }) => {
+        router.push(
+          `/import?documentId=${documentId}&sheetId=${sheetId}&mappingId=${mappingId}`,
+        );
+      },
+    );
   }, [router]);
   return (
     <Box
@@ -51,9 +73,16 @@ export const ImportPage: FunctionComponent = () => {
           {hasAccess && <Button onClick={openDrivePicker}>choose file</Button>}
         </Grid2>
         <Grid2 lg={12}>
-          {hasAccess && typeof documentId === "string" && (
-            <GoogleSpreadSheetContainer sheetId={documentId} />
-          )}
+          {hasAccess &&
+            typeof documentId === "string" &&
+            typeof sheetId === "number" &&
+            typeof mappingId === "string" && (
+              <GoogleSpreadSheetContainer
+                documentId={documentId}
+                sheetId={sheetId}
+                mappingId={mappingId}
+              />
+            )}
         </Grid2>
       </Grid2>
     </Box>

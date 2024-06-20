@@ -1,8 +1,8 @@
 import { AnyFlatStrategy, DeclarativeFlatMapping } from "./mappingStrategies";
 import flatten from "lodash/flatten";
 import uniq from "lodash/uniq";
-import { JsonSchema } from "@jsonforms/core";
 import dot from "dot";
+import { JSONSchema7 } from "json-schema";
 
 type OwnColumnDesc = {
   index: number;
@@ -92,7 +92,7 @@ const columnMatcher = (
 
 export type FlatSourceMatchBased = {
   columns: FlexibleColumnMatchingDefinition;
-  expectedSchema?: JsonSchema;
+  expectedSchema?: JSONSchema7;
 };
 export type DeclarativeMatchBasedFlatMapping = {
   id: string;

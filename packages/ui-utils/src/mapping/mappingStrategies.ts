@@ -1,4 +1,3 @@
-import { JsonSchema } from "@jsonforms/core";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 
@@ -9,6 +8,7 @@ import set from "lodash-es/set";
 import get from "lodash-es/get";
 import { getPaddedDate } from "@slub/edb-core-utils";
 import { IRIToStringFn, PrimaryFieldDeclaration } from "@slub/edb-core-types";
+import { JSONSchema7 } from "json-schema";
 
 dayjs.extend(customParseFormat);
 
@@ -658,7 +658,7 @@ export type AnyFlatStrategy =
 
 type SourceElement = {
   path: string;
-  expectedSchema?: JsonSchema;
+  expectedSchema?: JSONSchema7;
 };
 
 export type DeclarativeSimpleMapping = {
@@ -673,7 +673,7 @@ export type DeclarativeSimpleMapping = {
 
 export type FlatSourceElement = {
   columns: string[] | number[];
-  expectedSchema?: JsonSchema;
+  expectedSchema?: JSONSchema7;
 };
 
 export type DeclarativeFlatMapping = {

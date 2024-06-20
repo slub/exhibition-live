@@ -1,10 +1,11 @@
 import {
+  hasGrantedAnyScopeGoogle,
   TokenResponse,
   useGoogleLogin,
   useGoogleOneTapLogin,
 } from "@react-oauth/google";
 import { Button } from "@mui/material";
-import { FC, useCallback, useEffect } from "react";
+import { FC, useCallback, useEffect, useMemo } from "react";
 import { useGoogleToken } from "./useGoogleToken";
 
 type LoginProps = {
@@ -40,6 +41,15 @@ export const Login: FC<LoginProps> = ({ scopes }) => {
     },
   });
 
+  const granted = useMemo(
+    () =>
+      typeof window !== "undefined" &&
+      hasGrantedAnyScopeGoogle(
+        credentials,
+        ...(scopes as [string, string, string]),
+      ),
+    [credentials, scopes],
+  );
   useEffect(() => {
     console.log({ credentials });
     if (credentials?.access_token) {
@@ -51,7 +61,7 @@ export const Login: FC<LoginProps> = ({ scopes }) => {
   const logout = useCallback(() => {
     clear();
   }, [clear]);
-  return credentials?.access_token ? (
+  return credentials?.access_token && granted ? (
     <>
       <Button onClick={() => logout()}>Log out</Button>
       You have access to the users drive

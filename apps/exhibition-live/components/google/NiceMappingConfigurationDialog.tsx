@@ -63,8 +63,6 @@ export const NiceMappingConfigurationDialog = NiceModal.create(
       return undefined;
     }, [fields, newRawMapping]);
 
-    const mappedExamples = useMemo(() => {});
-
     const handleMappingEditChange = (
       event: React.ChangeEvent<HTMLInputElement>,
     ) => {

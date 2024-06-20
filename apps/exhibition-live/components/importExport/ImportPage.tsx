@@ -2,12 +2,12 @@ import React, { FunctionComponent, useCallback, useMemo } from "react";
 import { Box, Button } from "@mui/material";
 import Grid2 from "@mui/material/Unstable_Grid2";
 import { Login } from "../google/GoogleOAuth";
-import { hasGrantedAnyScopeGoogle } from "@react-oauth/google";
 import { useGoogleToken } from "../google/useGoogleToken";
 import NiceModal from "@ebay/nice-modal-react";
 import { GoogleDrivePickerModal } from "../google/GoogleDrivePicker";
 import { useModifiedRouter } from "@slub/edb-state-hooks";
 import { GoogleSpreadSheetContainer } from "../google/GoogleSpreadSheetContainer";
+import { hasGrantedAnyScopeGoogle } from "@react-oauth/google";
 
 const scopes: [string, string, string] = [
   "https://www.googleapis.com/auth/drive.readonly.metadata",
@@ -34,9 +34,10 @@ export const ImportPage: FunctionComponent = () => {
   );
 
   const hasAccess = useMemo(() => {
-    const hasAccess = hasGrantedAnyScopeGoogle(credentials, ...scopes);
-    console.log({ credentials, hasAccess });
-    return Boolean(credentials) && hasAccess;
+    const granted =
+      typeof window !== "undefined" &&
+      hasGrantedAnyScopeGoogle(credentials, ...scopes);
+    return Boolean(credentials) && granted;
   }, [credentials]);
   const openDrivePicker = useCallback(() => {
     NiceModal.show(GoogleDrivePickerModal, {}).then(

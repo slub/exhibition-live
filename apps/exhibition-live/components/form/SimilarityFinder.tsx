@@ -40,8 +40,6 @@ import {
 } from "@slub/edb-state-hooks";
 import {
   filterUndefOrNull,
-  findEntityWithinLobid,
-  findEntityWithinLobidByIRI,
   makeDefaultMappingStrategyContext,
   mapByConfig,
 } from "@slub/edb-ui-utils";
@@ -74,6 +72,10 @@ import {
   KnowledgeSources,
   SimilarityFinderProps,
 } from "@slub/edb-global-types";
+import {
+  findEntityWithinLobid,
+  findEntityWithinLobidByIRI,
+} from "@slub/edb-authorities";
 
 type SelectedEntity = {
   id: string;

@@ -6,10 +6,6 @@ import React, {
   useState,
 } from "react";
 
-import {
-  findEntityWithinLobid,
-  findEntityWithinLobidByIRI,
-} from "@slub/edb-ui-utils";
 import { filterUndefOrNull } from "@slub/edb-ui-utils";
 import { applyToEachField, extractFieldIfString } from "@slub/edb-ui-utils";
 import { useQuery } from "@slub/edb-state-hooks";
@@ -29,6 +25,10 @@ import {
   LobidAllPropTable,
   WikidataAllPropTable,
 } from "@slub/edb-advanced-components";
+import {
+  findEntityWithinLobid,
+  findEntityWithinLobidByIRI,
+} from "@slub/edb-authorities";
 
 type Props = {
   searchString: string;

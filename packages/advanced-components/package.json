@@ -21,6 +21,7 @@
     "@slub/edb-core-types": "workspace:*",
     "@slub/edb-global-types": "workspace:*",
     "@slub/edb-basic-components": "workspace:*",
+    "@slub/edb-authorities": "workspace:*",
     "@ebay/nice-modal-react": "^1.2",
     "react-json-view-lite": "^1.4",
     "next-i18next": "^15",

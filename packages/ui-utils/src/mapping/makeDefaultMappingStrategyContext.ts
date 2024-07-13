@@ -4,7 +4,11 @@ import {
   QueryBuilderOptions,
 } from "@slub/edb-core-types";
 import { DeclarativeMapping, StrategyContext } from "./mappingStrategies";
-import { findEntityByAuthorityIRI, searchEntityByLabel } from "../discover";
+import {
+  findEntityByAuthorityIRI,
+  searchEntityByLabel,
+} from "@slub/sparql-schema";
+import { findEntityWithinLobidByIRI } from "@slub/edb-authorities";
 
 /**
  * the strategy context is a collection of functions and values that are used by the mapping strategies.
@@ -68,6 +72,12 @@ export const makeDefaultMappingStrategyContext: (
       console.warn("found more then one entity");
     }
     return ids[0] || null;
+  },
+  authorityAccess: {
+    "http://d-nb.info/gnd": {
+      authorityIRI: "http://d-nb.info/gnd",
+      getEntityByIRI: findEntityWithinLobidByIRI,
+    },
   },
   authorityIRI: "http://d-nb.info/gnd",
   newIRI: createEntityIRI,

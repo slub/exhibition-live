@@ -52,6 +52,7 @@
     "@slub/exhibition-sparql-config": "workspace:*",
     "@slub/edb-core-types": "workspace:*",
     "@slub/edb-global-types": "workspace:*",
+    "@slub/edb-authorities": "workspace:*",
     "cross-fetch": "^4.0.0",
     "jsonpath": "^1.1.1",
     "json-schema": "^0.4.0",

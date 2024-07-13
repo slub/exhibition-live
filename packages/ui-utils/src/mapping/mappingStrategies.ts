@@ -3,7 +3,6 @@ import customParseFormat from "dayjs/plugin/customParseFormat";
 
 import { mapByConfig } from "./mapByConfig";
 import isNil from "lodash-es/isNil";
-import { findEntityWithinLobidByIRI } from "../lobid";
 import set from "lodash-es/set";
 import get from "lodash-es/get";
 import { getPaddedDate } from "@slub/edb-core-utils";
@@ -16,6 +15,11 @@ interface Strategy {
   id: string;
 }
 
+export type AuthorityConfiguration = {
+  authorityIRI: string;
+  getEntityByIRI: (iri: string) => Promise<any>;
+};
+
 export type StrategyContext = {
   getPrimaryIRIBySecondaryIRI: (
     secondaryIRI: string,
@@ -26,6 +30,7 @@ export type StrategyContext = {
     label: string,
     typeIRI: string,
   ) => Promise<string | null>;
+  authorityAccess?: Record<string, AuthorityConfiguration>;
   authorityIRI: string;
   newIRI: (typeIRI: string) => string;
   options?: {
@@ -176,6 +181,7 @@ export const createEntityWithAuthoritativeLink = async (
     primaryFields,
     typeIRItoTypeName,
     declarativeMappings,
+    authorityAccess,
   } = context;
   const sourceDataArray = sourceData;
   const newDataElements = [];
@@ -189,6 +195,7 @@ export const createEntityWithAuthoritativeLink = async (
     const authorityOptions = authorityFields[0];
     const authIRI = authorityOptions.authorityIRI || authorityIRI;
     const authLinkPrefix = authorityOptions.authorityLinkPrefix || "";
+    const authAccess = authorityAccess?.[authIRI];
     const sourceDataAuthority = sourceDataGroupElement[1];
     const secondaryIRI =
       typeof sourceDataAuthority === "string" &&
@@ -218,18 +225,20 @@ export const createEntityWithAuthoritativeLink = async (
     const primaryField = primaryFields[typeName];
     const labelField = primaryField?.label || "label";
     let targetData: any = {};
-    if (!primaryIRI && secondaryIRI) {
-      console.log("not yet implemented look form id within external database");
-      //TODO: we will hardcode lobid search here but this should be taken out of the context and linked with properties from options
-      const lobidData = await findEntityWithinLobidByIRI(secondaryIRI);
-      if (lobidData) {
+    if (!primaryIRI && secondaryIRI && authAccess) {
+      console.log(`will look for id ${secondaryIRI} within external database`);
+
+      const normData = await authAccess.getEntityByIRI(secondaryIRI);
+      if (normData) {
         const mappingConfig = declarativeMappings[typeName];
         if (!mappingConfig) {
-          console.warn(`no mapping config for ${typeName}`);
+          console.warn(
+            `no mapping config for ${typeName}, cannot convert to local data model`,
+          );
         } else {
           try {
-            const dataFromGND = await mapByConfig(
-              lobidData,
+            const data = await mapByConfig(
+              normData,
               {},
               mappingConfig,
               context,
@@ -239,9 +248,12 @@ export const createEntityWithAuthoritativeLink = async (
               "@type": typeIRI,
               lastNormUpdate: new Date().toISOString(),
             };
-            targetData = { ...dataFromGND, ...inject };
+            targetData = { ...data, ...inject };
           } catch (e) {
-            console.error(e);
+            console.error(
+              "error mapping authority entry to local data model",
+              e,
+            );
           }
         }
         if (!targetData) {
@@ -254,6 +266,7 @@ export const createEntityWithAuthoritativeLink = async (
         }
         newDataElements.push(targetData);
       } else {
+        console.log("no data found for", secondaryIRI);
         newDataElements.push({
           "@id": primaryIRI,
         });
@@ -453,6 +466,7 @@ export const createEntity = async (
   const isArray = Array.isArray(sourceData);
   const sourceDataArray = isArray ? sourceData : [sourceData];
   const { getPrimaryIRIBySecondaryIRI, newIRI, authorityIRI } = context;
+  const authAccess = context.authorityAccess?.[authorityIRI];
   const newDataElements = [];
   for (const sourceDataElement of sourceDataArray) {
     const authorityEntryIRI = sourceDataElement.id;
@@ -467,9 +481,13 @@ export const createEntity = async (
         "@type": typeIRI,
         __draft: true,
       };
-      if (options?.typeName && context.mappingTable?.[options.typeName]) {
+      if (
+        options?.typeName &&
+        context.mappingTable?.[options.typeName] &&
+        authAccess
+      ) {
         const mapping = context.mappingTable[options.typeName];
-        const fullData = await findEntityWithinLobidByIRI(sourceDataElement.id);
+        const fullData = await authAccess.getEntityByIRI(sourceDataElement.id);
         if (fullData) {
           const mappedData = await mapByConfig(
             fullData,

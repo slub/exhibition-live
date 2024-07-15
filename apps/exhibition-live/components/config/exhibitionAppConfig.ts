@@ -16,14 +16,15 @@ import { materialCells } from "@jsonforms/material-renderers";
 import { primaryFieldsRegistry } from "./primaryFieldsRegistry";
 import { uischemata } from "./uischemata";
 
+const someNameToTypeIRI = (name: string) => sladb(name).value;
+const someIRIToTypeName = (iri: string) =>
+  iri?.substring(BASE_IRI.length, iri.length);
 export const exhibitionConfig = {
   queryBuildOptions: defaultQueryBuilderOptions,
-  typeNameToTypeIRI: (name: string) => sladb(name).value,
-  propertyNameToIRI: (name: string) => sladb(name).value,
-  typeIRIToTypeName: (iri: string) =>
-    iri?.substring(BASE_IRI.length, iri.length),
-  propertyIRIToPropertyName: (iri: string) =>
-    iri?.substring(BASE_IRI.length, iri.length),
+  typeNameToTypeIRI: someNameToTypeIRI,
+  propertyNameToIRI: someNameToTypeIRI,
+  typeIRIToTypeName: someIRIToTypeName,
+  propertyIRIToPropertyName: someIRIToTypeName,
   createEntityIRI: createNewIRI,
   jsonLDConfig: {
     defaultPrefix: defaultPrefix,
@@ -44,6 +45,6 @@ export const exhibitionConfig = {
   rendererRegistry: rendererRegistry,
   cellRendererRegistry: materialCells,
   primaryFieldRendererRegistry: (typeIRI: string) =>
-    primaryFieldsRegistry(typeIRI, (name: string) => sladb(name).value),
+    primaryFieldsRegistry(typeIRI, someIRIToTypeName),
   uischemata: uischemata,
 };

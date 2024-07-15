@@ -1,5 +1,5 @@
 import React, { FunctionComponent, useCallback, useMemo } from "react";
-import { applyToEachField, extractFieldIfString } from "@slub/edb-ui-utils";
+import { applyToEachField, extractFieldIfString } from "@slub/edb-data-mapping";
 import {
   Avatar,
   ListItem,

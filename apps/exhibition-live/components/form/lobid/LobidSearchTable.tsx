@@ -7,7 +7,6 @@ import React, {
 } from "react";
 
 import { filterUndefOrNull } from "@slub/edb-ui-utils";
-import { applyToEachField, extractFieldIfString } from "@slub/edb-ui-utils";
 import { useQuery } from "@slub/edb-state-hooks";
 import { lobidTypemap, typeIRItoTypeName } from "../../config";
 import Ajv from "ajv";
@@ -29,6 +28,7 @@ import {
   findEntityWithinLobid,
   findEntityWithinLobidByIRI,
 } from "@slub/edb-authorities";
+import { applyToEachField, extractFieldIfString } from "@slub/edb-data-mapping";
 
 type Props = {
   searchString: string;

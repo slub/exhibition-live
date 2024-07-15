@@ -38,11 +38,7 @@ import {
   useQueryClient,
   useSimilarityFinderState,
 } from "@slub/edb-state-hooks";
-import {
-  filterUndefOrNull,
-  makeDefaultMappingStrategyContext,
-  mapByConfig,
-} from "@slub/edb-ui-utils";
+import { filterUndefOrNull } from "@slub/edb-core-utils";
 import {
   gndEntryFromSuggestion,
   gndEntryWithMainInfo,
@@ -76,6 +72,8 @@ import {
   findEntityWithinLobid,
   findEntityWithinLobidByIRI,
 } from "@slub/edb-authorities";
+import { mapByConfig } from "@slub/edb-data-mapping";
+import { makeDefaultMappingStrategyContext } from "@slub/edb-ui-utils";
 
 type SelectedEntity = {
   id: string;

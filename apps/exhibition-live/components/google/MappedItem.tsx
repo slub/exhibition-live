@@ -1,8 +1,5 @@
-import {
-  makeDefaultMappingStrategyContext,
-  mapByConfigFlat,
-} from "@slub/edb-ui-utils";
-import type { DeclarativeFlatMappings } from "@slub/edb-ui-utils";
+import { mapByConfigFlat } from "@slub/edb-data-mapping";
+import type { DeclarativeFlatMappings } from "@slub/edb-data-mapping";
 import { CachedWorkSheet, CellTypeLike } from "./useCachedWorkSheet";
 import { CRUDFunctions } from "@slub/edb-core-types";
 import { useAdbContext, useQuery } from "@slub/edb-state-hooks";
@@ -11,6 +8,7 @@ import { declarativeMappings } from "../config";
 import { useTranslation } from "next-i18next";
 import { CircularProgress, List } from "@mui/material";
 import { TypedListItem } from "@slub/edb-advanced-components";
+import { makeDefaultMappingStrategyContext } from "@slub/edb-ui-utils";
 
 export type MappedItemProps<CellType extends CellTypeLike> = {
   path: string;

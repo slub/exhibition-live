@@ -5,7 +5,7 @@ import merge from "lodash/merge";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 
 import { AutocompleteSuggestion } from "@slub/edb-core-types";
-import { extractFieldIfString } from "@slub/edb-ui-utils";
+import { extractFieldIfString } from "@slub/edb-data-mapping";
 import { makeFormsPath } from "@slub/edb-ui-utils";
 import { useTranslation } from "next-i18next";
 import { useAdbContext, useGlobalCRUDOptions } from "@slub/edb-state-hooks";

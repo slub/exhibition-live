@@ -25,6 +25,7 @@
     "@slub/edb-advanced-components": "workspace:*",
     "@slub/edb-global-types": "workspace:*",
     "@slub/edb-ui-utils": "workspace:*",
+    "@slub/edb-data-mapping": "workspace:*",
     "@slub/json-schema-utils": "workspace:*",
     "next-i18next": "^15.3.0",
     "json-schema": "^0.4.0",

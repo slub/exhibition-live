@@ -3,12 +3,12 @@ import {
   PrimaryFieldDeclaration,
   QueryBuilderOptions,
 } from "@slub/edb-core-types";
-import { DeclarativeMapping, StrategyContext } from "./mappingStrategies";
 import {
   findEntityByAuthorityIRI,
   searchEntityByLabel,
 } from "@slub/sparql-schema";
 import { findEntityWithinLobidByIRI } from "@slub/edb-authorities";
+import { DeclarativeMapping, StrategyContext } from "@slub/edb-data-mapping";
 
 /**
  * the strategy context is a collection of functions and values that are used by the mapping strategies.

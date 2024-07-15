@@ -24,6 +24,7 @@
     "@slub/edb-core-types": "workspace:*",
     "@slub/edb-basic-components": "workspace:*",
     "@slub/json-schema-utils": "workspace:*",
+    "@slub/edb-data-mapping": "workspace:*",
     "export-to-csv": "^1.2.1",
     "@ebay/nice-modal-react": "^1.2",
     "@jsonforms/core": "3.1.0",

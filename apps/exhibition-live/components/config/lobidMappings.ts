@@ -1,5 +1,8 @@
-import { DeclarativeMapping, DeclarativeMappings } from "@slub/edb-ui-utils";
 import namespace from "@rdfjs/namespace";
+import {
+  DeclarativeMapping,
+  DeclarativeMappings,
+} from "@slub/edb-data-mapping";
 export const sladb = namespace("http://ontologies.slub-dresden.de/exhibition#");
 
 export const locationDeclarativeMapping: DeclarativeMappings = [

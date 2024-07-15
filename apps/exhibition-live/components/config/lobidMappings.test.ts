@@ -2,14 +2,13 @@ import { describe, expect, test } from "@jest/globals";
 
 import exampleData from "../../fixtures/lobid/documeta-1257120557.json";
 import rendevousData from "../../fixtures/lobid/1256926108.json";
-import { mapByConfig } from "@slub/edb-ui-utils";
-import { StrategyContext } from "@slub/edb-ui-utils";
 import {
   declarativeMappings,
   exhibitionDeclarativeMapping,
 } from "./lobidMappings";
 import { primaryFields } from "./primaryFields";
 import { typeIRItoTypeName } from "./typeIRIToTypeName";
+import { mapByConfig, StrategyContext } from "@slub/edb-data-mapping";
 
 let i = 0;
 

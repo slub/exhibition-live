@@ -13,11 +13,11 @@ import {
 import { Close as CloseIcon } from "@mui/icons-material";
 import { useAdbContext, useCRUDWithQueryClient } from "@slub/edb-state-hooks";
 import { useCallback, useMemo, useState } from "react";
-import { applyToEachField, extractFieldIfString } from "@slub/edb-ui-utils";
+import { applyToEachField, extractFieldIfString } from "@slub/edb-data-mapping";
 import { EntityDetailCard } from "./EntityDetailCard";
 import { useTypeIRIFromEntity, useExtendedSchema } from "@slub/edb-state-hooks";
 import { useTranslation } from "next-i18next";
-import { filterUndefOrNull } from "@slub/edb-ui-utils";
+import { filterUndefOrNull } from "@slub/edb-core-utils";
 import { PrimaryField, PrimaryFieldResults } from "@slub/edb-core-types";
 import { EntityDetailModalProps } from "@slub/edb-global-types";
 

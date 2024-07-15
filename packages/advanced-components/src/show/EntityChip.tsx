@@ -4,7 +4,7 @@ import {
   useCRUDWithQueryClient,
   useExtendedSchema,
 } from "@slub/edb-state-hooks";
-import { applyToEachField, extractFieldIfString } from "@slub/edb-ui-utils";
+import { applyToEachField, extractFieldIfString } from "@slub/edb-data-mapping";
 import { ellipsis } from "@slub/edb-ui-utils";
 import NiceModal from "@ebay/nice-modal-react";
 import { Avatar, Chip, ChipProps, Tooltip } from "@mui/material";

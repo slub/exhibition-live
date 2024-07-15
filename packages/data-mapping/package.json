@@ -15,14 +15,20 @@
     "test:coverage": "jest --coverage"
   },
   "devDependencies": {
-    "@slub/edb-build-helper": "workspace:*"
+    "@slub/edb-build-helper": "workspace:*",
+    "dayjs": "^1.11.11"
   },
   "peerDependencies": {
+    "ajv": ">8.12",
+    "dayjs": ">1"
   },
   "dependencies": {
-    "@slub/json-schema-utils": "workspace:*",
+    "@slub/edb-core-utils": "workspace:*",
     "@slub/edb-core-types": "workspace:*",
     "@slub/edb-global-types": "workspace:*",
-    "lodash-es": "^4.17.21"
+    "lodash-es": "^4.17.21",
+    "jsonpath": "^1.1.1",
+    "json-schema": "^0.4.0",
+    "dot": "2.0.0-beta.1"
   }
 }

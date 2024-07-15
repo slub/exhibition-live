@@ -72,6 +72,7 @@
     "@slub/edb-basic-renderer": "workspace:*",
     "@slub/edb-vis-timeline": "workspace:*",
     "@slub/edb-authorities": "workspace:*",
+    "@slub/edb-data-mapping": "workspace:*",
     "@slub/exhibition-schema": "workspace:*",
     "@tanstack/table-core": "^8.16.0",
     "@tanstack/react-query": "^4.36.1",

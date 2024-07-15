@@ -8,7 +8,7 @@ import React, {
   useState,
 } from "react";
 
-import { applyToEachField, extractFieldIfString } from "@slub/edb-ui-utils";
+import { applyToEachField, extractFieldIfString } from "@slub/edb-data-mapping";
 import { JSONSchema7 } from "json-schema";
 import { useJsonForms } from "@jsonforms/react";
 import dot from "dot";

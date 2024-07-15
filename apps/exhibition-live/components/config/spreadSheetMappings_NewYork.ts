@@ -1,13 +1,12 @@
-import { DeclarativeFlatMappings } from "@slub/edb-ui-utils";
 import { sladb } from "./formConfigs";
 import { OwnColumnDesc } from "../google/types";
-import {
-  DeclarativeMatchBasedFlatMappings,
-  indexFromTitle,
-  matchBased2DeclarativeFlatMapping,
-} from "@slub/edb-ui-utils";
-import { filterUndefOrNull } from "@slub/edb-ui-utils";
+import { filterUndefOrNull } from "@slub/edb-core-utils";
 import { gndBaseIRI } from "@slub/edb-authorities";
+import {
+  DeclarativeFlatMappings,
+  DeclarativeMatchBasedFlatMappings,
+  matchBased2DeclarativeFlatMapping,
+} from "@slub/edb-data-mapping";
 
 /*
 B:Name Kiste

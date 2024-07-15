@@ -12,7 +12,7 @@ import {
   StrategyContext,
   strategyFunctionMap,
 } from "./mappingStrategies";
-import { filterUndefOrNull } from "../core";
+import { filterUndefOrNull } from "@slub/edb-core-utils";
 
 type MappingOptions = {
   throwOnAttributeError?: boolean;

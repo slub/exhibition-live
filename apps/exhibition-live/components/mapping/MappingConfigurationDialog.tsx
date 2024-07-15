@@ -8,9 +8,9 @@ import {
   IconButton,
   Typography,
 } from "@mui/material";
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
 
-import { DeclarativeSimpleMapping } from "@slub/edb-ui-utils";
+import type { DeclarativeSimpleMapping } from "@slub/edb-data-mapping";
 import { MappingConfiguration } from "./MappingConfiguration";
 
 type MappingConfigurationDialogProps = {

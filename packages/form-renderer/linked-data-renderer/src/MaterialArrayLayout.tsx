@@ -33,7 +33,7 @@ import {
 } from "@slub/edb-state-hooks";
 import { useSnackbar } from "notistack";
 import { ErrorObject } from "ajv";
-import { applyToEachField, extractFieldIfString } from "@slub/edb-ui-utils";
+import { applyToEachField, extractFieldIfString } from "@slub/edb-data-mapping";
 import { JSONSchema } from "json-schema-to-ts";
 import { useTranslation } from "next-i18next";
 import { bringDefinitionToTop } from "@slub/json-schema-utils";

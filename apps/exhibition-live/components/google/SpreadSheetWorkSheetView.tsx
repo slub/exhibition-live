@@ -21,11 +21,8 @@ import { mappingsAvailable } from "./mappingsAvailable";
 import {
   DeclarativeFlatMappings,
   DeclarativeMatchBasedFlatMappings,
-  encodeIRI,
-  filterUndefOrNull,
-  makeDefaultMappingStrategyContext,
   mapByConfigFlat,
-} from "@slub/edb-ui-utils";
+} from "@slub/edb-data-mapping";
 import { spreadSheetMappings } from "../config/spreadSheetMappings";
 import { index2letter } from "./index2letter";
 import { MappedItem } from "./MappedItem";
@@ -44,6 +41,8 @@ import {
 } from "@mui/material";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import { ColumnChip } from "./ColumnChip";
+import { filterUndefOrNull } from "@slub/edb-core-utils";
+import { makeDefaultMappingStrategyContext } from "@slub/edb-ui-utils";
 
 export type SpreadSheetWorkSheetViewProps<
   CellType extends CellTypeLike,

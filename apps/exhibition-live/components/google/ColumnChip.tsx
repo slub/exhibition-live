@@ -5,7 +5,7 @@ import {
   DeclarativeFlatMappings,
   DeclarativeMatchBasedFlatMapping,
   DeclarativeMatchBasedFlatMappings,
-} from "@slub/edb-ui-utils";
+} from "@slub/edb-data-mapping";
 import NiceModal from "@ebay/nice-modal-react";
 import { SpreadSheetTable } from "./SpreadSheetTable";
 import { Chip, Divider, Menu, MenuItem } from "@mui/material";

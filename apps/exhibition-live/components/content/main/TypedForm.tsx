@@ -10,7 +10,7 @@ import {
   useRightDrawerState,
   useSettings,
 } from "@slub/edb-state-hooks";
-import { encodeIRI, irisToData } from "@slub/edb-ui-utils";
+import { encodeIRI } from "@slub/edb-ui-utils";
 import NewSemanticJsonForm from "../../form/SemanticJsonFormOperational";
 import { useFormDataStore, useExtendedSchema } from "@slub/edb-state-hooks";
 import { useCRUDWithQueryClient } from "@slub/edb-state-hooks";

@@ -11,7 +11,7 @@ import { SELECT } from "@tpluscode/sparql-builder";
 import df from "@rdfjs/data-model";
 import { isString, orderBy, uniq } from "lodash";
 import { Box, Chip, Grid, Skeleton, Tab, Tabs } from "@mui/material";
-import { filterUndefOrNull } from "@slub/edb-ui-utils";
+import { filterUndefOrNull } from "@slub/edb-core-utils";
 import { Line, LineChart, Tooltip, XAxis, YAxis } from "recharts";
 import { TimelineItem } from "vis-timeline/types";
 import get from "lodash/get";

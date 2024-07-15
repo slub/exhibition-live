@@ -13,7 +13,7 @@ import {
   useCRUDWithQueryClient,
   useExtendedSchema,
 } from "@slub/edb-state-hooks";
-import { applyToEachField, extractFieldIfString } from "@slub/edb-ui-utils";
+import { applyToEachField, extractFieldIfString } from "@slub/edb-data-mapping";
 import NiceModal from "@ebay/nice-modal-react";
 import { Clear, HideImage } from "@mui/icons-material";
 import { ellipsis } from "@slub/edb-ui-utils";

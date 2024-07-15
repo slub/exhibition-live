@@ -3,6 +3,7 @@ import {
   command,
   flag,
   number,
+  oneOf,
   option,
   optional,
   positional,
@@ -10,8 +11,10 @@ import {
   string,
   subcommands,
 } from "cmd-ts";
+import { File } from "cmd-ts/batteries/fs";
 import { filterJSONLD } from "./filterJSONLD";
 import { dataStore } from "./dataStore";
+import { parseCSV } from "./csvToModel";
 
 const formatResult = (result: any, pretty?: boolean, noJsonLD?: boolean) => {
   const res = noJsonLD ? filterJSONLD(result) : result;
@@ -56,11 +59,7 @@ const get = command({
 const list = command({
   name: "edb-cli list",
   args: {
-    type: positional({
-      type: string,
-      displayName: "Type Name",
-      description: "The Type of the document",
-    }),
+    type: positional(File),
     amount: option({
       type: optional(number),
       description: "The amount of documents to fetch",
@@ -93,9 +92,44 @@ const list = command({
   },
 });
 
+const flatImport = command({
+  name: "edb-cli flat-import",
+  description: "Import of flat table structured documents",
+  args: {
+    file: positional({
+      type: string,
+      displayName: "File Path",
+      description: "The path to the file to import",
+    }),
+    mimeType: option({
+      type: optional(oneOf(["application/csv", "application/json"])),
+      description: "The MIME type of the document to import",
+      defaultValue: () => "application/csv",
+      defaultValueIsSerializable: true,
+      long: "mime-type",
+      short: "m",
+    }),
+    type: option({
+      type: optional(string),
+      description: "The Type of the imported entries",
+      long: "type",
+      short: "t",
+    }),
+    amount: option({
+      type: optional(number),
+      description: "The amount of rows to import",
+      long: "amount",
+      short: "n",
+    }),
+  },
+  handler: async ({ file, mimeType, type, amount }) => {
+    parseCSV(file, type || "Exhibition", amount || 1);
+  },
+});
+
 const ownSubcommand = subcommands({
-  name: "list",
-  cmds: { list, get },
+  name: "edb-cli",
+  cmds: { list, get, flatImport },
 });
 
 run(ownSubcommand, process.argv.slice(2));

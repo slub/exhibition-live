@@ -29,7 +29,11 @@
     "@slub/edb-graph-traversal": "workspace:*",
     "@slub/remote-query-implementations": "workspace:*",
     "@slub/sparql-schema": "workspace:*",
+    "@slub/edb-authorities": "workspace:*",
+    "@slub/edb-data-mapping": "workspace:*",
     "@tpluscode/sparql-builder": "^0.3.31",
-    "cmd-ts": "^0.13.0"
+    "cmd-ts": "^0.13.0",
+    "uuid": "^10.0.0",
+    "csv-parse": "^5.5.6"
   }
 }

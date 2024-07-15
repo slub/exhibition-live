@@ -1,7 +1,11 @@
 import config from "@slub/exhibition-sparql-config";
 import { oxigraphCrudOptions } from "@slub/remote-query-implementations";
 import { initSPARQLStore } from "@slub/sparql-db-impl";
-import { schema } from "@slub/exhibition-schema";
+import {
+  primaryFieldExtracts,
+  primaryFields,
+  schema,
+} from "@slub/exhibition-schema";
 import { JSONSchema7 } from "json-schema";
 
 const {
@@ -10,15 +14,25 @@ const {
   defaultPrefix,
   defaultQueryBuilderOptions,
   sparqlEndpoint,
+  BASE_IRI,
 } = config;
-const crudOptions = oxigraphCrudOptions(sparqlEndpoint);
+export const crudFns = oxigraphCrudOptions(sparqlEndpoint);
 export const typeNameToTypeIRI = (typeName: string) =>
   namespace(typeName).value;
+export const typeIRItoTypeName = (iri: string) => {
+  return iri?.substring(BASE_IRI.length, iri.length);
+};
 
 export const dataStore = initSPARQLStore({
   defaultPrefix,
   typeNameToTypeIRI,
-  queryBuildOptions: defaultQueryBuilderOptions,
+  queryBuildOptions: {
+    prefixes: defaultQueryBuilderOptions.prefixes as Record<string, string>,
+    propertyToIRI: typeNameToTypeIRI,
+    typeIRItoTypeName,
+    primaryFields,
+    primaryFieldExtracts,
+  },
   walkerOptions: {
     maxRecursion: 4,
     maxRecursionEachRef: 2,
@@ -26,7 +40,7 @@ export const dataStore = initSPARQLStore({
     omitEmptyArrays: true,
     omitEmptyObjects: true,
   },
-  sparqlQueryFunctions: crudOptions,
+  sparqlQueryFunctions: crudFns,
   schema: schema as JSONSchema7,
   defaultLimit: 10,
 });

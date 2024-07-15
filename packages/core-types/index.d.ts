@@ -71,6 +71,24 @@ export type SPARQLCRUDOptions = {
   maxRecursion?: number;
 };
 
+export type RDFSelectResult = {
+  head: {
+    vars: string[];
+  };
+  results: {
+    bindings: Bindings[];
+  };
+};
+
+export type SelectFetchOverload = {
+  (query: string, options: { withHeaders: true }): Promise<RDFSelectResult>;
+  (query: string, options: { withHeaders?: false }): Promise<Bindings[]>;
+  (
+    query: string,
+    options?: { withHeaders?: boolean },
+  ): Promise<Bindings[] | RDFSelectResult>;
+};
+
 export type CRUDFunctions = {
   updateFetch: (
     query: string,
@@ -83,7 +101,7 @@ export type CRUDFunctions = {
     | Response
   >;
   constructFetch: (query: string) => Promise<DatasetCore>;
-  selectFetch: (query: string, options?: SelectFetchOptions) => Promise<any>;
+  selectFetch: SelectFetchOverload;
   askFetch: (query: string) => Promise<boolean>;
 };
 

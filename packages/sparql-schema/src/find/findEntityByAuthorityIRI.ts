@@ -2,6 +2,13 @@ import df from "@rdfjs/data-model";
 import { SELECT } from "@tpluscode/sparql-builder";
 import { QueryBuilderOptions } from "@slub/edb-core-types";
 
+export type FindEntityByAuthorityIRIFn = (
+  authorityIRI: string,
+  typeIRI: string | undefined,
+  doQuery: (query: string) => Promise<any>,
+  limit: number,
+  options: QueryBuilderOptions,
+) => Promise<string[]>;
 export const findEntityByAuthorityIRI = async (
   authorityIRI: string,
   typeIRI: string | undefined,

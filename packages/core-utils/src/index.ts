@@ -14,3 +14,5 @@ export * from "./numeric2JSDate";
 export * from "./permissions";
 export * from "./envToSparqlEndpoint";
 export * from "./camelCaseToTitleCase";
+export * from "./index2letter";
+export * from "./makeColumnDesc";

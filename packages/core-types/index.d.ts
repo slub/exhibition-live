@@ -71,22 +71,20 @@ export type SPARQLCRUDOptions = {
   maxRecursion?: number;
 };
 
+export type ResultBindings = any[];
+
 export type RDFSelectResult = {
   head: {
     vars: string[];
   };
   results: {
-    bindings: Bindings[];
+    bindings: ResultBindings;
   };
 };
 
 export type SelectFetchOverload = {
   (query: string, options: { withHeaders: true }): Promise<RDFSelectResult>;
-  (query: string, options: { withHeaders?: false }): Promise<Bindings[]>;
-  (
-    query: string,
-    options?: { withHeaders?: boolean },
-  ): Promise<Bindings[] | RDFSelectResult>;
+  (query: string, options?: { withHeaders?: false }): Promise<ResultBindings>;
 };
 
 export type CRUDFunctions = {
@@ -162,4 +160,10 @@ export type NormDataMapping = {
 export type AutocompleteSuggestion = {
   label: string;
   value: string | null;
+};
+
+export type ColumnDesc<T> = {
+  index: number;
+  value: T;
+  letter: string;
 };

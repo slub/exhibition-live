@@ -7,7 +7,7 @@ import {
 } from "material-react-table";
 import { OwnColumnDesc } from "./types";
 import { Box, Skeleton } from "@mui/material";
-import { index2letter } from "./index2letter";
+import { index2letter } from "@slub/edb-core-utils";
 
 export type SpreadSheetTableProps<CellType extends CellTypeLike> = {
   workSheet: CachedWorkSheet<CellType>;

@@ -6,8 +6,11 @@ import {
   sladb,
 } from "./formConfigs";
 import { BASE_IRI } from "./paths";
-import { declarativeMappings, lobidTypemap } from "./lobidMappings";
-import { schema } from "@slub/exhibition-schema";
+import {
+  declarativeMappings,
+  lobidTypemap,
+  schema,
+} from "@slub/exhibition-schema";
 import { JSONSchema7 } from "json-schema";
 import { makeStubSchema } from "./makeStubSchema";
 import { makeDefaultUiSchemaForAllDefinitions } from "./makeDefaultUiSchemaForAllDefinitions";

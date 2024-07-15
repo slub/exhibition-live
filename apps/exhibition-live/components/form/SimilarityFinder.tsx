@@ -26,7 +26,6 @@ import {
   useState,
 } from "react";
 
-import { lobidTypemap } from "../config/lobidMappings";
 import {
   useAdbContext,
   useExtendedSchema,
@@ -74,6 +73,7 @@ import {
 } from "@slub/edb-authorities";
 import { mapByConfig } from "@slub/edb-data-mapping";
 import { makeDefaultMappingStrategyContext } from "@slub/edb-ui-utils";
+import { lobidTypemap } from "@slub/exhibition-schema";
 
 type SelectedEntity = {
   id: string;

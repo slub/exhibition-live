@@ -8,7 +8,7 @@ import React, {
 
 import { filterUndefOrNull } from "@slub/edb-ui-utils";
 import { useQuery } from "@slub/edb-state-hooks";
-import { lobidTypemap, typeIRItoTypeName } from "../../config";
+import { typeIRItoTypeName } from "../../config";
 import Ajv from "ajv";
 import { useTranslation } from "next-i18next";
 import {
@@ -29,6 +29,7 @@ import {
   findEntityWithinLobidByIRI,
 } from "@slub/edb-authorities";
 import { applyToEachField, extractFieldIfString } from "@slub/edb-data-mapping";
+import { lobidTypemap } from "@slub/exhibition-schema";
 
 type Props = {
   searchString: string;

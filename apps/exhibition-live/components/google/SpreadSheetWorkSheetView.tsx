@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
   useAdbContext,
   useCRUDWithQueryClient,
@@ -24,9 +24,7 @@ import {
   mapByConfigFlat,
 } from "@slub/edb-data-mapping";
 import { spreadSheetMappings } from "../config/spreadSheetMappings";
-import { index2letter } from "./index2letter";
 import { MappedItem } from "./MappedItem";
-import { declarativeMappings } from "../config";
 import {
   Box,
   Button,
@@ -41,8 +39,9 @@ import {
 } from "@mui/material";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import { ColumnChip } from "./ColumnChip";
-import { filterUndefOrNull } from "@slub/edb-core-utils";
+import { filterUndefOrNull, index2letter } from "@slub/edb-core-utils";
 import { makeDefaultMappingStrategyContext } from "@slub/edb-ui-utils";
+import { declarativeMappings } from "@slub/exhibition-schema";
 
 export type SpreadSheetWorkSheetViewProps<
   CellType extends CellTypeLike,
@@ -126,16 +125,17 @@ export const SpreadSheetWorkSheetView = <
   const calculateMapping = useCallback(async () => {
     if (!workSheet.loaded) return;
     try {
-      const cells = [...Array(workSheet.columnCount)].map((_, index) => {
+      //first get the header cells to get the column names
+      const headerCells = [...Array(workSheet.columnCount)].map((_, index) => {
         return workSheet.getCell(0, index);
       });
-      const columnDesc_ = cells.map((googleSpreadSheetCell, index) => ({
+      const columnDesc_ = headerCells.map((googleSpreadSheetCell, index) => ({
         index,
         value: googleSpreadSheetCell?.value || null,
         letter: index2letter(index),
       }));
       setColumnDesc(columnDesc_);
-      const cols = cells.map((cell, index) => {
+      const cols = headerCells.map((cell, index) => {
         return {
           id: (cell.value ?? "").toString() + index,
           header: (cell.value ?? "").toString(),
@@ -371,6 +371,7 @@ export const SpreadSheetWorkSheetView = <
               defaultPrefix,
               createEntityIRI,
               typeNameToTypeIRI,
+              primaryFields,
               declarativeMappings,
             ),
           );
@@ -393,6 +394,7 @@ export const SpreadSheetWorkSheetView = <
     createEntityIRI,
     defaultPrefix,
     prefixes,
+    primaryFields,
   ]);
 
   return loaded ? (

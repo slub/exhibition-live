@@ -4,11 +4,11 @@ import { CachedWorkSheet, CellTypeLike } from "./useCachedWorkSheet";
 import { CRUDFunctions } from "@slub/edb-core-types";
 import { useAdbContext, useQuery } from "@slub/edb-state-hooks";
 import React, { useCallback } from "react";
-import { declarativeMappings } from "../config";
 import { useTranslation } from "next-i18next";
 import { CircularProgress, List } from "@mui/material";
 import { TypedListItem } from "@slub/edb-advanced-components";
 import { makeDefaultMappingStrategyContext } from "@slub/edb-ui-utils";
+import { declarativeMappings } from "@slub/exhibition-schema";
 
 export type MappedItemProps<CellType extends CellTypeLike> = {
   path: string;

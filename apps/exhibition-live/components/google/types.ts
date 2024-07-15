@@ -1,3 +1,5 @@
+import { ColumnDesc } from "@slub/edb-core-types";
+
 type ErrorValue = {
   type: CellValueErrorType;
   message: string;
@@ -33,8 +35,6 @@ declare class GoogleSpreadsheetCellErrorValue {
   constructor(rawError: ErrorValue);
 }
 
-export type OwnColumnDesc = {
-  index: number;
-  value: string | number | null | boolean | GoogleSpreadsheetCellErrorValue;
-  letter: string;
-};
+export type OwnColumnDesc = ColumnDesc<
+  string | number | null | boolean | GoogleSpreadsheetCellErrorValue
+>;

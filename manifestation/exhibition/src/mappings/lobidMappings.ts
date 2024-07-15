@@ -1,5 +1,5 @@
 import namespace from "@rdfjs/namespace";
-import {
+import type {
   DeclarativeMapping,
   DeclarativeMappings,
 } from "@slub/edb-data-mapping";

@@ -22,9 +22,15 @@
     "build:prisma": "json-to-prisma-schema-convertor convert --inputPath='./schemas/jsonschema/test.schema.json' --outputPath='./schemas/prisma/Exhibition.prisma'"
   },
   "devDependencies": {
+    "@types/rdfjs__namespace": "^2.0.8",
+    "@slub/edb-data-mapping": "workspace:*",
+    "@slub/edb-core-types": "workspace:*",
     "json-schema": "^0.4.0",
     "@adobe/jsonschema2md": "^7.1.5",
     "schema2typebox": "^1.7.1",
     "json-to-prisma-schema-convertor": "^0.1.0"
+  },
+  "dependencies": {
+    "@rdfjs/namespace": "^2.0.0"
   }
 }

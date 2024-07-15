@@ -29,7 +29,7 @@ import {
   useKeyEventForSimilarityFinder,
   useRightDrawerState,
 } from "@slub/edb-state-hooks";
-import { primaryFields } from "../config";
+import { primaryFields } from "@slub/exhibition-schema";
 
 interface MuiTextInputProps {
   muiInputProps?: InputProps["inputProps"];

@@ -4,7 +4,7 @@ import {
   primaryTextFieldControlTester,
   PrimaryTextFieldRenderer,
 } from "../renderer";
-import { primaryFields } from "./primaryFields";
+import { primaryFields } from "@slub/exhibition-schema";
 
 export const primaryFieldsRegistry: (
   typeIRI: string,

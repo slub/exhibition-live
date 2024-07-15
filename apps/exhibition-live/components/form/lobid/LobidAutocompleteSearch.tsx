@@ -5,10 +5,10 @@ import React, {
   useState,
 } from "react";
 
-import { lobidTypemap } from "../../config";
 import { DebouncedAutocomplete } from "@slub/edb-advanced-components";
 import { AutocompleteSuggestion } from "@slub/edb-core-types";
 import { findEntityWithinLobid } from "@slub/edb-authorities";
+import { lobidTypemap } from "@slub/exhibition-schema";
 
 interface OwnProps {
   selected?: AutocompleteSuggestion | null;

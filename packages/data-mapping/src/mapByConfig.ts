@@ -3,21 +3,23 @@ import cloneDeep from "lodash-es/cloneDeep";
 import get from "lodash-es/get";
 import isNil from "lodash-es/isNil";
 import set from "lodash-es/set";
-// @ts-ignore
 import jsonpath from "jsonpath";
 
 import {
-  DeclarativeFlatMappings,
   DeclarativeMappings,
   StrategyContext,
   strategyFunctionMap,
 } from "./mappingStrategies";
-import { filterUndefOrNull } from "@slub/edb-core-utils";
 
-type MappingOptions = {
-  throwOnAttributeError?: boolean;
-};
-
+/**
+ * Get value from sourceData via a sourcePath which can be either a string or an array of strings
+ *  if sourcePath starts with $ it is treated as a jsonpath {@link https://goessner.net/articles/JsonPath/},
+ *  that are able to map complex structures just like XPath expressions in XML
+ *  {@example $.store.book[*].title will return all titles of books in store}
+ *  otherwise it is treated as a lodash path {@link https://lodash.com/docs/4.17.15#get}
+ * @param sourceData
+ * @param sourcePath
+ */
 const getViaSourcePath = (
   sourceData: any,
   sourcePath: string[] | string,
@@ -33,84 +35,26 @@ const getViaSourcePath = (
   }
 };
 
-const getViaColumnPaths = (
-  accessorFn: (col: number | string) => any,
-  columnPaths: string[] | number[],
-): any => {
-  const values = columnPaths.map((path) => accessorFn(path));
-  return values;
-};
-
-export const mapByConfigFlat = async (
-  accessorFn: (col: number | string) => any,
-  targetData: any,
-  mappingConfig: DeclarativeFlatMappings,
-  strategyContext: StrategyContext,
-  options: MappingOptions = {},
-): Promise<any> => {
-  const newData = cloneDeep(targetData); //clone targetData to not mutate it accidentally
-  for (const { source, target, mapping } of mappingConfig) {
-    try {
-      const { path: targetPath } = target;
-      if (!source?.columns || source.columns.length === 0)
-        throw new Error(
-          `No source path defined for mapping ${JSON.stringify(mapping)}`,
-        );
-      const isList = source.columns.length === 1 && source.columns[0];
-      if (!mapping?.strategy) {
-        //take value as is if no strategy is defined
-        const sourceValue = filterUndefOrNull(
-          getViaColumnPaths(accessorFn, source.columns),
-        );
-        if (sourceValue.length === 0) continue;
-        if (isList) {
-          set(newData, targetPath, sourceValue[0]);
-        } else {
-          set(newData, targetPath, sourceValue);
-        }
-      } else {
-        const mappingFunction = strategyFunctionMap[mapping.strategy.id];
-        if (typeof mappingFunction !== "function") {
-          throw new Error(`Strategy ${mapping.strategy.id} is not implemented`);
-        }
-        const strategyOptions = (mapping.strategy as any).options;
-        let value: any;
-        if (isList) {
-          value = await mappingFunction(
-            getViaColumnPaths(accessorFn, source.columns)[0],
-            get(newData, targetPath),
-            strategyOptions,
-            strategyContext,
-          );
-        } else {
-          value = await mappingFunction(
-            getViaColumnPaths(accessorFn, source.columns),
-            get(newData, targetPath),
-            strategyOptions,
-            strategyContext,
-          );
-          if (Array.isArray(value)) value = filterUndefOrNull(value);
-        }
-        if (!isNil(value)) set(newData, targetPath, value);
-      }
-    } catch (e) {
-      if (options.throwOnAttributeError) throw e;
-      console.error(
-        `Error while mapping source.columns: ${JSON.stringify(source.columns)} to target.path ${target.path}`,
-        e,
-      );
-    }
-  }
-  return newData;
-};
-
+/**
+ * Map sourceData to targetData by a declarative mappingConfig
+ * the initially passed seedData is used as a base for the new data
+ * and won't be mutated
+ *
+ * Look at the docs for more information on certain mapping strategies
+ * for the case that no strategy is defined the value will be taken as is
+ *
+ * @param sourceData
+ * @param seedData
+ * @param mappingConfig
+ * @param strategyContext
+ */
 export const mapByConfig = async (
   sourceData: Record<string, any>,
-  targetData: any,
+  seedData: any,
   mappingConfig: DeclarativeMappings,
   strategyContext: StrategyContext,
 ): Promise<any> => {
-  const newData = cloneDeep(targetData); //clone targetData to not mutate it accidentally
+  const newData = cloneDeep(seedData); //clone targetData to not mutate it accidentally
   const ajv = new Ajv();
   for (const { source, target, mapping } of mappingConfig) {
     const { path: sourcePath, expectedSchema } = source;

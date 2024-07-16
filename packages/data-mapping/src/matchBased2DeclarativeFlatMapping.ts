@@ -3,6 +3,8 @@ import flatten from "lodash/flatten";
 import uniq from "lodash/uniq";
 import dot from "dot";
 import { JSONSchema7 } from "json-schema";
+import { DeclarativeFlatMappings } from "../dist/index";
+import { filterUndefOrNull } from "@slub/edb-core-utils";
 
 type OwnColumnDesc = {
   index: number;
@@ -10,20 +12,14 @@ type OwnColumnDesc = {
   letter: string;
 };
 
-export const indexFromLetter = (
-  letter: string,
-  fields: OwnColumnDesc[],
-): number => {
+const indexFromLetter = (letter: string, fields: OwnColumnDesc[]): number => {
   const index = fields.findIndex((m) => m.letter === letter);
   if (index === -1) {
     throw new Error(`No index for letter ${letter}`);
   }
   return index;
 };
-export const indexFromTitle = (
-  title: string,
-  fields: OwnColumnDesc[],
-): number => {
+const indexFromTitle = (title: string, fields: OwnColumnDesc[]): number => {
   const index = fields.findIndex((m) => m.value === title);
   if (index === -1) {
     throw new Error(`No index for title ${title}`);
@@ -41,7 +37,7 @@ type MatchNColumnsByTitlePattern = {
 export type FlexibleColumnMatchingDefinition =
   | MatchByTitle
   | MatchNColumnsByTitlePattern;
-export const isTitlePattern = (
+const isTitlePattern = (
   definition: FlexibleColumnMatchingDefinition,
 ): definition is MatchNColumnsByTitlePattern => {
   return (definition as MatchNColumnsByTitlePattern).titlePattern !== undefined;
@@ -106,6 +102,19 @@ export type DeclarativeMatchBasedFlatMapping = {
 };
 export type DeclarativeMatchBasedFlatMappings =
   DeclarativeMatchBasedFlatMapping[];
+
+/**
+ * Converts a match based flat mapping to a declarative flat mapping
+ *
+ * the match based flat mapping is a more flexible way to define mappings upon tables that
+ * can change over time, where a column index is not a stable identifier
+ *
+ * in order to use the flat mapping, column indices need to resolved based on the given
+ * titles or title patterns within the table header, this is done by the {@link columnMatcher}
+ *
+ * @param fields
+ * @param mapping
+ */
 export const matchBased2DeclarativeFlatMapping = (
   fields: OwnColumnDesc[],
   mapping: DeclarativeMatchBasedFlatMapping,
@@ -118,3 +127,23 @@ export const matchBased2DeclarativeFlatMapping = (
     },
   };
 };
+export const matchBased2DeclarativeFlatMappings: (
+  fields: OwnColumnDesc[],
+  matchBasedFlatMappings: DeclarativeMatchBasedFlatMappings,
+  options?: {
+    throwOnMappingError?: boolean;
+  },
+) => DeclarativeFlatMappings = (fields, matchBasedFlatMappings, options) =>
+  filterUndefOrNull(
+    matchBasedFlatMappings.map((mapping) => {
+      let res = null;
+      try {
+        res = matchBased2DeclarativeFlatMapping(fields, mapping);
+      } catch (e) {
+        if (options?.throwOnMappingError) {
+          throw e;
+        }
+      }
+      return res;
+    }),
+  );

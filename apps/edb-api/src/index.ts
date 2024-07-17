@@ -7,13 +7,13 @@ import { yoga } from "@elysiajs/graphql-yoga";
 import { FieldNode, SelectionSetNode } from "graphql";
 import { IExecutableSchemaDefinition } from "@graphql-tools/schema";
 import { IFieldResolver } from "@graphql-tools/utils";
-import loadedSchema from "@slub/exhibition-schema/schemas/jsonschema/Exhibition.schema.json";
+import { schema } from "@slub/exhibition-schema";
 import { defsToDefinitions } from "./defsToDefinitions";
 import { dataStore } from "./dataStore";
 import { extendSchema } from "./extendSchema";
 import { replaceJSONLD } from "./replaceJSONLD";
 
-const exhibitionSchema = extendSchema(loadedSchema as JSONSchema7);
+const exhibitionSchema = extendSchema(schema as JSONSchema7);
 
 const reader = getJsonSchemaReader();
 const writer = getGraphQLWriter();
@@ -44,7 +44,7 @@ const getTypeDefs = (schema: JSONSchema7) => {
     .map((typeName) => {
       return `
       get${typeName}(id: ID!): ${typeName}
-      list${typeName}: [${typeName}]
+      list${typeName}(limit: Int): [${typeName}]
     `;
     })
     .join("\n");
@@ -70,7 +70,8 @@ const getFieldResolvers = (schema: JSONSchema7) => {
       [
         `list${typeName}`,
         async (parent, args, context, info) => {
-          return replaceJSONLD(await dataStore.listDocuments(typeName, 10));
+          const { limit = 10 } = args;
+          return replaceJSONLD(await dataStore.listDocuments(typeName, limit));
         },
       ],
     ];

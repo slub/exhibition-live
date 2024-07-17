@@ -1,13 +1,16 @@
 import config from "@slub/exhibition-sparql-config";
 import { oxigraphCrudOptions } from "@slub/remote-query-implementations";
 import { initSPARQLStore } from "@slub/sparql-db-impl";
-import schema from "@slub/exhibition-schema/schemas/jsonschema/Exhibition.schema.json";
+import { schema } from "@slub/exhibition-schema";
 import { JSONSchema7 } from "json-schema";
+import { primaryFieldExtracts, primaryFields } from "@slub/exhibition-schema";
+import { typeIRItoTypeName } from "@slub/edb-cli/src/dataStore";
 
 const {
   namespace,
   walkerOptions,
   defaultPrefix,
+  defaultJsonldContext,
   defaultQueryBuilderOptions,
   sparqlEndpoint,
 } = config;
@@ -17,8 +20,15 @@ export const typeNameToTypeIRI = (typeName: string) =>
 
 export const dataStore = initSPARQLStore({
   defaultPrefix,
+  jsonldContext: defaultJsonldContext,
   typeNameToTypeIRI,
-  queryBuildOptions: defaultQueryBuilderOptions,
+  queryBuildOptions: {
+    prefixes: defaultQueryBuilderOptions.prefixes as Record<string, string>,
+    propertyToIRI: typeNameToTypeIRI,
+    typeIRItoTypeName,
+    primaryFields,
+    primaryFieldExtracts,
+  },
   walkerOptions,
   sparqlQueryFunctions: crudOptions,
   schema: schema as JSONSchema7,

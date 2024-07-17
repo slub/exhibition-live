@@ -5,10 +5,10 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "start": "tsx src/index.ts",
+    "start": "bun src/index.ts",
     "start:graphiql": "docker run --name graphiql --rm -p 4000:4000 -e API_URL=http://localhost:3001/graphql npalm/graphiql",
-    "dev": "tsx watch src/index.ts",
-    "start:debug": "node --inspect  --loader tsx 'src/index.ts'"
+    "dev": "bun --watch src/index.ts",
+    "start:debug": "bun --inspect 'src/index.ts'"
   },
   "keywords": [],
   "author": "Sebastian Tilsch <sebastian.tilsch@slub-dresden.de>",

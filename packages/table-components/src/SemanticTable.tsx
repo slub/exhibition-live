@@ -3,7 +3,6 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import {
   useAdbContext,
-  useExtendedSchema,
   useGlobalCRUDOptions,
   useModifiedRouter,
   useMutation,
@@ -226,7 +225,6 @@ export const SemanticTable = ({
     },
     [typeIRI, EntityDetailModal],
   );
-  const extendedSchema = useExtendedSchema({ typeName });
   const queryClient = useQueryClient();
   const { mutateAsync: moveToTrashAsync, isLoading: aboutToMoveToTrash } =
     useMutation(

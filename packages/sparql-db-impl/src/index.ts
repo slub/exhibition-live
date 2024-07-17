@@ -22,8 +22,9 @@ import {
   InitDatastoreFunction,
 } from "@slub/edb-global-types";
 
-type SPARQLDataStoreConfig = {
+export type SPARQLDataStoreConfig = {
   defaultPrefix: string;
+  jsonldContext: object | string;
   typeNameToTypeIRI: StringToIRIFn;
   queryBuildOptions: SparqlBuildOptions;
   walkerOptions?: Partial<WalkerOptions>;
@@ -36,6 +37,7 @@ export const initSPARQLStore: InitDatastoreFunction<SPARQLDataStoreConfig> = (
 ) => {
   const {
     defaultPrefix,
+    jsonldContext,
     typeNameToTypeIRI,
     queryBuildOptions,
     walkerOptions,
@@ -150,9 +152,10 @@ export const initSPARQLStore: InitDatastoreFunction<SPARQLDataStoreConfig> = (
     upsertDocument: (typeName, entityIRI, document) =>
       save(
         {
+          ...document,
           "@id": entityIRI,
           "@type": typeNameToTypeIRI(typeName),
-          ...document,
+          "@context": jsonldContext,
         },
         dataStoreConfig.schema,
         updateFetch,

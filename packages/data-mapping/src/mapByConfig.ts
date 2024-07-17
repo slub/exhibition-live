@@ -90,7 +90,10 @@ export const mapByConfig = async (
           sourceValue,
           get(newData, targetPath),
           strategyOptions,
-          strategyContext,
+          strategyContext.createDeeperContext(
+            strategyContext,
+            `${mapping.strategy.id}_${targetPath}`,
+          ),
         );
         if (!isNil(value)) set(newData, targetPath, value);
       }

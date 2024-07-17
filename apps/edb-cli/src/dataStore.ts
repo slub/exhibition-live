@@ -12,6 +12,7 @@ const {
   namespace,
   walkerOptions,
   defaultPrefix,
+  defaultJsonldContext,
   defaultQueryBuilderOptions,
   sparqlEndpoint,
   BASE_IRI,
@@ -25,6 +26,7 @@ export const typeIRItoTypeName = (iri: string) => {
 
 export const dataStore = initSPARQLStore({
   defaultPrefix,
+  jsonldContext: defaultJsonldContext,
   typeNameToTypeIRI,
   queryBuildOptions: {
     prefixes: defaultQueryBuilderOptions.prefixes as Record<string, string>,

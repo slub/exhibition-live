@@ -43,6 +43,7 @@ export const useDataStore = ({
       crudOptions.constructFetch &&
       initSPARQLStore({
         defaultPrefix: jsonLDConfig.defaultPrefix,
+        jsonldContext: jsonLDConfig.jsonldContext,
         typeNameToTypeIRI,
         queryBuildOptions,
         walkerOptions,

@@ -20,6 +20,17 @@ export type AuthorityConfiguration = {
   getEntityByIRI: (iri: string) => Promise<any>;
 };
 
+export type Logger = {
+  log: (message: string) => void;
+  warn: (message: string) => void;
+  error: (message: string) => void;
+};
+
+export type CreateDeeperContextFn = (
+  strategy: StrategyContext,
+  pathElement: string,
+) => StrategyContext;
+
 export type StrategyContext = {
   getPrimaryIRIBySecondaryIRI: (
     secondaryIRI: string,
@@ -41,6 +52,9 @@ export type StrategyContext = {
   primaryFields: PrimaryFieldDeclaration;
   typeIRItoTypeName: IRIToStringFn;
   declarativeMappings: DeclarativeMapping;
+  path: string[];
+  logger: Logger;
+  createDeeperContext: CreateDeeperContextFn;
 };
 
 export type StrategyFunction = (
@@ -155,24 +169,6 @@ export const createEntityWithAuthoritativeLink = async (
   context?: StrategyContext,
 ): Promise<any> => {
   if (!context) throw new Error("No context provided");
-  const { typeIRI, mainProperty, authorityFields } = options || {};
-  if (!Array.isArray(sourceData))
-    throw new Error("Source data is not an array");
-
-  const amount = authorityFields.length + 1;
-  if (sourceData.length % amount !== 0)
-    console.warn(
-      `Source data length ${sourceData.length} is not a multiple of ${amount}`,
-    );
-  /*
-    throw new Error(
-      `Source data length ${sourceData.length} is not a multiple of ${amount}`,
-    );*/
-  const groupedSourceData = [];
-  for (let i = 0; i < sourceData.length; i += amount) {
-    groupedSourceData.push(sourceData.slice(i, i + amount));
-  }
-
   const {
     searchEntityByLabel,
     getPrimaryIRIBySecondaryIRI,
@@ -182,13 +178,29 @@ export const createEntityWithAuthoritativeLink = async (
     typeIRItoTypeName,
     declarativeMappings,
     authorityAccess,
+    createDeeperContext,
+    logger,
   } = context;
+  const { typeIRI, mainProperty, authorityFields } = options || {};
+  if (!Array.isArray(sourceData))
+    throw new Error("Source data is not an array");
+
+  const amount = authorityFields.length + 1;
+  if (sourceData.length % amount !== 0)
+    logger.warn(
+      `Source data length ${sourceData.length} is not a multiple of ${amount}`,
+    );
+  const groupedSourceData = [];
+  for (let i = 0; i < sourceData.length; i += amount) {
+    groupedSourceData.push(sourceData.slice(i, i + amount));
+  }
+
   const sourceDataArray = sourceData;
   const newDataElements = [];
   for (const sourceDataGroupElement of groupedSourceData) {
     const sourceDataElement = sourceDataGroupElement[0];
     if (authorityFields.length > 1) {
-      console.warn(
+      logger.warn(
         "only one authority field is supported at the moment. Will use the first one.",
       );
     }
@@ -197,6 +209,7 @@ export const createEntityWithAuthoritativeLink = async (
     const authLinkPrefix = authorityOptions.authorityLinkPrefix || "";
     const authAccess = authorityAccess?.[authIRI];
     const sourceDataAuthority = sourceDataGroupElement[1];
+    const typeName = typeIRItoTypeName(typeIRI);
     const secondaryIRI =
       typeof sourceDataAuthority === "string" &&
       sourceDataAuthority.trim().length > 0
@@ -206,71 +219,87 @@ export const createEntityWithAuthoritativeLink = async (
 
     let primaryIRI: string | null = null;
     if (secondaryIRI) {
-      console.log(`will look for ${secondaryIRI} within own database`);
+      logger.log(`will look for ${secondaryIRI} within own database`);
       primaryIRI = await getPrimaryIRIBySecondaryIRI(
         secondaryIRI,
         authIRI,
         typeIRI,
       );
-      if (primaryIRI) {
-        console.log(
-          `found ${secondaryIRI} as ${primaryIRI} within own database`,
-        );
-      }
     } else if (sourceDataLabel) {
+      logger.log(
+        `will look for "${sourceDataLabel}" type ${typeName} within own database by label`,
+      );
       primaryIRI = await searchEntityByLabel(sourceDataLabel, typeIRI);
     }
 
-    const typeName = typeIRItoTypeName(typeIRI);
+    if (primaryIRI) {
+      logger.log(`found ${secondaryIRI} as ${primaryIRI} within own database`);
+      newDataElements.push({
+        "@id": primaryIRI,
+      });
+      continue;
+    }
+
     const primaryField = primaryFields[typeName];
     const labelField = primaryField?.label || "label";
     let targetData: any = {};
-    if (!primaryIRI && secondaryIRI && authAccess) {
-      console.log(`will look for id ${secondaryIRI} within external database`);
+    if (secondaryIRI && authAccess) {
+      logger.log(
+        `will look for ${secondaryIRI} of type ${typeName} within external database`,
+      );
 
-      const normData = await authAccess.getEntityByIRI(secondaryIRI);
-      if (normData) {
-        const mappingConfig = declarativeMappings[typeName];
-        if (!mappingConfig) {
-          console.warn(
-            `no mapping config for ${typeName}, cannot convert to local data model`,
-          );
-        } else {
-          try {
-            const data = await mapByConfig(
-              normData,
-              {},
-              mappingConfig,
+      let normData = null;
+      try {
+        normData = await authAccess.getEntityByIRI(secondaryIRI);
+      } catch (e) {
+        console.error(
+          `error while fetching ${secondaryIRI} from external database - maybe the entry does not exist?`,
+          e,
+        );
+      }
+      if (!normData) {
+        logger.warn(`no data found for ${secondaryIRI}`);
+        continue;
+      }
+      const mappingConfig = declarativeMappings[typeName];
+      if (!mappingConfig) {
+        logger.warn(
+          `no mapping config for ${typeName}, cannot convert to local data model`,
+        );
+      } else {
+        logger.log("mapping authority entry to local data model");
+        try {
+          const data = await mapByConfig(
+            normData,
+            {},
+            mappingConfig,
+            createDeeperContext(
               context,
-            );
-            const inject = {
-              "@id": newIRI(typeIRI || ""),
-              "@type": typeIRI,
-              lastNormUpdate: new Date().toISOString(),
-            };
-            targetData = { ...data, ...inject };
-          } catch (e) {
-            console.error(
-              "error mapping authority entry to local data model",
-              e,
-            );
-          }
-        }
-        if (!targetData) {
-          targetData = {
+              `createEntityWithAuthoritativeLink_${typeName}`,
+            ),
+          );
+          const inject = {
             "@id": newIRI(typeIRI || ""),
             "@type": typeIRI,
-            [labelField]: sourceDataLabel,
-            __draft: true,
+            lastNormUpdate: new Date().toISOString(),
           };
+          targetData = { ...data, ...inject };
+        } catch (e) {
+          console.error("error mapping authority entry to local data model", e);
         }
-        newDataElements.push(targetData);
-      } else {
-        console.log("no data found for", secondaryIRI);
-        newDataElements.push({
-          "@id": primaryIRI,
-        });
       }
+      if (!targetData) {
+        logger.log(
+          `no data found for ${secondaryIRI}, will create a new entity of type ${typeIRI} with label ${sourceDataLabel}`,
+        );
+        targetData = {
+          "@id": newIRI(typeIRI || ""),
+          "@type": typeIRI,
+          [labelField]: sourceDataLabel,
+          __draft: true,
+        };
+      }
+      newDataElements.push(targetData);
     }
   }
   return newDataElements;
@@ -351,8 +380,8 @@ export const createEntityWithReificationFromString = async (
 
     for (const statementProperty of statementProperties) {
       const sourceDataElement =
-        typeof mainProperty.offset === "number"
-          ? sourceDataElements[mainProperty.offset]
+        typeof statementProperty.offset === "number"
+          ? sourceDataElements[statementProperty.offset]
           : sourceDataElements;
       if (
         typeof sourceDataElement !== "string" ||
@@ -465,7 +494,13 @@ export const createEntity = async (
   const { typeIRI, subFieldMapping, single } = options || {};
   const isArray = Array.isArray(sourceData);
   const sourceDataArray = isArray ? sourceData : [sourceData];
-  const { getPrimaryIRIBySecondaryIRI, newIRI, authorityIRI } = context;
+  const {
+    getPrimaryIRIBySecondaryIRI,
+    newIRI,
+    authorityIRI,
+    logger,
+    createDeeperContext,
+  } = context;
   const authAccess = context.authorityAccess?.[authorityIRI];
   const newDataElements = [];
   for (const sourceDataElement of sourceDataArray) {
@@ -481,29 +516,32 @@ export const createEntity = async (
         "@type": typeIRI,
         __draft: true,
       };
-      if (
-        options?.typeName &&
-        context.mappingTable?.[options.typeName] &&
-        authAccess
-      ) {
-        const mapping = context.mappingTable[options.typeName];
+      const typeName: string | undefined = options?.typeName;
+      if (typeName && context.mappingTable?.[typeName] && authAccess) {
+        const mapping = context.mappingTable[typeName];
         const fullData = await authAccess.getEntityByIRI(sourceDataElement.id);
         if (fullData) {
+          logger.log(
+            `mapping authority entry (${sourceDataElement.id}) to local data model of type ${typeName}`,
+          );
           const mappedData = await mapByConfig(
             fullData,
             targetData,
             mapping,
-            context,
+            createDeeperContext(context, `createEntity_${typeName}`),
           );
           newDataElements.push(mappedData);
         }
       } else if (subFieldMapping) {
+        logger.log(
+          `mapping authority entry (${sourceDataElement.id}) to local data model of type ${typeName} with the given subfield mapping`,
+        );
         newDataElements.push(
           await mapByConfig(
             sourceDataElement,
             targetData,
             subFieldMapping.fromEntity || [],
-            context,
+            createDeeperContext(context, `createEntity_${typeName}`),
           ),
         );
       }

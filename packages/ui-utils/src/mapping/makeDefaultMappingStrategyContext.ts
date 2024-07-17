@@ -9,35 +9,41 @@ import {
 } from "@slub/sparql-schema";
 import { findEntityWithinLobidByIRI } from "@slub/edb-authorities";
 import { DeclarativeMapping, StrategyContext } from "@slub/edb-data-mapping";
+import {
+  createLogger,
+  makeCreateDeeperContextFn,
+} from "@slub/edb-data-mapping/src/makeCreateDeeperContextFn";
 
 /**
- * the strategy context is a collection of functions and values that are used by the mapping strategies.
- * To facilitate the creation of the context, this function is provided.
+ * Creating a context for the mapping requires a lot of boilerplate code. Thus, this function is provided
+ * to facilitate the creation of the context.
  *
- * @param doQuery
- * @param queryBuilderOptions
- * @param defaultPrefix
- * @param createEntityIRI
- * @param typeIRItoTypeName
- * @param primaryFields
- * @param declarativeMappings
+ * the strategy context is a collection of functions and values that are used by the mapping strategies.
+ *
+ * @param doQuery the function to query the data store
+ * @param queryBuilderOptions prefixes and defaultPrefix for the queryBuilder
+ * @param createEntityIRI a function that creates a new IRI for an entity of a given type
+ * @param typeIRItoTypeName a function that maps typeIRIs to type names
+ * @param primaryFields the primary fields for all types that are used in the mapping
+ * @param declarativeMappings the mappings that are used to map norm data to the data store
+ * @param disableLogging
  */
 export const makeDefaultMappingStrategyContext: (
   doQuery: (query: string) => Promise<any>,
   queryBuilderOptions: QueryBuilderOptions,
-  defaultPrefix: string,
   createEntityIRI: (typeIRI: string) => string,
   typeIRIToTypeName: IRIToStringFn,
   primaryFields: PrimaryFieldDeclaration,
   declarativeMappings?: DeclarativeMapping,
+  disableLogging?: boolean,
 ) => StrategyContext = (
   doQuery,
   queryBuilderOptions,
-  defaultPrefix,
   createEntityIRI,
   typeIRItoTypeName,
   primaryFields,
   declarativeMappings,
+  disableLogging = false,
 ) => ({
   getPrimaryIRIBySecondaryIRI: async (
     secondaryIRI: string,
@@ -50,7 +56,7 @@ export const makeDefaultMappingStrategyContext: (
       typeIRI,
       doQuery,
       undefined,
-      { prefixes: queryBuilderOptions.prefixes, defaultPrefix },
+      queryBuilderOptions,
     );
     if (ids.length > 0) {
       console.warn("found more then one entity");
@@ -63,8 +69,7 @@ export const makeDefaultMappingStrategyContext: (
   ): Promise<string> => {
     // @ts-ignore
     const ids = await searchEntityByLabel(label, typeIRI, doQuery, undefined, {
-      prefixes: queryBuilderOptions.prefixes,
-      defaultPrefix,
+      ...queryBuilderOptions,
       typeIRItoTypeName,
       primaryFields,
     });
@@ -84,4 +89,7 @@ export const makeDefaultMappingStrategyContext: (
   typeIRItoTypeName: typeIRItoTypeName,
   primaryFields: primaryFields,
   declarativeMappings,
+  path: [],
+  logger: createLogger([], disableLogging),
+  createDeeperContext: makeCreateDeeperContextFn(disableLogging),
 });

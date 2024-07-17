@@ -54,7 +54,6 @@ export const MappedItem = <CellType extends CellTypeLike>({
             defaultPrefix,
             prefixes,
           },
-          defaultPrefix,
           createEntityIRI,
           typeIRIToTypeName,
           primaryFields,

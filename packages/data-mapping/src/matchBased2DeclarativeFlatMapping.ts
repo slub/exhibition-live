@@ -1,9 +1,12 @@
-import { AnyFlatStrategy, DeclarativeFlatMapping } from "./mappingStrategies";
+import {
+  AnyFlatStrategy,
+  DeclarativeFlatMapping,
+  DeclarativeFlatMappings,
+} from "./mappingStrategies";
 import flatten from "lodash/flatten";
 import uniq from "lodash/uniq";
 import dot from "dot";
 import { JSONSchema7 } from "json-schema";
-import { DeclarativeFlatMappings } from "../dist/index";
 import { filterUndefOrNull } from "@slub/edb-core-utils";
 
 type OwnColumnDesc = {

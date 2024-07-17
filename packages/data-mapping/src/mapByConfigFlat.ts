@@ -58,14 +58,20 @@ export const mapByConfigFlat = async (
             getViaColumnPaths(accessorFn, source.columns)[0],
             get(newData, targetPath),
             strategyOptions,
-            strategyContext,
+            strategyContext.createDeeperContext(
+              strategyContext,
+              `${mapping.strategy.id}_${targetPath}`,
+            ),
           );
         } else {
           value = await mappingFunction(
             getViaColumnPaths(accessorFn, source.columns),
             get(newData, targetPath),
             strategyOptions,
-            strategyContext,
+            strategyContext.createDeeperContext(
+              strategyContext,
+              `${mapping.strategy.id}_${targetPath}`,
+            ),
           );
           if (Array.isArray(value)) value = filterUndefOrNull(value);
         }

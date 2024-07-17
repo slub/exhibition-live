@@ -10,27 +10,31 @@ import {
   searchEntityByLabel,
 } from "@slub/sparql-schema";
 import { findEntityWithinLobidByIRI } from "@slub/edb-authorities";
-import { crudFns, typeIRItoTypeName, typeNameToTypeIRI } from "./dataStore";
+import { crudFns, typeIRItoTypeName } from "./dataStore";
 import config, { slent } from "@slub/exhibition-sparql-config";
 import { v4 as uuidv4 } from "uuid";
 import { declarativeMappings, primaryFields } from "@slub/exhibition-schema";
+import {
+  createLogger,
+  makeCreateDeeperContextFn,
+} from "@slub/edb-data-mapping/src/makeCreateDeeperContextFn";
 
-export const makeDefaultMappingStrategyContext: (
+export const makeMappingStrategyContext: (
   doQuery: (query: string) => Promise<any>,
   queryBuilderOptions: QueryBuilderOptions,
-  defaultPrefix: string,
   createEntityIRI: (typeIRI: string) => string,
   typeIRIToTypeName: IRIToStringFn,
   primaryFields: PrimaryFieldDeclaration,
   declarativeMappings: DeclarativeMapping,
+  disableLogging?: boolean,
 ) => StrategyContext = (
   doQuery,
   queryBuilderOptions,
-  defaultPrefix,
   createEntityIRI,
   typeIRItoTypeName,
   primaryFields,
   declarativeMappings,
+  disableLogging = false,
 ) => ({
   getPrimaryIRIBySecondaryIRI: async (
     secondaryIRI: string,
@@ -43,10 +47,12 @@ export const makeDefaultMappingStrategyContext: (
       typeIRI,
       doQuery,
       100,
-      { prefixes: queryBuilderOptions.prefixes, defaultPrefix },
+      queryBuilderOptions,
     );
-    if (ids.length > 0) {
-      console.warn("found more then one entity");
+    if (ids.length > 1) {
+      console.warn(
+        `found more than one entity (${ids.length}), will use the first`,
+      );
     }
     return ids[0] || null;
   },
@@ -56,13 +62,14 @@ export const makeDefaultMappingStrategyContext: (
   ): Promise<string> => {
     // @ts-ignore
     const ids = await searchEntityByLabel(label, typeIRI, doQuery, undefined, {
-      prefixes: queryBuilderOptions.prefixes,
-      defaultPrefix,
+      ...queryBuilderOptions,
       typeIRItoTypeName,
       primaryFields,
     });
-    if (ids.length > 0) {
-      console.warn("found more then one entity");
+    if (ids.length > 1) {
+      console.warn(
+        `found more than one entity ( ${ids.length} ), will use the first `,
+      );
     }
     return ids[0] || null;
   },
@@ -77,18 +84,20 @@ export const makeDefaultMappingStrategyContext: (
   typeIRItoTypeName: typeIRItoTypeName,
   primaryFields: primaryFields,
   declarativeMappings,
+  path: [],
+  logger: createLogger([], disableLogging),
+  createDeeperContext: makeCreateDeeperContextFn(disableLogging),
 });
 
 const { defaultPrefix, defaultQueryBuilderOptions } = config;
 
 export const createNewIRI = () => slent(uuidv4()).value;
-export const strategyContext = makeDefaultMappingStrategyContext(
+export const mappingStrategyContext = makeMappingStrategyContext(
   crudFns.selectFetch,
   {
     prefixes: defaultQueryBuilderOptions.prefixes as Prefixes,
     defaultPrefix,
   },
-  defaultPrefix,
   createNewIRI,
   typeIRItoTypeName,
   primaryFields,

@@ -24,7 +24,7 @@ export const matchBasedSpreadsheetMappings_NewYork = [
       },
     },
     target: {
-      path: "genre",
+      path: "exhibitionGenre",
     },
     mapping: {
       strategy: {
@@ -50,12 +50,12 @@ export const matchBasedSpreadsheetMappings_NewYork = [
     source: {
       columns: {
         titlePattern: "Ort der Ausstellung (geografisch) {{=it.i + 1}}",
-        amount: 4,
+        amount: 1,
         includeRightNeighbours: 1,
       },
     },
     target: {
-      path: "location",
+      path: "locations",
     },
     mapping: {
       strategy: {
@@ -81,11 +81,12 @@ export const matchBasedSpreadsheetMappings_NewYork = [
     source: {
       columns: {
         titlePattern: "Ort der Ausstellung (Institution) {{=it.i + 1}}",
-        amount: 7,
+        amount: 1,
+        includeRightNeighbours: 1,
       },
     },
     target: {
-      path: "place",
+      path: "places",
     },
     mapping: {
       strategy: {

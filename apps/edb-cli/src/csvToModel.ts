@@ -1,60 +1,34 @@
-import { parse } from "csv-parse";
-import fs from "fs";
-import * as path from "path";
-import { filterUndefOrNull, makeColumnDesc } from "@slub/edb-core-utils";
-import { matchBasedSpreadsheetMappings_NewYork } from "./mapping";
 import {
-  DeclarativeFlatMappings,
-  mapByConfigFlat,
-  matchBased2DeclarativeFlatMapping,
+  DeclarativeMatchBasedFlatMappings,
+  mapFromFlatResource,
+  StrategyContext,
 } from "@slub/edb-data-mapping";
 import { typeNameToTypeIRI } from "./dataStore";
-import { createNewIRI, strategyContext } from "./flatImport";
+import { v3 as uuidv3 } from "uuid";
+import { slent } from "@slub/exhibition-sparql-config";
+import { processCSV } from "./mapping";
 
-export const parseCSV = async (
+export const csvToModel = async (
   file: string,
   typeName: string,
-  amount: number,
-) => {
-  const classIRI = typeNameToTypeIRI(typeName);
-  const parser = fs.createReadStream(path.resolve(file)).pipe(parse({}));
-  let recordCount = 0;
-  let m: DeclarativeFlatMappings | null = null;
-  for await (const record of parser) {
-    if (recordCount === 0) {
-      const columnDesc = makeColumnDesc(record as string[]);
-      m = filterUndefOrNull(
-        matchBasedSpreadsheetMappings_NewYork.map((mapping) => {
-          let res = null;
-          try {
-            res = matchBased2DeclarativeFlatMapping(columnDesc, mapping);
-          } catch (e) {}
-          return res;
-        }),
-      );
-    } else {
-      if (m) {
-        try {
-          const mappedData = await mapByConfigFlat(
-            (colIndex) => record[colIndex],
-            {
-              "@type": classIRI,
-              "@id": createNewIRI(),
-            },
-            m,
-            strategyContext,
-          );
-          console.log(JSON.stringify(mappedData, null, 2));
-        } catch (e) {
-          console.error(e);
-        }
-      }
-    }
-    if (amount && recordCount >= amount) {
-      break;
-    }
-    // Work with each record
-    //records.push(record);
-    recordCount++;
-  }
-};
+  matchBasedFlatMappings: DeclarativeMatchBasedFlatMappings,
+  strategyContext: StrategyContext,
+  onMappedData: (
+    entityIRI: string,
+    mappedData: any,
+    originalRecord: string[],
+    index: number,
+  ) => Promise<void>,
+  amount?: number,
+  offset?: number,
+) =>
+  await mapFromFlatResource(
+    typeNameToTypeIRI(typeName),
+    matchBasedFlatMappings,
+    strategyContext,
+    processCSV(file),
+    (record: string[]) => slent(uuidv3(record.join(), uuidv3.URL)).value,
+    onMappedData,
+    amount,
+    offset,
+  );

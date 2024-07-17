@@ -4,3 +4,4 @@ export * from "./mappingStrategies";
 export * from "./simpleFieldExtractor";
 export * from "./types";
 export * from "./mapByConfigFlat";
+export * from "./mapFromFlatResource";

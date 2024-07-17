@@ -12,14 +12,10 @@ import {
   subcommands,
 } from "cmd-ts";
 import { File } from "cmd-ts/batteries/fs";
-import { filterJSONLD } from "./filterJSONLD";
 import { dataStore } from "./dataStore";
-import { parseCSV } from "./csvToModel";
-
-const formatResult = (result: any, pretty?: boolean, noJsonLD?: boolean) => {
-  const res = noJsonLD ? filterJSONLD(result) : result;
-  return pretty ? JSON.stringify(res, null, 2) : JSON.stringify(res);
-};
+import { formatJSONResult } from "@slub/edb-core-utils";
+import { avaiableFlatMappings } from "./mapping";
+import { flatImportHandler } from "./flatImportHandler";
 
 const get = command({
   name: "edb-cli get",
@@ -52,7 +48,7 @@ const get = command({
       throw new Error("Loading an entity without type currently not supported");
     }
     const item = await dataStore.loadDocument(type, entityIRI);
-    console.log(formatResult(item, pretty, noJsonld));
+    console.log(formatJSONResult(item, pretty, noJsonld));
   },
 });
 
@@ -86,7 +82,7 @@ const list = command({
   },
   handler: ({ type, amount = 1, search, pretty, noJsonld }) => {
     dataStore.findDocuments(type, { search }, amount, (item) => {
-      console.log(formatResult(item, pretty, noJsonld));
+      console.log(formatJSONResult(item, pretty, noJsonld));
       return Promise.resolve();
     });
   },
@@ -101,19 +97,23 @@ const flatImport = command({
       displayName: "File Path",
       description: "The path to the file to import",
     }),
+    mappingDeclaration: option({
+      type: oneOf(Object.keys(avaiableFlatMappings)),
+      description: `The flat mapping to use for the import (can available: ${Object.keys(
+        avaiableFlatMappings,
+      )
+        .map((k) => `"${k}"`)
+        .join(",")} )`,
+      long: "mapping",
+      short: "m",
+    }),
     mimeType: option({
       type: optional(oneOf(["application/csv", "application/json"])),
       description: "The MIME type of the document to import",
       defaultValue: () => "application/csv",
       defaultValueIsSerializable: true,
       long: "mime-type",
-      short: "m",
-    }),
-    type: option({
-      type: optional(string),
-      description: "The Type of the imported entries",
-      long: "type",
-      short: "t",
+      short: "mime",
     }),
     amount: option({
       type: optional(number),
@@ -121,10 +121,20 @@ const flatImport = command({
       long: "amount",
       short: "n",
     }),
+    offset: option({
+      type: optional(number),
+      description: "The offset to start importing from",
+      long: "offset",
+      short: "o",
+    }),
+    dryRun: flag({
+      type: boolean,
+      description: "Do not import the data, just show the mapped data",
+      long: "dry-run",
+      short: "d",
+    }),
   },
-  handler: async ({ file, mimeType, type, amount }) => {
-    parseCSV(file, type || "Exhibition", amount || 1);
-  },
+  handler: flatImportHandler,
 });
 
 const ownSubcommand = subcommands({

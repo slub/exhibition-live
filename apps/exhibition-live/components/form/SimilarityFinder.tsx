@@ -776,7 +776,6 @@ export const SimilarityFinder: FunctionComponent<SimilarityFinderProps> = ({
             defaultPrefix,
             prefixes,
           },
-          defaultPrefix,
           createEntityIRI,
           typeNameToTypeIRI,
           primaryFields,

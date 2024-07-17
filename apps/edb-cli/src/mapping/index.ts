@@ -1,2 +1,2 @@
-export * from "./calculateFlatMappings";
-export * from "./spreadSheetMappings_NewYork";
+export * from "./processCSV";
+export * from "./availableFlatMappings";

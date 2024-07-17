@@ -16,3 +16,4 @@ export * from "./envToSparqlEndpoint";
 export * from "./camelCaseToTitleCase";
 export * from "./index2letter";
 export * from "./makeColumnDesc";
+export * from "./formatJSONResult";

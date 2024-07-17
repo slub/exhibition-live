@@ -3,7 +3,9 @@ import { Config } from "@slub/edb-global-types";
 
 const BASE_IRI = "http://ontologies.slub-dresden.de/exhibition#";
 export const sladb = namespace(BASE_IRI);
-export const slent = namespace(`${BASE_IRI}/entity/`);
+export const slent = namespace(
+  `http://ontologies.slub-dresden.de/exhibition/entity#`,
+);
 export const defaultPrefix = sladb[""].value;
 
 export default {
@@ -30,8 +32,8 @@ export default {
     prefixes: { [""]: sladb, slent },
   },
   sparqlEndpoint: {
-    label: "Ausstellungsdatenbank",
-    endpoint: "https://ausstellungsdatenbank.kuenste.live/query",
+    label: "Ausstellungsdatenbank Lokal",
+    endpoint: "http://localhost:7878/query",
     provider: "oxigraph",
     active: true,
   },

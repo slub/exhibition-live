@@ -1,0 +1,308 @@
+import { Meta } from "@storybook/blocks";
+
+<Meta title="Architecture" />
+
+# The frameworks architecture
+
+
+## The basic configuration
+
+The configuration can be split into three main parts that are configurable independently:
+
+1. The data model and its view specific declarations
+2. The storage layer
+3. The Linked Data Mapping and Prefixing
+
+
+The third part of the configuration will be used by the storage layer and is responsible
+to guarantee, that the data produced can always be represented as RDF, no matter which storage
+strategy is being used.
+
+Let's dive into it and examine the specific configuration for a simplified exhibition database.
+
+
+### The data model
+
+In order to maintain a good structure the current data model lives in its own NPM package within the monorepo.
+This allows us to easily share the data model between different parts of the application and amongst CLI, API
+and the UI.
+
+It is located within the `@slub/exhibition-schema` packages located within the `manifestation` directory.
+
+Even though it could be a simple JSON File it is a TypeScript file to allow for better type checking and
+help with the development process. By using the `JSONSchema7` from the `json-schema` package, we'll get code assistance
+and validity checking. It won't compile if there is an error and schema is not compliant with the JSON Schema 7 standard.
+
+```typescript
+import { JSONSchema7 } from "json-schema";
+
+export const schema: JSONSchema7 = {
+  $schema: "http://json-schema.org/draft-07/schema#",
+  $id: "https://schema.adb.arthistoricum.net/exhibition",
+  $defs: {
+    Tag: {
+      type: "object",
+      properties: {
+        title: {
+          type: "string",
+          maxLength: 200,
+        },
+        description: {
+          type: "string",
+        },
+        image: {
+          type: "string",
+          format: "uri",
+        },
+        parent: {
+          title: "Übergeordnetes Schlagwort",
+          $ref: "#/$defs/Tag",
+        },
+      },
+    },
+    Exhibition: {
+      type: "object",
+      properties: {
+        title: {
+          type: "string",
+          maxLength: 200,
+        },
+        tags: {
+          type: "array",
+          items: {
+            $ref: "#/$defs/Tag",
+          },
+        },
+      },
+    }
+  }
+};
+```
+
+Here we see a simple example of a schema that defines an `Exhibition` and a `Tag`. The `Tag` can have a parent tag
+and an image. The `Exhibition` can have a title and an array of tags.
+
+The convention within the Ereignis-Framework is that each entity defined in `definitions` or `$defs` (both are valid
+according to the JSON Schema 7 standard) is a separate entity that can be stored in the database.
+
+Internally the schema will be enhanced with additional properties making it valid JSONLD. As a schema implementer you
+don't have to worry about this, as the framework will take care of it. If you want to know more about its internals
+read on in at [that chapter](#jsonld-enhancement-and-schema-stubbing).
+
+### JSONLD enhancement and schema stubbing
+
+Some parts of the framework use a transformed version of your schema, to add additional properties that are necessary
+or should be added implicitly, without the need to incorporate it within the schema in the first place.
+
+In the `@slub/edb-state-hooks` package you will find a hook called `useExtendedSchema`. It will look into  the current
+global app context and return a schema, that is stubbed and enhanced with the necessary properties.
+
+after calling `const schema = useExtendedSchema({ typeName: 'Exhibition' });` you will get a schema that looks like this:
+
+```json
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "https://schema.adb.arthistoricum.net/exhibition",
+    "$defs": {
+        "TagStub": {
+            "type": "object",
+            "properties": {
+                "title": {
+                    "type": "string",
+                    "maxLength": 200
+                },
+                "description": {
+                    "type": "string"
+                },
+                "image": {
+                    "type": "string",
+                    "format": "uri"
+                },
+                "@type": {
+                    "const": "http://ontologies.slub-dresden.de/exhibition#Tag",
+                    "type": "string"
+                },
+                "@id": {
+                    "title": "http://ontologies.slub-dresden.de/exhibition/entity/",
+                    "type": "string"
+                },
+            },
+            "required": [
+                "@type",
+                "@id"
+            ]
+        },
+        "ExhibitionStub": {
+            "type": "object",
+            "properties": {
+                "title": {
+                    "type": "string",
+                    "maxLength": 200
+                },
+                "@type": {
+                    "const": "http://ontologies.slub-dresden.de/exhibition#Exhibition",
+                    "type": "string"
+                },
+                "@id": {
+                    "title": "http://ontologies.slub-dresden.de/exhibition/entity/",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "@type",
+                "@id"
+            ]
+        },
+        "Tag": {
+            "type": "object",
+            "properties": {
+                "title": {
+                    "type": "string",
+                    "maxLength": 200
+                },
+                "description": {
+                    "type": "string"
+                },
+                "image": {
+                    "type": "string",
+                    "format": "uri"
+                },
+                "parent": {
+                    "title": "Übergeordnetes Schlagwort",
+                    "$ref": "#/$defs/TagStub"
+                },
+                "@type": {
+                    "const": "http://ontologies.slub-dresden.de/exhibition#Tag",
+                    "type": "string"
+                },
+                "@id": {
+                    "title": "http://ontologies.slub-dresden.de/exhibition/entity/",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "@type",
+                "@id"
+            ]
+        },
+        "Exhibition": {
+            "type": "object",
+            "properties": {
+                "title": {
+                    "type": "string",
+                    "maxLength": 200
+                },
+                "tags": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/$defs/TagStub"
+                    }
+                },
+                "@type": {
+                    "const": "http://ontologies.slub-dresden.de/exhibition#Exhibition",
+                    "type": "string"
+                },
+                "@id": {
+                    "title": "http://ontologies.slub-dresden.de/exhibition/entity/",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "@type",
+                "@id"
+            ]
+        }
+    },
+    "type": "object",
+    "properties": {
+        "title": {
+            "type": "string",
+            "maxLength": 200
+        },
+        "tags": {
+            "type": "array",
+            "items": {
+                "$ref": "#/$defs/TagStub"
+            }
+        },
+        "@type": {
+            "const": "http://ontologies.slub-dresden.de/exhibition#Exhibition",
+            "type": "string"
+        },
+        "@id": {
+            "title": "http://ontologies.slub-dresden.de/exhibition/entity/",
+            "type": "string"
+        }
+    },
+    "required": [
+        "@type",
+        "@id"
+    ]
+}
+```
+
+Quite a bit more than the original. What has happened here?
+
+First of all, all entities have been extended with a `@type` and `@id` property. The `@type` property is a constant
+that will be the same for each instance of a certain type. The `@id` property is a string that will be used to identify
+the entity within the graph. If you are not familiar with JSONLD you can read more about it in the [JSONLD specification](https://json-ld.org/)
+or learn within the [JSONLD Playground](https://json-ld.org/playground/).
+
+Second every entity type has a "partner" definition, suffixed with `Stub`. This is a stubbed version of the entity that
+has no linked data property. This will be used within the storage layer if we want to make sure only the toplevel entity
+gets fetched or stored, without any linked items.
+
+Lastly, the definition of the type `Exhibition` has been added to the top level of the schema. That will tell the methods using
+the schema, that this is the top level entity and should be used as the main entity type, we are referring to.
+
+When loading the form for a `Tag` the `Tag`-definition will be at the top level, when loading the form for an `Exhibition`
+the `Exhibition`-definition will be at the top level and so on.
+
+Other implicit properties can be added to the schema by configuring the AdbContext. Looking at the `exhibitionAdbConfig` we
+see that a function called `makeStubSchema` is being passed to the `AdbContext`. This function will be called with the
+`useExtendedSchema` hook instead of the default one if provided. It uses the `prepareStubbedSchema` from `@slub/json-schema-utils`
+and adds in addition to the already covered `@type` and `@id` properties, the `idAuthority` property, which is being used
+for this specific database as link to other norm databases a bit like the common `sameAs` property in RDF.
+
+```typescript
+import {prepareStubbedSchema} from "@slub/json-schema-utils";
+import {JSONSchema7} from "json-schema";
+
+export const makeStubSchema = (
+  schema: JSONSchema7
+) => {
+  return prepareStubbedSchema(
+    schema,
+    (modelName: string) => ({
+    "@type": {
+      const: `http://ontologies.slub-dresden.de/exhibition#${modelName.replace(/Stub$/, "")}`,
+      type: "string",
+    },
+    "@id": {
+      type: "string",
+    },
+    idAuthority: {
+      title: "Autorität",
+      type: "object",
+      properties: {
+        "@id": {
+          title: "IRI",
+          type: "string",
+        },
+      },
+    },
+  }),
+  (_modelName: string) => ["@type", "@id"],
+  {
+      excludeType: ["InvolvedPerson", "InvolvedCorporation", "AuthorityEntry"],
+      excludeSemanticPropertiesForType: ["AuthorityEntry"],
+  });
+};
+```
+
+Within the example provided you can also see, that certain types and properties can be excluded, that does only mean, that no stub schema
+will be created for these types or properties.
+
+
+
+

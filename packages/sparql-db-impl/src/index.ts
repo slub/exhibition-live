@@ -8,6 +8,7 @@ import {
   moveToTrash,
   restoreFromTrash,
   exists,
+  cleanJSONLD,
 } from "@slub/sparql-schema";
 import {
   CRUDFunctions,
@@ -30,6 +31,7 @@ export type SPARQLDataStoreConfig = {
   walkerOptions?: Partial<WalkerOptions>;
   sparqlQueryFunctions: CRUDFunctions;
   defaultLimit?: number;
+  makeStubSchema?: (schema: JSONSchema7) => JSONSchema7;
 } & DatastoreBaseConfig;
 
 export const initSPARQLStore: InitDatastoreFunction<SPARQLDataStoreConfig> = (
@@ -48,6 +50,7 @@ export const initSPARQLStore: InitDatastoreFunction<SPARQLDataStoreConfig> = (
       askFetch,
     },
     defaultLimit,
+    makeStubSchema,
   } = dataStoreConfig;
   const loadDocument = async (typeName: string, entityIRI: string) => {
     const typeIRI = typeNameToTypeIRI(typeName);
@@ -149,18 +152,26 @@ export const initSPARQLStore: InitDatastoreFunction<SPARQLDataStoreConfig> = (
         },
       );
     },
-    upsertDocument: (typeName, entityIRI, document) =>
-      save(
-        {
-          ...document,
-          "@id": entityIRI,
-          "@type": typeNameToTypeIRI(typeName),
-          "@context": jsonldContext,
-        },
-        dataStoreConfig.schema,
-        updateFetch,
-        { defaultPrefix, queryBuildOptions },
-      ),
+    upsertDocument: async (typeName, entityIRI, document) => {
+      const schema = makeStubSchema
+        ? bringDefinitionToTop(makeStubSchema(dataStoreConfig.schema), typeName)
+        : dataStoreConfig.schema;
+      const doc = {
+        ...document,
+        "@id": entityIRI,
+        "@type": typeNameToTypeIRI(typeName),
+      };
+      const cleanData = await cleanJSONLD(doc, schema, {
+        jsonldContext,
+        defaultPrefix,
+        keepContext: true,
+      });
+      await save(cleanData, schema, updateFetch, {
+        defaultPrefix,
+        queryBuildOptions,
+      });
+      return doc;
+    },
     listDocuments: async (typeName, limit, cb) =>
       findDocuments(typeName, limit, null, cb),
     findDocuments: async (typeName, query, limit, cb) =>

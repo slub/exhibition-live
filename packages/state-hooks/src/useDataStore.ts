@@ -1,5 +1,6 @@
 import { AbstractDatastore } from "@slub/edb-global-types";
 import { initSPARQLStore } from "@slub/sparql-db-impl";
+import { initRestfullStore } from "@slub/restfull-fetch-db-impl";
 import { JSONSchema7 } from "json-schema";
 import { useGlobalCRUDOptions } from "./useGlobalCRUDOptions";
 import {
@@ -10,6 +11,7 @@ import {
 import { useMemo } from "react";
 import { WalkerOptions } from "@slub/edb-graph-traversal";
 import { useAdbContext } from "./provider";
+import { useSettings } from "./useLocalSettings";
 
 type UserDataStoreProps = {
   crudOptionsPartial?: Partial<CRUDFunctions>;
@@ -24,6 +26,7 @@ type UseDataStoreState = {
   ready: boolean;
 };
 
+type DataStoreImplementation = "sparql" | "restfull";
 export const useDataStore = ({
   crudOptionsPartial = {},
   schema,
@@ -37,21 +40,36 @@ export const useDataStore = ({
     [globalCRUDOptions, crudOptionsPartial],
   );
 
+  const { activeEndpoint } = useSettings();
+
   const { jsonLDConfig } = useAdbContext();
   const dataStore = useMemo(
     () =>
-      crudOptions.constructFetch &&
-      initSPARQLStore({
-        defaultPrefix: jsonLDConfig.defaultPrefix,
-        jsonldContext: jsonLDConfig.jsonldContext,
-        typeNameToTypeIRI,
-        queryBuildOptions,
-        walkerOptions,
-        // @ts-ignore
-        sparqlQueryFunctions: crudOptions,
-        schema,
-        defaultLimit: 10,
-      }),
+      activeEndpoint.provider === "rest"
+        ? initRestfullStore({
+            apiURL: activeEndpoint.endpoint,
+            defaultPrefix: jsonLDConfig.defaultPrefix,
+            jsonldContext: jsonLDConfig.jsonldContext,
+            typeNameToTypeIRI,
+            queryBuildOptions,
+            walkerOptions,
+            // @ts-ignore
+            sparqlQueryFunctions: crudOptions,
+            schema,
+            defaultLimit: 10,
+          })
+        : crudOptions.constructFetch &&
+          initSPARQLStore({
+            defaultPrefix: jsonLDConfig.defaultPrefix,
+            jsonldContext: jsonLDConfig.jsonldContext,
+            typeNameToTypeIRI,
+            queryBuildOptions,
+            walkerOptions,
+            // @ts-ignore
+            sparqlQueryFunctions: crudOptions,
+            schema,
+            defaultLimit: 10,
+          }),
     [
       crudOptions,
       jsonLDConfig.defaultPrefix,

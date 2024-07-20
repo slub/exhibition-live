@@ -52,6 +52,7 @@
     "@slub/edb-core-utils": "workspace:*",
     "@slub/edb-ui-utils": "workspace:*",
     "@slub/sparql-schema": "workspace:*",
+    "@slub/restfull-fetch-db-impl": "workspace:*",
     "@reduxjs/toolkit": "^2.2.3",
     "json-schema": "^0.4.0",
     "jsonld": "^8.3.2",

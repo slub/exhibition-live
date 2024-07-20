@@ -43,6 +43,9 @@ const schema: JsonSchema = {
             const: "qlever",
           },
           {
+            const: "rest",
+          },
+          {
             const: "worker",
           },
         ],

@@ -36,6 +36,7 @@ export type UseCRUDWithQueryClientResult<
   RM = void,
   SM = Record<string, any>,
 > = {
+  loadEntity: (entityIRI: string, typeIRI: string) => Promise<LQ>;
   loadQuery: ReturnType<typeof useQuery<LQ>>;
   existsQuery: ReturnType<typeof useQuery<EQ>>;
   removeMutation: ReturnType<typeof useMutation<any, unknown, RM>>;

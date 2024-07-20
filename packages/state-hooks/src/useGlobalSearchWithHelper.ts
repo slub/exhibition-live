@@ -41,11 +41,12 @@ export const useGlobalSearchWithHelper = (
   const handleMappedData = useCallback(
     (newData: any) => {
       const newIRI = createEntityIRI(typeName);
-      saveMutation.mutate({
+      const finalData = {
         ...newData,
         "@id": newIRI,
         "@type": typeIRI,
-      });
+      };
+      saveMutation.mutate(finalData);
       const labelField = primaryFields[typeName]?.label;
       const label = labelField ? get(newData, labelField) : "";
       onDataAccepted &&

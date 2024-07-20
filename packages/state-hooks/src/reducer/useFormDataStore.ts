@@ -39,6 +39,12 @@ export const useFormDataStore = ({
 
   const setFormData = useCallback(
     (data: any | ((_data: any) => any)) => {
+      if (typeof data === "function") {
+        console.warn(
+          "deprecated, calling setFormData as a function has no effect since 1.2.0",
+        );
+        return;
+      }
       dispatch({
         type: "formData/updateFormData",
         payload: { propertyPath: entityIRI, updater: data },

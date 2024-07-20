@@ -1,11 +1,34 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { NamedAndTypedEntity } from "@slub/edb-core-types";
 import { cleanJSONLD, jsonld2DataSet, LoadResult } from "@slub/sparql-schema";
 import { useDataStore } from "./useDataStore";
 import { filterUndefOrNull } from "@slub/edb-core-utils";
 import { useAdbContext } from "./provider";
 import { UseCRUDHook } from "./useCrudHook";
+import { useCallback } from "react";
+import { NamedAndTypedEntity } from "@slub/edb-core-types";
 
+const getAllSubjectsFromResult = (result: any) => {
+  const ds = jsonld2DataSet(result);
+  const subjects: Set<string> = new Set();
+  // @ts-ignore
+  for (const quad of ds) {
+    if (quad.subject.termType === "NamedNode") {
+      subjects.add(quad.subject.value);
+    }
+  }
+  return Array.from(subjects);
+};
+
+const resultWithSubjects = (result: any) => {
+  let subjects = [];
+  try {
+    subjects = getAllSubjectsFromResult(result);
+  } catch (e) {}
+  return {
+    subjects,
+    document: result,
+  };
+};
 export const useCRUDWithQueryClient: UseCRUDHook<
   LoadResult,
   boolean,
@@ -40,18 +63,7 @@ export const useCRUDWithQueryClient: UseCRUDHook<
       if (!entityIRI || !ready) return null;
       const typeName = dataStore.typeIRItoTypeName(typeIRI);
       const result = await dataStore.loadDocument(typeName, entityIRI);
-      const ds = await jsonld2DataSet(result);
-      const subjects: Set<string> = new Set();
-      // @ts-ignore
-      for (const quad of ds) {
-        if (quad.subject.termType === "NamedNode") {
-          subjects.add(quad.subject.value);
-        }
-      }
-      return {
-        subjects: Array.from(subjects),
-        document: result,
-      };
+      return resultWithSubjects(result);
     },
     {
       enabled: Boolean(entityIRI && typeIRI && ready) && enabled,
@@ -85,7 +97,9 @@ export const useCRUDWithQueryClient: UseCRUDHook<
     async (data: Record<string, any>) => {
       if (!Boolean(allowUnsafeSourceIRIs)) {
         if (!entityIRI || !typeIRI || !ready)
-          console.warn("entryIRI or typeIRI not defined, will continue anyway");
+          throw new Error(
+            "entryIRI or typeIRI not defined, will continue anyway",
+          );
       }
       const dataWithId: NamedAndTypedEntity = {
         ...data,
@@ -129,7 +143,22 @@ export const useCRUDWithQueryClient: UseCRUDHook<
     },
   );
 
+  const loadEntity = useCallback(
+    async (entityIRI: string, typeIRI: string) => {
+      return queryClient.fetchQuery(
+        [loadQueryKey, typeIRI, entityIRI],
+        async () => {
+          const typeName = dataStore.typeIRItoTypeName(typeIRI);
+          const result = await dataStore.loadDocument(typeName, entityIRI);
+          return resultWithSubjects(result);
+        },
+      );
+    },
+    [loadQueryKey, dataStore.loadDocument, queryClient],
+  );
+
   return {
+    loadEntity,
     loadQuery,
     existsQuery,
     removeMutation,

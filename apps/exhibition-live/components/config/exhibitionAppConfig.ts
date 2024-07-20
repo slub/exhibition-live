@@ -9,10 +9,10 @@ import { BASE_IRI } from "./paths";
 import {
   declarativeMappings,
   lobidTypemap,
+  makeStubSchema,
   schema,
 } from "@slub/exhibition-schema";
 import { JSONSchema7 } from "json-schema";
-import { makeStubSchema } from "./makeStubSchema";
 import { makeDefaultUiSchemaForAllDefinitions } from "./makeDefaultUiSchemaForAllDefinitions";
 import { rendererRegistry } from "./rendererRegistry";
 import { materialCells } from "@jsonforms/material-renderers";

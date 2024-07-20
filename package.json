@@ -29,6 +29,7 @@
     "build:packages": "turbo run build --filter=@slub/*",
     "build:pages": "turbo run build:pages",
     "dev": "turbo run dev --parallel",
+    "dev:api": "turbo run dev:api",
     "dev:exhibition": "turbo run dev --parallel --filter='./apps/exhibition-live'",
     "dev:vite": "turbo run dev:vite --parallel --filter='./apps/exhibition-live'",
     "dev:packages": "turbo run dev --parallel --filter='./packages/*'",

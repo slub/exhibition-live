@@ -23,7 +23,7 @@ import { SimpleExpandPanelRenderer } from "./SimpleExpandPanelRenderer";
 import { SemanticFormsModal } from "./SemanticFormsModal";
 import { irisToData, makeFormsPath, validate } from "@slub/edb-ui-utils";
 import { JSONSchema7 } from "json-schema";
-import { Grid, IconButton, List, Paper } from "@mui/material";
+import { Box, Grid, IconButton, List, Paper, Tooltip } from "@mui/material";
 import { SemanticFormsInline } from "./SemanticFormsInline";
 import CheckIcon from "@mui/icons-material/Check";
 import {
@@ -222,8 +222,9 @@ export const MaterialArrayLayout = (props: ArrayLayoutProps) => {
       uniqBy(
         realData?.map((childData, index) => {
           const fieldDecl = primaryFieldExtracts[typeName];
-          let label = childData.label || childData.__label || childData["@id"];
           if (childData && fieldDecl) {
+            let label =
+              childData.label || childData.__label || childData["@id"];
             const extractedInfo = applyToEachField(
               childData,
               fieldDecl,
@@ -234,7 +235,7 @@ export const MaterialArrayLayout = (props: ArrayLayoutProps) => {
             }
           }
           return {
-            id: childData["@id"],
+            id: childData?.["@id"],
             childData,
             index,
             label,
@@ -245,6 +246,8 @@ export const MaterialArrayLayout = (props: ArrayLayoutProps) => {
       ["label", "asc"],
     );
   }, [realData, orderByPropertyPath, primaryFieldExtracts, typeIRI, typeName]);
+
+  const [tooltipEnabled, setTooltipEnabled] = useState(false);
 
   return (
     <div>
@@ -306,15 +309,34 @@ export const MaterialArrayLayout = (props: ArrayLayoutProps) => {
               />
             </Grid>
             <Grid item>
-              <IconButton
-                disabled={inlineErrors?.length > 0}
-                onClick={handleSaveAndAdd}
-                ref={addButtonRef}
+              <Tooltip
+                title={
+                  inlineErrors && (
+                    <>
+                      <div>{t("some error")}</div>
+                      <div>
+                        {inlineErrors.map((e) => (
+                          <div>{e.message}</div>
+                        ))}
+                      </div>
+                    </>
+                  )
+                }
+                onClose={() => setTooltipEnabled(false)}
+                open={tooltipEnabled && inlineErrors?.length > 0}
               >
-                <Pulse pulse={inlineErrors?.length === 0}>
-                  <CheckIcon style={{ fontSize: 40 }} />
-                </Pulse>
-              </IconButton>
+                <Box onMouseEnter={() => setTooltipEnabled(true)}>
+                  <IconButton
+                    disabled={inlineErrors?.length > 0}
+                    onClick={handleSaveAndAdd}
+                    ref={addButtonRef}
+                  >
+                    <Pulse pulse={inlineErrors?.length === 0}>
+                      <CheckIcon style={{ fontSize: 40 }} />
+                    </Pulse>
+                  </IconButton>
+                </Box>
+              </Tooltip>
             </Grid>
           </Grid>
         </Paper>

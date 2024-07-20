@@ -1,7 +1,7 @@
 import config from "@slub/exhibition-sparql-config";
 import { oxigraphCrudOptions } from "@slub/remote-query-implementations";
 import { initSPARQLStore } from "@slub/sparql-db-impl";
-import { schema } from "@slub/exhibition-schema";
+import { makeStubSchema, schema } from "@slub/exhibition-schema";
 import { JSONSchema7 } from "json-schema";
 import { primaryFieldExtracts, primaryFields } from "@slub/exhibition-schema";
 import { typeIRItoTypeName } from "@slub/edb-cli/src/dataStore";
@@ -33,4 +33,5 @@ export const dataStore = initSPARQLStore({
   sparqlQueryFunctions: crudOptions,
   schema: schema as JSONSchema7,
   defaultLimit: 10,
+  makeStubSchema: makeStubSchema,
 });

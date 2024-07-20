@@ -1,4 +1,5 @@
-import { Elysia } from "elysia";
+import { Elysia, t } from "elysia";
+import { swagger } from "@elysiajs/swagger";
 import { JSONSchema7 } from "json-schema";
 import { defs } from "@slub/json-schema-utils";
 import { getGraphQLWriter, getJsonSchemaReader, makeConverter } from "typeconv";
@@ -118,6 +119,70 @@ const app = new Elysia()
   .use(cors())
   .use(graphqlAPI)
   .get("/", () => "Welcome to SLUb EDB")
+  .get(
+    "/listDocument/:typeName",
+    async ({ params: { typeName }, query: { limit } }) => {
+      return dataStore.listDocuments(typeName, limit);
+    },
+    {
+      query: t.Object({
+        limit: t.Optional(t.Numeric()),
+      }),
+      params: t.Object({
+        typeName: t.String(),
+      }),
+    },
+  )
+  .get(
+    "/loadDocument/:typeName",
+    async ({ params: { typeName }, query: { id } }) => {
+      return await dataStore.loadDocument(typeName, id);
+    },
+    {
+      query: t.Object({
+        id: t.String(),
+      }),
+      params: t.Object({
+        typeName: t.String(),
+      }),
+      response: t.Any(),
+    },
+  )
+  .get(
+    "/existsDocument/:typeName",
+    async ({ params: { typeName }, query: { id } }) => {
+      return await dataStore.existsDocument(typeName, id);
+    },
+    {
+      query: t.Object({
+        id: t.String(),
+      }),
+      params: t.Object({
+        typeName: t.String(),
+      }),
+      response: t.Boolean(),
+    },
+  )
+  .post(
+    "/upsertDocument/:typeName",
+    async ({ params: { typeName }, body }) => {
+      const entityIRI = (body as any)["@id"];
+      if (!entityIRI) throw new Error("Entity IRI is required");
+      return dataStore.upsertDocument(typeName, entityIRI, body);
+    },
+    {
+      params: t.Object({
+        typeName: t.String(),
+      }),
+      body: t.Object(
+        {
+          "@id": t.String(),
+        },
+        { additionalProperties: true },
+      ),
+    },
+  )
+  .use(swagger({ title: "SLUb EDB" }))
   .listen(3001);
 
 console.log(

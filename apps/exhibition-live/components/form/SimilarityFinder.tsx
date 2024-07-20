@@ -28,10 +28,10 @@ import {
 
 import {
   useAdbContext,
+  useCRUDWithQueryClient,
   useExtendedSchema,
   useGlobalCRUDOptions,
   useGlobalSearch,
-  useLoadQuery,
   useModalRegistry,
   useQuery,
   useQueryClient,
@@ -344,10 +344,16 @@ const KBListItemRenderer = ({
     [typeIRI, typeIRIToTypeName],
   );
   const loadedSchema = useExtendedSchema({ typeName });
-  const loadEntity = useLoadQuery(defaultPrefix, "load");
+  const { loadEntity } = useCRUDWithQueryClient({
+    entityIRI: id,
+    typeIRI,
+    schema: loadedSchema,
+    queryOptions: { enabled: false },
+    loadQueryKey: "load",
+  });
   const { resetElementIndex } = useSimilarityFinderState();
   const handleAccept = useCallback(async () => {
-    const finalData = (await loadEntity(id, typeIRI, loadedSchema))?.document;
+    const finalData = (await loadEntity(id, typeIRI))?.document;
     if (!finalData) {
       console.warn("could not load entity");
       return;

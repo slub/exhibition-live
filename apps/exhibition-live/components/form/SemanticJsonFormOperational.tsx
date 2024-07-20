@@ -79,15 +79,13 @@ const SemanticJsonFormOperational: FunctionComponent<SemanticJsonFormProps> = ({
     components: { EntityDetailModal, SemanticJsonForm },
   } = useAdbContext();
 
-  const { saveMutation, removeMutation } = useCRUDWithQueryClient({
+  const { saveMutation, removeMutation, loadEntity } = useCRUDWithQueryClient({
     entityIRI,
     typeIRI,
     schema,
     queryOptions: { enabled: false },
     loadQueryKey: "rootLoad",
   });
-
-  const loadEntity = useLoadQuery(defaultPrefix, "rootLoad");
 
   const { updateSourceToTargets, removeSource } = useQueryKeyResolver();
   const [isSaving, setIsSaving] = useState(false);
@@ -99,18 +97,15 @@ const SemanticJsonFormOperational: FunctionComponent<SemanticJsonFormProps> = ({
 
   const refetch = useCallback(
     () =>
-      loadEntity(entityIRI, typeIRI, schema).then(
-        (loadResult: LoadResult | null) => {
-          if (loadResult !== null && loadResult?.document) {
-            console.log("(refetch) result from root load");
-            const data = loadResult.document;
-            updateSourceToTargets(entityIRI, loadResult.subjects);
-            if (!data["@id"] || !data["@type"]) return;
-            onChange(data);
-            return data;
-          }
-        },
-      ),
+      loadEntity(entityIRI, typeIRI).then((loadResult: LoadResult | null) => {
+        if (loadResult !== null && loadResult?.document) {
+          console.log("(refetch) result from root load");
+          const data = loadResult.document;
+          updateSourceToTargets(entityIRI, loadResult.subjects);
+          onChange(data);
+          return data;
+        }
+      }),
     [loadEntity, entityIRI, typeIRI, schema, onChange, updateSourceToTargets],
   );
 

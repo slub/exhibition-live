@@ -37,6 +37,10 @@ export type Config = Omit<EdbConfRaw, "namespaceBase"> & {
 };
 
 export type QueryType = {
+  sorting?: {
+    id: string;
+    desc?: boolean;
+  }[];
   search?: string;
 };
 
@@ -113,6 +117,7 @@ export type AbstractDatastore<
     query: QueryType,
     limit?: number,
   ) => Promise<any>;
+  getClasses?: (entityIRI: string) => Promise<string[]>;
   iterableImplementation?: AbstractDatastoreIterable<DocumentResult>;
 };
 

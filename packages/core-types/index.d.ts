@@ -60,6 +60,7 @@ export interface SparqlBuildOptions {
   typeIRItoTypeName: IRIToStringFn;
   primaryFields: PrimaryFieldDeclaration;
   primaryFieldExtracts: PrimaryFieldExtractDeclaration;
+  sparqlFlavour?: SPARQLFlavour;
 }
 export interface SelectFetchOptions {
   withHeaders?: boolean;
@@ -123,6 +124,15 @@ export type SparqlEndpoint = {
 };
 
 export type SPARQLFlavour = "default" | "oxigraph" | "blazegraph" | "allegro";
+
+export type WorkerProvider = Record<
+  NonNullable<SparqlEndpoint["provider"]>,
+  | (<T = Record<string, any>>(
+      endpointConfig: SparqlEndpoint,
+      options?: T,
+    ) => CRUDFunctions)
+  | null
+>;
 
 export type QueryOptions = {
   defaultPrefix: string;

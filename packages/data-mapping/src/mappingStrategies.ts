@@ -44,6 +44,7 @@ export type StrategyContext = {
   authorityAccess?: Record<string, AuthorityConfiguration>;
   authorityIRI: string;
   newIRI: (typeIRI: string) => string;
+  onNewDocument?: (document: any) => Promise<any>;
   options?: {
     strictCheckSourceData?: boolean;
     strictCheckTargetData?: boolean;
@@ -180,6 +181,7 @@ export const createEntityWithAuthoritativeLink = async (
     authorityAccess,
     createDeeperContext,
     logger,
+    onNewDocument,
   } = context;
   const { typeIRI, mainProperty, authorityFields } = options || {};
   if (!Array.isArray(sourceData))
@@ -299,7 +301,10 @@ export const createEntityWithAuthoritativeLink = async (
           __draft: true,
         };
       }
-      newDataElements.push(targetData);
+
+      newDataElements.push(
+        onNewDocument ? await onNewDocument(targetData) : targetData,
+      );
     }
   }
   return newDataElements;
@@ -329,7 +334,7 @@ export const createEntityWithReificationFromString = async (
 ): Promise<any> => {
   if (!context) throw new Error("No context provided");
   const { typeIRI, mainProperty, statementProperties } = options || {};
-  const { newIRI } = context;
+  const { newIRI, onNewDocument } = context;
   if (!Array.isArray(sourceData))
     throw new Error("Source data is not an array");
   const newDataElements = [];
@@ -410,12 +415,17 @@ export const createEntityWithReificationFromString = async (
     }
     newDataElements.push(newData);
   }
-  return newDataElements.map((newData) => ({
-    "@id": newIRI(typeIRI || ""),
-    "@type": typeIRI,
-    __draft: true,
-    ...newData,
-  }));
+  return await Promise.all(
+    newDataElements.map(async (newData) => {
+      const newEntity = {
+        "@id": newIRI(typeIRI || ""),
+        "@type": typeIRI,
+        __draft: true,
+        ...newData,
+      };
+      return onNewDocument ? await onNewDocument(newEntity) : newEntity;
+    }),
+  );
 };
 
 type CreateEntityFromStringStrategy = Strategy & {
@@ -447,8 +457,13 @@ export const createEntityFromString = async (
 ): Promise<any> => {
   if (!context) throw new Error("No context provided");
   const { typeIRI } = options || {};
-  const { searchEntityByLabel, newIRI, typeIRItoTypeName, primaryFields } =
-    context;
+  const {
+    searchEntityByLabel,
+    newIRI,
+    typeIRItoTypeName,
+    primaryFields,
+    onNewDocument,
+  } = context;
   const isArray = Array.isArray(sourceData);
   const sourceDataArray = isArray ? sourceData : [sourceData];
   const newDataElements = [];
@@ -474,7 +489,9 @@ export const createEntityFromString = async (
         [labelField]: trimmedSourceDataElement,
         __draft: true,
       };
-      newDataElements.push(targetData);
+      newDataElements.push(
+        onNewDocument ? await onNewDocument(targetData) : targetData,
+      );
     } else {
       newDataElements.push({
         "@id": primaryIRI,
@@ -500,6 +517,7 @@ export const createEntity = async (
     authorityIRI,
     logger,
     createDeeperContext,
+    onNewDocument,
   } = context;
   const authAccess = context.authorityAccess?.[authorityIRI];
   const newDataElements = [];
@@ -536,13 +554,14 @@ export const createEntity = async (
         logger.log(
           `mapping authority entry (${sourceDataElement.id}) to local data model of type ${typeName} with the given subfield mapping`,
         );
+        const newEntity = await mapByConfig(
+          sourceDataElement,
+          targetData,
+          subFieldMapping.fromEntity || [],
+          createDeeperContext(context, `createEntity_${typeName}`),
+        );
         newDataElements.push(
-          await mapByConfig(
-            sourceDataElement,
-            targetData,
-            subFieldMapping.fromEntity || [],
-            createDeeperContext(context, `createEntity_${typeName}`),
-          ),
+          onNewDocument ? await onNewDocument(newEntity) : newEntity,
         );
       }
     } else {

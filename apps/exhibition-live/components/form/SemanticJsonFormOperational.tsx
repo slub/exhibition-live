@@ -13,7 +13,7 @@ import { useAdbContext, useCRUDWithQueryClient } from "@slub/edb-state-hooks";
 import { useSnackbar } from "notistack";
 import { SemanticJsonFormToolbar } from "./SemanticJsonFormToolbar";
 import { useSettings } from "@slub/edb-state-hooks";
-import { useLoadQuery, useQueryKeyResolver } from "@slub/edb-state-hooks";
+import { useQueryKeyResolver } from "@slub/edb-state-hooks";
 import { Backdrop, Box, CircularProgress } from "@mui/material";
 import { create } from "zustand";
 import { useTranslation } from "next-i18next";
@@ -99,7 +99,6 @@ const SemanticJsonFormOperational: FunctionComponent<SemanticJsonFormProps> = ({
     () =>
       loadEntity(entityIRI, typeIRI).then((loadResult: LoadResult | null) => {
         if (loadResult !== null && loadResult?.document) {
-          console.log("(refetch) result from root load");
           const data = loadResult.document;
           updateSourceToTargets(entityIRI, loadResult.subjects);
           onChange(data);

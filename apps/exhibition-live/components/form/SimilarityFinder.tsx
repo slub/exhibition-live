@@ -29,6 +29,7 @@ import {
 import {
   useAdbContext,
   useCRUDWithQueryClient,
+  useDataStore,
   useExtendedSchema,
   useGlobalCRUDOptions,
   useGlobalSearch,
@@ -49,7 +50,6 @@ import { BasicThingInformation, PrimaryField } from "@slub/edb-core-types";
 import { NumberInput } from "./NumberInput";
 import { dcterms } from "@tpluscode/rdf-ns-builders";
 import { Img } from "../basic";
-import { findEntityByClass } from "@slub/sparql-schema";
 import { findEntityWithinK10Plus, KXPEntry } from "@slub/edb-kxp-utils";
 import { fabio } from "@slub/edb-marc-to-rdf";
 import { findFirstInProps } from "@slub/edb-graph-traversal";
@@ -71,7 +71,11 @@ import {
   findEntityWithinLobid,
   findEntityWithinLobidByIRI,
 } from "@slub/edb-authorities";
-import { mapByConfig } from "@slub/edb-data-mapping";
+import {
+  applyToEachField,
+  extractFieldIfString,
+  mapByConfig,
+} from "@slub/edb-data-mapping";
 import { makeDefaultMappingStrategyContext } from "@slub/edb-ui-utils";
 import { lobidTypemap } from "@slub/exhibition-schema";
 
@@ -409,12 +413,15 @@ const KBListItemRenderer = ({
   );
 };
 const useKnowledgeBases = () => {
+  const { schema, typeNameToTypeIRI, queryBuildOptions, jsonLDConfig } =
+    useAdbContext();
   const { crudOptions } = useGlobalCRUDOptions();
-  const {
+  const { dataStore, ready } = useDataStore({
+    schema,
+    crudOptionsPartial: crudOptions,
+    typeNameToTypeIRI,
     queryBuildOptions,
-    jsonLDConfig: { defaultPrefix },
-    normDataMapping,
-  } = useAdbContext();
+  });
   const kbs: KnowledgeBaseDescription[] = useMemo(
     () => [
       {
@@ -428,37 +435,24 @@ const useKnowledgeBases = () => {
           typeName,
           findOptions?: FindOptions,
         ) => {
-          return (
-            await findEntityByClass(
-              searchString,
-              typeIRI,
-              crudOptions.selectFetch,
-              {
-                defaultPrefix,
-                queryBuildOptions,
-              },
-              findOptions?.limit || 10,
-            )
-          ).map(
-            ({
-              name = "",
-              value,
-              image,
-              description,
-            }: {
-              name: string;
-              value: string;
-              image: string;
-              description: string;
-            }) => {
-              return {
-                label: name,
-                id: value,
-                avatar: image,
-                secondary: description,
-              };
-            },
+          const res = await dataStore.findDocuments(
+            typeName,
+            { search: searchString },
+            findOptions?.limit,
           );
+          return res.map((doc) => {
+            const { label, image, description } = applyToEachField(
+              doc,
+              queryBuildOptions.primaryFields[typeName] as PrimaryField,
+              extractFieldIfString,
+            );
+            return {
+              label,
+              id: doc["@id"],
+              avatar: image,
+              secondary: description,
+            };
+          });
         },
         listItemRenderer: (
           entry: any,
@@ -470,6 +464,7 @@ const useKnowledgeBases = () => {
         ) => (
           <KBListItemRenderer
             data={entry}
+            key={entry.id}
             idx={idx}
             typeIRI={typeIRI}
             selected={selected}
@@ -517,6 +512,7 @@ const useKnowledgeBases = () => {
         ) => (
           <GNDListItemRenderer
             data={data}
+            key={`${data.id}${idx}`}
             idx={idx}
             typeIRI={typeIRI}
             selected={selected}
@@ -583,7 +579,13 @@ const useKnowledgeBases = () => {
         },
       },
     ],
-    [crudOptions?.selectFetch, defaultPrefix, queryBuildOptions],
+    [
+      crudOptions?.selectFetch,
+      queryBuildOptions,
+      jsonLDConfig,
+      dataStore,
+      ready,
+    ],
   );
   return kbs;
 };
@@ -637,7 +639,8 @@ export const SimilarityFinder: FunctionComponent<SimilarityFinderProps> = ({
   );
 
   const {
-    queryBuildOptions: { prefixes, primaryFields },
+    schema,
+    queryBuildOptions,
     normDataMapping,
     createEntityIRI,
     typeNameToTypeIRI,
@@ -645,6 +648,7 @@ export const SimilarityFinder: FunctionComponent<SimilarityFinderProps> = ({
     jsonLDConfig: { defaultPrefix },
     components: { EditEntityModal },
   } = useAdbContext();
+  const { prefixes, primaryFields } = queryBuildOptions;
   const {
     search: globalSearch,
     typeName: globalTypeName,
@@ -755,6 +759,12 @@ export const SimilarityFinder: FunctionComponent<SimilarityFinderProps> = ({
   );
 
   const { crudOptions } = useGlobalCRUDOptions();
+  const { dataStore, ready } = useDataStore({
+    schema,
+    crudOptionsPartial: crudOptions,
+    typeNameToTypeIRI,
+    queryBuildOptions,
+  });
   const handleManuallyMapData = useCallback(
     async (
       id: string | undefined,
@@ -767,7 +777,7 @@ export const SimilarityFinder: FunctionComponent<SimilarityFinderProps> = ({
       );
       const declarativeMapping = normDataMapping[source];
       if (!declarativeMapping) {
-        console.warn(`no mapping declartion config for ${source}`);
+        console.warn(`no mapping declaration config for ${source}`);
         return;
       }
       const mappingConfig = declarativeMapping.mapping[typeName];
@@ -776,7 +786,7 @@ export const SimilarityFinder: FunctionComponent<SimilarityFinderProps> = ({
         return;
       }
       try {
-        const mappingContext = makeDefaultMappingStrategyContext(
+        const defaultMappingContext = makeDefaultMappingStrategyContext(
           crudOptions?.selectFetch,
           {
             defaultPrefix,
@@ -787,6 +797,55 @@ export const SimilarityFinder: FunctionComponent<SimilarityFinderProps> = ({
           primaryFields,
           declarativeMapping.mapping,
         );
+        const mappingContext = {
+          ...defaultMappingContext,
+          onNewDocument: async ({ _draft, ...doc }: any) => {
+            const entityIRI = doc["@id"];
+            const typeName_ = typeIRIToTypeName(doc["@type"]);
+            //return dataStore.createDocument(typeName_, doc);
+            try {
+              const newDoc = await dataStore.upsertDocument(
+                typeName_,
+                entityIRI,
+                doc,
+              );
+              console.log("new doc", newDoc);
+              return newDoc;
+            } catch (e) {
+              console.error("could not create document", e);
+            }
+            return null;
+          },
+          getPrimaryIRIBySecondaryIRI: async (
+            secondaryIRI: string,
+            authorityIRI: string,
+            typeIRI: string,
+          ) => {
+            const typeName_ = typeIRIToTypeName(typeIRI);
+            const ids = await dataStore.findDocumentsByAuthorityIRI(
+              typeName_,
+              secondaryIRI,
+              authorityIRI,
+              limit,
+            );
+            if (ids.length > 0) {
+              console.warn("found more then one entity");
+            }
+            return ids[0] || null;
+          },
+          searchEntityByLabel: async (label: string, typeIRI: string) => {
+            const typeName_ = typeIRIToTypeName(typeIRI);
+            const ids = await dataStore.findDocumentsByLabel(
+              typeName_,
+              label,
+              limit,
+            );
+            if (ids.length > 0) {
+              console.warn("found more then one entity");
+            }
+            return ids[0] || null;
+          },
+        };
         const existingEntry = await mappingContext.getPrimaryIRIBySecondaryIRI(
           id,
           knowledgeBaseDescription?.authorityIRI || "urn:local",
@@ -821,6 +880,8 @@ export const SimilarityFinder: FunctionComponent<SimilarityFinderProps> = ({
     [
       classIRI,
       typeName,
+      typeIRIToTypeName,
+      dataStore.upsertDocument,
       onMappedDataAccepted,
       onExistingEntityAccepted,
       onEntityIRIChange,

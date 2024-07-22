@@ -49,12 +49,7 @@ export const useDataStore = ({
         ? initRestfullStore({
             apiURL: activeEndpoint.endpoint,
             defaultPrefix: jsonLDConfig.defaultPrefix,
-            jsonldContext: jsonLDConfig.jsonldContext,
             typeNameToTypeIRI,
-            queryBuildOptions,
-            walkerOptions,
-            // @ts-ignore
-            sparqlQueryFunctions: crudOptions,
             schema,
             defaultLimit: 10,
           })

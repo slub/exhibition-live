@@ -3,6 +3,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import {
   useAdbContext,
+  useDataStore,
   useGlobalCRUDOptions,
   useModifiedRouter,
   useMutation,
@@ -48,37 +49,19 @@ import { useSnackbar } from "notistack";
 import Button from "@mui/material/Button";
 import { ConfigOptions, download, generateCsv, mkConfig } from "export-to-csv";
 import { useTranslation } from "next-i18next";
-import {
-  jsonSchema2Select,
-  moveToTrash,
-  remove,
-  withDefaultPrefix,
-} from "@slub/sparql-schema";
-import { SparqlEndpoint, SPARQLFlavour } from "@slub/edb-core-types";
+import { moveToTrash } from "@slub/sparql-schema";
 import { computeColumns } from "./listHelper";
 import { encodeIRI, filterUndefOrNull } from "@slub/edb-ui-utils";
 import { bringDefinitionToTop } from "@slub/json-schema-utils";
 import { GenericModal } from "@slub/edb-basic-components";
 import { ExportMenuButton } from "./ExportMenuButton";
 import { TableConfigRegistry } from "./types";
+import { typeIRItoTypeName } from "adb-next/components/config";
 
 export type SemanticTableProps = {
   typeName: string;
   csvOptions?: ConfigOptions;
   tableConfigRegistry?: TableConfigRegistry;
-};
-
-const getFlavour = (endpoint?: SparqlEndpoint): SPARQLFlavour => {
-  switch (endpoint?.provider) {
-    case "oxigraph":
-      return "oxigraph";
-    case "blazegraph":
-      return "blazegraph";
-    case "allegro":
-      return "allegro";
-    default:
-      return "default";
-  }
 };
 
 const defaultCsvOptions: ConfigOptions = {
@@ -132,36 +115,26 @@ export const SemanticTable = ({
   );
 
   const { crudOptions } = useGlobalCRUDOptions();
+  const { dataStore, ready } = useDataStore({
+    schema,
+    crudOptionsPartial: crudOptions,
+    typeNameToTypeIRI,
+    queryBuildOptions,
+  });
 
   const { data: resultListData, isLoading } = useQuery(
     ["allEntries", typeIRI, sorting],
-    async () => {
-      const sparqlQuery = withDefaultPrefix(
-        defaultPrefix,
-        jsonSchema2Select(
-          loadedSchema,
-          typeIRI,
-          [],
-          {
-            primaryFields: queryBuildOptions.primaryFields,
-            orderBy: sorting.map((s) => ({
-              orderBy: s.id,
-              descending: s.desc,
-            })),
-          },
-          undefined,
-          getFlavour(activeEndpoint),
-        ),
+    () => {
+      const typeName = typeIRItoTypeName(typeIRI);
+      return dataStore.findDocumentsAsFlatResultSet(
+        typeName,
+        {
+          sorting,
+        },
+        100,
       );
-      if (!sparqlQuery || !crudOptions?.selectFetch) {
-        return;
-      }
-      const res = await crudOptions.selectFetch(sparqlQuery, {
-        withHeaders: true,
-      });
-      return res;
     },
-    { enabled: !!crudOptions?.selectFetch },
+    { enabled: ready },
   );
 
   const resultList = useMemo(
@@ -250,12 +223,9 @@ export const SemanticTable = ({
   const { mutateAsync: removeEntity, isLoading: aboutToRemove } = useMutation(
     ["remove", (id: string) => id],
     async (id: string) => {
-      if (!id || !crudOptions.updateFetch)
-        throw new Error("entityIRI or updateFetch is not defined");
-      return remove(id, typeIRI, loadedSchema, crudOptions.updateFetch, {
-        defaultPrefix,
-        queryBuildOptions,
-      });
+      if (!id || !dataStore.removeDocument)
+        throw new Error("entityIRI or removeDocument is not defined");
+      return dataStore.removeDocument(typeName, id);
     },
     {
       onSuccess: async () => {

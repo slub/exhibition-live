@@ -1,26 +1,17 @@
 import fetch from "cross-fetch";
-import { exists, findEntityByClass, remove, save } from "@slub/sparql-schema";
-import {
-  CRUDFunctions,
-  SparqlBuildOptions,
-  StringToIRIFn,
-} from "@slub/edb-core-types";
-import { WalkerOptions } from "@slub/edb-graph-traversal";
+import { StringToIRIFn } from "@slub/edb-core-types";
 import {
   AbstractDatastore,
   CountAndIterable,
   DatastoreBaseConfig,
   InitDatastoreFunction,
 } from "@slub/edb-global-types";
+import qs from "qs";
 
 export type RestfullDataStoreConfig = {
   apiURL: string;
   defaultPrefix: string;
-  jsonldContext: object | string;
   typeNameToTypeIRI: StringToIRIFn;
-  queryBuildOptions: SparqlBuildOptions;
-  walkerOptions?: Partial<WalkerOptions>;
-  sparqlQueryFunctions: CRUDFunctions;
   defaultLimit?: number;
 } & DatastoreBaseConfig;
 
@@ -31,23 +22,9 @@ const decodeURIWithHash = (iri: string) => {
 export const initRestfullStore: InitDatastoreFunction<
   RestfullDataStoreConfig
 > = (dataStoreConfig) => {
-  const {
-    apiURL,
-    defaultPrefix,
-    jsonldContext,
-    typeNameToTypeIRI,
-    queryBuildOptions,
-    walkerOptions,
-    sparqlQueryFunctions: {
-      constructFetch,
-      selectFetch,
-      updateFetch,
-      askFetch,
-    },
-    defaultLimit,
-  } = dataStoreConfig;
+  const { apiURL, defaultPrefix, typeNameToTypeIRI, defaultLimit } =
+    dataStoreConfig;
   const loadDocument = async (typeName: string, entityIRI: string) => {
-    console.log("restful loadDocument", typeName, entityIRI);
     return await fetch(
       `${apiURL}/loadDocument/${typeName}?id=${decodeURIWithHash(entityIRI)}`,
     ).then((res) => res.json());
@@ -58,17 +35,17 @@ export const initRestfullStore: InitDatastoreFunction<
     searchString?: string | null,
     cb?: (document: any) => Promise<any>,
   ) => {
-    const typeIRI = typeNameToTypeIRI(typeName);
-    const items = await findEntityByClass(
-      searchString || null,
-      typeIRI,
-      selectFetch,
-      { queryBuildOptions, defaultPrefix },
-      limit || defaultLimit,
-    );
+    const q = {
+      search: searchString,
+      limit,
+    };
+    const queryString = qs.stringify(q);
+    const items = await fetch(
+      `${apiURL}/findDocuments/${typeName}?${queryString}`,
+    ).then((res) => res.json());
+    if (!items || !Array.isArray(items)) return [];
     return await Promise.all(
-      items.map(async ({ value }: { value: string }) => {
-        const doc = await loadDocument(typeName, value);
+      items.map(async (doc) => {
         if (cb) {
           return await cb(doc);
         }
@@ -85,14 +62,14 @@ export const initRestfullStore: InitDatastoreFunction<
     limit?: number,
     searchString?: string | null,
   ) => {
-    const typeIRI = typeNameToTypeIRI(typeName);
-    const items = await findEntityByClass(
-      searchString || null,
-      typeIRI,
-      selectFetch,
-      { queryBuildOptions, defaultPrefix },
-      limit || defaultLimit,
-    );
+    const q = {
+      search: searchString,
+      limit,
+    };
+    const queryString = qs.stringify(q);
+    const items = await fetch(
+      `${apiURL}/findDocuments/${typeName}?${queryString}`,
+    ).then((res) => res.json());
     let currentIndex = 0;
     const asyncIterator = {
       next: () => {
@@ -101,9 +78,7 @@ export const initRestfullStore: InitDatastoreFunction<
         }
         const value = items[currentIndex].value;
         currentIndex++;
-        return loadDocument(typeName, value).then((doc) => {
-          return { done: false, value: doc };
-        });
+        return Promise.resolve({ done: false, value: value });
       },
     };
     return {
@@ -131,20 +106,16 @@ export const initRestfullStore: InitDatastoreFunction<
         .then((res) => res === "true");
     },
     removeDocument: async (typeName, entityIRI) => {
-      return await remove(
-        entityIRI,
-        typeNameToTypeIRI(typeName),
-        dataStoreConfig.schema,
-        updateFetch,
+      return await fetch(
+        `${apiURL}/removeDocument/${typeName}?id=${decodeURIWithHash(entityIRI)}`,
         {
-          defaultPrefix,
-          queryBuildOptions,
+          method: "DELETE",
         },
-      );
+      ).then((res) => res.json());
     },
     upsertDocument: async (typeName, entityIRI, document) => {
       await fetch(`${apiURL}/upsertDocument/${typeName}`, {
-        method: "POST",
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
@@ -155,6 +126,49 @@ export const initRestfullStore: InitDatastoreFunction<
       findDocuments(typeName, limit, null, cb),
     findDocuments: async (typeName, query, limit, cb) =>
       findDocuments(typeName, limit, query.search, cb),
+    findDocumentsByLabel: async (typeName, label, limit) => {
+      const queryString = qs.stringify({ label, limit });
+      return await fetch(
+        `${apiURL}/findDocumentsByLabel/${typeName}?${queryString}`,
+      ).then((res) => res.json());
+    },
+    findDocumentsByAuthorityIRI: async (
+      typeName,
+      authorityIRI,
+      repositoryIRI,
+      limit,
+    ) => {
+      const queryString = qs.stringify({
+        authorityIRI: decodeURIWithHash(authorityIRI),
+        repositoryIRI: repositoryIRI
+          ? decodeURIWithHash(repositoryIRI)
+          : undefined,
+        limit,
+      });
+      return await fetch(
+        `${apiURL}/findDocumentsByAuthorityIRI/${typeName}?${queryString}`,
+      ).then((res) => res.json());
+    },
+    findDocumentsAsFlatResultSet: async (typeName, query, limit) => {
+      const sorting =
+        query.sorting?.map(({ id, desc }) => `${id}${desc ? " desc" : ""}`) ||
+        [];
+      const q = {
+        search: query.search,
+        sorting,
+        limit,
+      };
+      const queryString = qs.stringify(q);
+
+      return await fetch(
+        `${apiURL}/findDocumentsAsFlat/${typeName}?${queryString}`,
+      ).then((res) => res.json());
+    },
+    getClasses: (entityIRI: string) => {
+      return fetch(`${apiURL}/classes?id=${decodeURIWithHash(entityIRI)}`).then(
+        (res) => res.json(),
+      );
+    },
     iterableImplementation: {
       listDocuments: (typeName, limit) => {
         return findDocumentsIterable(typeName, limit, null);

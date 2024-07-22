@@ -2,8 +2,8 @@ import { Elysia, t } from "elysia";
 import { swagger } from "@elysiajs/swagger";
 import { JSONSchema7 } from "json-schema";
 import {
-  defs,
   convertDefsToDefinitions,
+  defs,
   propertyExistsWithinSchema,
 } from "@slub/json-schema-utils";
 import { getGraphQLWriter, getJsonSchemaReader, makeConverter } from "typeconv";
@@ -16,6 +16,9 @@ import { schema } from "@slub/exhibition-schema";
 import { dataStore } from "./dataStore";
 import { extendSchema } from "./extendSchema";
 import { replaceJSONLD } from "./replaceJSONLD";
+import { filterUndefOrNull } from "@slub/edb-core-utils";
+import qs from "qs";
+import * as process from "process";
 
 const exhibitionSchema = extendSchema(schema as JSONSchema7);
 
@@ -78,6 +81,31 @@ const getFieldResolvers = (schema: JSONSchema7) => {
 const additionalTypeDefs = getTypeDefs(exhibitionSchema);
 const queryResolvers = getFieldResolvers(exhibitionSchema);
 
+const availableTypeNames = Object.keys(defs(exhibitionSchema));
+
+const sortingToQuery = (sorting: string[], typeName: string) => {
+  return filterUndefOrNull(
+    sorting?.map((s) => {
+      const sort = s.split(" ");
+      const propertyPath = sort[0];
+      if (propertyPath === "IRI")
+        return { id: "IRI", desc: sort[1] === "desc" };
+      const exists = propertyExistsWithinSchema(
+        typeName,
+        propertyPath,
+        exhibitionSchema,
+      );
+      if (!exists) {
+        console.warn(
+          `Property ${propertyPath} does not exist in schema ${typeName}`,
+        );
+        return null;
+      }
+      return { id: propertyPath, desc: sort[1] === "desc" };
+    }),
+  );
+};
+
 const recurseSelectionSet: (selectionSet: SelectionSetNode) => {
   [p: string]: { [p: string]: any } | null;
 } = (selectionSet: SelectionSetNode) => {
@@ -109,9 +137,20 @@ const graphqlAPI = yoga({
   resolvers: gqlSchema.resolvers,
 } as any);
 
+const typeNameOption = t.Union(availableTypeNames.map((s) => t.Literal(s)));
+
 const app = new Elysia()
-  .use(cors())
+  .use(
+    cors({
+      methods: ["GET", "POST", "DELETE", "PUT"],
+    }),
+  )
   .use(graphqlAPI)
+  .onTransform((ctx) => {
+    const parsed = qs.parse(new URL(ctx.request.url).search.slice(1));
+    // @ts-expect-error
+    ctx.query = parsed;
+  })
   .get("/", () => "Welcome to SLUb EDB")
   .get(
     "/listDocument/:typeName",
@@ -123,7 +162,7 @@ const app = new Elysia()
         limit: t.Optional(t.Numeric()),
       }),
       params: t.Object({
-        typeName: t.String(),
+        typeName: typeNameOption,
       }),
     },
   )
@@ -137,7 +176,7 @@ const app = new Elysia()
         id: t.String(),
       }),
       params: t.Object({
-        typeName: t.String(),
+        typeName: typeNameOption,
       }),
       response: t.Any(),
     },
@@ -152,12 +191,123 @@ const app = new Elysia()
         id: t.String(),
       }),
       params: t.Object({
-        typeName: t.String(),
+        typeName: typeNameOption,
       }),
       response: t.Boolean(),
     },
   )
-  .post(
+  .get(
+    "/findDocuments/:typeName",
+    async ({ params: { typeName }, query }) => {
+      const { limit, sorting, ...q } = query;
+      //const
+      return dataStore.findDocuments(
+        typeName,
+        {
+          search: q.search,
+          sorting: sorting ? sortingToQuery(sorting, typeName) : [],
+        },
+        limit,
+      );
+    },
+    {
+      query: t.Object({
+        sorting: t.Optional(t.Array(t.String())),
+        search: t.Optional(t.String()),
+        limit: t.Optional(t.Numeric()),
+      }),
+      params: t.Object({
+        typeName: typeNameOption,
+      }),
+    },
+  )
+  .get(
+    "/classes",
+    async ({ query: { id } }) => {
+      if (!dataStore.getClasses)
+        throw new Error("This data store does not support classes");
+      return dataStore.getClasses(id);
+    },
+    {
+      query: t.Object({
+        id: t.String(),
+      }),
+    },
+  )
+  .get(
+    `/findDocumentsByLabel/:typeName/`,
+    async ({ params: { typeName }, query }) => {
+      if (!dataStore.findDocumentsByLabel) {
+        throw new Error(
+          "This data store does not support finding documents by label",
+        );
+      }
+      return dataStore.findDocumentsByLabel(typeName, query.label, query.limit);
+    },
+    {
+      query: t.Object({
+        limit: t.Optional(t.Numeric()),
+        label: t.String(),
+      }),
+      params: t.Object({
+        typeName: typeNameOption,
+      }),
+    },
+  )
+  .get(
+    "/findDocumentsAsFlat/:typeName",
+    async ({ params: { typeName }, query }) => {
+      const { limit, ...q } = query;
+      if (!dataStore.findDocumentsAsFlatResultSet) {
+        throw new Error("This data store does not support flat result sets");
+      }
+      return dataStore.findDocumentsAsFlatResultSet(
+        typeName,
+        {
+          search: q.search,
+          sorting: q.sorting ? sortingToQuery(q.sorting, typeName) : [],
+        },
+        limit,
+      );
+    },
+    {
+      query: t.Object({
+        sorting: t.Optional(t.Array(t.String())),
+        search: t.Optional(t.String()),
+        limit: t.Optional(t.Numeric()),
+      }),
+      params: t.Object({
+        typeName: typeNameOption,
+      }),
+    },
+  )
+  .get(
+    `/findDocumentsByAuthorityIRI/:typeName/`,
+    async ({ params: { typeName }, query }) => {
+      if (!dataStore.findDocumentsByAuthorityIRI) {
+        throw new Error(
+          "This data store does not support finding documents by authority IRI",
+        );
+      }
+      return dataStore.findDocumentsByAuthorityIRI(
+        typeName,
+        query.authorityIRI,
+        query.repositoryIRI,
+        query.limit,
+      );
+    },
+    {
+      query: t.Object({
+        limit: t.Optional(t.Numeric()),
+        authorityIRI: t.String(),
+        repositoryIRI: t.Optional(t.String()),
+      }),
+      params: t.Object({
+        typeName: typeNameOption,
+      }),
+    },
+  )
+  .put(
     "/upsertDocument/:typeName",
     async ({ params: { typeName }, body }) => {
       const entityIRI = (body as any)["@id"];
@@ -166,7 +316,7 @@ const app = new Elysia()
     },
     {
       params: t.Object({
-        typeName: t.String(),
+        typeName: typeNameOption,
       }),
       body: t.Object(
         {
@@ -176,7 +326,32 @@ const app = new Elysia()
       ),
     },
   )
-  .use(swagger({ title: "SLUb EDB" }))
+  //delete an entity
+  .delete(
+    "/removeDocument/:typeName",
+    ({ params: { typeName }, query: { id } }) => {
+      return Boolean(dataStore.removeDocument(typeName, id));
+    },
+    {
+      params: t.Object({
+        typeName: typeNameOption,
+      }),
+      query: t.Object({
+        id: t.String(),
+      }),
+    },
+  )
+  .use(
+    swagger({
+      documentation: {
+        info: {
+          title: "SLUb EDB API",
+          version: process.env.npm_package_version || "0.0.0.",
+          description: "API for SLUb EDB",
+        },
+      },
+    }),
+  )
   .listen(3001);
 
 console.log(

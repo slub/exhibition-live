@@ -1,23 +1,25 @@
 import { useQuery } from "@tanstack/react-query";
 import { useGlobalCRUDOptions } from "./useGlobalCRUDOptions";
-import { getClasses } from "@slub/sparql-schema";
 import { useAdbContext } from "./provider";
+import { useDataStore } from "./useDataStore";
 
 export const useTypeIRIFromEntity = (entityIRI: string) => {
-  const { queryBuildOptions, jsonLDConfig } = useAdbContext();
+  const { schema, typeNameToTypeIRI, queryBuildOptions, jsonLDConfig } =
+    useAdbContext();
   const { crudOptions } = useGlobalCRUDOptions();
-  const selectFetch = crudOptions?.selectFetch;
+  const { dataStore, ready } = useDataStore({
+    schema,
+    crudOptionsPartial: crudOptions,
+    typeNameToTypeIRI,
+    queryBuildOptions,
+  });
   const { data: typeIRIs } = useQuery(
     ["classes", entityIRI],
     async () => {
-      if (!selectFetch) return [];
-      return await getClasses(entityIRI, selectFetch, {
-        queryBuildOptions,
-        defaultPrefix: jsonLDConfig.defaultPrefix,
-      });
+      return await dataStore.getClasses(entityIRI);
     },
     {
-      enabled: Boolean(entityIRI && selectFetch),
+      enabled: Boolean(entityIRI && ready),
     },
   );
   return typeIRIs;

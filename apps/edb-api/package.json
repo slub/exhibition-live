@@ -38,6 +38,7 @@
     "@slub/sparql-schema": "workspace:*",
     "@slub/json-schema-utils": "workspace:*",
     "@tpluscode/sparql-builder": "^0.3.31",
+    "qs": "^6.12.3",
     "cmd-ts": "^0.13.0",
     "elysia": "^0.8.17",
     "graphql": "^16.8.1",

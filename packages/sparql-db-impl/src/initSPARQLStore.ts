@@ -9,12 +9,14 @@ import { JSONSchema7 } from "json-schema";
 import {
   cleanJSONLD,
   exists,
+  findEntityByAuthorityIRI,
   findEntityByClass,
   getClasses,
   jsonSchema2Select,
   load,
   remove,
   save,
+  searchEntityByLabel,
   withDefaultPrefix,
 } from "@slub/sparql-schema";
 
@@ -36,6 +38,8 @@ export const initSPARQLStore: InitDatastoreFunction<SPARQLDataStoreConfig> = (
     defaultLimit,
     makeStubSchema,
   } = dataStoreConfig;
+
+  const typeIRItoTypeName = queryBuildOptions.typeIRItoTypeName;
   const loadDocument = async (typeName: string, entityIRI: string) => {
     const typeIRI = typeNameToTypeIRI(typeName);
     const schema = bringDefinitionToTop(
@@ -137,9 +141,12 @@ export const initSPARQLStore: InitDatastoreFunction<SPARQLDataStoreConfig> = (
       );
     },
     upsertDocument: async (typeName, entityIRI, document) => {
-      const schema = makeStubSchema
-        ? bringDefinitionToTop(makeStubSchema(dataStoreConfig.schema), typeName)
-        : dataStoreConfig.schema;
+      const schema = bringDefinitionToTop(
+        makeStubSchema
+          ? makeStubSchema(dataStoreConfig.schema)
+          : dataStoreConfig.schema,
+        typeName,
+      );
       const doc = {
         ...document,
         "@id": entityIRI,
@@ -160,6 +167,42 @@ export const initSPARQLStore: InitDatastoreFunction<SPARQLDataStoreConfig> = (
       findDocuments(typeName, limit, null, cb),
     findDocuments: async (typeName, query, limit, cb) =>
       findDocuments(typeName, limit, query.search, cb),
+    findDocumentsByLabel: async (typeName, label, limit = 10) => {
+      const typeIRI = typeNameToTypeIRI(typeName);
+      const ids = await searchEntityByLabel(
+        label,
+        typeIRI,
+        selectFetch,
+        limit,
+        {
+          defaultPrefix,
+          prefixes: queryBuildOptions.prefixes || {},
+          ...queryBuildOptions,
+          typeIRItoTypeName,
+          primaryFields: queryBuildOptions.primaryFields,
+        },
+      );
+      return ids;
+    },
+    findDocumentsByAuthorityIRI: async (
+      typeName,
+      authorityIRI,
+      repositoryIRI,
+      limit = 10,
+    ) => {
+      const typeIRI = typeNameToTypeIRI(typeName);
+      const ids = await findEntityByAuthorityIRI(
+        authorityIRI,
+        typeIRI,
+        selectFetch,
+        limit,
+        {
+          defaultPrefix,
+          prefixes: queryBuildOptions.prefixes || {},
+        },
+      );
+      return ids;
+    },
     findDocumentsAsFlatResultSet: async (typeName, query, limit) => {
       const typeIRI = typeNameToTypeIRI(typeName);
       const loadedSchema = bringDefinitionToTop(

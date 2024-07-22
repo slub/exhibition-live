@@ -112,6 +112,17 @@ export type AbstractDatastore<
     limit?: number,
     cb?: (document: any) => Promise<DocumentResult>,
   ) => Promise<FindResult>;
+  findDocumentsByLabel?: (
+    typeName: string,
+    label: string,
+    limit?: number,
+  ) => Promise<FindResult>;
+  findDocumentsByAuthorityIRI?: (
+    typeName: string,
+    authorityIRI: string,
+    repositoryIRI?: string,
+    limit?: number,
+  ) => Promise<FindResult>;
   findDocumentsAsFlatResultSet?: (
     typeName: string,
     query: QueryType,

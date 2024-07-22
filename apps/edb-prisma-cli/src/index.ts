@@ -1,4 +1,4 @@
-import schema from "@slub/exhibition-schema/schemas/jsonschema/Exhibition.schema.json";
+import { schema } from "@slub/exhibition-schema";
 import {
   boolean,
   command,

@@ -58,15 +58,17 @@ jobs:
         run: bun install
       - name: create env file
         env:
-          LOCAL_ENV_FILE: ${{ vars.LOCAL_ENV_FILE }}
+          SPARQL_ENDPOINT: ${{ vars.SPARQL_ENDPOINT }}
           NEXT_PUBLIC_GAPI_OAUTH_CLIENT_ID: ${{ secrets.NEXT_PUBLIC_GAPI_OAUTH_CLIENT_ID }}
           NEXT_PUBLIC_BASE_PATH:  /${{ github.event.repository.name }}
         run: |
           rm ./apps/exhibition-live/.env*
           touch ./apps/exhibition-live/.env
-          echo "$LOCAL_ENV_FILE" >> ./apps/exhibition-live/.env
           echo NEXT_PUBLIC_GAPI_OAUTH_CLIENT_ID="$NEXT_PUBLIC_GAPI_OAUTH_CLIENT_ID" >> ./apps/exhibition-live/.env
           echo NEXT_PUBLIC_BASE_PATH="/${{ github.event.repository.name }}" >> ./apps/exhibition-live/.env
+          echo SPARQL_ENDPOINT="$SPARQL_ENDPOINT" >> ./apps/exhibition-live/.env
+          echo SPARQL_ENDPOINT_LABEL="Local Testing" >> ./apps/exhibition-live/.env
+          echo SPARQL_ENDPOINT_PROVIDER="oxigraph" >> ./apps/exhibition-live/.env
       - name: Build with Next.js
         run: bun run build
       - name: Static HTML export with Next.js

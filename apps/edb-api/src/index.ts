@@ -1,7 +1,11 @@
 import { Elysia, t } from "elysia";
 import { swagger } from "@elysiajs/swagger";
 import { JSONSchema7 } from "json-schema";
-import { defs } from "@slub/json-schema-utils";
+import {
+  defs,
+  convertDefsToDefinitions,
+  propertyExistsWithinSchema,
+} from "@slub/json-schema-utils";
 import { getGraphQLWriter, getJsonSchemaReader, makeConverter } from "typeconv";
 import { cors } from "@elysiajs/cors";
 import { yoga } from "@elysiajs/graphql-yoga";
@@ -9,7 +13,6 @@ import { FieldNode, SelectionSetNode } from "graphql";
 import { IExecutableSchemaDefinition } from "@graphql-tools/schema";
 import { IFieldResolver } from "@graphql-tools/utils";
 import { schema } from "@slub/exhibition-schema";
-import { defsToDefinitions } from "./defsToDefinitions";
 import { dataStore } from "./dataStore";
 import { extendSchema } from "./extendSchema";
 import { replaceJSONLD } from "./replaceJSONLD";
@@ -19,18 +22,9 @@ const exhibitionSchema = extendSchema(schema as JSONSchema7);
 const reader = getJsonSchemaReader();
 const writer = getGraphQLWriter();
 
-const convertDefs = <T extends object>(schema: T) => {
-  if (!schema["$defs"]) return schema;
-  const { $defs: definitions, ...rest } = defsToDefinitions(schema);
-  return {
-    ...rest,
-    definitions,
-  } as T;
-};
-
 const converter = makeConverter(reader, writer);
 const { data: graphqlTypeDefsUnfiltered } = await converter.convert({
-  data: JSON.stringify(convertDefs(exhibitionSchema), null, 2),
+  data: JSON.stringify(convertDefsToDefinitions(exhibitionSchema), null, 2),
 });
 
 const graphqlTypeDefs = graphqlTypeDefsUnfiltered

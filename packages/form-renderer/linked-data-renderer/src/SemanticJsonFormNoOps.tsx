@@ -78,10 +78,6 @@ export const SemanticJsonFormNoOps: FunctionComponent<
             title: t("replace data"),
             value: "replace",
           },
-          {
-            title: t("merge data"),
-            value: "merge",
-          },
         ],
       }).then((decision: string) => {
         closeDrawer();

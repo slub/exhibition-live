@@ -315,8 +315,8 @@ export const MaterialArrayLayout = (props: ArrayLayoutProps) => {
                     <>
                       <div>{t("some error")}</div>
                       <div>
-                        {inlineErrors.map((e) => (
-                          <div>{e.message}</div>
+                        {inlineErrors.map((e, i) => (
+                          <div key={`${e.message}${i}`}>{e.message}</div>
                         ))}
                       </div>
                     </>

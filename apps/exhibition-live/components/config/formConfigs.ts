@@ -25,6 +25,7 @@ export const defaultQueryBuilderOptions: SparqlBuildOptions = {
   typeIRItoTypeName: typeIRItoTypeName,
   primaryFields: primaryFields,
   primaryFieldExtracts: primaryFieldExtracts,
+  sparqlFlavour: "oxigraph",
 };
 
 export const createNewIRI = () => slent(uuidv4()).value;

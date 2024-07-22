@@ -47,7 +47,6 @@ export const OverflowContainer = ({
           maxHeight: "10rem",
         }}
         onMouseEnter={handleShouldShow}
-        noWrap={density !== "spacious"}
         {...props}
       >
         {children}

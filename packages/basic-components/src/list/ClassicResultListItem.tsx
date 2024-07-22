@@ -112,6 +112,7 @@ export const ClassicResultListItem: FunctionComponent<
           </Avatar>
         </ListItemAvatar>
         <ListItemText
+          disableTypography
           primary={
             <OverflowContainer variant="h5" color="inherit">
               {label}

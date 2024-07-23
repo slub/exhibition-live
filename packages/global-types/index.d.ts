@@ -19,6 +19,11 @@ import { JSONLDConfig } from "@slub/edb-state-hooks/src";
 import { ErrorObject } from "ajv";
 import { JsonFormsInitStateProps } from "@jsonforms/react";
 import React from "react";
+import {
+  DeclarativeMapping,
+  DeclarativeMappings,
+  DeclarativeMatchBasedFlatMappings,
+} from "@slub/edb-data-mapping";
 
 export type EdbConfRaw = {
   BASE_IRI: string;
@@ -234,3 +239,13 @@ export type GlobalAppConfig = {
   cellRendererRegistry?: JsonFormsCellRendererRegistryEntry[];
   uischemata?: Record<string, any>;
 };
+
+export type AvailableFlatMappings = Record<
+  string,
+  { mapping: DeclarativeMatchBasedFlatMappings; typeName: string }
+>;
+
+export type AvailableMappings = Record<
+  string,
+  { mapping: DeclarativeMapping; typeName: string }
+>;

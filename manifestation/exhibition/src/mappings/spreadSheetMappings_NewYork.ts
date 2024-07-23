@@ -1,7 +1,9 @@
-import { gndBaseIRI } from "@slub/edb-authorities";
 import { DeclarativeMatchBasedFlatMappings } from "@slub/edb-data-mapping";
-import { sladb } from "@slub/exhibition-schema";
+import namespace from "@rdfjs/namespace";
 
+const BASE_IRI = "http://ontologies.slub-dresden.de/exhibition#";
+const sladb = namespace(BASE_IRI);
+const gndBaseIRI = "https://d-nb.info/gnd/";
 export const matchBasedSpreadsheetMappings_NewYork = [
   {
     id: "Ausstellungstitel",

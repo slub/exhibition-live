@@ -1,10 +1,6 @@
 import { matchBasedSpreadsheetMappings_NewYork } from "./spreadSheetMappings_NewYork";
-import { DeclarativeMatchBasedFlatMappings } from "@slub/edb-data-mapping";
+import { AvailableFlatMappings } from "@slub/edb-global-types";
 
-export type AvailableFlatMappings = Record<
-  string,
-  { mapping: DeclarativeMatchBasedFlatMappings; typeName: string }
->;
 export const avaiableFlatMappings: AvailableFlatMappings = {
   NewYork: {
     typeName: "Exhibition",

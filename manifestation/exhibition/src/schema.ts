@@ -1,6 +1,8 @@
 import { JSONSchema7 } from "json-schema";
+import { extendDefinitionsWithProperties } from "@slub/json-schema-utils";
+import { schemaExpander } from "./makeStubSchema";
 
-export const schema: JSONSchema7 = {
+const rawSchema: JSONSchema7 = {
   $schema: "http://json-schema.org/draft-07/schema#",
   $id: "https://schema.adb.arthistoricum.net/exhibition",
   $defs: {
@@ -748,3 +750,10 @@ export const schema: JSONSchema7 = {
     },
   },
 };
+
+export const schema = extendDefinitionsWithProperties(
+  rawSchema,
+  () => schemaExpander.additionalProperties,
+  undefined,
+  schemaExpander.options,
+);

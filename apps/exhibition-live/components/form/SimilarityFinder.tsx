@@ -846,9 +846,11 @@ export const SimilarityFinder: FunctionComponent<SimilarityFinderProps> = ({
             return ids[0] || null;
           },
         };
+        const authorityIRI =
+          knowledgeBaseDescription?.authorityIRI || "urn:local";
         const existingEntry = await mappingContext.getPrimaryIRIBySecondaryIRI(
           id,
-          knowledgeBaseDescription?.authorityIRI || "urn:local",
+          authorityIRI,
           classIRI,
         );
         const dataFromGND = await mapByConfig(
@@ -867,7 +869,8 @@ export const SimilarityFinder: FunctionComponent<SimilarityFinderProps> = ({
         const inject = {
           "@type": classIRI,
           idAuthority: {
-            "@id": id,
+            authority: authorityIRI,
+            id: id,
           },
           lastNormUpdate: new Date().toISOString(),
         };

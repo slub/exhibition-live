@@ -1,5 +1,5 @@
 import { jsonSchema2Prisma } from "@slub/json-schema-prisma-utils";
-import schema from "@slub/exhibition-schema/schemas/jsonschema/Exhibition.schema.json";
+import { schema } from "@slub/exhibition-schema";
 import { extendSchema } from "./extendSchema";
 
 const extendedSchema = extendSchema(schema);

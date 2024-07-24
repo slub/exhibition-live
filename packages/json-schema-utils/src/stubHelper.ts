@@ -3,7 +3,7 @@ import isObject from "lodash/isObject";
 import { defs, getDefintitionKey } from "./jsonSchema";
 
 export type GenRequiredPropertiesFunction = (modelName: string) => string[];
-export type GenJSONLDSemanticPropertiesFunction = (
+export type GeneratePropertiesFunction = (
   modelName: string,
 ) => JSONSchema7["properties"];
 export const filterForPrimitives = (properties: JSONSchema7["properties"]) =>
@@ -19,12 +19,16 @@ export const filterForPrimitives = (properties: JSONSchema7["properties"]) =>
     ),
   );
 
-type RefAppendOptions = {
+export type RefAppendOptions = {
   excludeType?: string[];
   excludeField?: string[];
   excludeSemanticPropertiesForType?: string[];
 };
 
+export type SchemaExpander = {
+  additionalProperties: Record<string, JSONSchema7Definition>;
+  options: RefAppendOptions;
+};
 export const recursivelyFindRefsAndAppendStub: (
   field: string,
   schema: JSONSchema7,
@@ -136,29 +140,79 @@ export const definitionsToStubDefinitions = (
     };
   }, {}) as JSONSchema7["definitions"];
 
-export const withJSONLDProperties: (
-  name: string,
+/**
+ * extend Properties for a particular type, expects schema to have a properties key, thus it will not touch the definitions
+ *
+ * @param typeName
+ * @param schema
+ * @param generateSemanticProperties
+ * @param requiredProperties
+ */
+export const extendProperties: (
+  typeName: string,
   schema: JSONSchema7,
-  genJSONLDSemanticProperties?: GenJSONLDSemanticPropertiesFunction,
+  generateSemanticProperties?: GeneratePropertiesFunction,
   requiredProperties?: GenRequiredPropertiesFunction,
 ) => JSONSchema7 = (
-  name,
+  typeName,
   schema,
-  genJSONLDSemanticProperties,
+  generateSemanticProperties,
   requiredProperties,
 ) =>
   ({
     ...schema,
     properties: {
       ...schema.properties,
-      ...(genJSONLDSemanticProperties ? genJSONLDSemanticProperties(name) : {}),
+      ...(generateSemanticProperties
+        ? generateSemanticProperties(typeName)
+        : {}),
     },
-    ...(requiredProperties ? { required: requiredProperties(name) } : {}),
+    ...(requiredProperties ? { required: requiredProperties(typeName) } : {}),
   }) as JSONSchema7;
 
+/**
+ * Extends the definitions of a JSON schema with additional properties.
+ * Can be used to add @id and @type properties or others, like meta properties.
+ *
+ * @param schema the schema to extend
+ * @param generateSemanticProperties a function that generates the properties for a given model name (key in the definitions part of the schema)
+ * @param requiredProperties a function that generates the required properties for a given model name
+ * @param options options to exclude certain types or fields from being extended
+ */
+export const extendDefinitionsWithProperties: (
+  schema: JSONSchema7,
+  generateSemanticProperties?: GeneratePropertiesFunction,
+  requiredProperties?: GenRequiredPropertiesFunction,
+  options?: RefAppendOptions,
+) => JSONSchema7 = (
+  schema,
+  generateSemanticProperties,
+  requiredProperties,
+  options,
+) => {
+  const newDefs = Object.entries(defs(schema)).reduce<
+    JSONSchema7["definitions"]
+  >((acc, [key, value]) => {
+    return options?.excludeSemanticPropertiesForType?.includes(key)
+      ? { ...acc, [key]: value }
+      : {
+          ...acc,
+          [key]: extendProperties(
+            key,
+            value as JSONSchema7,
+            generateSemanticProperties,
+            requiredProperties,
+          ),
+        };
+  }, {}) as JSONSchema7["definitions"];
+  return {
+    ...schema,
+    [getDefintitionKey(schema)]: newDefs,
+  } as JSONSchema7;
+};
 export const prepareStubbedSchema = (
   schema: JSONSchema7,
-  genJSONLDSemanticProperties?: GenJSONLDSemanticPropertiesFunction,
+  genJSONLDSemanticProperties?: GeneratePropertiesFunction,
   requiredProperties?: GenRequiredPropertiesFunction,
   options?: RefAppendOptions,
 ) => {
@@ -180,26 +234,10 @@ export const prepareStubbedSchema = (
     },
   };
 
-  const definitionsWithJSONLDProperties = Object.entries(
-    defs(stubbedSchema),
-  ).reduce<JSONSchema7["definitions"]>((acc, [key, value]) => {
-    return options?.excludeSemanticPropertiesForType?.includes(key)
-      ? { ...acc, [key]: value }
-      : {
-          ...acc,
-          [key]: withJSONLDProperties(
-            key,
-            value as JSONSchema7,
-            genJSONLDSemanticProperties,
-            requiredProperties,
-          ),
-        };
-  }, {}) as JSONSchema7["definitions"];
-
-  const stubbedSemanticSchema: JSONSchema7 = {
-    ...stubbedSchema,
-    [definitionsKey]: definitionsWithJSONLDProperties,
-  };
-
-  return stubbedSemanticSchema;
+  return extendDefinitionsWithProperties(
+    stubbedSchema,
+    genJSONLDSemanticProperties,
+    requiredProperties,
+    options,
+  );
 };

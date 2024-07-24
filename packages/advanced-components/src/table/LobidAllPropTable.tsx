@@ -278,7 +278,7 @@ export const LobidAllPropTable: FunctionComponent<Props> = ({
   disabledProperties,
 }) => {
   const gndIRI = useMemo(() => {
-    const gndIRI_ = allProps?.idAuthority?.["@id"] || allProps?.idAuthority;
+    const gndIRI_ = allProps?.idAuthority?.id;
     if (typeof gndIRI_ !== "string") return undefined;
     return gndIRI_.startsWith(gndBaseIRI) ? gndIRI_ : undefined;
   }, [allProps]);

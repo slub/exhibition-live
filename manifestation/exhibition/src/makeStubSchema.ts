@@ -1,13 +1,38 @@
 import { JSONSchema7 } from "json-schema";
 import {
-  GenJSONLDSemanticPropertiesFunction,
+  GeneratePropertiesFunction,
   prepareStubbedSchema,
+  SchemaExpander,
 } from "@slub/json-schema-utils";
 
+export const schemaExpander: SchemaExpander = {
+  additionalProperties: {
+    idAuthority: {
+      title: "Normdatenbeziehung",
+      type: "object",
+      properties: {
+        authority: {
+          title: "Autorität",
+          type: "string",
+          format: "uri",
+        },
+        id: {
+          title: "IRI",
+          type: "string",
+          format: "uri",
+        },
+      },
+    },
+  },
+  options: {
+    excludeType: ["InvolvedPerson", "InvolvedCorporation", "AuthorityEntry"],
+    excludeSemanticPropertiesForType: ["AuthorityEntry"],
+  },
+};
 const makeGenSlubJSONLDSemanticProperties: (
   baseIRI: string,
   entitytBaseIRI: string,
-) => GenJSONLDSemanticPropertiesFunction =
+) => GeneratePropertiesFunction =
   (baseIRI: string, entityBaseIRI: string) => (modelName: string) => ({
     "@type": {
       const: `${baseIRI}${modelName.replace(/Stub$/, "")}`,
@@ -16,16 +41,6 @@ const makeGenSlubJSONLDSemanticProperties: (
     "@id": {
       title: entityBaseIRI,
       type: "string",
-    },
-    idAuthority: {
-      title: "Autorität",
-      type: "object",
-      properties: {
-        "@id": {
-          title: "IRI",
-          type: "string",
-        },
-      },
     },
   });
 
@@ -43,9 +58,6 @@ export const makeStubSchema: (schema: JSONSchema7) => JSONSchema7 = (
     schema,
     genSlubJSONLDSemanticProperties,
     genSlubRequiredProperties,
-    {
-      excludeType: ["InvolvedPerson", "InvolvedCorporation", "AuthorityEntry"],
-      excludeSemanticPropertiesForType: ["AuthorityEntry"],
-    },
+    schemaExpander.options,
   );
 };

@@ -21,11 +21,11 @@ export const findEntityByAuthorityIRI = async (
   let query = (
     typeIRI
       ? SELECT.DISTINCT` ${subjectV}`.WHERE`
-    ${subjectV} :idAuthority <${authorityIRI}> .
+    ${subjectV} :idAuthority/:id <${authorityIRI}> .
     ${subjectV} a <${typeIRI}> .
   `
       : SELECT.DISTINCT` ${subjectV}`.WHERE`
-    ${subjectV} :idAuthority <${authorityIRI}> .
+    ${subjectV} :idAuthority/:id <${authorityIRI}> .
   `
   )
     .LIMIT(limit)

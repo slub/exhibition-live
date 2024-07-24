@@ -17,18 +17,18 @@
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
+    "schema:export": "bun ./schemas/exportSchema.ts > ./schemas/jsonschema/Exhibition.schema.json",
     "build:doc": "mkdir -p docs/reference && jsonschema2md -o docs/reference -d schemas/jsonschema",
-    "build:typebox": "mkdir -p typebox && schema2typebox --input schemas/jsonschema/Exhibition.schema2.json --output typebox/generated-typebox.ts",
-    "build:prisma": "json-to-prisma-schema-convertor convert --inputPath='./schemas/jsonschema/test.schema.json' --outputPath='./schemas/prisma/Exhibition.prisma'"
+    "build:typebox": "mkdir -p typebox && schema2typebox --input schemas/jsonschema/Exhibition.schema.json --output typebox/generated-typebox.ts"
   },
   "devDependencies": {
     "@types/rdfjs__namespace": "^2.0.8",
+    "@slub/edb-build-helper": "workspace:*",
     "@slub/edb-data-mapping": "workspace:*",
     "@slub/edb-core-types": "workspace:*",
     "json-schema": "^0.4.0",
     "@adobe/jsonschema2md": "^7.1.5",
-    "schema2typebox": "^1.7.1",
-    "json-to-prisma-schema-convertor": "^0.1.0"
+    "schema2typebox": "^1.7.5"
   },
   "dependencies": {
     "@rdfjs/namespace": "^2.0.0"

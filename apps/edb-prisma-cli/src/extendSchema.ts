@@ -1,10 +1,9 @@
 import namespace from "@rdfjs/namespace";
-import { GenJSONLDSemanticPropertiesFunction } from "@slub/json-schema-utils";
 import { JSONSchema7 } from "json-schema";
 import {
   defs,
+  GeneratePropertiesFunction,
   getDefintitionKey,
-  withJSONLDProperties,
 } from "@slub/json-schema-utils";
 
 export const sladb = namespace("http://ontologies.slub-dresden.de/exhibition#");
@@ -14,7 +13,7 @@ export const slent = namespace(
 const makeSemanticProperties: (
   baseIRI: string,
   entitytBaseIRI: string,
-) => GenJSONLDSemanticPropertiesFunction =
+) => GeneratePropertiesFunction =
   (baseIRI: string, entityBaseIRI: string) => (modelName: string) => ({
     type: {
       const: `${baseIRI}${modelName}`,

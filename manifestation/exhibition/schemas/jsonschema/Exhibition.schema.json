@@ -19,6 +19,22 @@
         "parent": {
           "title": "Übergeordnetes Schlagwort",
           "$ref": "#/$defs/Tag"
+        },
+        "idAuthority": {
+          "title": "Normdatenbeziehung",
+          "type": "object",
+          "properties": {
+            "authority": {
+              "title": "Autorität",
+              "type": "string",
+              "format": "uri"
+            },
+            "id": {
+              "title": "IRI",
+              "type": "string",
+              "format": "uri"
+            }
+          }
         }
       }
     },
@@ -35,6 +51,22 @@
         "parent": {
           "title": "Übergeordneter Beruf",
           "$ref": "#/$defs/Occupation"
+        },
+        "idAuthority": {
+          "title": "Normdatenbeziehung",
+          "type": "object",
+          "properties": {
+            "authority": {
+              "title": "Autorität",
+              "type": "string",
+              "format": "uri"
+            },
+            "id": {
+              "title": "IRI",
+              "type": "string",
+              "format": "uri"
+            }
+          }
         }
       }
     },
@@ -47,6 +79,22 @@
         },
         "description": {
           "type": "string"
+        },
+        "idAuthority": {
+          "title": "Normdatenbeziehung",
+          "type": "object",
+          "properties": {
+            "authority": {
+              "title": "Autorität",
+              "type": "string",
+              "format": "uri"
+            },
+            "id": {
+              "title": "IRI",
+              "type": "string",
+              "format": "uri"
+            }
+          }
         }
       }
     },
@@ -78,6 +126,22 @@
           "type": "array",
           "items": {
             "$ref": "#/$defs/Tag"
+          }
+        },
+        "idAuthority": {
+          "title": "Normdatenbeziehung",
+          "type": "object",
+          "properties": {
+            "authority": {
+              "title": "Autorität",
+              "type": "string",
+              "format": "uri"
+            },
+            "id": {
+              "title": "IRI",
+              "type": "string",
+              "format": "uri"
+            }
           }
         }
       }
@@ -154,6 +218,22 @@
         "image": {
           "type": "string",
           "format": "uri"
+        },
+        "idAuthority": {
+          "title": "Normdatenbeziehung",
+          "type": "object",
+          "properties": {
+            "authority": {
+              "title": "Autorität",
+              "type": "string",
+              "format": "uri"
+            },
+            "id": {
+              "title": "IRI",
+              "type": "string",
+              "format": "uri"
+            }
+          }
         }
       }
     },
@@ -168,6 +248,22 @@
         },
         "toDate": {
           "type": "integer"
+        },
+        "idAuthority": {
+          "title": "Normdatenbeziehung",
+          "type": "object",
+          "properties": {
+            "authority": {
+              "title": "Autorität",
+              "type": "string",
+              "format": "uri"
+            },
+            "id": {
+              "title": "IRI",
+              "type": "string",
+              "format": "uri"
+            }
+          }
         }
       }
     },
@@ -185,9 +281,29 @@
         "description": {
           "type": "string"
         },
+        "image": {
+          "type": "string",
+          "format": "uri"
+        },
         "parent": {
           "title": "Übergeordneter Ort",
           "$ref": "#/$defs/Location"
+        },
+        "idAuthority": {
+          "title": "Normdatenbeziehung",
+          "type": "object",
+          "properties": {
+            "authority": {
+              "title": "Autorität",
+              "type": "string",
+              "format": "uri"
+            },
+            "id": {
+              "title": "IRI",
+              "type": "string",
+              "format": "uri"
+            }
+          }
         }
       }
     },
@@ -200,6 +316,22 @@
         },
         "description": {
           "type": "string"
+        },
+        "idAuthority": {
+          "title": "Normdatenbeziehung",
+          "type": "object",
+          "properties": {
+            "authority": {
+              "title": "Autorität",
+              "type": "string",
+              "format": "uri"
+            },
+            "id": {
+              "title": "IRI",
+              "type": "string",
+              "format": "uri"
+            }
+          }
         }
       }
     },
@@ -212,6 +344,22 @@
         },
         "description": {
           "type": "string"
+        },
+        "idAuthority": {
+          "title": "Normdatenbeziehung",
+          "type": "object",
+          "properties": {
+            "authority": {
+              "title": "Autorität",
+              "type": "string",
+              "format": "uri"
+            },
+            "id": {
+              "title": "IRI",
+              "type": "string",
+              "format": "uri"
+            }
+          }
         }
       }
     },
@@ -239,6 +387,22 @@
         "image": {
           "type": "string",
           "format": "uri"
+        },
+        "idAuthority": {
+          "title": "Normdatenbeziehung",
+          "type": "object",
+          "properties": {
+            "authority": {
+              "title": "Autorität",
+              "type": "string",
+              "format": "uri"
+            },
+            "id": {
+              "title": "IRI",
+              "type": "string",
+              "format": "uri"
+            }
+          }
         }
       }
     },
@@ -252,10 +416,20 @@
         "description": {
           "type": "string"
         },
-        "tags": {
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/Tag"
+        "idAuthority": {
+          "title": "Normdatenbeziehung",
+          "type": "object",
+          "properties": {
+            "authority": {
+              "title": "Autorität",
+              "type": "string",
+              "format": "uri"
+            },
+            "id": {
+              "title": "IRI",
+              "type": "string",
+              "format": "uri"
+            }
           }
         }
       }
@@ -286,6 +460,22 @@
         "image": {
           "type": "string",
           "format": "uri"
+        },
+        "idAuthority": {
+          "title": "Normdatenbeziehung",
+          "type": "object",
+          "properties": {
+            "authority": {
+              "title": "Autorität",
+              "type": "string",
+              "format": "uri"
+            },
+            "id": {
+              "title": "IRI",
+              "type": "string",
+              "format": "uri"
+            }
+          }
         }
       }
     },
@@ -298,6 +488,22 @@
         },
         "description": {
           "type": "string"
+        },
+        "idAuthority": {
+          "title": "Normdatenbeziehung",
+          "type": "object",
+          "properties": {
+            "authority": {
+              "title": "Autorität",
+              "type": "string",
+              "format": "uri"
+            },
+            "id": {
+              "title": "IRI",
+              "type": "string",
+              "format": "uri"
+            }
+          }
         }
       }
     },
@@ -332,6 +538,22 @@
         "image": {
           "type": "string",
           "format": "uri"
+        },
+        "idAuthority": {
+          "title": "Normdatenbeziehung",
+          "type": "object",
+          "properties": {
+            "authority": {
+              "title": "Autorität",
+              "type": "string",
+              "format": "uri"
+            },
+            "id": {
+              "title": "IRI",
+              "type": "string",
+              "format": "uri"
+            }
+          }
         }
       }
     },
@@ -343,6 +565,22 @@
         },
         "role": {
           "$ref": "#/$defs/PersonRole"
+        },
+        "idAuthority": {
+          "title": "Normdatenbeziehung",
+          "type": "object",
+          "properties": {
+            "authority": {
+              "title": "Autorität",
+              "type": "string",
+              "format": "uri"
+            },
+            "id": {
+              "title": "IRI",
+              "type": "string",
+              "format": "uri"
+            }
+          }
         }
       }
     },
@@ -354,6 +592,22 @@
         },
         "role": {
           "$ref": "#/$defs/CorporationRole"
+        },
+        "idAuthority": {
+          "title": "Normdatenbeziehung",
+          "type": "object",
+          "properties": {
+            "authority": {
+              "title": "Autorität",
+              "type": "string",
+              "format": "uri"
+            },
+            "id": {
+              "title": "IRI",
+              "type": "string",
+              "format": "uri"
+            }
+          }
         }
       }
     },
@@ -385,7 +639,12 @@
             },
             "dateModifier": {
               "type": "integer",
+              "title": "Art der Zeitangabe",
               "oneOf": [
+                {
+                  "const": 0,
+                  "title": "exakt"
+                },
                 {
                   "const": 1,
                   "title": "ca."
@@ -412,7 +671,12 @@
             },
             "dateModifier": {
               "type": "integer",
+              "title": "Art der Zeitangabe",
               "oneOf": [
+                {
+                  "const": 0,
+                  "title": "exakt"
+                },
                 {
                   "const": 1,
                   "title": "ca."
@@ -460,6 +724,22 @@
           "items": {
             "$ref": "#/$defs/Resource"
           }
+        },
+        "idAuthority": {
+          "title": "Normdatenbeziehung",
+          "type": "object",
+          "properties": {
+            "authority": {
+              "title": "Autorität",
+              "type": "string",
+              "format": "uri"
+            },
+            "id": {
+              "title": "IRI",
+              "type": "string",
+              "format": "uri"
+            }
+          }
         }
       }
     },
@@ -472,6 +752,22 @@
         },
         "description": {
           "type": "string"
+        },
+        "idAuthority": {
+          "title": "Normdatenbeziehung",
+          "type": "object",
+          "properties": {
+            "authority": {
+              "title": "Autorität",
+              "type": "string",
+              "format": "uri"
+            },
+            "id": {
+              "title": "IRI",
+              "type": "string",
+              "format": "uri"
+            }
+          }
         }
       }
     },
@@ -483,9 +779,28 @@
         },
         "role": {
           "$ref": "#/$defs/PersonRole"
+        },
+        "idAuthority": {
+          "title": "Normdatenbeziehung",
+          "type": "object",
+          "properties": {
+            "authority": {
+              "title": "Autorität",
+              "type": "string",
+              "format": "uri"
+            },
+            "id": {
+              "title": "IRI",
+              "type": "string",
+              "format": "uri"
+            }
+          }
         }
       },
-      "required": ["person", "role"]
+      "required": [
+        "person",
+        "role"
+      ]
     },
     "InvolvedCorporation": {
       "type": "object",
@@ -495,9 +810,28 @@
         },
         "role": {
           "$ref": "#/$defs/CorporationRole"
+        },
+        "idAuthority": {
+          "title": "Normdatenbeziehung",
+          "type": "object",
+          "properties": {
+            "authority": {
+              "title": "Autorität",
+              "type": "string",
+              "format": "uri"
+            },
+            "id": {
+              "title": "IRI",
+              "type": "string",
+              "format": "uri"
+            }
+          }
         }
       },
-      "required": ["corporation", "role"]
+      "required": [
+        "corporation",
+        "role"
+      ]
     },
     "Genre": {
       "type": "object",
@@ -512,6 +846,22 @@
         "image": {
           "type": "string",
           "format": "uri"
+        },
+        "idAuthority": {
+          "title": "Normdatenbeziehung",
+          "type": "object",
+          "properties": {
+            "authority": {
+              "title": "Autorität",
+              "type": "string",
+              "format": "uri"
+            },
+            "id": {
+              "title": "IRI",
+              "type": "string",
+              "format": "uri"
+            }
+          }
         }
       }
     },
@@ -535,7 +885,12 @@
             },
             "dateModifier": {
               "type": "integer",
+              "title": "Art der Zeitangabe",
               "oneOf": [
+                {
+                  "const": 0,
+                  "title": "exakt"
+                },
                 {
                   "const": 1,
                   "title": "ca."
@@ -562,7 +917,12 @@
             },
             "dateModifier": {
               "type": "integer",
+              "title": "Art der Zeitangabe",
               "oneOf": [
+                {
+                  "const": 0,
+                  "title": "exakt"
+                },
                 {
                   "const": 1,
                   "title": "ca."
@@ -599,6 +959,10 @@
             "$ref": "#/$defs/Genre"
           }
         },
+        "parent": {
+          "title": "Übergeordnete Ausstellung",
+          "$ref": "#/$defs/Exhibition"
+        },
         "externalId": {
           "type": "string",
           "maxLength": 50
@@ -612,6 +976,9 @@
         "editorNote": {
           "type": "string",
           "maxLength": 300
+        },
+        "placesUnknown": {
+          "type": "boolean"
         },
         "places": {
           "type": "array",
@@ -631,10 +998,28 @@
             "$ref": "#/$defs/Tag"
           }
         },
+        "exposedArtists": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Person"
+          }
+        },
+        "curators": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Person"
+          }
+        },
         "involvedPersons": {
           "type": "array",
           "items": {
             "$ref": "#/$defs/InvolvedPerson"
+          }
+        },
+        "organizers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Corporation"
           }
         },
         "involvedCorporations": {
@@ -680,7 +1065,13 @@
         "exponats": {
           "type": "array",
           "items": {
-             "$ref": "#/$defs/ExhibitionExponat"
+            "$ref": "#/$defs/ExhibitionExponat"
+          }
+        },
+        "catalogs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Resource"
           }
         },
         "resources": {
@@ -692,6 +1083,22 @@
         "image": {
           "type": "string",
           "format": "uri"
+        },
+        "idAuthority": {
+          "title": "Normdatenbeziehung",
+          "type": "object",
+          "properties": {
+            "authority": {
+              "title": "Autorität",
+              "type": "string",
+              "format": "uri"
+            },
+            "id": {
+              "title": "IRI",
+              "type": "string",
+              "format": "uri"
+            }
+          }
         }
       }
     }

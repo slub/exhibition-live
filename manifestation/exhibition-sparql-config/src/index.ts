@@ -15,8 +15,8 @@ export default {
   namespace: namespace("http://ontologies.slub-dresden.de/exhibition#"),
   defaultPrefix: "http://ontologies.slub-dresden.de/exhibition#",
   walkerOptions: {
-    maxRecursion: 8,
-    maxRecursionEachRef: 8,
+    maxRecursion: 6,
+    maxRecursionEachRef: 6,
     skipAtLevel: 10,
     omitEmptyArrays: true,
     omitEmptyObjects: true,

@@ -1,48 +1,18 @@
 import config from "@slub/exhibition-sparql-config";
-import { oxigraphCrudOptions } from "@slub/remote-query-implementations";
-import { initSPARQLStore } from "@slub/sparql-db-impl";
 import {
-  primaryFieldExtracts,
-  primaryFields,
-  schema,
-} from "@slub/exhibition-schema";
-import { JSONSchema7 } from "json-schema";
+  getProviderOrDefault,
+  getSPARQLFlavour,
+} from "@slub/remote-query-implementations";
+import { initSPARQLDataStoreFromConfig } from "@slub/sparql-db-impl";
 
-const {
-  namespace,
-  walkerOptions,
-  defaultPrefix,
-  defaultJsonldContext,
-  defaultQueryBuilderOptions,
-  sparqlEndpoint,
-  BASE_IRI,
-} = config;
-export const crudFns = oxigraphCrudOptions(sparqlEndpoint);
-export const typeNameToTypeIRI = (typeName: string) =>
-  namespace(typeName).value;
-export const typeIRItoTypeName = (iri: string) => {
-  return iri?.substring(BASE_IRI.length, iri.length);
-};
+export const provider = getProviderOrDefault(config.sparqlEndpoint);
+if (!provider) {
+  throw new Error("No provider found for the given SPARQL endpoint");
+}
+export const crudFunctions = provider(config.sparqlEndpoint);
 
-export const dataStore = initSPARQLStore({
-  defaultPrefix,
-  jsonldContext: defaultJsonldContext,
-  typeNameToTypeIRI,
-  queryBuildOptions: {
-    prefixes: defaultQueryBuilderOptions.prefixes as Record<string, string>,
-    propertyToIRI: typeNameToTypeIRI,
-    typeIRItoTypeName,
-    primaryFields,
-    primaryFieldExtracts,
-  },
-  walkerOptions: {
-    maxRecursion: 4,
-    maxRecursionEachRef: 2,
-    skipAtLevel: 1,
-    omitEmptyArrays: true,
-    omitEmptyObjects: true,
-  },
-  sparqlQueryFunctions: crudFns,
-  schema: schema as JSONSchema7,
-  defaultLimit: 10,
-});
+export const dataStore = initSPARQLDataStoreFromConfig(
+  config,
+  crudFunctions,
+  getSPARQLFlavour(config.sparqlEndpoint),
+);

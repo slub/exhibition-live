@@ -10,7 +10,6 @@ import {
   searchEntityByLabel,
 } from "@slub/sparql-schema";
 import { findEntityWithinLobidByIRI } from "@slub/edb-authorities";
-import { crudFns, typeIRItoTypeName } from "./dataStore";
 import config, { slent } from "@slub/exhibition-sparql-config";
 import { v4 as uuidv4 } from "uuid";
 import { declarativeMappings, primaryFields } from "@slub/exhibition-schema";
@@ -18,6 +17,7 @@ import {
   createLogger,
   makeCreateDeeperContextFn,
 } from "@slub/edb-data-mapping/src/makeCreateDeeperContextFn";
+import { dataStore, crudFunctions } from "./dataStore";
 
 export const makeMappingStrategyContext: (
   doQuery: (query: string) => Promise<any>,
@@ -93,13 +93,13 @@ const { defaultPrefix, defaultQueryBuilderOptions } = config;
 
 export const createNewIRI = () => slent(uuidv4()).value;
 export const mappingStrategyContext = makeMappingStrategyContext(
-  crudFns.selectFetch,
+  crudFunctions.selectFetch,
   {
     prefixes: defaultQueryBuilderOptions.prefixes as Prefixes,
     defaultPrefix,
   },
   createNewIRI,
-  typeIRItoTypeName,
+  dataStore.typeIRItoTypeName,
   primaryFields,
   declarativeMappings,
 );

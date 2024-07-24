@@ -1,7 +1,7 @@
 import { csvToModel } from "./csvToModel";
 import { mappingStrategyContext } from "./mappingStrategyContext";
 import { dataStore } from "./dataStore";
-import { avaiableFlatMappings } from "./mapping";
+import { avaiableFlatMappings } from "@slub/exhibition-schema";
 
 export const flatImportHandler = async ({
   file,

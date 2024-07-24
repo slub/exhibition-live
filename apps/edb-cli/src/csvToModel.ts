@@ -3,10 +3,10 @@ import {
   mapFromFlatResource,
   StrategyContext,
 } from "@slub/edb-data-mapping";
-import { typeNameToTypeIRI } from "./dataStore";
 import { v3 as uuidv3 } from "uuid";
 import { slent } from "@slub/exhibition-sparql-config";
 import { processCSV } from "./mapping";
+import { dataStore } from "./dataStore";
 
 export const csvToModel = async (
   file: string,
@@ -23,7 +23,7 @@ export const csvToModel = async (
   offset?: number,
 ) =>
   await mapFromFlatResource(
-    typeNameToTypeIRI(typeName),
+    dataStore.typeNameToTypeIRI(typeName),
     matchBasedFlatMappings,
     strategyContext,
     processCSV(file),

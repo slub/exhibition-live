@@ -14,8 +14,8 @@ import {
 import { File } from "cmd-ts/batteries/fs";
 import { dataStore } from "./dataStore";
 import { formatJSONResult } from "@slub/edb-core-utils";
-import { avaiableFlatMappings } from "./mapping";
 import { flatImportHandler } from "./flatImportHandler";
+import { avaiableFlatMappings } from "@slub/exhibition-schema";
 
 const get = command({
   name: "edb-cli get",

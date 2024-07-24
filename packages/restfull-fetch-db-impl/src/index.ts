@@ -114,13 +114,13 @@ export const initRestfullStore: InitDatastoreFunction<
       ).then((res) => res.json());
     },
     upsertDocument: async (typeName, entityIRI, document) => {
-      await fetch(`${apiURL}/upsertDocument/${typeName}`, {
+      return await fetch(`${apiURL}/upsertDocument/${typeName}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(document),
-      });
+      }).then((res) => res.json());
     },
     listDocuments: async (typeName, limit, cb) =>
       findDocuments(typeName, limit, null, cb),

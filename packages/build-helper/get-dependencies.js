@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 const ts = require("typescript");
 const glob = require("glob");
 const path = require("path");

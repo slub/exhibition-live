@@ -17,14 +17,24 @@ import { defs } from "@slub/json-schema-utils";
 import { JSONSchema7 } from "json-schema";
 import { dataStore as sparqlStore } from "./dataStore";
 import { extendSchema } from "./extendSchema";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from "@prisma/edb-exhibition-client";
 import { primaryFields } from "./primaryFields";
 import { filterJSONLD } from "@slub/edb-core-utils";
 
 const importStore = sparqlStore;
 const prisma = new PrismaClient();
+
 const rootSchema = extendSchema(schema as JSONSchema7);
 const dataStore = prismaStore(prisma, rootSchema, primaryFields);
+//bun only runs if we call it here: why??
+//find first object that can be counted:
+for (const key of Object.keys(prisma)) {
+  if (prisma[key]?.count) {
+    const c = await prisma[key].count();
+    //console.log(c)
+    break;
+  }
+}
 
 const allTypes = Object.keys(defs(schema as JSONSchema7));
 const importCommand = command({
@@ -54,6 +64,7 @@ const importCommand = command({
     } else {
       await dataStore.importDocuments(typeName, importStore, limit || 10);
     }
+    process.exit(0);
   },
 });
 
@@ -93,6 +104,7 @@ const get = command({
     }
     const item = await dataStore.loadDocument(type, entityIRI);
     console.log(formatResult(item, pretty, noJsonld));
+    process.exit(0);
   },
 });
 
@@ -152,6 +164,7 @@ const list = command({
         return Promise.resolve();
       });
     }
+    process.exit(0);
   },
 });
 

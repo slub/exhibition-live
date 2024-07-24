@@ -1,7 +1,9 @@
 import cliProgress from "cli-progress";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from "@prisma/edb-exhibition-client";
 import { AbstractDatastore, CountAndIterable } from "@slub/edb-global-types";
-import { typeIRItoTypeName } from "./dataStore";
+import { dataStore } from "./dataStore";
+
+const { typeNameToTypeIRI } = dataStore;
 
 type PropertiesAndConnects = {
   id?: string;

@@ -28,6 +28,7 @@
     "build": "turbo run build",
     "build:packages": "turbo run build --filter=@slub/*",
     "build:pages": "turbo run build:pages",
+    "cli": "bun ./apps/edb-cli/src/index.ts",
     "dev": "turbo run dev --parallel",
     "dev:api": "turbo run dev:api",
     "dev:exhibition": "turbo run dev --parallel --filter='./apps/exhibition-live'",
@@ -41,7 +42,10 @@
     "prepare": "husky install",
     "changeset:init": "changeset init",
     "changeset": "changeset",
-    "helper:deps": "bun ./packages/build-helper/get-dependencies.js"
+    "helper:deps": "bun ./packages/build-helper/get-dependencies.js",
+    "build:model": "turbo run build:model",
+    "prisma:generate": "prisma generate --schema ./prisma/schema.prisma",
+    "prisma:migrate": "prisma migrate dev --schema ./prisma/schema.prisma"
   },
   "workspaces": [
     "packages/*",
@@ -59,7 +63,8 @@
     "tsup": "^8.0.2",
     "turbo": "^1.13.0",
     "@changesets/cli": "^2.27.1",
-    "typescript": "^5"
+    "typescript": "^5",
+    "prisma": "^5.17.0"
   },
   "overrides": {
     "@typescript-eslint/typescript-estree": "^7.4.0"

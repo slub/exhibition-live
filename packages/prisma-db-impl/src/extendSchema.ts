@@ -31,31 +31,13 @@ const jsonldSemanticPropertiesFunction = makeSemanticProperties(
   slent[""].value,
 );
 const genRequiredProperties = (_modelName: string) => {
-  return ["_type", "_id"];
+  return ["@type", "@id"];
 };
 
 export const extendSchema = (schema: any): JSONSchema7 => {
-  const excludeTypes = [];
-  const definitionsWithJSONLDProperties = Object.entries(defs(schema)).reduce<
-    JSONSchema7["definitions"]
-  >((acc, [key, value]) => {
-    return excludeTypes?.includes(key)
-      ? { ...acc, [key]: value }
-      : {
-          ...acc,
-          [key]: extendDefinitionsWithProperties(
-            key,
-            value as JSONSchema7,
-            jsonldSemanticPropertiesFunction,
-            genRequiredProperties,
-          ),
-        };
-  }, {}) as JSONSchema7["definitions"];
-  const definitionsKey = getDefintitionKey(schema);
-  return {
-    ...schema,
-    [definitionsKey]: {
-      ...definitionsWithJSONLDProperties,
-    },
-  };
+  return extendDefinitionsWithProperties(
+    schema,
+    jsonldSemanticPropertiesFunction,
+    genRequiredProperties,
+  );
 };

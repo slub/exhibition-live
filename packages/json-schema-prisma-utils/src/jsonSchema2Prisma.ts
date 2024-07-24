@@ -161,12 +161,15 @@ export const propertiesToPrisma = (
             const type = (propSchema.items as any).$ref
               .split("/")
               .pop() as string;
+            const relationName = `${typeName}_${pp}_${type}`;
             return {
-              directProperties: [`${pp} ${type}[]`],
+              directProperties: [
+                `${pp} ${type}[] @relation(name: "${relationName}")`,
+              ],
               externalComplementaryProperties: [
                 {
                   tableName: type,
-                  property: `${reverseProperty} ${typeName}[]`,
+                  property: `${reverseProperty} ${typeName}[] @relation(name: "${relationName}")`,
                 },
               ],
             };

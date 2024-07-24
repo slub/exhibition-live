@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from "@prisma/edb-exhibition-client";
 import {
   jsonSchema2PrismaFlatSelect,
   jsonSchema2PrismaSelect,
@@ -8,7 +8,9 @@ import { toJSONLD } from "./toJSONLD";
 import { AbstractDatastore } from "@slub/edb-global-types";
 import { PrimaryFieldDeclaration } from "./primaryFields";
 import { importAllDocuments, importSingleDocument } from "./import";
-import { typeIRItoTypeName, typeNameToTypeIRI } from "./dataStore";
+import { dataStore } from "./dataStore";
+
+const { typeNameToTypeIRI, typeIRItoTypeName } = dataStore;
 
 export const prismaStore: (
   prisma: PrismaClient,

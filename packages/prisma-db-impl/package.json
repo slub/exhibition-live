@@ -13,8 +13,9 @@
     }
   },
   "scripts": {
-    "build:model": "bun src/createModel.ts > schema.prisma",
-    "format:model": "prisma format",
+    "gen:model": "bun src/createModel.ts > schema.prisma",
+    "build:model": "bun src/createModel.ts > schema.prisma && prisma format && mv schema.prisma ../../prisma/schema.prisma",
+    "format:model": "prisma format ./schema.prisma",
     "lint": "eslint \"**/*.ts*\"",
     "lint-fix": "eslint --fix \"**/*.ts*\""
   },
@@ -38,7 +39,7 @@
     "@slub/exhibition-schema": "workspace:*",
     "@slub/remote-query-implementations": "workspace:*",
     "@slub/exhibition-sparql-config": "workspace:*",
-    "@prisma/client": "^5.11.0",
+    "@prisma/client": "^5.17.0",
     "json-schema": "^0.4.0",
     "uuid": "^9.0.1"
   }

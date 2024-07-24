@@ -7,10 +7,6 @@
   "scripts": {
     "start": "tsx src/index.ts",
     "dev": "tsx watch src/index.ts",
-    "model:format": "prisma format",
-    "prisma:init": "prisma init --datasource-provider postgresql",
-    "prisma:migrate": "prisma migrate dev --name init",
-    "prisma:generate": "prisma generate",
     "start:debug": "node --inspect  --loader tsx 'src/index.ts'"
   },
   "keywords": [],

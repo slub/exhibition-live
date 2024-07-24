@@ -7,6 +7,7 @@ const extendedSchema = extendSchema(schema);
 const preamble = `
 generator client {
   provider = "prisma-client-js"
+  output   = "../node_modules/@prisma/edb-exhibition-client"
 }
 
 datasource db {

@@ -18,6 +18,7 @@
     },
     "lint": {},
     "lint:fix": {},
+    "build:model": {},
     "docs": {},
     "dev": {
       "cache": false,

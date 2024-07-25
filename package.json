@@ -43,9 +43,9 @@
     "changeset:init": "changeset init",
     "changeset": "changeset",
     "helper:deps": "bun ./packages/build-helper/get-dependencies.js",
-    "build:model": "turbo run build:model",
-    "prisma:generate": "prisma generate --schema ./prisma/schema.prisma",
-    "prisma:migrate": "prisma migrate dev --schema ./prisma/schema.prisma"
+    "build:prisma": "turbo run build:prisma",
+    "prisma:exhibition:generate": "prisma generate --schema ./prisma/exhibition.prisma",
+    "prisma:exhibition:migrate": "prisma migrate dev --schema ./prisma/exhibition.prisma"
   },
   "workspaces": [
     "packages/*",

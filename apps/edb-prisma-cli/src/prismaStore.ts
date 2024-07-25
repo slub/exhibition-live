@@ -1,4 +1,3 @@
-import { PrismaClient } from "@prisma/edb-exhibition-client";
 import {
   jsonSchema2PrismaFlatSelect,
   jsonSchema2PrismaSelect,
@@ -6,14 +5,15 @@ import {
 import { JSONSchema7 } from "json-schema";
 import { toJSONLD } from "./toJSONLD";
 import { AbstractDatastore } from "@slub/edb-global-types";
-import { PrimaryFieldDeclaration } from "./primaryFields";
 import { importAllDocuments, importSingleDocument } from "./import";
 import { dataStore } from "./dataStore";
+import { PrimaryFieldDeclaration } from "@slub/edb-core-types";
+import { defs } from "@slub/json-schema-utils";
 
 const { typeNameToTypeIRI, typeIRItoTypeName } = dataStore;
 
 export const prismaStore: (
-  prisma: PrismaClient,
+  prisma: any,
   rootSchema: JSONSchema7,
   primaryFields: Partial<PrimaryFieldDeclaration>,
 ) => AbstractDatastore = (prisma, rootSchema, primaryFields) => {
@@ -121,6 +121,30 @@ export const prismaStore: (
           id: entityIRI,
         },
       });
+    },
+    getClasses: async (entityIRI) => {
+      //we will use a rather primitive way to get the classes in future we could create its own IRI<->Class index and use a prisma middleware to keep it up to date
+      const definitions = defs(rootSchema);
+      const allTypeNames = Object.keys(definitions);
+      const classes = [];
+      for (const typeName of allTypeNames) {
+        try {
+          const entry = await prisma[typeName].findUnique({
+            where: {
+              id: entityIRI,
+            },
+            select: {
+              id: true,
+            },
+          });
+          if (entry) {
+            classes.push(typeNameToTypeIRI(typeName));
+          }
+        } catch (e) {
+          console.error("Error while trying to get class for", e);
+        }
+      }
+      return classes;
     },
     upsertDocument: async (typeName: string, document: any) => {},
     listDocuments: async (typeName: string, limit: number = 10, cb) => {

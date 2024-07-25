@@ -4,6 +4,7 @@ import { JSONSchema7 } from "json-schema";
 import {
   convertDefsToDefinitions,
   defs,
+  extendSchemaShortcut,
   propertyExistsWithinSchema,
 } from "@slub/json-schema-utils";
 import { getGraphQLWriter, getJsonSchemaReader, makeConverter } from "typeconv";
@@ -12,15 +13,39 @@ import { yoga } from "@elysiajs/graphql-yoga";
 import { FieldNode, SelectionSetNode } from "graphql";
 import { IExecutableSchemaDefinition } from "@graphql-tools/schema";
 import { IFieldResolver } from "@graphql-tools/utils";
-import { schema } from "@slub/exhibition-schema";
-import { dataStore } from "./dataStore";
-import { extendSchema } from "./extendSchema";
-import { replaceJSONLD } from "./replaceJSONLD";
-import { filterUndefOrNull } from "@slub/edb-core-utils";
+import { primaryFields, schema } from "@slub/exhibition-schema";
+import { filterUndefOrNull, replaceJSONLD } from "@slub/edb-core-utils";
 import qs from "qs";
 import * as process from "process";
+import { PrismaClient } from "@prisma/edb-exhibition-client";
+import config from "@slub/exhibition-sparql-config";
+import { initPrismaStore } from "@slub/prisma-db-impl";
+import { typeIRItoTypeName, typeNameToTypeIRI } from "./dataStore";
 
-const exhibitionSchema = extendSchema(schema as JSONSchema7);
+console.log(process.env.DATABASE_PROVIDER);
+
+const exhibitionSchema = extendSchemaShortcut(
+  schema as JSONSchema7,
+  "_type",
+  "_id",
+);
+const rootSchema = extendSchemaShortcut(schema as JSONSchema7, "type", "id");
+const prisma = new PrismaClient();
+const dataStore = initPrismaStore(prisma, rootSchema, primaryFields, {
+  jsonldContext: config.defaultJsonldContext,
+  defaultPrefix: config.defaultPrefix,
+  typeIRItoTypeName: typeIRItoTypeName,
+  typeNameToTypeIRI: typeNameToTypeIRI,
+});
+//bun only runs if we call it here: why??
+//find first object that can be counted:
+for (const key of Object.keys(prisma)) {
+  if (prisma[key]?.count) {
+    const c = await prisma[key].count();
+    console.log(c);
+    break;
+  }
+}
 
 const reader = getJsonSchemaReader();
 const writer = getGraphQLWriter();

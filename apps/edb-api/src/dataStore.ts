@@ -15,3 +15,6 @@ export const dataStore = initSPARQLDataStoreFromConfig(
   worker(config.sparqlEndpoint),
   getSPARQLFlavour(config.sparqlEndpoint),
 );
+
+const { typeIRItoTypeName, typeNameToTypeIRI } = dataStore;
+export { typeIRItoTypeName, typeNameToTypeIRI };

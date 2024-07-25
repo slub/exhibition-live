@@ -16,7 +16,7 @@ import { declarativeMappings, primaryFields } from "@slub/exhibition-schema";
 import {
   createLogger,
   makeCreateDeeperContextFn,
-} from "@slub/edb-data-mapping/src/makeCreateDeeperContextFn";
+} from "@slub/edb-data-mapping";
 import { dataStore, crudFunctions } from "./dataStore";
 
 export const makeMappingStrategyContext: (

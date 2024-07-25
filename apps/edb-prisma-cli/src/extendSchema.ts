@@ -15,7 +15,7 @@ const makeTypeAndIDProperties: GeneratePropertiesFunction = (
 });
 
 const genRequiredProperties = (_modelName: string) => {
-  return ["_type", "_id"];
+  return ["type", "id"];
 };
 
 export const extendSchema = (schema: any): JSONSchema7 => {

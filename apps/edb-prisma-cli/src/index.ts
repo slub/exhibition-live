@@ -1,4 +1,4 @@
-import { schema } from "@slub/exhibition-schema";
+import { primaryFields, schema } from "@slub/exhibition-schema";
 import {
   boolean,
   command,
@@ -18,7 +18,6 @@ import { JSONSchema7 } from "json-schema";
 import { dataStore as sparqlStore } from "./dataStore";
 import { extendSchema } from "./extendSchema";
 import { PrismaClient } from "@prisma/edb-exhibition-client";
-import { primaryFields } from "./primaryFields";
 import { filterJSONLD } from "@slub/edb-core-utils";
 
 const importStore = sparqlStore;

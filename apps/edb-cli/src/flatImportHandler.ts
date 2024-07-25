@@ -1,7 +1,7 @@
 import { csvToModel } from "./csvToModel";
 import { mappingStrategyContext } from "./mappingStrategyContext";
 import { dataStore } from "./dataStore";
-import { avaiableFlatMappings } from "@slub/exhibition-schema";
+import { availableFlatMappings } from "@slub/exhibition-schema";
 
 export const flatImportHandler = async ({
   file,
@@ -18,7 +18,7 @@ export const flatImportHandler = async ({
   offset: number | undefined;
   dryRun: boolean;
 }) => {
-  const { typeName, mapping } = avaiableFlatMappings[mappingDeclaration];
+  const { typeName, mapping } = availableFlatMappings[mappingDeclaration];
   let importCounter = 0;
   csvToModel(
     file,

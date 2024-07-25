@@ -1,0 +1,40 @@
+{
+  "name": "@slub/edb-cli-creator",
+  "version": "1.1.0",
+  "description": "CLI creator from the EDB framework",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs",
+      "default": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "lint": "eslint \"**/*.ts*\"",
+    "lint-fix": "eslint --fix \"**/*.ts*\"",
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest --passWithNoTests --color",
+    "test:watch": "NODE_OPTIONS=--experimental-vm-modules jest --watch --color",
+    "test:coverage": "NODE_OPTIONS=--experimental-vm-modules jest --coverage",
+    "doc": "typedoc"
+  },
+  "devDependencies": {
+    "@slub/edb-build-helper": "workspace:*",
+    "@slub/edb-core-types": "workspace:*",
+    "@slub/edb-tsconfig": "workspace:*",
+    "@slub/edb-tsup-config": "workspace:*",
+    "@types/jest": "^29.5.12",
+    "@types/json-schema": "^7.0.14",
+    "eslint-config-edb": "workspace:*",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "cmd-ts": "^0.13.0"
+  }
+}

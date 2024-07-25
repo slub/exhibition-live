@@ -12,7 +12,12 @@
       "types": "./dist/index.d.ts"
     }
   },
+  "bin": {
+    "jsonSchema2Prisma": "./src/jsonSchema2Prisma-cli.ts"
+  },
   "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
     "gen:model": "bun src/createModel.ts > schema.prisma",
     "build:model": "bun src/createModel.ts > schema.prisma && prisma format && mv schema.prisma ../../prisma/schema.prisma",
     "format:model": "prisma format ./schema.prisma",
@@ -23,7 +28,6 @@
     "@slub/edb-build-helper": "workspace:*",
     "@slub/edb-tsconfig": "workspace:*",
     "@slub/edb-tsup-config": "workspace:*",
-    "@slub/json-schema-prisma-utils": "workspace:*",
     "@types/jest": "^29.5.12",
     "@types/json-schema": "^7.0.14",
     "eslint-config-edb": "workspace:*",
@@ -31,6 +35,7 @@
     "prisma": "^5.11.0"
   },
   "dependencies": {
+    "@slub/json-schema-prisma-utils": "workspace:*",
     "@slub/json-schema-utils": "workspace:*",
     "@slub/sparql-schema": "workspace:*",
     "@slub/edb-graph-traversal": "workspace:*",
@@ -41,6 +46,8 @@
     "@slub/exhibition-sparql-config": "workspace:*",
     "@prisma/client": "^5.17.0",
     "json-schema": "^0.4.0",
-    "uuid": "^9.0.1"
+    "uuid": "^9.0.1",
+    "cli-progress": "^3.12.0",
+    "lodash-es": "^4.17.21"
   }
 }

@@ -13,6 +13,7 @@ export default defineConfig({
       },
       // Enable esbuild polyfill plugins
       plugins: [
+        // @ts-ignore
         NodeGlobalsPolyfillPlugin({
           process: true,
         }),

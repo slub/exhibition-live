@@ -26,7 +26,18 @@ export const startBulkImport = async (
   const bar = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
   bar.start(amount, 0);
   for await (let doc of docs) {
-    await importDocument(typeName, doc, importStore, prisma, visited, errored);
+    try {
+      await importDocument(
+        typeName,
+        doc,
+        importStore,
+        prisma,
+        visited,
+        errored,
+      );
+    } catch (e) {
+      console.error(e);
+    }
     bar.increment();
   }
   bar.stop();

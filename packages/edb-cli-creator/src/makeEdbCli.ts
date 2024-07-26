@@ -26,7 +26,7 @@ export type FlatImportHandler = (option: {
 }) => Promise<void>;
 export const makeEdbCli = (
   dataStore: AbstractDatastore,
-  importStores: AbstractDatastore[],
+  importStores: Record<string, AbstractDatastore>,
   flatMappings?: AvailableFlatMappings,
   flatImportHandler?: FlatImportHandler,
 ) => {
@@ -100,6 +100,7 @@ export const makeEdbCli = (
         console.log(formatJSONResult(item, pretty, noJsonld));
         return Promise.resolve();
       });
+      process.exit(0);
     },
   });
 
@@ -155,5 +156,49 @@ export const makeEdbCli = (
       handler: flatImportHandler,
     });
 
-  return { list, get, flatImport };
+  const importCommand = command({
+    name: "import",
+    description: "Recursively import data from another data store",
+    args: {
+      typeName: positional({
+        type: string,
+        displayName: "type",
+        description: "The Type of the document",
+      }),
+      importStoreName: option({
+        type: oneOf(Object.keys(importStores)),
+        long: "importFrom",
+        short: "i",
+        description: `the store where data should be imported (${Object.keys(importStores).join(" , ")})`,
+      }),
+      entityIRI: option({
+        type: optional(string),
+        long: "entityIRI",
+        short: "e",
+        description: "only import a single entity identified by the entityIRI",
+      }),
+      limit: option({
+        type: optional(number),
+        description: "The number of documents to import",
+        defaultValue: () => 10000,
+        long: "limit",
+        short: "l",
+      }),
+    },
+    handler: async ({ entityIRI, typeName, importStoreName, limit }) => {
+      const importStore = importStores[importStoreName];
+      if (!importStore) {
+        throw new Error(`import store ${importStoreName} not found in config`);
+        process.exit(1);
+      }
+      if (entityIRI) {
+        await dataStore.importDocument(typeName, entityIRI, importStore);
+      } else {
+        await dataStore.importDocuments(typeName, importStore, limit || 10);
+      }
+      process.exit(0);
+    },
+  });
+
+  return { list, get, flatImport, import: importCommand };
 };

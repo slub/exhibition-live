@@ -1,10 +1,15 @@
 import { run, subcommands } from "cmd-ts";
-import { dataStore } from "./dataStore";
+import { dataStore, importStores } from "./dataStore";
 import { flatImportHandler } from "./flatImportHandler";
 import { availableFlatMappings } from "@slub/exhibition-schema";
 import { makeEdbCli } from "@slub/edb-cli-creator";
 
-const cli = makeEdbCli(dataStore, [], availableFlatMappings, flatImportHandler);
+const cli = makeEdbCli(
+  dataStore,
+  importStores,
+  availableFlatMappings,
+  flatImportHandler,
+);
 
 run(
   subcommands({

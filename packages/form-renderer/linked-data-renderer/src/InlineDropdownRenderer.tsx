@@ -8,10 +8,15 @@ import { AutocompleteSuggestion } from "@slub/edb-core-types";
 import { extractFieldIfString } from "@slub/edb-data-mapping";
 import { makeFormsPath } from "@slub/edb-ui-utils";
 import { useTranslation } from "next-i18next";
-import { useAdbContext, useGlobalCRUDOptions } from "@slub/edb-state-hooks";
+import {
+  useAdbContext,
+  useDataStore,
+  useGlobalCRUDOptions,
+} from "@slub/edb-state-hooks";
 import { PrimaryField } from "@slub/edb-core-types";
-import { findEntityByClass } from "@slub/sparql-schema";
 import { PreloadedOptionSelect } from "@slub/edb-advanced-components";
+import { JSONSchema7 } from "json-schema";
+import get from "lodash/get";
 
 const InlineDropdownRendererComponent = (props: ControlProps) => {
   const {
@@ -28,6 +33,7 @@ const InlineDropdownRendererComponent = (props: ControlProps) => {
   } = props;
   const {
     typeIRIToTypeName,
+    typeNameToTypeIRI,
     queryBuildOptions,
     jsonLDConfig: { defaultPrefix },
   } = useAdbContext();
@@ -103,28 +109,42 @@ const InlineDropdownRendererComponent = (props: ControlProps) => {
   const { t } = useTranslation();
 
   const { crudOptions } = useGlobalCRUDOptions();
+  const { dataStore, ready } = useDataStore({
+    schema: schema as JSONSchema7,
+    crudOptionsPartial: crudOptions,
+    typeNameToTypeIRI,
+    queryBuildOptions,
+  });
   const load = useCallback(
     async (searchString?: string) =>
-      typeIRI && crudOptions
+      typeName && ready && dataStore
         ? (
-            await findEntityByClass(
-              searchString || null,
-              typeIRI,
-              crudOptions.selectFetch,
+            await dataStore.findDocuments(
+              typeName,
               {
-                defaultPrefix,
-                queryBuildOptions,
+                search: searchString || null,
               },
               limit,
             )
-          ).map(({ name = "", value }: { name: string; value: any }) => {
+          ).map((item) => {
+            const primaryField = primaryFields[typeName];
+            console.log(
+              "primaryField",
+              primaryField,
+              item,
+              primaryFields,
+              typeName,
+            );
+            const primary = primaryField
+              ? get(item, primaryField.label)
+              : JSON.stringify(item);
             return {
-              label: name,
-              value,
+              label: primary,
+              value: item["@id"],
             };
           })
         : [],
-    [typeIRI, crudOptions, limit],
+    [primaryFields, typeName, ready, dataStore, limit],
   );
 
   return (

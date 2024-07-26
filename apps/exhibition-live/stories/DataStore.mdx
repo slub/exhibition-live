@@ -1,0 +1,99 @@
+<Meta title="Data Stores" />
+
+# Data Stores
+
+The EDB Framework supports a variety of data stores. An Abstract Datastore is an interface, that provides the
+basic CRUD functionality and some list and utility functions. Some data stores work within the client and within
+the server, others are only available on the server.
+
+  The interface make the underlying data store to behave like a document store, where highly linked documents can be
+retrieved in one go in a single query. The data store, will most likely use the JSON schema to construct its queries or
+to create the necessary indexes during the bootstrap phase.
+
+  The reference implementation is using the SPARQL query language to provide a RDF based data store, that can be used
+from the client and the server.
+
+
+## SPARQL Data Store
+
+The package `@slub/sparql-db-implementation` provides a SPARQL based data store implementation. The data store is
+using SPARQL 1.1  Update, Select and Construct queries to interact with the data store. By using the JSON schema
+provided.
+
+## RESTful Data Store
+
+The package `@slub/restful-fetch-db-implementation` provides a RESTful based data store implementation. It will store and query
+the data via fetch requests. A reference REST API implementation can be found under `./apps/edb-api`. The REST API itself can
+use any kind of data store.
+
+The package `@slub/restful-fetch-db-implementation`
+
+The API is documented using the OpenAPI 3.0 specification, thus the API can be explored using Swagger UI.
+
+Within the package `@slub/edb-state-hooks`, this implementation will be used by the hook `useDataStore` if the `provider` of the endpoint-configuration
+is set to `rest`.
+
+A Restful Data Store can be initialized with the following configuration:
+
+```typescript
+import { initRestfullStore } from "@slub/restfull-fetch-db-impl";
+const schema = {...}
+
+initRestfullStore({
+            apiURL: "http://localhost:3001",
+            defaultPrefix: "http://ontologies.slub-dresden.de/exhibition#",
+            typeNameToTypeIRI: (typeName: string) => `http://ontologies.slub-dresden.de/exhibition#${typeName}`,
+            schema,
+            defaultLimit: 10,
+          })
+```
+
+## Prisma Data Store
+
+
+The package `@slub/prisma-db-implementation` provides a Prisma based data store implementation. It will store and query
+the data via Prisma ORM, which itself supports a wide range of databases, like MariaDB, PostgreSQL, SQLite, MongoDB.
+For a complete list of supported databases, see [Prisma Database Support](https://www.prisma.io/docs/orm/reference/supported-databases)
+
+Because Prisma itself uses a schema and needs database migration if the model changes, we loose a little bit of flexibility
+compared to the SPARQL Data Store. But we gain a lot of performance and can use the full power of the underlying database.
+
+### Prisma Data Store Configuration
+
+By setting the environment variable `DATABASE_URL`  to the connection string of the database
+and `DATABASE_PROVIDER`, the Prisma Data Store can be initialized .
+
+Assuming we already creafted our model with JSON schema, we can initialize the Prisma Data Store with the following configuration:
+
+In the root of the project run:
+
+  ```bash
+bun run build:prisma
+```
+
+This will build the prisma schema, that is being put into the `prisma` folder.
+The next step is to generate the prisma client. Prisma uses code generation
+to create an optimal client for the database. This can be done by running:
+
+```bash
+bun run prisma:exhibition:generate
+```
+
+It will install a package called `@prisma/edb-exhibition-client` that can be used within the API
+and CLI. But a last step is necessary to initialize the database itself. If the database already exists
+it will run migrations on the database to accommodate the schema changes. This can be done by running:
+
+```bash
+bun run prisma:exhibition:migrate
+```
+
+Once we have initialized the database, we can seed it or import data from another data store using the cli.
+
+```bash
+bun run cli import Exhibition --importFrom oxigraph
+```
+
+This will import all entities of the type `Exhibition` from the oxigraph data store.
+It requires `oxigraph` to be set as import store in the configuration.
+
+

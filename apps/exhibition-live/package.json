@@ -114,7 +114,7 @@
     "moment": "^2.29.4",
     "mui-image": "^1.0.7",
     "n3": "^1.16.3",
-    "next": "^14.2.3",
+    "next": "^14.2.5",
     "next-i18next": "^15.0.0",
     "next-language-detector": "^1.1.0",
     "notistack": "^3.0.1",

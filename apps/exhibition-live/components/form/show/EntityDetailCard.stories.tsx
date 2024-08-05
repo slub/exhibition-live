@@ -31,10 +31,12 @@ const exampleOne = {
     sourceCorporation: {
       idAuthority: {},
     },
-    fromDateDisplay: "05.04.2014",
-    toDateDisplay: "13.07.2014",
-    startDate: {},
-    endDate: {},
+    startDate: {
+      dateValue: 20140405,
+    },
+    endDate: {
+      dateValue: 20140713,
+    },
     exhibitionType: {
       "@id":
         "http://ontologies.slub-dresden.de/exhibition/entity/EventType#s-1",

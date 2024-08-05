@@ -1,0 +1,361 @@
+import { Meta } from "@storybook/blocks";
+
+<Meta title="Data Mapping" />
+
+The typical work with a domain specific database is to map data from a secondary data source into
+the primary datasource, thus making the data available for the specific use case and normalize the
+data.
+
+This is done, when linking data to entities in secondary databases like the GND, Wikidata, OSM, etc.
+but also, when importing data from other sources like CSV, JSON, etc.
+
+The EDB Framework tries to facilitate the mapping by specifying a mapping schema, that can used to map
+tree-like data structures or flat data structures into the primary data model.
+
+A mapping schema is a JSON object, that specifies the mapping of the data, based on certain mapping strategies.
+
+# Declarative Data Mapping Strategies Documentation
+
+## Overview
+
+The EDB Framework facilitates mapping data from secondary data sources into a primary data model by specifying a JSON-based mapping schema. This schema supports both tree-like and flat data structures and allows for various mapping strategies to be applied. Below are the strategies implemented in the framework along with their detailed descriptions and options.
+
+### Mapping Strategies
+
+#### 1. Concatenate Strategy
+
+**ID:** `concatenate`
+
+**Description:** Concatenates an array of strings into a single string.
+
+**Options:**
+- `separator` (optional): A string used to separate the concatenated values.
+
+**Example:**
+```json
+{
+  "strategy": {
+    "id": "concatenate",
+    "options": {
+      "separator": ", "
+    }
+  }
+}
+```
+
+#### 2. Take First Strategy
+
+**ID:** `takeFirst`
+
+**Description:** Takes the first element of an array.
+
+**Options:** None
+
+**Example:**
+```json
+{
+  "strategy": {
+    "id": "takeFirst"
+  }
+}
+```
+
+#### 3. Append Strategy
+
+**ID:** `append`
+
+**Description:** Appends an array of values to another array.
+
+**Options:**
+- `allowDuplicates` (optional): A boolean indicating whether duplicates are allowed.
+- `subFieldMapping` (optional): An object specifying a mapping for subfields.
+
+**Example:**
+```json
+{
+  "strategy": {
+    "id": "append",
+    "options": {
+      "allowDuplicates": false
+    }
+  }
+}
+```
+
+#### 4. Create Entity With Authoritative Link Strategy
+
+**ID:** `createEntityWithAuthoritativeLink`
+
+**Description:**
+This strategy creates an entity with an authoritative link. It looks up entities within an authoritative source and, if they exist, maps them to the local data model. If they do not exist, it creates a new entity with a link to the authoritative source.
+
+**Options:**
+- `typeIRI` (optional): The IRI of the entity type.
+- `mainProperty`: An object containing:
+- `offset` (optional): The offset of the main property in the source data.
+- `authorityFields`: An array of objects containing:
+- `offset`: The offset in the source data.
+- `authorityIRI` (optional): The IRI of the authority.
+- `authorityLinkPrefix` (optional): The prefix for the authority link.
+
+**Example:**
+```json
+{
+  "strategy": {
+    "id": "createEntityWithAuthoritativeLink",
+    "options": {
+      "typeIRI": "http://example.org/type",
+      "mainProperty": {
+        "offset": 0
+      },
+      "authorityFields": [
+        {
+          "offset": 1,
+          "authorityIRI": "http://example.org/authority",
+          "authorityLinkPrefix": "http://example.org/link/"
+        }
+      ]
+    }
+  }
+}
+```
+
+#### 5. Create Entity With Reification From String Strategy
+
+**ID:** `createEntityWithReificationFromString`
+
+**Description:** Creates an entity with reification from a string.
+
+**Options:**
+- `typeIRI` (optional): The IRI of the entity type.
+- `mainProperty`: An object containing:
+- `property`: The main property.
+- `offset` (optional): The offset of the main property in the source data.
+- `mapping` (optional): An object specifying a strategy for the main property.
+- `statementProperties`: An array of objects containing:
+- `property`: The statement property.
+- `offset`: The offset in the source data.
+- `mapping` (optional): An object specifying a strategy for the statement property.
+
+**Example:**
+```json
+{
+  "strategy": {
+    "id": "createEntityWithReificationFromString",
+    "options": {
+      "typeIRI": "http://example.org/type",
+      "mainProperty": {
+        "property": "mainProperty",
+        "offset": 0
+      },
+      "statementProperties": [
+        {
+          "property": "statementProperty1",
+          "offset": 1
+        },
+        {
+          "property": "statementProperty2",
+          "offset": 2
+        }
+      ]
+    }
+  }
+}
+```
+
+#### 6. Create Entity From String Strategy
+
+**ID:** `createEntityFromString`
+
+**Description:** Creates an entity from a string.
+
+**Options:**
+- `typeIRI` (optional): The IRI of the entity type.
+- `typeName` (optional): The name of the entity type.
+
+**Example:**
+```json
+{
+  "strategy": {
+    "id": "createEntityFromString",
+    "options": {
+      "typeIRI": "http://example.org/type",
+      "typeName": "ExampleType"
+    }
+  }
+}
+```
+
+#### 7. Create Entity Strategy
+
+**ID:** `createEntity`
+
+**Description:** Creates an entity.
+
+**Options:**
+- `typeIRI` (optional): The IRI of the entity type.
+- `typeName` (optional): The name of the entity type.
+- `single` (optional): A boolean indicating if only a single entity should be created.
+- `subFieldMapping`: An object specifying mappings for subfields.
+
+**Example:**
+```json
+{
+  "strategy": {
+    "id": "createEntity",
+    "options": {
+      "typeIRI": "http://example.org/type",
+      "typeName": "ExampleType",
+      "single": true,
+      "subFieldMapping": {
+        "fromSelf": [],
+        "fromEntity": []
+      }
+    }
+  }
+}
+```
+
+#### 8. Constant Strategy
+
+**ID:** `constant`
+
+**Description:** Returns a constant value.
+
+**Options:**
+- `value`: The constant value to return.
+
+**Example:**
+```json
+{
+  "strategy": {
+    "id": "constant",
+    "options": {
+      "value": "constantValue"
+    }
+  }
+}
+```
+
+#### 9. Date String to Special Int Strategy
+
+**ID:** `dateStringToSpecialInt`
+
+**Description:** Converts a date string to a special integer format.
+
+**Options:** None
+
+**Example:**
+```json
+{
+  "strategy": {
+    "id": "dateStringToSpecialInt"
+  }
+}
+```
+
+#### 10. Date Array to Special Int Strategy
+
+**ID:** `dateArrayToSpecialInt`
+
+**Description:** Converts a date array to a special integer format.
+
+**Options:** None
+
+**Example:**
+```json
+{
+  "strategy": {
+    "id": "dateArrayToSpecialInt"
+  }
+}
+```
+
+#### 11. Split Strategy
+
+**ID:** `split`
+
+**Description:** Splits a string into an array of substrings.
+
+**Options:**
+- `separator` (optional): The separator to use for splitting the string.
+- `mapping` (optional): An object specifying a strategy for each substring.
+
+**Example:**
+```json
+{
+  "strategy": {
+    "id": "split",
+    "options": {
+      "separator": ",",
+      "mapping": {
+        "strategy": {
+          "id": "takeFirst"
+        }
+      }
+    }
+  }
+}
+```
+
+#### 12. Exists Strategy
+
+**ID:** `exists`
+
+**Description:** Checks if the source data exists (is not `null` or `undefined`).
+
+**Options:** None
+
+**Example:**
+```json
+{
+  "strategy": {
+    "id": "exists"
+  }
+}
+```
+
+#### 13. Date Range String to Special Int Strategy
+
+**ID:** `dateRangeStringToSpecialInt`
+
+**Description:** Converts a date range string to a special integer format, extracting either the start or end date.
+
+**Options:**
+- `extractElement`: Specifies whether to extract the start or end date. Possible values are `"start"` or `"end"`.
+
+**Example:**
+```json
+{
+  "strategy": {
+    "id": "dateRangeStringToSpecialInt",
+    "options": {
+      "extractElement": "start"
+    }
+  }
+}
+```
+
+### Strategy Function Map
+
+The framework includes a strategy function map that associates each strategy ID with its corresponding function. This map is used internally to resolve and execute the appropriate strategy function based on the mapping schema.
+
+```javascript
+export const strategyFunctionMap: { [strategyId: string]: StrategyFunction } = {
+  concatenate,
+  takeFirst,
+  append,
+  createEntity,
+  createEntityFromString,
+  createEntityWithReificationFromString,
+  createEntityWithAuthoritativeLink,
+  dateStringToSpecialInt,
+  dateRangeStringToSpecialInt,
+  exists: existsStrategy,
+  constant: constantStrategy,
+  split: splitStrategy,
+  dateArrayToSpecialInt,
+};
+```
+
+This documentation provides an overview of the available mapping strategies in the EDB Framework, their options, and examples of how they can be used in a mapping schema. These strategies allow for flexible and powerful data transformations when importing and linking data from various sources into a primary data model.

@@ -1,0 +1,19 @@
+# Problem Solving
+
+This package is dedicated to problems that can occur during development and how to solve them.
+
+## Reinstall all dependencies
+
+## next.js Development errors
+
+Sometime dependencies are not compatible with next.js in dev mode and it throws errors like below:
+
+```
+adb-next:dev:  ⨯ ../../node_modules/@jsonforms/material-renderers/node_modules/@mui/icons-material/node_modules/@babel/runtime/helpers/interopRequireDefault.js
+adb-next:dev: Module parse failed: Cannot use 'import.meta' outside a module (38:6)
+adb-next:dev: File was processed with these loaders:
+```
+
+First one has to check whether the error does not appear in production mode, by building the project and running it.
+If it really just shows up in dev mode and a complete reinstallation of node dependencies does not help, one can try to exclude the problematic module from being transpiled by next.js.
+Delete it manually from the `node_modules` folder and add it to the `transpileModules` array in the `next.config.js` file.

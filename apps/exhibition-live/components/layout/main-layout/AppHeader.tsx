@@ -1,18 +1,8 @@
 // material-ui
 import MenuIcon from "@mui/icons-material/Menu";
 import ListIcon from "@mui/icons-material/List";
-import {
-  ButtonBase,
-  useTheme,
-  AppBar,
-  Toolbar,
-  Button,
-  Hidden,
-  ToggleButton,
-} from "@mui/material";
+import { ButtonBase, useTheme, AppBar, Toolbar } from "@mui/material";
 import React from "react";
-import { useFormEditor } from "@slub/edb-state-hooks";
-import { useSettings } from "@slub/edb-state-hooks";
 
 type AppHeaderProps = {
   toggleDrawer: () => void;

@@ -2,7 +2,8 @@ import { ThemeOptions } from "@mui/material";
 import { createTheme, Theme } from "@mui/material/styles";
 
 // assets
-import colors from "../../../styles/_themes-vars.module.scss";
+// @ts-ignore
+import colors from "./themes-vars.module.scss";
 // project imports
 import componentStyleOverrides from "./compStyleOverride";
 import themePalette from "./palette";

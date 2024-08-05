@@ -5,7 +5,6 @@ import { ReactNode, useMemo } from "react";
 
 // ** Type Imports
 // ** Theme Config
-import { useThemeSettings } from "../state";
 import theme from "./berry-theme";
 // ** Global Styles
 import GlobalStyling from "./globalStyles";
@@ -16,12 +15,19 @@ interface Props {
   children: ReactNode;
 }
 
-const ThemeComponent = (props: Props) => {
-  const themeSettings = useThemeSettings();
+const themeSettings = {
+  isOpen: [], // for active default menu
+  defaultId: "default",
+  fontFamily: "sans-serif",
+  borderRadius: 12,
+  opened: true,
+  navType: "light",
+} as const;
+
+const themeFinal = theme(themeSettings);
+export const ThemeComponent = (props: Props) => {
   // ** Props
   const { children } = props;
-
-  const themeFinal = useMemo(() => theme(themeSettings), [themeSettings]);
 
   return (
     <ThemeProvider theme={themeFinal}>
@@ -31,5 +37,3 @@ const ThemeComponent = (props: Props) => {
     </ThemeProvider>
   );
 };
-
-export default ThemeComponent;

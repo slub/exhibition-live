@@ -11,7 +11,6 @@ import "leaflet/dist/leaflet.css";
 
 import type { AppProps } from "next/app";
 
-import ThemeComponent from "../components/theme/ThemeComponent";
 import NiceModal from "@ebay/nice-modal-react";
 import { SnackbarProvider } from "notistack";
 import { appWithTranslation, UserConfig, useTranslation } from "next-i18next";
@@ -44,6 +43,7 @@ import { SimilarityFinder } from "../components/form/SimilarityFinder";
 import { useSearchParams } from "next/navigation";
 import { ModRouter } from "@slub/edb-global-types";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { ThemeComponent } from "@slub/edb-default-theme";
 
 export const queryClient = new QueryClient();
 const QueryClientProviderWrapper = ({

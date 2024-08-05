@@ -1,9 +1,4 @@
-import {
-  AdbProvider,
-  QueryClient,
-  QueryClientProvider,
-  store,
-} from "@slub/edb-state-hooks";
+import { AdbProvider, store } from "@slub/edb-state-hooks";
 import { Provider } from "react-redux";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import "dayjs/locale/de";
@@ -12,7 +7,6 @@ import { BASE_IRI, PUBLIC_BASE_PATH } from "../components/config";
 import { EditEntityModal } from "../components/form/edit/EditEntityModal";
 import { SnackbarProvider } from "notistack";
 import { useRouterHook } from "./useRouterHook";
-import ThemeComponent from "../components/theme/ThemeComponent";
 import React from "react";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { exhibitionConfig } from "../components/config/exhibitionAppConfig";
@@ -22,7 +16,8 @@ import { SimilarityFinder } from "../components/form/SimilarityFinder";
 import { SemanticJsonFormNoOps } from "@slub/edb-linked-data-renderer";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import NiceModal from "@ebay/nice-modal-react";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ThemeComponent } from "@slub/edb-default-theme";
 
 export const queryClient = new QueryClient();
 
@@ -31,8 +26,7 @@ const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
 export const App = ({ children }: { children?: React.ReactNode }) => {
   return (
-    <QueryClientProvider client={queryClient}>
-      <ReactQueryDevtools initialIsOpen={false} />
+    <QueryClientProvider client={queryClient} contextSharing={true}>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <Provider store={store}>
           <ThemeComponent>

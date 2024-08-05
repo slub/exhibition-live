@@ -45,7 +45,8 @@
     "helper:deps": "bun ./packages/build-helper/get-dependencies.js",
     "build:prisma": "turbo run build:prisma",
     "prisma:exhibition:generate": "prisma generate --schema ./prisma/exhibition.prisma",
-    "prisma:exhibition:migrate": "prisma migrate dev --schema ./prisma/exhibition.prisma"
+    "prisma:exhibition:migrate": "prisma migrate dev --schema ./prisma/exhibition.prisma",
+    "purge": "rm -rf node_modules && find -maxdepth 3 -name node_modules | xargs rm -rf"
   },
   "workspaces": [
     "packages/*",
@@ -56,6 +57,7 @@
   ],
   "devDependencies": {
     "@turbo/gen": "^1.13.0",
+    "hygen": "^6.2.11",
     "eslint": "^8.57.0",
     "husky": "^8.0.0",
     "lint-staged": "^15.2.2",

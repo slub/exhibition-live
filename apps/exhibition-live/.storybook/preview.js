@@ -1,4 +1,3 @@
-import theme from "../components/theme/berry-theme";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { QueryClient, QueryClientProvider } from "@slub/edb-state-hooks";
 
@@ -11,6 +10,7 @@ import { AppRouterContext } from "next/dist/shared/lib/app-router-context.shared
 import { exhibitionConfig } from "../components/config/exhibitionAppConfig";
 import { SemanticJsonFormNoOps } from "@slub/edb-linked-data-renderer";
 import { SimilarityFinder } from "../components/form/SimilarityFinder";
+import { ThemeComponent } from "@slub/edb-default-theme";
 
 export const parameters = {
   nextRouter: {
@@ -25,14 +25,6 @@ export const parameters = {
   },
 };
 
-const finalTheme = theme({
-  isOpen: [], // for active default menu
-  defaultId: "default",
-  fontFamily: "'Roboto', sans-serif",
-  borderRadius: 12,
-  opened: true,
-  navType: "light",
-});
 const queryClient = new QueryClient();
 
 export const useRouterMock = () => {
@@ -66,12 +58,12 @@ export const withMuiTheme = (Story) => {
         }}
         useRouterHook={useRouterMock}
       >
-        <ThemeProvider theme={finalTheme}>
+        <ThemeComponent>
           <QueryClientProvider client={queryClient}>
             <CssBaseline />
             <Story />
           </QueryClientProvider>
-        </ThemeProvider>
+        </ThemeComponent>
       </AdbProvider>
     </Provider>
   );

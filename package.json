@@ -26,7 +26,7 @@
   "private": true,
   "scripts": {
     "build": "turbo run build",
-    "build:packages": "turbo run build --filter=@slub/*",
+    "build:packages": "turbo run build --filter=@slub/* --continue",
     "build:pages": "turbo run build:pages",
     "cli": "bun ./apps/edb-cli/src/index.ts",
     "dev": "turbo run dev --parallel",

@@ -43,7 +43,7 @@ export const locationDeclarativeMapping: DeclarativeMappings = [
       path: "id",
     },
     target: {
-      path: "idAuthority.@id",
+      path: "idAuthority.id",
     },
   },
 ];
@@ -78,7 +78,7 @@ export const corporateBodyDeclarativeMapping: DeclarativeMappings = [
       path: "id",
     },
     target: {
-      path: "idAuthority.@id",
+      path: "idAuthority.id",
     },
   },
   {
@@ -117,7 +117,7 @@ export const tagMapping: DeclarativeMappings = [
       path: "id",
     },
     target: {
-      path: "idAuthority.@id",
+      path: "idAuthority.id",
     },
   },
 ];
@@ -139,7 +139,7 @@ export const exhibitionDeclarativeMapping: DeclarativeMappings = [
       path: "id",
     },
     target: {
-      path: "idAuthority.@id",
+      path: "idAuthority.id",
     },
   },
   {
@@ -375,7 +375,7 @@ export const event2exhibitionSeriesDeclarativeMapping: DeclarativeMappings = [
       path: "id",
     },
     target: {
-      path: "idAuthority.@id",
+      path: "idAuthority.id",
     },
   },
   {
@@ -431,7 +431,7 @@ export const occupationDeclarativeMapping: DeclarativeMappings = [
       path: "id",
     },
     target: {
-      path: "idAuthority.@id",
+      path: "idAuthority.id",
     },
   },
 ];
@@ -565,7 +565,7 @@ export const personDeclarativeMapping: DeclarativeMappings = [
       path: "id",
     },
     target: {
-      path: "idAuthority.@id",
+      path: "idAuthority.id",
     },
   },
 ];
@@ -587,7 +587,7 @@ export const corporateBody2PlaceDeclarativeMapping: DeclarativeMappings = [
       path: "id",
     },
     target: {
-      path: "idAuthority.@id",
+      path: "idAuthority.id",
     },
   },
   {

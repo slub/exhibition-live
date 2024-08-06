@@ -131,7 +131,7 @@ export const SemanticTable = ({
         {
           sorting,
         },
-        100,
+        4000,
       );
     },
     { enabled: ready },

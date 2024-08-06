@@ -92,14 +92,42 @@ export const makeMappingStrategyContext: (
 const { defaultPrefix, defaultQueryBuilderOptions } = config;
 
 export const createNewIRI = () => slent(uuidv4()).value;
-export const mappingStrategyContext = makeMappingStrategyContext(
-  crudFunctions.selectFetch,
-  {
-    prefixes: defaultQueryBuilderOptions.prefixes as Prefixes,
-    defaultPrefix,
+export const mappingStrategyContext = {
+  ...makeMappingStrategyContext(
+    crudFunctions.selectFetch,
+    {
+      prefixes: defaultQueryBuilderOptions.prefixes as Prefixes,
+      defaultPrefix,
+    },
+    createNewIRI,
+    dataStore.typeIRItoTypeName,
+    primaryFields,
+    declarativeMappings,
+  ),
+  getPrimaryIRIBySecondaryIRI: async (
+    secondaryIRI: string,
+    authorityIRI: string,
+    typeIRI: string,
+  ) => {
+    const typeName = dataStore.typeIRItoTypeName(typeIRI);
+    const doc = await dataStore
+      .findDocumentsByAuthorityIRI(typeName, secondaryIRI, authorityIRI)
+      .then((res) => res[0] as string);
+    return doc;
   },
-  createNewIRI,
-  dataStore.typeIRItoTypeName,
-  primaryFields,
-  declarativeMappings,
-);
+
+  searchEntityByLabel: async (
+    label: string,
+    typeIRI: string,
+  ): Promise<string> => {
+    const typeName = dataStore.typeIRItoTypeName(typeIRI);
+    const doc = await dataStore
+      .findDocumentsByLabel(typeName, label)
+      .then((res) => res[0] as string);
+    return doc;
+  },
+  onNewDocument: async (document: any) => {
+    const typeName = dataStore.typeIRItoTypeName(document["@type"]);
+    await dataStore.upsertDocument(typeName, document["@id"], document);
+  },
+};

@@ -206,14 +206,9 @@ export const initPrismaStore: (
       limit,
     ) => {
       const entries = await prisma[typeName].findMany({
-        where: repositoryIRI
-          ? {
-              idAuthority_id: authorityIRI,
-              idAuthority_authority: repositoryIRI,
-            }
-          : {
-              idAuthority_id: authorityIRI,
-            },
+        where: {
+          idAuthority_id: authorityIRI,
+        },
         select: {
           id: true,
         },

@@ -3,8 +3,10 @@ import { dataStore, importStores } from "./dataStore";
 import { flatImportHandler } from "./flatImportHandler";
 import { availableFlatMappings } from "@slub/exhibition-schema";
 import { makeEdbCli } from "@slub/edb-cli-creator";
+import { schema } from "@slub/exhibition-schema";
 
 const cli = makeEdbCli(
+  schema,
   dataStore,
   importStores,
   availableFlatMappings,

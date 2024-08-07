@@ -14,6 +14,8 @@ import {
   positional,
   string,
 } from "cmd-ts";
+import { JSONSchema7 } from "json-schema";
+import { defs } from "@slub/json-schema-utils";
 import { File } from "cmd-ts/batteries/fs";
 
 export type FlatImportHandler = (option: {
@@ -25,11 +27,13 @@ export type FlatImportHandler = (option: {
   dryRun: boolean;
 }) => Promise<void>;
 export const makeEdbCli = (
+  schema: JSONSchema7,
   dataStore: AbstractDatastore,
   importStores: Record<string, AbstractDatastore>,
   flatMappings?: AvailableFlatMappings,
   flatImportHandler?: FlatImportHandler,
 ) => {
+  const types = Object.keys(defs(schema));
   const get = command({
     name: "edb-cli get",
     args: {
@@ -70,7 +74,11 @@ export const makeEdbCli = (
   const list = command({
     name: "edb-cli list",
     args: {
-      type: positional(File),
+      type: positional({
+        type: oneOf(types),
+        displayName: "type",
+        description: "The Type of the documents to be listed",
+      }),
       amount: option({
         type: optional(number),
         description: "The amount of documents to fetch",
@@ -112,7 +120,7 @@ export const makeEdbCli = (
       description: "Import of flat table structured documents",
       args: {
         file: positional({
-          type: string,
+          type: File,
           displayName: "File Path",
           description: "The path to the file to import",
         }),
@@ -161,7 +169,7 @@ export const makeEdbCli = (
     description: "Recursively import data from another data store",
     args: {
       typeName: positional({
-        type: string,
+        type: oneOf(types),
         displayName: "type",
         description: "The Type of the document",
       }),

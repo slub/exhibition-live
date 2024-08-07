@@ -1,0 +1,98 @@
+import { Meta } from "@storybook/blocks";
+
+<Meta title="Development" />
+
+# Development Workflows
+
+## Monorepo
+
+The EDB Framework follows the software-development-strategy of a [Monorepo](https://en.wikipedia.org/wiki/Monorepo). This means that all the code for the EDB Framework is stored in a single repository,
+along with concrete applications and example projects.
+
+Within the root of the project you will find the following directories:
+
+- `packages` - Contains all the packages that make up the EDB Framework, including frontend-components, backend-services, and shared libraries.
+- `apps` - Contains concrete applications that use the EDB Framework, including the EDB Cli (Console tools for managing EDB projects), and the EDB Web App for exhibitions.
+- `manifestations` - Contains data models and declaration files for concrete EDB instances
+
+By using `turbo` we make sure that every package can be built and tested in isolation, while still being able to reference other packages in the monorepo
+and build-pipelines know the internal dependency graph of all packages, thus ensuring that changes to one package are propagated to all dependent packages.
+
+To build all packages in the monorepo, run the following command:
+
+```bash
+bun run build:packages
+```
+which is an alias for `turbo run build --filter=@slub/* --continue`, which will build all packages in the monorepo
+within the `@slub` namespace. It will build all packages in parallel, and continue building even if some packages fail.
+
+## Apps
+
+The `apps` directory contains concrete applications that use the EDB Framework. These applications are built using dependencies, from the
+workspace within the `packages` and `manifestations` directory.
+
+### EDB Cli
+
+The EDB Cli is a command-line tool for accessing and mapping data according to the current EDB data model defined by the JSON Schema.
+
+To run the EDB Cli, run the following command:
+
+```bash
+bun run cli
+```
+It will show you the available subcommands and options.
+
+```
+edb-cli <subcommand>
+
+where <subcommand> can be one of:
+
+- list
+- get
+- flatImport - Import of flat table structured documents
+- import - Recursively import data from another data store
+
+For more help, try running `edb-cli <subcommand> --help`
+```
+
+#### Retrieving Data
+
+Use the list or get command to retrieve data from the EDB Cli. The list command will list all documents, while the get command will retrieve a specific data object.
+
+```bash
+bun run cli list Person -n 10
+```
+will list 10 documents of the type `Person`.
+
+```bash
+bun run cli get Person http://ontologies.slub-dresden.de/exhibition/entity#XYZ
+```
+will retrieve the document with the id `http://ontologies.slub-dresden.de/exhibition/entity#XYZ` of the type `Person`.
+
+
+## Versioning
+
+Versioning is done using `changesets`. Changesets should only be generated when publishing new releases of the EDB Framework. To generate a new changeset, run the following command:
+
+```bash
+# Add a new changeset
+changeset
+
+# Create new versions of packages
+changeset version
+
+# Publish all changed packages to npm
+changeset publish
+```
+
+## Local Development
+
+For development one needs `bun` and `node` installed. To install `bun` run the following command:
+
+```bash
+npm install -g @bun/cli
+```
+
+Node can be installed from the [official website](https://nodejs.org/en/).
+
+If you prefer to use `docker` for development, you can use the provided `docker-compose` file to start a development environment.

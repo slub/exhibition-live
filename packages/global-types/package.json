@@ -9,7 +9,7 @@
     "lint-fix": "eslint --fix \"**/*.ts*\"",
     "doc": "typedoc"
   },
-  "dependencies": {
+  "devDependencies": {
     "@rdfjs/namespace": "^2.0.1",
     "@rdfjs/types": "^1.1.0",
     "@slub/edb-graph-traversal": "workspace:*",

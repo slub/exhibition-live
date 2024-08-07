@@ -10,7 +10,6 @@ export const defaultPrefix = sladb[""].value;
 
 export default {
   BASE_IRI,
-  API_URL: "http://sdvahndmgtest.slub-dresden.de:8000/graphql",
   namespaceBase: "http://ontologies.slub-dresden.de/exhibition#",
   namespace: namespace("http://ontologies.slub-dresden.de/exhibition#"),
   defaultPrefix: "http://ontologies.slub-dresden.de/exhibition#",

@@ -27,7 +27,6 @@ import {
 
 export type EdbConfRaw = {
   BASE_IRI: string;
-  API_URL: string;
   namespaceBase: string;
   walkerOptions: Partial<WalkerOptions>;
   defaultPrefix: string;
@@ -39,6 +38,13 @@ export type EdbConfRaw = {
 };
 export type Config = Omit<EdbConfRaw, "namespaceBase"> & {
   namespace: NamespaceBuilder<string>;
+};
+
+export type SimplifiedEndpointConfig = {
+  baseIRI: string;
+  entityBaseIRI: string;
+  endpoint: SparqlEndpoint;
+  jsonldContext?: object;
 };
 
 export type QueryType = {

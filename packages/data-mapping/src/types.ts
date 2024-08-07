@@ -8,3 +8,5 @@ export type ProcessFlatResourceFn = (
   amount?: number,
   offset?: number,
 ) => Promise<void>;
+
+export type DeclarativeMappingTypeMap = Record<string, string | string[]>;

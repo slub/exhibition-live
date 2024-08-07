@@ -1,4 +1,4 @@
-import { Elysia, t } from "elysia";
+import Elysia, { t } from "elysia";
 import { swagger } from "@elysiajs/swagger";
 import { JSONSchema7 } from "json-schema";
 import {

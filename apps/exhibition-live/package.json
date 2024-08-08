@@ -208,6 +208,8 @@
     "typescript": "5.1.6",
     "webpack": "^5.75.0",
     "vite": "^5.2.0",
-    "@vitejs/plugin-react-swc": "^3.5.0"
+    "@vitejs/plugin-react-swc": "^3.5.0",
+    "mermaid": "^10.9.1",
+    "mdx-mermaid": "^2.0.0"
   }
 }

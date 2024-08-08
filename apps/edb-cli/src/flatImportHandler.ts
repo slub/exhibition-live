@@ -20,7 +20,7 @@ export const flatImportHandler = async ({
 }) => {
   const { typeName, mapping } = availableFlatMappings[mappingDeclaration];
   let importCounter = 0;
-  csvToModel(
+  await csvToModel(
     file,
     typeName,
     mapping,
@@ -42,4 +42,5 @@ export const flatImportHandler = async ({
     amount,
     offset,
   );
+  process.exit(0);
 };

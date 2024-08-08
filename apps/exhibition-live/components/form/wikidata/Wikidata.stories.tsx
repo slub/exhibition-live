@@ -5,7 +5,7 @@ import WikidataThingCard from "./WikidataThingCard";
 import WikidataHumanCard from "./WikidataHumanCard";
 
 export default {
-  title: "form/wikidata/WikidataThingCard",
+  title: "ui/view/WikidataCard",
   component: WikidataThingCard,
 };
 

@@ -59,6 +59,6 @@ export const SemanticJsonFormExhibition = () => {
   );
 };
 export default {
-  title: "form/exhibition/EditExhibitionJSONForm",
+  title: "ui/form/EditExhibitionJSONForm",
   component: NewSemanticJsonForm,
 };

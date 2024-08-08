@@ -3,7 +3,7 @@ import React from "react";
 import { DiscoverSearchTable } from "./DiscoverSearchTable";
 
 export default {
-  title: "form/discover/DiscoverSearchTable",
+  title: "ui/form/DiscoverSearchTable",
   component: DiscoverSearchTable,
 };
 

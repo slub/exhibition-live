@@ -4,7 +4,7 @@ import LobidSearchTable from "./LobidSearchTable";
 import { sladb } from "../../config/formConfigs";
 
 export default {
-  title: "form/lobid/LobidSearchTable",
+  title: "ui/form/LobidSearchTable",
   component: LobidSearchTable,
 };
 

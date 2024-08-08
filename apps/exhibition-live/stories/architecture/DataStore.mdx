@@ -1,6 +1,7 @@
 import { Meta } from "@storybook/blocks";
+import {SBMermaid} from "../../.storybook/blocks/SBMermaid";
 
-<Meta title="Data Stores" />
+<Meta title="Architecture/Data Stores" />
 
 # Data Stores
 
@@ -14,6 +15,50 @@ to create the necessary indexes during the bootstrap phase.
 
   The reference implementation is using the SPARQL query language to provide a RDF based data store, that can be used
 from the client and the server.
+
+Dependending on the DataStore  the overall architecture will look different. A client side approach, that does not require a classical
+Backend will look like the following
+
+<SBMermaid chart={`flowchart LR
+    subgraph Browser
+    Frontend --> ds[/SPARQL-DataStore\\]
+    end
+    ds --> id1[(SPARQL-Database \n e.g. Oxigraph, Allegro, QLever )]`}></SBMermaid>
+
+For testing purpose it can even be a local in memory SPARQL Database (driven by a webworker)
+
+<SBMermaid chart={`flowchart LR
+    subgraph Browser
+    Frontend --> ds[/SPARQL-DataStore \n with local worker config\\] --> id1[(in memory Oxigraph)]
+    end
+    id1 -- export/download --> tr[Triples export.ttl or export.json]`}></SBMermaid>
+
+
+When using the Restful-DataStore within the client and the SPARQL-DataStore within the Backend the chart will
+look like the following:
+
+<SBMermaid chart={`flowchart LR
+    subgraph Browser
+    Frontend --> ds[/RESTfull-DataStore\\]
+    end
+    ds -- REST request --> rh[REST Request Handler]
+    subgraph Server
+      rh --> ds2[/SPARQL-DataStore\\]
+    end
+      ds2 --> id1[(SPARQL-Database)]`}></SBMermaid>
+
+Another example would be Prisma in combination with Postgres:
+
+
+<SBMermaid chart={`flowchart LR
+    subgraph Browser
+    Frontend --> ds[/RESTfull-DataStore\\]
+    end
+    ds -- REST request --> rh[REST Request Handler]
+    subgraph Server
+      rh --> ds2[/Prisma-DataStore\\] --> PrismaORM
+    end
+      PrismaORM --> id1[(Postgres)]`}></SBMermaid>
 
 
 ## SPARQL Data Store

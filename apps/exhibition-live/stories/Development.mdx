@@ -31,43 +31,6 @@ within the `@slub` namespace. It will build all packages in parallel, and contin
 The `apps` directory contains concrete applications that use the EDB Framework. These applications are built using dependencies, from the
 workspace within the `packages` and `manifestations` directory.
 
-### EDB Cli
-
-The EDB Cli is a command-line tool for accessing and mapping data according to the current EDB data model defined by the JSON Schema.
-
-To run the EDB Cli, run the following command:
-
-```bash
-bun run cli
-```
-It will show you the available subcommands and options.
-
-```
-edb-cli <subcommand>
-
-where <subcommand> can be one of:
-
-- list
-- get
-- flatImport - Import of flat table structured documents
-- import - Recursively import data from another data store
-
-For more help, try running `edb-cli <subcommand> --help`
-```
-
-#### Retrieving Data
-
-Use the list or get command to retrieve data from the EDB Cli. The list command will list all documents, while the get command will retrieve a specific data object.
-
-```bash
-bun run cli list Person -n 10
-```
-will list 10 documents of the type `Person`.
-
-```bash
-bun run cli get Person http://ontologies.slub-dresden.de/exhibition/entity#XYZ
-```
-will retrieve the document with the id `http://ontologies.slub-dresden.de/exhibition/entity#XYZ` of the type `Person`.
 
 
 ## Versioning

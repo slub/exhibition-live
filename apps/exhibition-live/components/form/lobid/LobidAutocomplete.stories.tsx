@@ -3,7 +3,7 @@ import React from "react";
 import LobidAutocompleteSearch from "./LobidAutocompleteSearch";
 
 export default {
-  title: "form/lobid/LobidAutocomplete",
+  title: "ui/form/LobidAutocomplete",
   component: LobidAutocompleteSearch,
 };
 

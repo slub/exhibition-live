@@ -3,7 +3,7 @@ import { Meta, StoryObj } from "@storybook/react";
 import { AdbSpecialDateFormGroup } from "./AdbSpecialDateFormGroup";
 
 export default {
-  title: "form/exhibition/AdbSpecialDateFormGroup",
+  title: "ui/form/renderer/AdbSpecialDateFormGroup",
   component: AdbSpecialDateFormGroup,
   argTypes: {
     data: { control: false },

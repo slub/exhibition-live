@@ -2,7 +2,7 @@ import TypedForm from "../content/main/TypedForm";
 import { sladb } from "../config/formConfigs";
 
 export default {
-  title: "forms/Form",
+  title: "ui/form/Examples",
   component: TypedForm,
 };
 

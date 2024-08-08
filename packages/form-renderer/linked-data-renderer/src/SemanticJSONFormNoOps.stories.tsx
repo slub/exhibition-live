@@ -9,7 +9,7 @@ const sladb = namespace("http://ontologies.slub-dresden.de/exhibition#");
 const slent = namespace("http://ontologies.slub-dresden.de/exhibition/entity#");
 
 export default {
-  title: "form/exhibition/SemanticJsonFormNoOps",
+  title: "ui/form/SemanticJsonForm",
   component: SemanticJsonFormNoOps,
 } as Meta<typeof SemanticJsonFormNoOps>;
 

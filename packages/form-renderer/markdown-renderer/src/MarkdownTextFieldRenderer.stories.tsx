@@ -10,7 +10,7 @@ import { materialCustomAnyOfControlTester } from "@slub/edb-layout-renderer";
 import { MarkdownTextFieldRenderer } from "./MarkdownTextFieldRenderer";
 
 export default {
-  title: "form/exhibition/MarkdownTextFieldRenderer",
+  title: "ui/form/renderer/MarkdownTextFieldRenderer",
   component: MarkdownTextFieldRenderer,
 };
 

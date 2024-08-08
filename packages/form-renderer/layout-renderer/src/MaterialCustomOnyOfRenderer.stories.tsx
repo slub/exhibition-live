@@ -9,7 +9,7 @@ import { MaterialCustomAnyOfRenderer } from "./MaterialCustomAnyOfRenderer";
 import { materialCustomAnyOfControlTester } from "./materialCustomAnyOfControlTester";
 
 export default {
-  title: "form/exhibition/MaterialCustomAnyOfRenderer",
+  title: "ui/form/renderer/MaterialCustomAnyOfRenderer",
   component: MaterialCustomAnyOfRenderer,
 };
 

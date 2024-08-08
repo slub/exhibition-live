@@ -7,7 +7,7 @@ import { sladb, slent } from "../../config/formConfigs";
 import { QueryClientProvider, QueryClient } from "@slub/edb-state-hooks";
 
 export default {
-  title: "layout/MainLayout",
+  title: "ui/layout/MainLayout",
   component: MainLayout,
 } as Meta<typeof MainLayout>;
 

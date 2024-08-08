@@ -9,7 +9,7 @@ import { useCallback, useState } from "react";
 import { AutoIdentifierRenderer } from "./AutoIdentifierRenderer";
 
 export default {
-  title: "form/exhibition/AutoIdentifierRenderer",
+  title: "ui/form/renderer/AutoIdentifierRenderer",
   component: AutoIdentifierRenderer,
 };
 

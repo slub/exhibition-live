@@ -2,7 +2,7 @@ import React from "react";
 import { LobidAllPropTable } from "@slub/edb-advanced-components";
 
 export default {
-  title: "presentation/lobid/LobidAllPropsTable",
+  title: "ui/view/LobidAllPropsTable",
   component: LobidAllPropTable,
 };
 

@@ -2,7 +2,7 @@ import { Meta, StoryObj } from "@storybook/react";
 import { EntityDetailCard } from "@slub/edb-advanced-components";
 
 export default {
-  title: "presentation/kb/EntityDetailCard",
+  title: "ui/view/EntityDetailCard",
   component: EntityDetailCard,
 } as Meta<typeof EntityDetailCard>;
 

@@ -2,6 +2,8 @@
   "$schema": "https://turbo.build/schema.json",
   "globalDotEnv": [".env"],
   "pipeline": {
+    "demo": {
+    },
     "build": {
       "dependsOn": ["^build"],
       "outputs": ["dist/**", ".next/**", "!.next/cache/**"]
@@ -18,7 +20,9 @@
     },
     "lint": {},
     "lint:fix": {},
-    "build:prisma": {},
+    "build:prisma": {
+      "cache": false
+    },
     "docs": {},
     "dev": {
       "cache": false,

@@ -6,6 +6,7 @@
   "main": "index.js",
   "scripts": {
     "start": "bun src/index.ts",
+    "demo": "bun src/index.ts",
     "start:graphiql": "docker run --name graphiql --rm -p 4000:4000 -e API_URL=http://localhost:3001/graphql npalm/graphiql",
     "dev": "bun --watch src/index.ts",
     "dev:api": "bun run dev",

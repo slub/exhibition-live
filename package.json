@@ -25,6 +25,7 @@
   "license": "MIT",
   "private": true,
   "scripts": {
+    "start": "turbo run demo",
     "build": "turbo run build",
     "build:packages": "turbo run build --filter=@slub/* --continue",
     "build:pages": "turbo run build:pages",
@@ -43,7 +44,7 @@
     "changeset:init": "changeset init",
     "changeset": "changeset",
     "helper:deps": "bun ./packages/build-helper/get-dependencies.js",
-    "build:prisma": "turbo run build:prisma",
+    "build:prisma": "turbo run build:prisma && sed -i \"s/env(\\\"DATABASE_PROVIDER\\\")/\\\"${DATABASE_PROVIDER:-sqlite}\\\"/g\" ./prisma/*.prisma",
     "prisma:exhibition:generate": "prisma generate --schema ./prisma/exhibition.prisma",
     "prisma:exhibition:migrate": "prisma migrate dev --schema ./prisma/exhibition.prisma",
     "purge": "rm -rf node_modules && find -maxdepth 3 -name node_modules | xargs rm -rf"

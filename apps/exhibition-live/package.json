@@ -6,6 +6,7 @@
     "dev": "next dev",
     "dev:vite": "vite --host",
     "build": "next build",
+    "demo": "bun run dev:vite",
     "start": "next start",
     "lint": "next lint",
     "test": "NODE_OPTIONS=--experimental-vm-modules jest -w",

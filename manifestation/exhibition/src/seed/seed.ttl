@@ -1,0 +1,93 @@
+   @prefix slent:  <http://ontologies.slub-dresden.de/exhibition/entity> .
+   @prefix sladb: <http://ontologies.slub-dresden.de/exhibition#> .
+   @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+   slent:retrospective rdf:type sladb:ExhibitionType ;
+                    sladb:title "Retrospektive" ;
+                    sladb:description "Eine Ausstellung, die Werke aus einem längeren Zeitraum eines Künstlers oder einer Thematik zeigt." .
+   slent:soloExhibition rdf:type sladb:ExhibitionType ;
+                     sladb:title "Einzelausstellung" ;
+                     sladb:description "Eine Ausstellung gewidmet einem einzigen Künstler." .
+   slent:groupExhibition rdf:type sladb:ExhibitionType ;
+                      sladb:title "Gruppenausstellung" ;
+                      sladb:description "Eine Ausstellung, die Werke von mehreren Künstlern umfasst." .
+   slent:thematicExhibition rdf:type sladb:ExhibitionType ;
+                         sladb:title "Themenausstellung" ;
+                         sladb:description "Eine Ausstellung basierend auf einem spezifischen Thema oder Konzept." .
+   slent:surveyExhibition rdf:type sladb:ExhibitionType ;
+                       sladb:title "Übersichtsausstellung" ;
+                       sladb:description "Eine umfassende Ausstellung, die einen breiten Überblick bietet." .
+
+   slent:specialExhibition rdf:type sladb:ExhibitionCategory ;
+                        sladb:title "Sonderausstellung" ;
+                        sladb:description "Eine zeitlich begrenzte, oft thematisch spezialisierte Ausstellung." .
+   slent:permanentExhibition rdf:type sladb:ExhibitionCategory ;
+                           sladb:title "Dauerausstellung" ;
+                           sladb:description "Eine langfristig angelegte Ausstellung eines Museums oder einer ähnlichen Einrichtung." .
+   slent:travelingExhibition rdf:type sladb:ExhibitionCategory ;
+                          sladb:title "Wanderausstellung" ;
+                          sladb:description "Eine Ausstellung, die an verschiedenen Orten gezeigt wird." .
+   slent:accrochage rdf:type sladb:ExhibitionCategory ;
+                 sladb:title "Accrochage" ;
+                 sladb:description "Eine kleinere, oft spontane Ausstellung von Werken, die häufig wechselt." .
+   slent:cabinetExhibition rdf:type sladb:ExhibitionCategory ;
+                        sladb:title "Kabinettausstellung" ;
+                        sladb:description "Eine kleinformatige, intime Ausstellung." .
+
+   slent:exhibitionSeries rdf:type sladb:SeriesType ;
+                       sladb:title "Ausstellungsreihe" ;
+                       sladb:description "Eine Serie von Ausstellungen unter einem gemeinsamen organisatorischen Rahmen." .
+   slent:artFair rdf:type sladb:SeriesType ;
+              sladb:title "Kunstmesse" ;
+              sladb:description "Eine kommerzielle Veranstaltung, auf der Galerien Werke zum Verkauf anbieten." .
+   slent:artFestival rdf:type sladb:SeriesType ;
+                  sladb:title "Kunstfestival" ;
+                  sladb:description "Ein Festival, das sich auf visuelle Kunst in verschiedenen Formaten konzentriert." .
+
+   slent:exhibitionCatalog rdf:type sladb:ResourceType ;
+                         sladb:title "Ausstellungskatalog" ;
+                         sladb:description "Ein publiziertes Werk, das Details und Werke einer Ausstellung dokumentiert." .
+   slent:review rdf:type sladb:ResourceType ;
+             sladb:title "Rezension" ;
+             sladb:description "Eine kritische Bewertung einer Ausstellung, oft publiziert in Medien." .
+   slent:flyer rdf:type sladb:ResourceType ;
+            sladb:title "Flyer" ;
+            sladb:description "Ein Werbemittel, das Informationen zu einer Ausstellung enthält." .
+   slent:poster rdf:type sladb:ResourceType ;
+             sladb:title "Plakat" ;
+             sladb:description "Ein großformatiges gedrucktes Werbemittel für eine Ausstellung." .
+
+   slent:curator rdf:type sladb:PersonRole ;
+              sladb:title "Kurator:in" ;
+              sladb:description "Eine Person, die die Inhalte und die Organisation einer Ausstellung verantwortet." .
+   slent:exhibitedArtist rdf:type sladb:PersonRole ;
+                      sladb:title "ausgestellte:r Künstler:in" ;
+                      sladb:description "Ein Künstler, dessen Werke in einer Ausstellung gezeigt werden." .
+   slent:exhibitionDesigner rdf:type sladb:PersonRole ;
+                         sladb:title "Ausstellungsdesigner:in" ;
+                         sladb:description "Eine Person, die für das räumliche und grafische Design einer Ausstellung verantwortlich ist." .
+   slent:patronage rdf:type sladb:PersonRole ;
+                sladb:title "Schirmherr:in" ;
+                sladb:description "Eine Person oder Institution, die eine Ausstellung finanziell oder ideell unterstützt." .
+   slent:galerist rdf:type sladb:PersonRole ;
+               sladb:title "Galerist:in" ;
+               sladb:description "Ein kommerzieller Akteur, der Kunstwerke ausstellt und verkauft." .
+   slent:artHistorian rdf:type sladb:PersonRole ;
+                   sladb:title "Kunsthistoriker:in" ;
+                   sladb:description "Eine Person, die sich wissenschaftlich mit Kunst und ihrer Geschichte befasst." .
+   slent:collector rdf:type sladb:PersonRole ;
+                sladb:title "Sammler:in" ;
+                sladb:description "Eine Person, die Kunstwerke sammelt." .
+
+   slent:organizer rdf:type sladb:CorporationRole ;
+                sladb:title "Veranstalter" ;
+                sladb:description "Die Institution oder Person, die eine Ausstellung oder ein Event organisiert." .
+   slent:lender rdf:type sladb:CorporationRole ;
+             sladb:title "Leihgeber" ;
+             sladb:description "Eine Person oder Institution, die Werke für eine Ausstellung zur Verfügung stellt." .
+   slent:cooperationPartner rdf:type sladb:CorporationRole ;
+                         sladb:title "Kooperationspartner" ;
+                         sladb:description "Eine Institution, die mit dem Hauptveranstalter zusammenarbeitet." .
+   slent:sponsor rdf:type sladb:CorporationRole ;
+              sladb:title "Sponsor" ;
+              sladb:description "Eine Person oder Firma, die eine Ausstellung finanziell unterstützt." .

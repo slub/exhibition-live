@@ -30,6 +30,17 @@ jobs:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Restore and cache Nix store
+        uses: nix-community/cache-nix-action@v5
+        with:
+          primary-key: nix-${{ runner.os }}-${{ hashFiles('**/*.nix') }}
+          restore-prefixes-first-match: nix-${{ runner.os }}-
+          gc-max-store-size-linux: 1081900000
+          purge: true
+          purge-prefixes: cache-${{ runner.os }}-
+          purge-created: 0
+          purge-primary-key: never
       - name: Extract metadata (tags, labels) for Docker
         id: meta
         uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7

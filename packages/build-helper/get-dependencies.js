@@ -55,7 +55,7 @@ if (!process.argv[2]) {
   process.exit(1);
 }
 // Path to the directory containing TypeScript files
-const DIRECTORY_PATH = `${process.argv[2]}/**/*.ts[x]`;
+const DIRECTORY_PATH = `${process.argv[2]}/**/*.ts*`;
 
 // Helper function to parse TypeScript file and extract external module names
 function extractImports(filePath) {

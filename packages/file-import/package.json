@@ -1,0 +1,43 @@
+{
+  "name": "@slub/edb-file-import",
+  "version": "1..0",
+  "description": "nodejs file RDF file import utilities",
+  "type": "module",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "default": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "lint": "eslint \"**/*.ts*\"",
+    "lint-fix": "eslint --fix \"**/*.ts*\"",
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest --passWithNoTests --color",
+    "test:watch": "NODE_OPTIONS=--experimental-vm-modules jest --watch --color",
+    "test:coverage": "NODE_OPTIONS=--experimental-vm-modules jest --coverage"
+  },
+  "devDependencies": {
+    "@slub/edb-build-helper": "workspace:*",
+    "@slub/edb-core-types": "workspace:*",
+    "@slub/edb-tsconfig": "workspace:*",
+    "@slub/edb-tsup-config": "workspace:*",
+    "@types/jest": "^29.5.12",
+    "@types/json-schema": "^7.0.14",
+    "eslint-config-edb": "workspace:*",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "@slub/edb-maintenance-utils": "workspace:*",
+    "json-schema": "^0.4.0",
+    "jsonld": "^8.3.2",
+    "jsonld-context-parser": "^2.4.0",
+    "n3": "^1.17.2",
+    "rdf-dataset-ext": "^1.1.0",
+    "string-to-stream": "^3.0.1"
+  }
+}

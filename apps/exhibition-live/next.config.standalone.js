@@ -7,14 +7,27 @@ const removeImports = require("next-remove-imports")({
 const nextConfig = {
   reactStrictMode: true,
   output: "standalone",
+  modularizeImports: {
+    "@mui/icons-material": { transform: "@mui/icons-material/{{member}}" },
+    lodash: { transform: "lodash/{{member}}" },
+    "lodash-es": { transform: "lodash-es/{{member}}" },
+  },
+  experimental: {
+    externalDir: true,
+    optimizePackageImports: [
+      "@mui/material",
+      "@mui/icons-material",
+      "@mui/lab",
+    ],
+  },
   images: {
     unoptimized: true,
   },
-  basePath: process.env.NEXT_PUBLIC_BASE_PATH,
+  basePath: process.env.NEXT_PUBLIC_BASE_PATH || "",
   publicRuntimeConfig: {
     NEXT_PUBLIC_GAPI_OAUTH_CLIENT_ID:
       process.env.NEXT_PUBLIC_GAPI_OAUTH_CLIENT_ID,
-    NEXT_PUBLIC_BASE_PATH: process.env.NEXT_PUBLIC_BASE_PATH,
+    NEXT_PUBLIC_BASE_PATH: process.env.NEXT_PUBLIC_BASE_PATH || "",
     SPARQL_ENDPOINT: process.env.SPARQL_ENDPOINT,
     SPARQL_ENDPOINT_LABEL: process.env.SPARQL_ENDPOINT_LABEL,
     SPARQL_ENDPOINT_PROVIDER: process.env.SPARQL_ENDPOINT_PROVIDER,

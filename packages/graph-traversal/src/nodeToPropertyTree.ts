@@ -2,6 +2,11 @@ import df from "@rdfjs/data-model";
 import { BlankNode, NamedNode, Term } from "@rdfjs/types";
 import clownface, { AnyPointer } from "clownface";
 
+export type RootNode = {
+  id: string | number;
+  properties: NodePropertyTree;
+};
+
 export type NodePropertyTree = {
   [key: string]: NodePropertyItem[];
 };

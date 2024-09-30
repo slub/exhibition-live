@@ -1,10 +1,7 @@
-import {
-  editorPermissions,
-  fullPermission,
-  noPermission,
-  Permission,
-} from "../config";
+import { fullPermission, noPermission } from "@slub/edb-core-utils";
 import { create } from "zustand";
+import { Permission } from "@slub/edb-core-types";
+import { editorPermissions } from "../config";
 
 export enum RoleType {
   Admin = "admin",

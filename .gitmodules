@@ -1,0 +1,4 @@
+[submodule "packages/edb-sparnatural/jsonschema2shacl"]
+	path = packages/edb-sparnatural/jsonschema2shacl
+	url = https://github.com/citiususc/jsonschema2shacl.git
+	branch = main

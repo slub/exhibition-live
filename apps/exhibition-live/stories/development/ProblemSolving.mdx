@@ -1,0 +1,90 @@
+import { Meta } from "@storybook/blocks";
+
+<Meta title="Development/Problem Solving" />
+
+# Problem Solving
+
+This package is dedicated to problems that can occur during development and how to solve them.
+
+## Reinstall all dependencies
+
+## next.js Development errors
+
+Sometime dependencies are not compatible with next.js in dev mode and it throws errors like below:
+
+```
+adb-next:dev:  ⨯ ../../node_modules/@jsonforms/material-renderers/node_modules/@mui/icons-material/node_modules/@babel/runtime/helpers/interopRequireDefault.js
+adb-next:dev: Module parse failed: Cannot use 'import.meta' outside a module (38:6)
+adb-next:dev: File was processed with these loaders:
+```
+
+First one has to check whether the error does not appear in production mode, by building the project and running it.
+If it really just shows up in dev mode and a complete reinstallation of node dependencies does not help, one can try to exclude the problematic module from being transpiled by next.js.
+Delete it manually from the `node_modules` folder and add it to the `transpileModules` array in the `next.config.js` file.
+
+
+# NextJS Development Errors
+
+## Collecting page data  .ReferenceError: window is not defined
+
+This error occurs when a component is trying to access the window object during server side rendering. To fix this, wrap the code that is trying to access the window object in a check to see if the window object is defined.
+
+This example comes from the `@slub/edb-debug-utils` package:
+
+```typescript jsx
+import dynamic from "next/dynamic";
+import {YasguiSPARQLEditorProps} from "./YasguiSPARQLEditorProps";
+
+const DynamicComponentWithNoSSR = dynamic(
+  () => import("./YasguiSPARQLEditor"),
+  {
+    ssr: false,
+  },
+);
+
+export const YasguiSPARQLEditorNoSSR = (props: YasguiSPARQLEditorProps) => (
+  <DynamicComponentWithNoSSR {...props} />
+);
+```
+#### Explanation:
+
+1. Use separate `.ts` File for Props
+2. Use `dynamic` from `next/dynamic` to import the component
+
+If the error still persists, try to wrap the external library within an dynamic import:
+
+```typescript jsx
+import type Yasgui from "@triply/yasgui";
+import React, {FunctionComponent, useEffect, useState} from "react";
+
+import {YasguiSPARQLEditorProps} from "./YasguiSPARQLEditorProps";
+
+export const YasguiSPARQLEditor: FunctionComponent<YasguiSPARQLEditorProps> = ({
+  onInit
+}) => {
+  const [yasgui, setYasgui] = useState<Yasgui | null>(null);
+
+  useEffect(() => {
+    import("@triply/yasgui").then(({default: YasguiCls}) => {
+    setYasgui((yg) => {
+      const el = document.getElementById("yasgui");
+      return yg ? yg : new YasguiCls(el, { yasqe: {
+                queryingDisabled: undefined,
+                showQueryButton: true }})
+      });
+    });
+  }, [setYasgui]);
+
+  useEffect(() => {
+    if (yasgui && onInit) onInit(yasgui);
+  }, [onInit, yasgui]);
+
+  return <div id={"yasgui"} />;
+};
+
+```
+
+#### Explanation:
+
+1. For typescript, use `import type` to import the type of the library, this will not import the library itself, but only the type
+2. Use `import` to import the library itself within the `useEffect` hook, this will only import the library when the component is rendered

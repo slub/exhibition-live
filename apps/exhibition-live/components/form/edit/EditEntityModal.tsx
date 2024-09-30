@@ -1,55 +1,57 @@
 import NiceModal, { useModal } from "@ebay/nice-modal-react";
-import { useTypeIRIFromEntity } from "../../state";
-import { useCallback, useMemo, useState } from "react";
-import { primaryFieldExtracts, typeIRItoTypeName } from "../../config";
-import useExtendedSchema from "../../state/useExtendedSchema";
-import { useCRUDWithQueryClient } from "../../state/useCRUDWithQueryClient";
-import { defaultJsonldContext, defaultPrefix } from "../formConfigs";
-import { useTranslation } from "next-i18next";
-import { PrimaryFieldResults } from "../../utils/types";
+import { useAdbContext, useTypeIRIFromEntity } from "@slub/edb-state-hooks";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
-  applyToEachField,
-  extractFieldIfString,
-} from "../../utils/mapping/simpleFieldExtractor";
+  useCRUDWithQueryClient,
+  useExtendedSchema,
+} from "@slub/edb-state-hooks";
+import { useTranslation } from "next-i18next";
 import { Button, Stack } from "@mui/material";
 import { JSONSchema7 } from "json-schema";
-import { uischemata } from "../uischemaForType";
-import { uischemas } from "../uischemas";
-import { cleanJSONLD } from "../../utils/crud";
-import GenericModal from "../GenericModal";
-import { SemanticJsonFormNoOps } from "../SemanticJsonFormNoOps";
-import MuiEditDialog from "../../renderer/MuiEditDialog";
 import { useSnackbar } from "notistack";
+import { useFormDataStore } from "@slub/edb-state-hooks";
+import { PrimaryFieldResults } from "@slub/edb-core-types";
+import { cleanJSONLD } from "@slub/sparql-schema";
+import { EditEntityModalProps } from "@slub/edb-global-types";
+import { MuiEditDialog } from "@slub/edb-basic-components";
+import { applyToEachField, extractFieldIfString } from "@slub/edb-data-mapping";
 
-type EntityDetailModalProps = {
-  typeIRI: string | undefined;
-  entityIRI: string;
-  data: any;
-  disableLoad?: boolean;
-};
 export const EditEntityModal = NiceModal.create(
   ({
     typeIRI,
     entityIRI,
     data: defaultData,
     disableLoad,
-  }: EntityDetailModalProps) => {
+  }: EditEntityModalProps) => {
+    const {
+      jsonLDConfig,
+      typeIRIToTypeName,
+      queryBuildOptions: { primaryFieldExtracts },
+      uischemata,
+      components: { SemanticJsonForm },
+    } = useAdbContext();
     const modal = useModal();
     const typeIRIs = useTypeIRIFromEntity(entityIRI);
-    const classIRI: string | undefined = typeIRI || typeIRIs?.[0];
-    const typeName = useMemo(() => typeIRItoTypeName(classIRI), [classIRI]);
-    const loadedSchema = useExtendedSchema({ typeName, classIRI });
-    const { loadQuery, saveMutation } = useCRUDWithQueryClient(
+    const classIRI: string | undefined = useMemo(
+      () => typeIRI || typeIRIs?.[0],
+      [typeIRI, typeIRIs],
+    );
+    const typeName = useMemo(
+      () => typeIRIToTypeName(classIRI),
+      [classIRI, typeIRIToTypeName],
+    );
+    const loadedSchema = useExtendedSchema({ typeName });
+    const { loadQuery, saveMutation } = useCRUDWithQueryClient({
       entityIRI,
-      classIRI,
-      loadedSchema,
-      {
+      typeIRI: classIRI,
+      schema: loadedSchema,
+      queryOptions: {
         enabled: !disableLoad,
         refetchOnWindowFocus: true,
         initialData: defaultData,
       },
-      "show",
-    );
+      loadQueryKey: "show",
+    });
     const { t } = useTranslation();
     const [firstTimeSaved, setFirstTimeSaved] = useState(false);
     const [isStale, setIsStale] = useState(false);
@@ -63,13 +65,17 @@ export const EditEntityModal = NiceModal.create(
         description: null,
         image: null,
       };
-    }, [typeName, data]);
+    }, [typeName, data, primaryFieldExtracts]);
 
-    const [formData, setFormData] = useState<any>(data);
-    const uischema = useMemo(
-      () => uischemata[typeName] || (uischemas as any)[typeName],
-      [typeName],
-    );
+    const { formData, setFormData } = useFormDataStore({
+      entityIRI,
+      typeIRI,
+    });
+
+    useEffect(() => {
+      setFormData(data);
+    }, [data, setFormData]);
+    const uischema = useMemo(() => uischemata?.[typeName], [typeName]);
     const { enqueueSnackbar } = useSnackbar();
 
     const handleSaveSuccess = useCallback(() => {
@@ -99,8 +105,8 @@ export const EditEntityModal = NiceModal.create(
     const handleAccept = useCallback(() => {
       const acceptCallback = async () => {
         let cleanedData = await cleanJSONLD(formData, loadedSchema, {
-          jsonldContext: defaultJsonldContext,
-          defaultPrefix,
+          jsonldContext: jsonLDConfig.jsonldContext,
+          defaultPrefix: jsonLDConfig.defaultPrefix,
           keepContext: true,
         });
         modal.resolve({
@@ -109,14 +115,8 @@ export const EditEntityModal = NiceModal.create(
         });
         modal.remove();
       };
-      if (isStale) {
-        return NiceModal.show(GenericModal, {
-          type: "save before proceed",
-        }).then(() => handleSave(acceptCallback));
-      } else {
-        return acceptCallback();
-      }
-    }, [formData, loadedSchema, handleSave, modal, isStale]);
+      return handleSave(acceptCallback);
+    }, [formData, loadedSchema, handleSave, modal, jsonLDConfig]);
 
     const handleSaveAndAccept = useCallback(async () => {
       //await handleSave(handleAccept);
@@ -128,7 +128,7 @@ export const EditEntityModal = NiceModal.create(
         setFormData(data);
         setIsStale(true);
       },
-      [setIsStale],
+      [setIsStale, setFormData],
     );
 
     return (
@@ -147,7 +147,7 @@ export const EditEntityModal = NiceModal.create(
           </Stack>
         }
       >
-        <SemanticJsonFormNoOps
+        <SemanticJsonForm
           data={formData}
           onChange={handleFormDataChange}
           typeIRI={typeIRI}
@@ -157,7 +157,6 @@ export const EditEntityModal = NiceModal.create(
           formsPath={"root"}
           jsonFormsProps={{
             uischema,
-            uischemas: uischemas,
           }}
           enableSidebar={false}
           disableSimilarityFinder={true}

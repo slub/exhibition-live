@@ -3,7 +3,8 @@
   "display": "Node App",
   "extends": "@tsconfig/node18/tsconfig.json",
   "compilerOptions": {
-    "moduleResolution": "node",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
     "allowJs": false,
     "allowSyntheticDefaultImports": true,
     "allowUnreachableCode": false,

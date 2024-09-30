@@ -2,9 +2,15 @@ import { QueryEngine } from "@comunica/query-sparql";
 import { IDataSource } from "@comunica/types";
 import datasetFactory from "@rdfjs/dataset";
 import N3 from "n3";
-import { CRUDFunctions, SparqlEndpoint } from "@slub/edb-core-types";
+import {
+  CRUDFunctions,
+  RDFSelectResult,
+  SelectFetchOptions,
+  SelectFetchOverload,
+  SparqlEndpoint,
+} from "@slub/edb-core-types";
 
-const cFetch = (query: string, endpoint: string) =>
+const fetchNTriples = (query: string, endpoint: string) =>
   fetch(endpoint, {
     headers: {
       accept: "application/n-triples,*/*;q=0.9",
@@ -16,7 +22,7 @@ const cFetch = (query: string, endpoint: string) =>
     credentials: "omit",
     cache: "no-cache",
   });
-const askFetch = (query: string, endpoint: string) =>
+const fetchSPARQLResults = (query: string, endpoint: string) =>
   fetch(endpoint, {
     headers: {
       accept: "application/sparql-results+json,*/*;q=0.9",
@@ -29,58 +35,25 @@ const askFetch = (query: string, endpoint: string) =>
     cache: "no-cache",
   });
 
-const createCutomizedFetch: (
-  query: string,
-  accept?: string,
-  contentType?: string,
-) => (input: RequestInfo | URL, init?: RequestInit) => Promise<Response> =
-  (query, accept, contentType = "application/sparql-query") =>
-  async (input, init) => {
-    const headers = new Headers(init?.headers);
-    accept && headers.set("accept", accept);
-    contentType && headers.set("Content-Type", contentType);
-    const newInit = {
-      ...(typeof init === "object" ? init : {}),
-      headers,
-      body: query,
-      method: "POST",
-      catch: "no-cache",
-    };
-    return await fetch(input, newInit);
-  };
 const defaultQueryFetch =
   (endpoint: string, accept?: string, contentType?: string) =>
   async (query: string) => {
     const engine = new QueryEngine();
     const prepared = await engine.query(query, {
       sources: [endpoint] as [IDataSource],
-      fetch: createCutomizedFetch(
-        query,
-        accept || "application/sparql-results+json",
-        contentType,
-      ),
     });
     return await prepared.execute();
   };
-const defaultQuerySelect: (
-  query: string,
-  endpoint: string,
-) => Promise<any[]> = async (query: string, endpoint) => {
-  const sFetch = createCutomizedFetch(query);
-  const prepared = await sFetch(endpoint);
-  return ((await prepared.json())?.results?.bindings || []) as any[];
-};
-
 export const oxigraphCrudOptions: (
   endpoint: SparqlEndpoint,
 ) => CRUDFunctions = ({ endpoint: url }: SparqlEndpoint) => ({
   askFetch: async (query: string) => {
-    const res = await askFetch(query, url);
+    const res = await fetchSPARQLResults(query, url);
     const { boolean } = await res.json();
     return boolean === true;
   },
   constructFetch: async (query: string) => {
-    const res = await cFetch(query, url),
+    const res = await fetchNTriples(query, url),
       reader = new N3.Parser(),
       ntriples = await res.text(),
       ds = datasetFactory.dataset(reader.parse(ntriples));
@@ -91,9 +64,9 @@ export const oxigraphCrudOptions: (
     undefined,
     "application/sparql-update",
   ),
-  selectFetch: async (query: string, options) => {
-    const res = await askFetch(query, url);
-    const resultJson = await res.json();
+  selectFetch: (async (query: string, options?: SelectFetchOptions) => {
+    const res = await fetchSPARQLResults(query, url);
+    const resultJson = (await res.json()) as RDFSelectResult;
     return options?.withHeaders ? resultJson : resultJson?.results?.bindings;
-  },
+  }) as SelectFetchOverload,
 });

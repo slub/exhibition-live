@@ -1,0 +1,27 @@
+import { Meta } from "@storybook/blocks";
+
+<Meta title="maintenance/Norm Data" />
+
+# Mapping from authorities and secondary databases
+
+The UI and the Backend makes use of declarative mapping configurations and a set of extensible
+mapping Strategies to map secondary databases and authorities to the internal data model.
+
+Items, that have been found in an external database are being mapped according to the external mapping declaration, that exists
+in the configuration of the manifestation of the EDB-Database.
+
+## Usage throughout the application
+
+Those declarative mappings are being used when importing data and when manually linking items to external databases.
+Typically, when entering a historical record into the database, relations to persons, organisations, places, etc. are being created.
+The mapping will then not only record the link to the external database itself but also map the external data to the internal data model.
+
+This is done when linking data using the [Similarity Finder](/docs/development-similarity-finder--docs) or when importing data from other sources.
+
+## Mapping Declaration
+
+when importing Data from other sources like tables, CSV-Files, etc. the configured mapping declaration is being used as well.
+
+## Adding New Mappings
+
+## Adding new sources to the Similarity Finder

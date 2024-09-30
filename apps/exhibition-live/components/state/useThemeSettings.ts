@@ -1,8 +1,12 @@
 import { create } from "zustand";
+import { NextFontWithVariable } from "next/dist/compiled/@next/font";
+
+// Custom fonts bundled (i.e. no external requests), see <https://nextjs.org/docs/pages/building-your-application/optimizing/fonts>
 
 type UseThemeSettings = {
   isOpen: string[];
   fontFamily: string;
+  font?: NextFontWithVariable;
   borderRadius: number;
   opened: boolean;
   defaultId: string;
@@ -12,7 +16,7 @@ type UseThemeSettings = {
 export const useThemeSettings = create<UseThemeSettings>((set, get) => ({
   isOpen: [], // for active default menu
   defaultId: "default",
-  fontFamily: "'Roboto', sans-serif",
+  fontFamily: "sans-serif",
   borderRadius: 12,
   opened: true,
   navType: "light",

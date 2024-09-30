@@ -1,0 +1,35 @@
+{
+  "name": "@slub/edb-virtualized-components",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs",
+      "default": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsup src/index.tsx --format esm,cjs --dts --external react",
+    "dev": "tsup src/index.tsx --format esm,cjs --watch --dts --external react",
+    "lint": "eslint \"**/*.ts*\"",
+    "lint-fix": "eslint --fix \"**/*.ts*\""
+  },
+  "dependencies": {
+    "@slub/edb-ui-utils": "workspace:*"
+  },
+  "devDependencies": {
+    "react-virtuoso": "^4.6.2",
+    "@types/react": "^18.3.3"
+  },
+  "peerDependencies": {
+    "@mui/material": "^5",
+    "@mui/icons-material": "^5",
+    "react-virtuoso": "^4",
+    "react": "^18"
+  }
+}

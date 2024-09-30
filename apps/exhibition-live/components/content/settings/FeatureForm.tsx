@@ -8,7 +8,7 @@ import { Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import React, { FunctionComponent, useCallback } from "react";
 
-import { useSettings } from "../../state/useLocalSettings";
+import { useSettings } from "@slub/edb-state-hooks";
 
 interface OwnProps {}
 
@@ -24,6 +24,9 @@ const schema: JsonSchema = {
     enablePreview: {
       type: "boolean",
     },
+    enableStylizedCard: {
+      type: "boolean",
+    },
   },
 };
 
@@ -36,17 +39,18 @@ const FeatureForm: FunctionComponent<Props> = (props) => {
     },
     [setFeatures],
   );
-  // a REACT MUI paper list with checkboxes
   return (
     <Box>
       <Typography variant="h2">Funktionen</Typography>
-      <JsonForms
-        data={features}
-        schema={schema}
-        renderers={materialRenderers}
-        cells={materialCells}
-        onChange={handleFormChange}
-      />
+      {features && (
+        <JsonForms
+          data={features}
+          schema={schema}
+          renderers={materialRenderers}
+          cells={materialCells}
+          onChange={handleFormChange}
+        />
+      )}
     </Box>
   );
 };

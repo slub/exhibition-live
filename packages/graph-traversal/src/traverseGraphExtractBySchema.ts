@@ -11,6 +11,7 @@ import {
 } from "@slub/json-schema-utils";
 import { filterUndefOrNull } from "@slub/edb-core-utils";
 import { JsonSchema, WalkerOptions } from "./types";
+import DatasetCore from "@rdfjs/dataset/DatasetCore";
 
 const isNil = (val: any) => val === undefined || val === null;
 
@@ -226,7 +227,7 @@ const propertyWalker = (
 export const traverseGraphExtractBySchema = (
   baseIRI: string,
   iri: string,
-  dataset: Dataset,
+  dataset: Dataset | DatasetCore,
   rootSchema: JSONSchema7,
   options: Partial<WalkerOptions>,
 ) => {

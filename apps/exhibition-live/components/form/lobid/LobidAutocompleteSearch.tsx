@@ -5,11 +5,10 @@ import React, {
   useState,
 } from "react";
 
-import { findEntityWithinLobid } from "../../utils/lobid/findEntityWithinLobid";
-import {
-  AutocompleteSuggestion,
-  DebouncedAutocomplete,
-} from "../DebouncedAutoComplete";
+import { DebouncedAutocomplete } from "@slub/edb-advanced-components";
+import { AutocompleteSuggestion } from "@slub/edb-core-types";
+import { findEntityWithinLobid } from "@slub/edb-authorities";
+import { lobidTypemap } from "@slub/exhibition-schema";
 
 interface OwnProps {
   selected?: AutocompleteSuggestion | null;
@@ -54,6 +53,7 @@ const LobidAutocompleteSearch: FunctionComponent<Props> = ({
               await findEntityWithinLobid(
                 searchString,
                 typeName || "Person",
+                lobidTypemap,
                 50,
               )
             )?.member?.map(

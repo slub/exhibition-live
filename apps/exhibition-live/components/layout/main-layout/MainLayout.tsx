@@ -1,20 +1,8 @@
-// assets
-import { ChevronRight as IconChevronRight } from "@mui/icons-material";
-import {
-  AppBar,
-  Box,
-  CssBaseline,
-  styled,
-  Theme,
-  Toolbar,
-  useMediaQuery,
-  useTheme,
-} from "@mui/material";
+import { Box, CssBaseline, styled, Theme, useTheme } from "@mui/material";
 import { useCallback, useState } from "react";
 
 import { AppHeader } from "./AppHeader";
 import { Sidebar } from "./Sidebar";
-import { useDrawerDimensions } from "../../state";
 
 export const gridSpacing = 3;
 export const leftDrawerWidth = 260;
@@ -27,7 +15,6 @@ type MainProps = {
 const Main = styled("main", {
   shouldForwardProp: (prop) => prop !== "open" && prop !== "theme",
 })(({ theme }: MainProps) => {
-  const { drawerHeight } = useDrawerDimensions();
   return {
     // @ts-ignore
     ...theme.typography.mainContent,

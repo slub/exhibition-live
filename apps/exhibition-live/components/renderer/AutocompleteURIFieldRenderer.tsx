@@ -1,17 +1,10 @@
 import { ControlProps, showAsRequired, update } from "@jsonforms/core";
 import { withJsonFormsControlProps } from "@jsonforms/react";
-import { Edit, EditOff } from "@mui/icons-material";
-import {
-  FormControl,
-  FormLabel,
-  Grid,
-  Hidden,
-  IconButton,
-} from "@mui/material";
+import { FormControl, FormLabel, Grid, Hidden } from "@mui/material";
 import merge from "lodash/merge";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 
-import { AutocompleteSuggestion } from "../form/DebouncedAutoComplete";
+import { AutocompleteSuggestion } from "@slub/edb-core-types";
 import WikidataAutocompleteInput from "../form/wikidata/WikidataAutocompleteInput";
 
 const AutocompleteURIFieldRenderer = (props: ControlProps) => {

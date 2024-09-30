@@ -7,9 +7,9 @@ import { JsonForms } from "@jsonforms/react";
 import { Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import { JSONSchema7 } from "json-schema";
-import React, { FunctionComponent, useCallback } from "react";
+import React, { FunctionComponent, useCallback, useMemo } from "react";
 
-import { useSettings } from "../../state/useLocalSettings";
+import { useSettings } from "@slub/edb-state-hooks";
 
 interface OwnProps {}
 
@@ -43,6 +43,9 @@ const schema: JsonSchema = {
             const: "qlever",
           },
           {
+            const: "rest",
+          },
+          {
             const: "worker",
           },
         ],
@@ -67,7 +70,7 @@ const schema: JsonSchema = {
 };
 
 const EndpointChooser: FunctionComponent<Props> = (props) => {
-  const { sparqlEndpoints, setSparqlEndpoints } = useSettings();
+  const { sparqlEndpoints, setSparqlEndpoints, lockedEndpoint } = useSettings();
 
   const handleFormChange = useCallback(
     (state: Pick<JsonFormsCore, "data" | "errors">) => {
@@ -75,17 +78,22 @@ const EndpointChooser: FunctionComponent<Props> = (props) => {
     },
     [setSparqlEndpoints],
   );
+
+  const readOnly = useMemo(() => !!lockedEndpoint, [lockedEndpoint]);
   return (
-    <Box>
-      <Typography variant="h2">Knowledge Base - SPARQL Endpunkte</Typography>
-      <JsonForms
-        data={sparqlEndpoints}
-        schema={schema}
-        renderers={materialRenderers}
-        cells={materialCells}
-        onChange={handleFormChange}
-      />
-    </Box>
+    !readOnly && (
+      <Box>
+        <Typography variant="h2">Knowledge Base - SPARQL Endpunkte</Typography>
+        <JsonForms
+          readonly={readOnly}
+          data={sparqlEndpoints}
+          schema={schema}
+          renderers={materialRenderers}
+          cells={materialCells}
+          onChange={handleFormChange}
+        />
+      </Box>
+    )
   );
 };
 

@@ -1,13 +1,15 @@
 import { useEffect } from "react";
-import { SparqlEndpoint, useSettings } from "./useLocalSettings";
+import { SparqlEndpoint } from "@slub/edb-core-types";
+import { useSettings } from "@slub/edb-state-hooks";
 
 /**
  * This hook adds a demo endpoint to the list of endpoints if the app is not running on the test server.
  * It is used to provide an open database connection for the live demo.
  */
 export const useOptionalLiveDemoEndpoint = () => {
-  const { sparqlEndpoints, setSparqlEndpoints } = useSettings();
+  const { sparqlEndpoints, setSparqlEndpoints, lockedEndpoint } = useSettings();
   useEffect(() => {
+    if (lockedEndpoint) return;
     const demoEndpointURI = "https://ausstellungsdatenbank.kuenste.live/query";
     if (
       window.location.hostname !== "sdv-ahn-adbtest.slub-dresden.de" &&
@@ -27,5 +29,14 @@ export const useOptionalLiveDemoEndpoint = () => {
       };
       setSparqlEndpoints([liveDemoTestDatabase, ...otherEndpoints]);
     }
-  }, [sparqlEndpoints, setSparqlEndpoints]);
+  }, [sparqlEndpoints, setSparqlEndpoints, lockedEndpoint]);
+};
+
+export const OptionalLiveDemoEndpoint = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
+  useOptionalLiveDemoEndpoint();
+  return children;
 };

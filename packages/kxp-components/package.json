@@ -1,0 +1,40 @@
+{
+  "name": "@slub/edb-kxp-components",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs",
+      "default": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsup src/index.tsx",
+    "dev": "tsup src/index.tsx --watch"
+  },
+  "dependencies": {
+    "@slub/edb-state-hooks": "workspace:*",
+    "@slub/edb-graph-traversal": "workspace:*",
+    "@slub/edb-kxp-utils": "workspace:*",
+    "@slub/edb-marc-to-rdf": "workspace:*",
+    "@slub/edb-basic-components": "workspace:*",
+    "@tpluscode/rdf-ns-builders": "^4.3.0"
+  },
+  "devDependencies": {
+    "@slub/edb-tsup-config": "workspace:*",
+    "@types/react": "^18.3.4",
+    "@rdfjs/types": "^1.1.0"
+  },
+  "peerDependencies": {
+    "@ebay/nice-modal-react": ">=1.2",
+    "@mui/material": "^5",
+    "@mui/icons-material": "^5",
+    "react": "^18",
+    "next-i18next": "^15"
+  }
+}

@@ -1,0 +1,19 @@
+import {Canvas, Meta} from "@storybook/blocks";
+import * as SimilarityFinderStories from "../../components/form/similarity-finder/SimilarityFinder.stories";
+
+<Meta title="development/Similarity Finder" />
+
+# Similarity Finder
+
+When entering new Data into the Form, the user is assisted by the so called "Similarity Finder", which can bee seen
+exemplified within the following component story [here](/story/maintenance-norm-data--similarity-finder). For almost
+all relations to other entities  like persons, companies, resources, etc. the user can search for existing entities
+within the own database or within various external sources, where the [GND](https://www.dnb.de/EN/Professionell/Standardisierung/GND/gnd_node.html)
+is the most prominent one, within the exhibition database.
+
+<Canvas of={SimilarityFinderStories.Primary} />
+
+## Adding new sources
+
+The file `useKnowledgeBases.tsx` within the source folder of the `SimilarityFinder` component. It is responsible
+for the configuration of all knowledge bases, which are accessible within the Similarity Finder. The configuration

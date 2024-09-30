@@ -1,13 +1,13 @@
-import React, { FunctionComponent, useCallback } from "react";
+import React, { FunctionComponent, useCallback, useMemo } from "react";
 import { Box, Button } from "@mui/material";
 import Grid2 from "@mui/material/Unstable_Grid2";
 import { Login } from "../google/GoogleOAuth";
-import { useModifiedRouter } from "../basic";
-import { hasGrantedAnyScopeGoogle } from "@react-oauth/google";
 import { useGoogleToken } from "../google/useGoogleToken";
 import NiceModal from "@ebay/nice-modal-react";
 import { GoogleDrivePickerModal } from "../google/GoogleDrivePicker";
-import { GoogleSpreadSheetView } from "../google/SpreadSheetView";
+import { useModifiedRouter } from "@slub/edb-state-hooks";
+import { GoogleSpreadSheetContainer } from "../google/GoogleSpreadSheetContainer";
+import { hasGrantedAnyScopeGoogle, useGoogleOAuth } from "@react-oauth/google";
 
 const scopes: [string, string, string] = [
   "https://www.googleapis.com/auth/drive.readonly.metadata",
@@ -16,16 +16,49 @@ const scopes: [string, string, string] = [
 ];
 export const ImportPage: FunctionComponent = () => {
   const { credentials } = useGoogleToken();
+  const { clientId } = useGoogleOAuth();
   const router = useModifiedRouter();
-  const { documentId } = router.query;
+  const documentId = useMemo(
+    () => router.searchParams.get("documentId"),
+    [router.searchParams],
+  );
+  const sheetId = useMemo(() => {
+    const _id = Number(router.searchParams.get("sheetId"));
+    if (isNaN(_id)) {
+      return undefined;
+    }
+    return _id;
+  }, [router.searchParams]);
+  const mappingId = useMemo(
+    () => router.searchParams.get("mappingId"),
+    [router.searchParams],
+  );
 
-  const hasAccess =
-    credentials && hasGrantedAnyScopeGoogle(credentials, ...scopes);
+  const hasAccess = useMemo(() => {
+    if (!clientId) {
+      return false;
+    }
+    const granted =
+      typeof window !== "undefined" &&
+      hasGrantedAnyScopeGoogle(credentials, ...scopes);
+    return Boolean(credentials) && granted;
+  }, [credentials, clientId]);
   const openDrivePicker = useCallback(() => {
-    NiceModal.show(GoogleDrivePickerModal, {}).then((documentId: string) => {
-      console.log(documentId);
-      router.push(`/import?documentId=${documentId}`);
-    });
+    NiceModal.show(GoogleDrivePickerModal, {}).then(
+      ({
+        documentId,
+        sheetId,
+        mappingId,
+      }: {
+        documentId: string;
+        sheetId: number;
+        mappingId: string;
+      }) => {
+        router.push(
+          `/import?documentId=${documentId}&sheetId=${sheetId}&mappingId=${mappingId}`,
+        );
+      },
+    );
   }, [router]);
   return (
     <Box
@@ -40,14 +73,25 @@ export const ImportPage: FunctionComponent = () => {
         spacing={3}
         sx={{ p: { md: 10 } }}
       >
+        {clientId && (
+          <Grid2 lg={12}>
+            <Login scopes={scopes} />
+            {hasAccess && (
+              <Button onClick={openDrivePicker}>choose file</Button>
+            )}
+          </Grid2>
+        )}
         <Grid2 lg={12}>
-          <Login scopes={scopes} />
-          {hasAccess && <Button onClick={openDrivePicker}>choose file</Button>}
-        </Grid2>
-        <Grid2 lg={12}>
-          {hasAccess && typeof documentId === "string" && (
-            <GoogleSpreadSheetView sheetId={documentId} />
-          )}
+          {hasAccess &&
+            typeof documentId === "string" &&
+            typeof sheetId === "number" &&
+            typeof mappingId === "string" && (
+              <GoogleSpreadSheetContainer
+                documentId={documentId}
+                sheetId={sheetId}
+                mappingId={mappingId}
+              />
+            )}
         </Grid2>
       </Grid2>
     </Box>

@@ -3,7 +3,7 @@ import React from "react";
 import WikidataAutocompleteInput from "./WikidataAutocompleteInput";
 
 export default {
-  title: "form/wikidata/WikidataAutoCompleteInput",
+  title: "ui/form/WikidataAutoCompleteInput",
   component: WikidataAutocompleteInput,
 };
 

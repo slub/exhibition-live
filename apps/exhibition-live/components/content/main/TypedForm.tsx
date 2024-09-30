@@ -1,26 +1,21 @@
 import { Box, Grid } from "@mui/material";
 import { JSONSchema7 } from "json-schema";
 import React, { useCallback, useMemo, useState } from "react";
-import { SplitPane } from "react-collapse-pane";
 
-import { BASE_IRI } from "../../config";
-import { defaultJsonldContext, defaultPrefix } from "../../form/formConfigs";
-import { uischemata } from "../../form/uischemaForType";
-import { uischemas } from "../../form/uischemas";
-import { materialCategorizationStepperLayoutWithPortal } from "../../renderer/MaterialCategorizationStepperLayoutWithPortal";
 import {
+  useAdbContext,
   useFormEditor,
   useGlobalSearch,
+  useModifiedRouter,
   useRightDrawerState,
-} from "../../state";
-import useExtendedSchema from "../../state/useExtendedSchema";
-import { useGlobalCRUDOptions } from "../../state/useGlobalCRUDOptions";
-import { useSettings } from "../../state/useLocalSettings";
-import { encodeIRI, irisToData } from "../../utils/core";
-import NewSemanticJsonForm from "../../form/SemanticJsonForm";
-import { useModifiedRouter } from "../../basic";
-import { EntityDetailElement } from "../../form/show";
-import { RootFormProvider } from "../../provider";
+  useSettings,
+} from "@slub/edb-state-hooks";
+import { encodeIRI } from "@slub/edb-ui-utils";
+import NewSemanticJsonForm from "../../form/SemanticJsonFormOperational";
+import { useFormDataStore, useExtendedSchema } from "@slub/edb-state-hooks";
+import { useCRUDWithQueryClient } from "@slub/edb-state-hooks";
+import { EntityDetailElement } from "@slub/edb-advanced-components";
+import { materialCategorizationStepperLayoutWithPortal } from "@slub/edb-layout-renderer";
 
 type Props = {
   children: React.ReactChild;
@@ -30,7 +25,7 @@ type Props = {
 };
 const WithPreviewForm = ({ classIRI, entityIRI, data, children }: Props) => {
   const isLandscape = false;
-  const { previewEnabled, togglePreview, formData } = useFormEditor();
+  const { previewEnabled } = useFormEditor();
   const { features } = useSettings();
   const { width: rightDrawerWidth, open: rightDrawerOpen } =
     useRightDrawerState();
@@ -83,8 +78,17 @@ export type MainFormProps = {
   classIRI: string;
 };
 const TypedForm = ({ typeName, entityIRI, classIRI }: MainFormProps) => {
+  const {
+    typeIRIToTypeName,
+    jsonLDConfig: { defaultPrefix, jsonldContext },
+    uischemata,
+  } = useAdbContext();
   //const { formData: data, setFormData: setData } = useFormData();
-  const [data, setData] = useState(irisToData(entityIRI, classIRI));
+  const { formData: data, setFormData: setData } = useFormDataStore({
+    entityIRI,
+    typeIRI: classIRI,
+  });
+
   const { search: searchText } = useGlobalSearch();
   const router = useModifiedRouter();
 
@@ -95,12 +99,12 @@ const TypedForm = ({ typeName, entityIRI, classIRI }: MainFormProps) => {
       if (!entityIRI || !typeIRI) {
         return;
       }
-      const typeName = typeIRI.substring(BASE_IRI.length, typeIRI.length);
+      const typeName = typeIRIToTypeName(typeIRI);
       router.push(`/create/${typeName}?encID=${encodeIRI(entityIRI)}`);
     },
-    [router],
+    [router, typeIRIToTypeName],
   );
-  const loadedSchema = useExtendedSchema({ typeName, classIRI });
+  const loadedSchema = useExtendedSchema({ typeName });
 
   const { width: rightDrawerWidth, open: rightDrawerOpen } =
     useRightDrawerState();
@@ -111,10 +115,13 @@ const TypedForm = ({ typeName, entityIRI, classIRI }: MainFormProps) => {
 
   //const { stepperRef, actionRef } = useFormRefsContext();
   const handleChangeData = useCallback(
-    (data: any) => {
-      setData(data);
+    (_data: any) => {
+      if (typeof _data === "function") {
+        const newData = _data(data);
+        setData(newData);
+      } else setData(_data);
     },
-    [setData],
+    [setData, data],
   );
   const mainFormRenderers = useMemo(() => {
     return [
@@ -123,41 +130,38 @@ const TypedForm = ({ typeName, entityIRI, classIRI }: MainFormProps) => {
     ];
   }, []);
 
-  const uischema = useMemo(
-    () => uischemata[typeName] || (uischemas as any)[typeName],
-    [typeName],
-  );
+  const uischema = useMemo(() => uischemata?.[typeName], [typeName]);
 
   return (
-    <RootFormProvider>
-      <WithPreviewForm data={data} classIRI={classIRI} entityIRI={entityIRI}>
-        {loadedSchema && (
-          <Box sx={{ p: 2, display: "flex" }}>
-            <NewSemanticJsonForm
-              defaultEditMode={true}
-              data={data}
-              entityIRI={entityIRI}
-              onChange={handleChangeData}
-              searchText={searchText}
-              shouldLoadInitially
-              typeIRI={classIRI}
-              onEntityDataChange={handleChange}
-              defaultPrefix={defaultPrefix}
-              jsonldContext={defaultJsonldContext}
-              schema={loadedSchema as JSONSchema7}
-              jsonFormsProps={{
-                uischema,
-                uischemas: uischemas,
-                renderers: mainFormRenderers,
-              }}
-              enableSidebar={false}
-              disableSimilarityFinder={true}
-              wrapWithinCard={true}
-            />
-          </Box>
-        )}
-      </WithPreviewForm>
-    </RootFormProvider>
+    <WithPreviewForm data={data} classIRI={classIRI} entityIRI={entityIRI}>
+      {loadedSchema && (
+        <Box sx={{ p: 2, display: "flex" }}>
+          <NewSemanticJsonForm
+            defaultEditMode={true}
+            data={data}
+            entityIRI={entityIRI}
+            onChange={handleChangeData}
+            searchText={searchText}
+            shouldLoadInitially
+            typeIRI={classIRI}
+            onEntityDataChange={handleChange}
+            defaultPrefix={defaultPrefix}
+            jsonldContext={jsonldContext}
+            schema={loadedSchema as JSONSchema7}
+            jsonFormsProps={{
+              uischema,
+              renderers: mainFormRenderers,
+              config: {
+                useCRUDHook: useCRUDWithQueryClient,
+              },
+            }}
+            enableSidebar={false}
+            disableSimilarityFinder={true}
+            wrapWithinCard={true}
+          />
+        </Box>
+      )}
+    </WithPreviewForm>
   );
 };
 

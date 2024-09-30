@@ -1,0 +1,50 @@
+FROM nixos/nix
+
+RUN mkdir /app
+WORKDIR /app
+
+COPY flake.nix flake.nix
+COPY flake.lock flake.lock
+
+# Cache some requirements in /nix/store
+RUN echo "extra-experimental-features = nix-command flakes" >> /etc/nix/nix.conf
+RUN nix develop
+
+
+ENV NEXT_TELEMETRY_DISABLED 1
+ENV NEXT_PUBLIC_BASE_PATH ""
+
+RUN mkdir -p /home/appuser
+RUN nix-shell -p busybox.out --run 'adduser -D -u 1000 appuser && \
+    chown -R appuser:appuser /nix && \
+    chown -R appuser:appuser /app'
+
+
+
+EXPOSE 3000
+
+ENV HOSTNAME "0.0.0.0"
+
+
+COPY . /app
+RUN chown -R appuser:appuser -R /app
+
+WORKDIR /app
+USER 1000:1000
+
+RUN nix develop --command bash -c 'bun i && bun build:packages'
+
+ENV DATABASE_URL "file:/app/prisma/dev.db"
+
+RUN nix develop --command bash -c 'bun run build:prisma && \
+	bun run prisma:exhibition:generate && \
+	prisma migrate dev --name initial --schema ./prisma/exhibition.prisma'
+
+RUN nix develop --command bash -c 'bun run cli flatImport ./manifestation/exhibition/import/Konvolut_NewYork_2024-07-14.csv  -m NewYork -n 10'
+
+EXPOSE 3001
+EXPOSE 5762
+
+COPY ./.env.example /apps/exhibition-live/.env.local
+
+CMD nix develop --command bash -c 'bun run start'

@@ -84,8 +84,8 @@ describe("convert json schema to prisma schema", () => {
       `model Human {
   name String
   knows Human_knows[]
-  father_name String
-  father_description String
+  father_name String?
+  father_description String?
 }
 
 model Human_knows_loves {
@@ -94,7 +94,7 @@ model Human_knows_loves {
 
 model Human_knows {
   nick String
-  label String
+  label String?
   loves Human_knows_loves[]
 }`,
     );
@@ -122,9 +122,12 @@ model Human_knows {
         },
       },
     );
-    console.log(primsa);
-    expect(primsa).toBe(`
-    `);
+    expect(primsa).toBe(`model Person {
+  name String?
+  knows_id String?
+  knows Person?  @relation("knows", fields: [knows_id], references: [id])
+  knownBy Person[] @relation("knows")
+}`);
   });
   /*
   test("schema with definitions", () => {
@@ -133,7 +136,25 @@ model Human_knows {
     const result = prisma
     console.log(result);
     expect(result).toBe(
-      `model Human {
+      `modelAvailable since 4.3.0.
+
+enable in your schema file:
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["filteredRelationCount"] << add this
+}
+and then query:
+
+await prisma.post.findMany({
+  select: {
+    _count: {
+      select: {
+        comment: { where: { approved: true } },
+      },
+    },
+  },
+}) Human {
 name String
 knows Human_knows[]
 father Person

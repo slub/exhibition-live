@@ -1,0 +1,34 @@
+{
+  "name": "@slub/edb-basic-renderer",
+  "version": "1.0.0",
+  "private": true,
+  "main": "src/index.tsx",
+  "types": "src/index.tsx",
+  "sideEffects": false,
+  "scripts": {
+    "typecheck": "tsc -b",
+    "lint": "eslint \"**/*.ts*\"",
+    "lint-fix": "eslint --fix \"**/*.ts*\""
+  },
+  "peerDependencies": {
+    "@mui/material": "^5",
+    "@mui/icons-material": "^5",
+    "@jsonforms/material-renderers": "^3",
+    "@jsonforms/core": "^3",
+    "@jsonforms/react": "^3",
+    "react": "^18"
+  },
+  "dependencies": {
+    "@slub/edb-core-utils": "workspace:*",
+    "next-i18next": "^15",
+    "lodash-es": "^4.17",
+    "mui-image": "^1.0.7"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.3",
+    "@types/lodash-es": "^4.17.12",
+    "@jsonforms/core": "^3",
+    "@jsonforms/react": "^3"
+  }
+}
+

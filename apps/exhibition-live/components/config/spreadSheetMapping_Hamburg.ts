@@ -1,6 +1,6 @@
-import { DeclarativeFlatMappings } from "../utils/mapping/mappingStrategies";
-import { sladb } from "../form/formConfigs";
+import { sladb } from "./formConfigs";
 import { OwnColumnDesc } from "../google/types";
+import { DeclarativeFlatMappings } from "@slub/edb-data-mapping";
 
 export const indexFromLetter = (
   letter: string,

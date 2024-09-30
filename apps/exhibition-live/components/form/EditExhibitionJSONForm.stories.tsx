@@ -1,22 +1,18 @@
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider } from "@slub/edb-state-hooks";
 import { JSONSchema7 } from "json-schema";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
-import schema from "../../public/schema/Exhibition.schema.json";
-import useExtendedSchema from "../state/useExtendedSchema";
-import { useSettings } from "../state/useLocalSettings";
 import {
   defaultJsonldContext,
   defaultPrefix,
   sladb,
   slent,
-} from "./formConfigs";
-import NewSemanticJsonForm from "./SemanticJsonForm";
-import { oxigraphCrudOptions } from "@slub/remote-query-implementations";
+} from "../config/formConfigs";
+import NewSemanticJsonForm from "./SemanticJsonFormOperational";
+import { useExtendedSchema } from "@slub/edb-state-hooks";
+import { uischemata } from "../config/uischemata";
 
-export const queryClient = new QueryClient();
-
-const exhibitionSchema = { ...schema, ...schema.$defs.Exhibition };
+const queryClient = new QueryClient();
 
 const classIRI = sladb.Exhibition.value;
 const exampleData = {
@@ -28,7 +24,8 @@ const exampleData = {
 const SemanticJsonFormOneShot = () => {
   const [data, setData] = useState<any>(exampleData);
   const typeName = "Exhibition";
-  const loadedSchema = useExtendedSchema({ typeName, classIRI });
+  const loadedSchema = useExtendedSchema({ typeName });
+  const uischema = useMemo(() => uischemata?.[typeName], [typeName]);
 
   return (
     <NewSemanticJsonForm
@@ -41,7 +38,9 @@ const SemanticJsonFormOneShot = () => {
       shouldLoadInitially
       jsonldContext={defaultJsonldContext}
       schema={loadedSchema as JSONSchema7}
-      jsonFormsProps={{}}
+      jsonFormsProps={{
+        uischema,
+      }}
     />
   );
 };
@@ -60,6 +59,6 @@ export const SemanticJsonFormExhibition = () => {
   );
 };
 export default {
-  title: "form/exhibition/EditExhibitionJSONForm",
+  title: "ui/form/EditExhibitionJSONForm",
   component: NewSemanticJsonForm,
 };

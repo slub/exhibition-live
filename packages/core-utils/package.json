@@ -15,7 +15,6 @@
     }
   },
   "scripts": {
-    "build:package.json": "make-package-json",
     "build": "tsup",
     "dev": "tsup --watch",
     "lint": "eslint \"**/*.ts*\"",
@@ -29,6 +28,7 @@
     "@slub/edb-build-helper": "workspace:*",
     "@slub/edb-tsconfig": "workspace:*",
     "@slub/edb-tsup-config": "workspace:*",
+    "@slub/edb-core-types": "workspace:*",
     "@types/jest": "^29.5.12",
     "eslint-config-edb": "workspace:*",
     "typescript": "^5"

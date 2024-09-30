@@ -1,0 +1,27 @@
+import { Meta, Canvas } from "@storybook/blocks";
+import SemanticJSONFormNoOpsStories from "./SemanticJSONFormNoOps.stories";
+
+
+<Meta of={SemanticJSONFormNoOpsStories} />
+
+# Semantic JSON Forms
+
+The `<SemanticJSONFormNoOps>` component is a JSON Forms component equipped with special renderers to produce valid JSON-LD documents with
+one to many and many to many relationships.
+
+In contrast to `<SemanticJSONForm>`, `<SemanticJSONFormNoOps>` does not have any operations (e.g. create, update, delete), leaving the
+implementation of these operations to the user. Nevertheless it is not pure because it still makes use of renderers that use `<SemanticJSONForm>`.
+
+## Exhibition
+
+The following example shows a form rendering an Exhibition of the Exhibition model
+
+<Canvas
+  of={SemanticJSONFormNoOpsStories.SemanticJsonFormNoOperationsExhibition}
+/>
+
+## Tag
+
+A more basic example is the Tag model
+
+<Canvas of={SemanticJSONFormNoOpsStories.SemanticJsonFormNoOperationsTag} />

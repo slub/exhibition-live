@@ -1,13 +1,8 @@
-import N3 from "n3";
-import Parser from "@rdfjs/parser-jsonld";
 import { INSERT } from "@tpluscode/sparql-builder";
 import { withDefaultPrefix } from "./makeSPARQLWherePart";
 import { JSONSchema7 } from "json-schema";
 import { makeSPARQLDeleteQuery } from "./makeSPARQLDeleteQuery";
 import { NamedAndTypedEntity, SPARQLCRUDOptions } from "@slub/edb-core-types";
-import dsExt from "rdf-dataset-ext";
-import datasetFactory from "@rdfjs/dataset";
-import stringToStream from "string-to-stream";
 import { dataset2NTriples } from "./dataset2NTriples";
 import { jsonld2DataSet } from "./jsonld2DataSet";
 

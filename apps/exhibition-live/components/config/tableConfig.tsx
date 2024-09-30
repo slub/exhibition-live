@@ -1,17 +1,7 @@
-import { VisibilityState } from "@tanstack/table-core";
-import { ColumnDefMatcher, mkAccessor } from "../content/list/listHelper";
 import { MRT_ColumnDef } from "material-react-table";
-import { numeric2JSDate } from "@slub/edb-core-utils";
 import { TFunction } from "i18next";
-import { specialDate2LocalDate } from "../utils/specialDate2LocalDate";
-export type ListConfigType = {
-  columnVisibility: VisibilityState;
-  matcher: ColumnDefMatcher;
-};
-export type TableConfigRegistry = {
-  default: Partial<ListConfigType>;
-  [typeName: string]: Partial<ListConfigType>;
-};
+import { specialDate2LocalDate } from "@slub/edb-ui-utils";
+import { mkAccessor, TableConfigRegistry } from "@slub/edb-table-components";
 const p = (path: string[]) => path.join("_");
 const dateColDef: (
   key: string,
@@ -21,11 +11,17 @@ const dateColDef: (
   const columnDef: MRT_ColumnDef<any> = {
     header: t(p([...path, key])),
     id: p([...path, key, "single"]),
-    accessorFn: mkAccessor(`${p([...path, key, "single"])}.value`, "", (v) =>
-      typeof v === "string" || (typeof v === "number" && String(v).length === 8)
-        ? specialDate2LocalDate(Number(v), "de")
-        : String(v),
-    ),
+    accessorFn: mkAccessor(`${p([...path, key, "single"])}.value`, "", (v) => {
+      try {
+        return typeof v === "string" ||
+          (typeof v === "number" && String(v).length === 8)
+          ? specialDate2LocalDate(Number(v), "de")
+          : String(v);
+      } catch (error) {
+        console.error("Error processing date:", error);
+        return String(v);
+      }
+    }),
     filterVariant: "date",
     filterFn: "betweenInclusive",
     sortingFn: "datetime",
@@ -47,11 +43,13 @@ export const tableConfig: TableConfigRegistry = {
     columnVisibility: {
       IRI: false,
       externalId_single: false,
+      idAuthority_IRI: false,
     },
   },
   Exhibition: {
     columnVisibility: {
       IRI: false,
+      idAuthority_IRI: false,
       externalId_single: false,
       subtitle_single: false,
       originalTitle_single: false,
@@ -73,6 +71,7 @@ export const tableConfig: TableConfigRegistry = {
       involvedCorporations_label_group: false,
       exponats_label_group: false,
       resources_label_group: false,
+      placesUnknown_single: false,
     },
     matcher: (key, schemaDef, typeName, t, path) => {
       if (key === "dateValue") {

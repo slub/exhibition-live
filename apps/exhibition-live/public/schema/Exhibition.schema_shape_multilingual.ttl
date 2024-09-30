@@ -1,0 +1,1107 @@
+@prefix : <http://ontologies.slub-dresden.de/exhibition#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix sparna: <http://data.sparna.fr/ontologies/sparnatural-config-datasources#> .
+@prefix sparco: <http://data.sparna.fr/ontologies/sparnatural-config-core#> .
+@prefix dash: <http://datashapes.org/dash#> .
+@prefix this: <http://ontologies.slub-dresden.de/sparnatural-config#> .
+@prefix volipi: <http://data.sparna.fr/ontologies/volipi#> .
+
+:Tag a rdfs:Class ;
+.
+:Occupation a rdfs:Class ;
+.
+:SeriesType a rdfs:Class ;
+.
+:ExhibitionSeries a rdfs:Class ;
+.
+:Person a rdfs:Class ;
+.
+:Workplace a rdfs:Class ;
+.
+:Location a rdfs:Class ;
+.
+:PersonRole a rdfs:Class ;
+.
+:CorporationRole a rdfs:Class ;
+.
+:Place a rdfs:Class ;
+.
+:EventType a rdfs:Class ;
+.
+:Corporation a rdfs:Class ;
+.
+:ResourceType a rdfs:Class ;
+.
+:Resource a rdfs:Class ;
+.
+:ExponatsAndPersons a rdfs:Class ;
+.
+:ExponatsAndCorporations a rdfs:Class ;
+.
+:ExhibitionExponat a rdfs:Class ;
+.
+:ExhibitionCategory a rdfs:Class ;
+.
+:InvolvedPerson a rdfs:Class ;
+.
+:InvolvedCorporation a rdfs:Class ;
+.
+:Genre a rdfs:Class ;
+.
+:Exhibition a rdfs:Class ;
+.
+
+:Tag a sh:NodeShape ;
+    rdfs:label "Tag"@de, "Étiquette"@fr, "Tag"@en ;
+    sh:targetClass :Tag ;
+    volipi:iconName "fas fa-tag" ;
+    sh:property :title,
+        :description,
+        :image,
+        :tag_parent ;
+.
+:title a sh:PropertyShape ;
+    rdfs:label "Titel"@de, "Titre"@fr, "Title"@en ;
+    sh:path :title ;
+    sh:datatype xsd:string ;
+    sh:maxCount 1 ;
+    sh:maxLength 200 ;
+.
+:description a sh:PropertyShape ;
+    rdfs:label "Beschreibung"@de, "Description"@fr, "Description"@en ;
+    sh:path :description ;
+    sh:datatype xsd:string ;
+    sh:maxCount 1 ;
+.
+:image a sh:PropertyShape ;
+    rdfs:label "Bild"@de, "Image"@fr, "Image"@en ;
+    sh:path :image ;
+    sh:datatype xsd:anyURI ;
+    sh:maxCount 1 ;
+.
+:tag_parent a sh:PropertyShape ;
+    rdfs:label "Übergeordnetes Element"@de, "Élément parent"@fr, "Parent element"@en ;
+    sh:path :parent ;
+    sh:class :Tag ;
+    sh:maxCount 1 ;
+.
+:Occupation a sh:NodeShape ;
+    rdfs:label "Beruf"@de, "Profession"@fr, "Occupation"@en ;
+    sh:targetClass :Occupation ;
+    volipi:iconName "fas fa-briefcase" ;
+    sh:property :title,
+        :description,
+        :occupation_parent ;
+.
+:title a sh:PropertyShape ;
+    rdfs:label "Titel"@de, "Titre"@fr, "Title"@en ;
+    sh:path :title ;
+    sh:datatype xsd:string ;
+    sh:maxCount 1 ;
+    sh:maxLength 200 ;
+.
+:description a sh:PropertyShape ;
+    rdfs:label "Beschreibung"@de, "Description"@fr, "Description"@en ;
+    sh:path :description ;
+    sh:datatype xsd:string ;
+    sh:maxCount 1 ;
+.
+:occupation_parent a sh:PropertyShape ;
+    rdfs:label "Übergeordnetes Element"@de, "Élément parent"@fr, "Parent element"@en ;
+    sh:path :parent ;
+    sh:class :Occupation ;
+    sh:maxCount 1 ;
+.
+:SeriesType a sh:NodeShape ;
+    rdfs:label "Serientyp"@de, "Type de série"@fr, "Series type"@en ;
+    sh:targetClass :SeriesType ;
+    volipi:iconName "fas fa-list-ol" ;
+    sh:property :title,
+        :description ;
+.
+:title a sh:PropertyShape ;
+    rdfs:label "Titel"@de, "Titre"@fr, "Title"@en ;
+    sh:path :title ;
+    sh:datatype xsd:string ;
+    sh:maxCount 1 ;
+    sh:maxLength 200 ;
+.
+:description a sh:PropertyShape ;
+    rdfs:label "Beschreibung"@de, "Description"@fr, "Description"@en ;
+    sh:path :description ;
+    sh:datatype xsd:string ;
+    sh:maxCount 1 ;
+.
+:ExhibitionSeries a sh:NodeShape ;
+    rdfs:label "Ausstellungsserie"@de, "Série d'expositions"@fr, "Exhibition series"@en ;
+    sh:targetClass :ExhibitionSeries ;
+    volipi:iconName "fas fa-film" ;
+    sh:property :title,
+        :description,
+        :exhibitionSeries_parent,
+        :seriesType,
+        :timeSeries,
+        :location,
+        :tags ;
+.
+:title a sh:PropertyShape ;
+    rdfs:label "Titel"@de, "Titre"@fr, "Title"@en ;
+    sh:path :title ;
+    sh:datatype xsd:string ;
+    sh:maxCount 1 ;
+    sh:maxLength 200 ;
+.
+:description a sh:PropertyShape ;
+    rdfs:label "Beschreibung"@de, "Description"@fr, "Description"@en ;
+    sh:path :description ;
+    sh:datatype xsd:string ;
+    sh:maxCount 1 ;
+.
+:exhibitionSeries_parent a sh:PropertyShape ;
+    rdfs:label "Übergeordnetes Element"@de, "Élément parent"@fr, "Parent element"@en ;
+    sh:path :parent ;
+    sh:class :ExhibitionSeries ;
+    sh:maxCount 1 ;
+.
+:seriesType a sh:PropertyShape ;
+    rdfs:label "Serientyp"@de, "Type de série"@fr, "Series type"@en ;
+    sh:path :seriesType ;
+    sh:class :SeriesType ;
+    sh:maxCount 1 ;
+.
+:timeSeries a sh:PropertyShape ;
+    rdfs:label "Zeitreihe"@de, "Série chronologique"@fr, "Time series"@en ;
+    sh:path :timeSeries ;
+    sh:datatype xsd:string ;
+    sh:maxCount 1 ;
+    sh:maxLength 200 ;
+.
+:tags a sh:PropertyShape ;
+    rdfs:label "Tags"@de, "Étiquettes"@fr, "Tags"@en ;
+    sh:path :tags ;
+    sh:class :Tag ;
+    sparna:datasource this:searchWithinTitle_datasource;
+.
+:Person a sh:NodeShape ;
+    rdfs:label "Person"@de, "Personne"@fr, "Person"@en ;
+    sh:targetClass :Person ;
+    volipi:iconName "fas fa-user" ;
+    sh:property :name,
+        :description,
+        :birthDate,
+        :deathDate,
+        :profession,
+        :nameVariant,
+        :gender,
+        :personDeceased,
+        :externalId,
+        :workplace,
+        :memberOfCorp,
+        :image ;
+.
+:name a sh:PropertyShape ;
+    rdfs:label "Name"@de, "Nom"@fr, "Name"@en ;
+    sh:path :name ;
+    sh:datatype xsd:string ;
+    sh:maxCount 1 ;
+    sh:maxLength 200 ;
+.
+:description a sh:PropertyShape ;
+    rdfs:label "Beschreibung"@de, "Description"@fr, "Description"@en ;
+    sh:path :description ;
+    sh:datatype xsd:string ;
+    sh:maxCount 1 ;
+.
+:birthDate a sh:PropertyShape ;
+    rdfs:label "Geburtsdatum"@de, "Date de naissance"@fr, "Birth date"@en ;
+    sh:path :birthDate ;
+    sh:datatype xsd:integer ;
+    sh:maxCount 1 ;
+.
+:deathDate a sh:PropertyShape ;
+    rdfs:label "Sterbedatum"@de, "Date de décès"@fr, "Death date"@en ;
+    sh:path :deathDate ;
+    sh:datatype xsd:integer ;
+    sh:maxCount 1 ;
+.
+:profession a sh:PropertyShape ;
+    rdfs:label "Beruf"@de, "Profession"@fr, "Profession"@en ;
+    sh:path :profession ;
+    sh:class :Occupation ;
+.
+:nameVariant a sh:PropertyShape ;
+    rdfs:label "Namensvariante"@de, "Variante du nom"@fr, "Name variant"@en ;
+    sh:path :nameVariant ;
+    sh:datatype xsd:string ;
+.
+:gender a sh:PropertyShape ;
+    rdfs:label "Geschlecht"@de, "Genre"@fr, "Gender"@en ;
+    sh:path :gender ;
+    sh:datatype xsd:string ;
+    sh:maxCount 1 ;
+    sh:maxLength 1 ;
+    sh:in ( "m" "f" "d" "u" ) ;
+.
+:personDeceased a sh:PropertyShape ;
+    rdfs:label "Person verstorben"@de, "Personne décédée"@fr, "Person deceased"@en ;
+    sh:path :personDeceased ;
+    sh:datatype xsd:boolean ;
+    sh:maxCount 1 ;
+.
+:externalId a sh:PropertyShape ;
+    rdfs:label "Externe ID"@de, "ID externe"@fr, "External ID"@en ;
+    sh:path :externalId ;
+    sh:datatype xsd:string ;
+    sh:maxCount 1 ;
+    sh:maxLength 50 ;
+.
+:workplace a sh:PropertyShape ;
+    rdfs:label "Arbeitsplatz"@de, "Lieu de travail"@fr, "Workplace"@en ;
+    sh:path :workplace ;
+    sh:class :Workplace ;
+.
+:memberOfCorp a sh:PropertyShape ;
+    rdfs:label "Mitglied von Körperschaft"@de, "Membre d'une société"@fr, "Member of corporation"@en ;
+    sh:path :memberOfCorp ;
+    sh:class :Corporation ;
+.
+:image a sh:PropertyShape ;
+    rdfs:label "Bild"@de, "Image"@fr, "Image"@en ;
+    sh:path :image ;
+    sh:datatype xsd:anyURI ;
+    sh:maxCount 1 ;
+.
+:Workplace a sh:NodeShape ;
+    rdfs:label "Arbeitsplatz"@de, "Lieu de travail"@fr, "Workplace"@en ;
+    sh:targetClass :Workplace ;
+    volipi:iconName "fas fa-building" ;
+    sh:property :location,
+        :fromDate,
+        :toDate ;
+.
+:location a sh:PropertyShape ;
+    rdfs:label "Ort"@de, "Lieu"@fr, "Location"@en ;
+    sh:path :location ;
+    sh:class :Location ;
+    sh:maxCount 1 ;
+    sparna:datasource this:searchWithinTitle_datasource;
+.
+:fromDate a sh:PropertyShape ;
+    rdfs:label "Von Datum"@de, "Date de début"@fr, "From date"@en ;
+    sh:path :fromDate ;
+    sh:datatype xsd:integer ;
+    sh:maxCount 1 ;
+.
+:toDate a sh:PropertyShape ;
+    rdfs:label "Bis Datum"@de, "Date de fin"@fr, "To date"@en ;
+    sh:path :toDate ;
+    sh:datatype xsd:integer ;
+    sh:maxCount 1 ;
+.
+:Location a sh:NodeShape ;
+    rdfs:label "Ort"@de, "Lieu"@fr, "Location"@en ;
+    sh:targetClass :Location ;
+    volipi:iconName "fas fa-map-marker-alt" ;
+    sh:property :title,
+        :titleVariants,
+        :description,
+        :image,
+        :location_parent ;
+.
+:title a sh:PropertyShape ;
+    rdfs:label "Titel"@de, "Titre"@fr, "Title"@en ;
+    sh:path :title ;
+    sh:datatype xsd:string ;
+    sh:maxCount 1 ;
+    sh:maxLength 200 ;
+.
+:titleVariants a sh:PropertyShape ;
+    rdfs:label "Titelvarianten"@de, "Variantes du titre"@fr, "Title variants"@en ;
+    sh:path :titleVariants ;
+    sh:datatype xsd:string ;
+    sh:maxCount 1 ;
+    sh:maxLength 600 ;
+.
+:description a sh:PropertyShape ;
+    rdfs:label "Beschreibung"@de, "Description"@fr, "Description"@en ;
+    sh:path :description ;
+    sh:datatype xsd:string ;
+    sh:maxCount 1 ;
+.
+:image a sh:PropertyShape ;
+    rdfs:label "Bild"@de, "Image"@fr, "Image"@en ;
+    sh:path :image ;
+    sh:datatype xsd:anyURI ;
+    sh:maxCount 1 ;
+.
+:location_parent a sh:PropertyShape ;
+    rdfs:label "Übergeordnetes Element"@de, "Élément parent"@fr, "Parent element"@en ;
+    sh:path :parent ;
+    sh:class :Location ;
+    sh:maxCount 1 ;
+.
+:PersonRole a sh:NodeShape ;
+    rdfs:label "Person Rolle"@de, "Rôle de la personne"@fr, "Person role"@en ;
+    sh:targetClass :PersonRole ;
+    volipi:iconName "fas fa-user-tag" ;
+    sh:property :title,
+        :description ;
+.
+:title a sh:PropertyShape ;
+    rdfs:label "Titel"@de, "Titre"@fr, "Title"@en ;
+    dash:propertyRole  dash:LabelRole ;
+    sh:path :title ;
+    sh:datatype xsd:string ;
+    sh:maxCount 1 ;
+    sh:maxLength 200 ;
+.
+:description a sh:PropertyShape ;
+    rdfs:label "Beschreibung"@de, "Description"@fr, "Description"@en ;
+    sh:path :description ;
+    sh:datatype xsd:string ;
+    sh:maxCount 1 ;
+.
+:CorporationRole a sh:NodeShape ;
+    rdfs:label "Körperschaft Rolle"@de, "Rôle de la société"@fr, "Corporation role"@en ;
+    sh:targetClass :CorporationRole ;
+    volipi:iconName "fas fa-building-user" ;
+    sh:property :title,
+        :description ;
+.
+:title a sh:PropertyShape ;
+    rdfs:label "Titel"@de, "Titre"@fr, "Title"@en ;
+    sh:path :title ;
+    sh:datatype xsd:string ;
+    sh:maxCount 1 ;
+    sh:maxLength 200 ;
+.
+:description a sh:PropertyShape ;
+    rdfs:label "Beschreibung"@de, "Description"@fr, "Description"@en ;
+    sh:path :description ;
+    sh:datatype xsd:string ;
+    sh:maxCount 1 ;
+.
+:Place a sh:NodeShape ;
+    rdfs:label "Stätte"@de, "Lieu"@fr, "Place"@en ;
+    sh:targetClass :Place ;
+    volipi:iconName "fas fa-landmark" ;
+    sh:property :title,
+        :description,
+        :titleVariants,
+        :location,
+        :place_parent,
+        :image ;
+.
+:title a sh:PropertyShape ;
+    rdfs:label "Titel"@de, "Titre"@fr, "Title"@en ;
+    sh:path :title ;
+    sh:datatype xsd:string ;
+    sh:maxCount 1 ;
+    sh:maxLength 200 ;
+.
+:description a sh:PropertyShape ;
+    rdfs:label "Beschreibung"@de, "Description"@fr, "Description"@en ;
+    sh:path :description ;
+    sh:datatype xsd:string ;
+    sh:maxCount 1 ;
+.
+:titleVariants a sh:PropertyShape ;
+    rdfs:label "Titelvarianten"@de, "Variantes du titre"@fr, "Title variants"@en ;
+    sh:path :titleVariants ;
+    sh:datatype xsd:string ;
+    sh:maxCount 1 ;
+    sh:maxLength 600 ;
+.
+:location a sh:PropertyShape ;
+    rdfs:label "Ort"@de, "Lieu"@fr, "Location"@en ;
+    sh:path :location ;
+    sh:class :Location ;
+    sh:maxCount 1 ;
+.
+:place_parent a sh:PropertyShape ;
+    rdfs:label "Übergeordnetes Element"@de, "Élément parent"@fr, "Parent element"@en ;
+    sh:path :parent ;
+    sh:class :Place ;
+    sh:maxCount 1 ;
+.
+:image a sh:PropertyShape ;
+    rdfs:label "Bild"@de, "Image"@fr, "Image"@en ;
+    sh:path :image ;
+    sh:datatype xsd:anyURI ;
+    sh:maxCount 1 ;
+.
+:EventType a sh:NodeShape ;
+    rdfs:label "Veranstaltungstyp"@de, "Type d'événement"@fr, "Event type"@en ;
+    sh:targetClass :EventType ;
+    volipi:iconName "fas fa-calendar-alt" ;
+    sh:property :title,
+        :description ;
+.
+:title a sh:PropertyShape ;
+    rdfs:label "Titel"@de, "Titre"@fr, "Title"@en ;
+    sh:path :title ;
+    sh:datatype xsd:string ;
+    sh:maxCount 1 ;
+    sh:maxLength 200 ;
+.
+:description a sh:PropertyShape ;
+    rdfs:label "Beschreibung"@de, "Description"@fr, "Description"@en ;
+    sh:path :description ;
+    sh:datatype xsd:string ;
+    sh:maxCount 1 ;
+.
+:Corporation a sh:NodeShape ;
+    rdfs:label "Körperschaft"@de, "Société"@fr, "Corporation"@en ;
+    sh:targetClass :Corporation ;
+    volipi:iconName "fas fa-building" ;
+    sh:property :name,
+        :description,
+        :nameVariant,
+        :corporation_parent,
+        :location,
+        :image ;
+.
+:name a sh:PropertyShape ;
+    rdfs:label "Name"@de, "Nom"@fr, "Name"@en ;
+    dash:propertyRole  dash:LabelRole ;
+    sh:path :name ;
+    sh:datatype xsd:string ;
+    sh:maxCount 1 ;
+    sh:maxLength 200 ;
+.
+:description a sh:PropertyShape ;
+    rdfs:label "Beschreibung"@de, "Description"@fr, "Description"@en ;
+    sh:path :description ;
+    sh:datatype xsd:string ;
+    sh:maxCount 1 ;
+.
+:nameVariant a sh:PropertyShape ;
+    rdfs:label "Namensvariante"@de, "Variante du nom"@fr, "Name variant"@en ;
+    sh:path :nameVariant ;
+    sh:datatype xsd:string ;
+.
+:corporation_parent a sh:PropertyShape ;
+    rdfs:label "Übergeordnetes Element"@de, "Élément parent"@fr, "Parent element"@en ;
+    sh:path :parent ;
+    sh:class :Corporation ;
+    sh:maxCount 1 ;
+.
+:location a sh:PropertyShape ;
+    rdfs:label "Ort"@de, "Lieu"@fr, "Location"@en ;
+    sh:path :location ;
+    sh:class :Location ;
+    sh:maxCount 1 ;
+.
+:image a sh:PropertyShape ;
+    rdfs:label "Bild"@de, "Image"@fr, "Image"@en ;
+    sh:path :image ;
+    sh:datatype xsd:anyURI ;
+    sh:maxCount 1 ;
+.
+:ResourceType a sh:NodeShape ;
+    rdfs:label "Ressourcentyp"@de, "Type de ressource"@fr, "Resource type"@en ;
+    sh:targetClass :ResourceType ;
+    volipi:iconName "fas fa-cube" ;
+    sh:property :title,
+        :description ;
+.
+:title a sh:PropertyShape ;
+    rdfs:label "Titel"@de, "Titre"@fr, "Title"@en ;
+    sh:path :title ;
+    sh:datatype xsd:string ;
+    sh:maxCount 1 ;
+    sh:maxLength 200 ;
+.
+:description a sh:PropertyShape ;
+    rdfs:label "Beschreibung"@de, "Description"@fr, "Description"@en ;
+    sh:path :description ;
+    sh:datatype xsd:string ;
+    sh:maxCount 1 ;
+.
+:Resource a sh:NodeShape ;
+    rdfs:label "Ressource"@de, "Ressource"@fr, "Resource"@en ;
+    sh:targetClass :Resource ;
+    volipi:iconName "fas fa-file-alt" ;
+    sh:property :title,
+        :description,
+        :ppn,
+        :doi,
+        :url,
+        :ressourceType,
+        :signature,
+        :image ;
+.
+:title a sh:PropertyShape ;
+    rdfs:label "Titel"@de, "Titre"@fr, "Title"@en ;
+    sh:path :title ;
+    sh:datatype xsd:string ;
+    sh:maxCount 1 ;
+    sh:maxLength 200 ;
+.
+:description a sh:PropertyShape ;
+    rdfs:label "Beschreibung"@de, "Description"@fr, "Description"@en ;
+    sh:path :description ;
+    sh:datatype xsd:string ;
+    sh:maxCount 1 ;
+.
+:ppn a sh:PropertyShape ;
+    rdfs:label "PPN"@de, "PPN"@fr, "PPN"@en ;
+    sh:path :ppn ;
+    sh:datatype xsd:string ;
+    sh:maxCount 1 ;
+    sh:maxLength 15 ;
+.
+:doi a sh:PropertyShape ;
+    rdfs:label "DOI"@de, "DOI"@fr, "DOI"@en ;
+    sh:path :doi ;
+    sh:datatype xsd:string ;
+    sh:maxCount 1 ;
+.
+:url a sh:PropertyShape ;
+    rdfs:label "URL"@de, "URL"@fr, "URL"@en ;
+    sh:path :url ;
+    sh:datatype xsd:anyURI ;
+    sh:maxCount 1 ;
+.
+:ressourceType a sh:PropertyShape ;
+    rdfs:label "Ressourcentyp"@de, "Type de ressource"@fr, "Resource type"@en ;
+    sh:path :ressourceType ;
+    sh:class :ResourceType ;
+    sh:maxCount 1 ;
+.
+:signature a sh:PropertyShape ;
+    rdfs:label "Signatur"@de, "Signature"@fr, "Signature"@en ;
+    sh:path :signature ;
+    sh:datatype xsd:string ;
+    sh:maxCount 1 ;
+    sh:maxLength 200 ;
+.
+:image a sh:PropertyShape ;
+    rdfs:label "Bild"@de, "Image"@fr, "Image"@en ;
+    sh:path :image ;
+    sh:datatype xsd:anyURI ;
+    sh:maxCount 1 ;
+.
+:ExponatsAndPersons a sh:NodeShape ;
+    rdfs:label "Exponate und Personen"@de, "Exponats et personnes"@fr, "Exponats and persons"@en ;
+    sh:targetClass :ExponatsAndPersons ;
+    volipi:iconName "fas fa-user-circle" ;
+    sh:property :person,
+        :personRole ;
+.
+:person a sh:PropertyShape ;
+    rdfs:label "Person"@de, "Personne"@fr, "Person"@en ;
+    sh:path :person ;
+    sh:class :Person ;
+    sh:maxCount 1 ;
+.
+:personRole a sh:PropertyShape ;
+    rdfs:label "Rolle"@de, "Rôle"@fr, "Role"@en ;
+    sh:path :role ;
+    sh:class :PersonRole ;
+    sh:maxCount 1 ;
+    dash:searchWidget sparco:ListProperty ;
+.
+:ExponatsAndCorporations a sh:NodeShape ;
+    rdfs:label "Exponate und Körperschaften"@de, "Exponats et sociétés"@fr, "Exponats and corporations"@en ;
+    sh:targetClass :ExponatsAndCorporations ;
+    volipi:iconName "fas fa-building-circle-check" ;
+    sh:property :corporation,
+        :corporationRole ;
+.
+:corporation a sh:PropertyShape ;
+    rdfs:label "Körperschaft"@de, "Société"@fr, "Corporation"@en ;
+    sh:path :corporation ;
+    sh:class :Corporation ;
+    sh:maxCount 1 ;
+.
+:corporationRole a sh:PropertyShape ;
+    rdfs:label "Rolle"@de, "Rôle"@fr, "Role"@en ;
+    sh:path :role ;
+    sh:class :CorporationRole ;
+    sh:maxCount 1 ;
+    dash:searchWidget sparco:ListProperty ;
+.
+:ExhibitionExponat a sh:NodeShape ;
+    rdfs:label "Ausstellungsexponat"@de, "Exponat d'exposition"@fr, "Exhibition exponat"@en ;
+    sh:targetClass :ExhibitionExponat ;
+    volipi:iconName "fas fa-palette" ;
+    sh:property :title,
+        :titleVariants,
+        :description,
+        :externalId,
+        :startDate,
+        :endDate,
+        :url,
+        :signature,
+        :exponatGenres,
+        :relatedPersons,
+        :relatedCorporations,
+        :resources ;
+.
+:title a sh:PropertyShape ;
+    rdfs:label "Titel"@de, "Titre"@fr, "Title"@en ;
+    sh:path :title ;
+    sh:datatype xsd:string ;
+    sh:maxCount 1 ;
+    sh:maxLength 500 ;
+.
+:titleVariants a sh:PropertyShape ;
+    rdfs:label "Titelvarianten"@de, "Variantes du titre"@fr, "Title variants"@en ;
+    sh:path :titleVariants ;
+    sh:datatype xsd:string ;
+    sh:maxCount 1 ;
+    sh:maxLength 600 ;
+.
+:description a sh:PropertyShape ;
+    rdfs:label "Beschreibung"@de, "Description"@fr, "Description"@en ;
+    sh:path :description ;
+    sh:datatype xsd:string ;
+    sh:maxCount 1 ;
+.
+:externalId a sh:PropertyShape ;
+    rdfs:label "Externe ID"@de, "ID externe"@fr, "External ID"@en ;
+    sh:path :externalId ;
+    sh:datatype xsd:string ;
+    sh:maxCount 1 ;
+    sh:maxLength 200 ;
+.
+:startDate a sh:PropertyShape ;
+    rdfs:label "Startdatum"@de, "Date de début"@fr, "Start date"@en ;
+    sh:path :startDate ;
+    sh:node :startDate_NodeShape ;
+    sh:maxCount 1 ;
+.
+:startDate_NodeShape a sh:NodeShape ;
+    rdfs:label "Startdatum Node Shape"@de, "Startdatum Node Shape"@fr, "Start date Node Shape"@en ;
+    sh:property :startDate_dateValue,
+        :startDate_dateModifier ;
+.
+:startDate_dateValue a sh:PropertyShape ;
+    rdfs:label "Startdatum - Datumswert"@de, "Date de début - Valeur de la date"@fr, "Start date - Date value"@en ;
+    sh:path :dateValue ;
+    sh:datatype xsd:integer ;
+    sh:maxCount 1 ;
+    sh:maxLength 8 ;
+.
+:startDate_dateModifier a sh:PropertyShape ;
+    rdfs:label "Startdatum - Datum Modifikator"@de, "Date de début - Modificateur de date"@fr, "Start date - Date modifier"@en ;
+    sh:path :dateModifier ;
+    sh:datatype xsd:integer ;
+    sh:maxCount 1 ;
+    sh:in ( 0 1 2 3 ) ;
+.
+:endDate a sh:PropertyShape ;
+    rdfs:label "Enddatum"@de, "Date de fin"@fr, "End date"@en ;
+    sh:path :endDate ;
+    sh:node :endDate_NodeShape ;
+    sh:maxCount 1 ;
+.
+:endDate_NodeShape a sh:NodeShape ;
+    rdfs:label "Enddatum Node Shape"@de, "Date de fin Node Shape"@fr, "End date Node Shape"@en ;
+    sh:property :endDate_dateValue,
+        :endDate_dateModifier ;
+.
+:endDate_dateValue a sh:PropertyShape ;
+    rdfs:label "Enddatum - Datumswert"@de, "Date de fin - Valeur de la date"@fr, "End date - Date value"@en ;
+    sh:path :dateValue ;
+    sh:datatype xsd:integer ;
+    sh:maxCount 1 ;
+    sh:maxLength 8 ;
+.
+:endDate_dateModifier a sh:PropertyShape ;
+    rdfs:label "Enddatum - Datum Modifikator"@de, "Date de fin - Modificateur de date"@fr, "End date - Date modifier"@en ;
+    sh:path :dateModifier ;
+    sh:datatype xsd:integer ;
+    sh:maxCount 1 ;
+    sh:in ( 0 1 2 3 ) ;
+.
+:url a sh:PropertyShape ;
+    rdfs:label "URL"@de, "URL"@fr, "URL"@en ;
+    sh:path :url ;
+    sh:datatype xsd:anyURI ;
+    sh:maxCount 1 ;
+.
+:signature a sh:PropertyShape ;
+    rdfs:label "Signatur"@de, "Signature"@fr, "Signature"@en ;
+    sh:path :signature ;
+    sh:datatype xsd:string ;
+    sh:maxCount 1 ;
+    sh:maxLength 200 ;
+.
+:exponatGenres a sh:PropertyShape ;
+    rdfs:label "Exponat Genres"@de, "Genres d'exponats"@fr, "Exponat genres"@en ;
+    sh:path :exponatGenres ;
+    sh:class :Genre ;
+
+.
+:relatedPersons a sh:PropertyShape ;
+    rdfs:label "Verwandte Personen"@de, "Personnes liées"@fr, "Related persons"@en ;
+    sh:path :relatedPersons ;
+    sh:class :ExponatsAndPersons ;
+.
+:relatedCorporations a sh:PropertyShape ;
+    rdfs:label "Verwandte Körperschaften"@de, "Sociétés liées"@fr, "Related corporations"@en ;
+    sh:path :relatedCorporations ;
+    sh:class :ExponatsAndCorporations ;
+.
+:resources a sh:PropertyShape ;
+    rdfs:label "Ressourcen"@de, "Ressources"@fr, "Resources"@en ;
+    sh:path :resources ;
+    sh:class :Resource ;
+.
+:ExhibitionCategory a sh:NodeShape ;
+    rdfs:label "Ausstellungskategorie"@de, "Catégorie d'exposition"@fr, "Exhibition category"@en ;
+    sh:targetClass :ExhibitionCategory ;
+    volipi:iconName "fas fa-folder" ;
+    sh:property :name,
+        :description ;
+.
+:name a sh:PropertyShape ;
+    rdfs:label "Name"@de, "Nom"@fr, "Name"@en ;
+    sh:path :name ;
+    sh:datatype xsd:string ;
+    sh:maxCount 1 ;
+    sh:maxLength 200 ;
+.
+:description a sh:PropertyShape ;
+    rdfs:label "Beschreibung"@de, "Description"@fr, "Description"@en ;
+    sh:path :description ;
+    sh:datatype xsd:string ;
+    sh:maxCount 1 ;
+.
+:InvolvedPerson a sh:NodeShape ;
+                rdfs:label "Beteiligte Person"@de, "Personne impliquée"@fr, "Involved person"@en ;
+                sh:targetClass :InvolvedPerson ;
+                volipi:iconName "fas fa-user-check" ;
+                sh:property :person,
+        :personRole ;
+.
+:person a sh:PropertyShape ;
+    rdfs:label "Person"@de, "Personne"@fr, "Person"@en ;
+    sh:path :person ;
+    sh:class :Person ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sparna:datasource this:searchName_datasource;
+.
+:InvolvedCorporation a sh:NodeShape ;
+    rdfs:label "Beteiligte Körperschaft"@de, "Société impliquée"@fr, "Involved corporation"@en ;
+    sh:targetClass :InvolvedCorporation ;
+    volipi:iconName "fas fa-building-flag" ;
+    sh:property :corporation,
+        :corporationRole ;
+.
+:corporation a sh:PropertyShape ;
+    rdfs:label "Körperschaft"@de, "Société"@fr, "Corporation"@en ;
+    sh:path :corporation ;
+    sh:class :Corporation ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+.
+:Genre a sh:NodeShape ;
+    rdfs:label "Genre"@de, "Genre"@fr, "Genre"@en ;
+    sh:targetClass :Genre ;
+    volipi:iconName "fas fa-theater-masks" ;
+    sh:property :title,
+        :description,
+        :image ;
+.
+:title a sh:PropertyShape ;
+    rdfs:label "Titel"@de, "Titre"@fr, "Title"@en ;
+    sh:path :title ;
+    sh:datatype xsd:string ;
+    sh:maxCount 1 ;
+    sh:maxLength 200 ;
+.
+:description a sh:PropertyShape ;
+    rdfs:label "Beschreibung"@de, "Description"@fr, "Description"@en ;
+    sh:path :description ;
+    sh:datatype xsd:string ;
+    sh:maxCount 1 ;
+.
+:image a sh:PropertyShape ;
+    rdfs:label "Bild"@de, "Image"@fr, "Image"@en ;
+    sh:path :image ;
+    sh:datatype xsd:anyURI ;
+    sh:maxCount 1 ;
+.
+:Exhibition a sh:NodeShape ;
+    rdfs:label "Ausstellung"@de, "Exposition"@fr, "Exhibition"@en ;
+    sh:targetClass :Exhibition ;
+    volipi:iconName "fas fa-museum" ;
+    sh:property :title,
+        :description,
+        :startDate,
+        :endDate,
+        :subtitle,
+        :originalTitle,
+        :exhibitionSeries,
+        :exhibitionCategory,
+        :exhibitionGenre,
+        :exhibition_parent,
+        :externalId,
+        :exhibitionType,
+        :published,
+        :editorNote,
+        :placesUnknown,
+        :places,
+        :locations,
+        :tags,
+        :exposedArtists,
+        :curators,
+        :involvedPersons,
+        :organizers,
+        :involvedCorporations,
+        :exhibitionweblink,
+        :finissage,
+        :midissage,
+        :vernissage,
+        :exponats,
+        :catalogs,
+        :resources,
+        :image ;
+.
+:title a sh:PropertyShape ;
+    sh:path :title ;
+    sh:datatype xsd:string ;
+    sh:maxCount 1 ;
+    sh:maxLength 200 ;
+.
+:description a sh:PropertyShape ;
+    sh:path :description ;
+    sh:datatype xsd:string ;
+    sh:maxCount 1 ;
+.
+:startDate a sh:PropertyShape ;
+    sh:path :startDate ;
+    sh:node :startDate_NodeShape ;
+    sh:maxCount 1 ;
+.
+:startDate_NodeShape a sh:NodeShape ;
+    sh:property :startDate_dateValue,
+        :startDate_dateModifier ;
+.
+:startDate_dateValue a sh:PropertyShape ;
+    sh:path :dateValue ;
+    sh:datatype xsd:integer ;
+    sh:maxCount 1 ;
+    sh:maxLength 8 ;
+.
+:startDate_dateModifier a sh:PropertyShape ;
+    sh:path :dateModifier ;
+    sh:datatype xsd:integer ;
+    sh:maxCount 1 ;
+    sh:in ( 0 1 2 3 ) ;
+.
+:endDate a sh:PropertyShape ;
+    sh:path :endDate ;
+    sh:node :endDate_NodeShape ;
+    sh:maxCount 1 ;
+.
+:endDate_NodeShape a sh:NodeShape ;
+    sh:property :endDate_dateValue,
+        :endDate_dateModifier ;
+.
+:endDate_dateValue a sh:PropertyShape ;
+    sh:path :dateValue ;
+    sh:datatype xsd:integer ;
+    sh:maxCount 1 ;
+    sh:maxLength 8 ;
+.
+:endDate_dateModifier a sh:PropertyShape ;
+    sh:path :dateModifier ;
+    sh:datatype xsd:integer ;
+    sh:maxCount 1 ;
+    sh:in ( 0 1 2 3 ) ;
+.
+:subtitle a sh:PropertyShape ;
+    sh:path :subtitle ;
+    sh:datatype xsd:string ;
+    sh:maxCount 1 ;
+    sh:maxLength 200 ;
+.
+:originalTitle a sh:PropertyShape ;
+    sh:path :originalTitle ;
+    sh:datatype xsd:string ;
+    sh:maxCount 1 ;
+    sh:maxLength 200 ;
+.
+:exhibitionSeries a sh:PropertyShape ;
+    sh:path :exhibitionSeries ;
+    sh:class :ExhibitionSeries ;
+    sh:maxCount 1 ;
+.
+:exhibitionCategory a sh:PropertyShape ;
+    sh:path :exhibitionCategory ;
+    sh:class :ExhibitionCategory ;
+    sh:maxCount 1 ;
+.
+:exhibitionGenre a sh:PropertyShape ;
+    sh:path :exhibitionGenre ;
+    sh:class :Genre ;
+    dash:searchWidget sparco:ListProperty ;
+.
+:exhibition_parent a sh:PropertyShape ;
+    sh:path :parent ;
+    sh:class :Exhibition ;
+    sh:maxCount 1 ;
+.
+:externalId a sh:PropertyShape ;
+    sh:path :externalId ;
+    sh:datatype xsd:string ;
+    sh:maxCount 1 ;
+    sh:maxLength 50 ;
+.
+:exhibitionType a sh:PropertyShape ;
+    sh:path :exhibitionType ;
+    sh:class :EventType ;
+    sh:maxCount 1 ;
+    sparna:datasource this:searchStartTitle_datasource;
+.
+
+this:searchStartTitle_datasource a sparna:SparqlDatasource ;
+                               sparna:queryTemplate sparna:query_search_label_strstarts;
+                               sparna:labelProperty :title .
+
+this:searchWithinTitle_datasource a sparna:SparqlDatasource ;
+                            sparna:queryTemplate sparna:query_search_label_contains;
+                            sparna:labelProperty :title .
+
+this:searchName_datasource a sparna:SparqlDatasource ;
+                            sparna:queryTemplate sparna:query_search_label_contains;
+                            sparna:labelProperty :name .
+
+this:searchName_datasource a sparna:SparqlDatasource ;
+                           sparna:queryTemplate sparna:query_search_label_contains;
+                           sparna:labelProperty :name .
+
+this:search_involvedPerson_datasource a sparna:SparqlDatasource ;
+                           sparna:queryTemplate sparna:query_search_label_contains;
+                           sparna:labelPath  "(<http://ontologies.slub-dresden.de/exhibition#person>/<http://ontologies.slub-dresden.de/exhibition#name>)" .
+:published a sh:PropertyShape ;
+    sh:path :published ;
+    sh:datatype xsd:boolean ;
+    sh:maxCount 1 ;
+.
+:editorNote a sh:PropertyShape ;
+    sh:path :editorNote ;
+    sh:datatype xsd:string ;
+    sh:maxCount 1 ;
+    sh:maxLength 300 ;
+.
+:placesUnknown a sh:PropertyShape ;
+    sh:path :placesUnknown ;
+    sh:datatype xsd:boolean ;
+    sh:maxCount 1 ;
+.
+:places a sh:PropertyShape ;
+    rdfs:label "Stätten"@de, "Lieux"@fr, "Places"@en ;
+    sh:path :places ;
+    sh:class :Place ;
+.
+:locations a sh:PropertyShape ;
+    rdfs:label "Orte"@de, "Lieux"@fr, "Locations"@en ;
+    sh:path :locations ;
+    sh:class :Location ;
+.
+:exposedArtists a sh:PropertyShape ;
+    rdfs:label "Ausgestellte Künstler"@de, "Artistes exposés"@fr, "Exposed artists"@en ;
+    sh:path :exposedArtists ;
+    sh:class :Person ;
+.
+:curators a sh:PropertyShape ;
+    rdfs:label "kuratiert von"@de, "curated by"@en, "curaté par"@fr ;
+    sh:path :curators ;
+    sh:class :Person ;
+    sparna:datasource this:searchName_datasource;
+.
+:involvedPersons a sh:PropertyShape ;
+    rdfs:label "Beteiligte Personen"@de, "Personnes impliquées"@fr, "Involved persons"@en ;
+    sh:path :involvedPersons ;
+    sh:class :InvolvedPerson ;
+    dash:searchWidget sparco:NonSelectableProperty ;
+.
+:organizers a sh:PropertyShape ;
+    rdfs:label "Organisatoren"@de, "Organisateurs"@fr, "Organizers"@en ;
+    sh:path :organizers ;
+    sh:class :Corporation ;
+    sparna:datasource this:searchName_datasource;
+.
+:involvedCorporations a sh:PropertyShape ;
+    rdfs:label "Beteiligte Körperschaften"@de, "Sociétés impliquées"@fr, "Involved corporations"@en ;
+    sh:path :involvedCorporations ;
+    sh:class :InvolvedCorporation ;
+    dash:searchWidget sparco:NonSelectableProperty ;
+.
+:exhibitionweblink a sh:PropertyShape ;
+    sh:path :exhibitionweblink ;
+    sh:datatype xsd:anyURI ;
+    sh:maxCount 1 ;
+.
+:finissage a sh:PropertyShape ;
+    sh:path :finissage ;
+    sh:node :finissage_NodeShape ;
+    sh:maxCount 1 ;
+.
+:finissage_NodeShape a sh:NodeShape ;
+    sh:property :finissage_dateValue ;
+.
+:finissage_dateValue a sh:PropertyShape ;
+    sh:path :dateValue ;
+    sh:datatype xsd:integer ;
+    sh:maxCount 1 ;
+    sh:maxLength 8 ;
+.
+:midissage a sh:PropertyShape ;
+    sh:path :midissage ;
+    sh:node :midissage_NodeShape ;
+    sh:maxCount 1 ;
+.
+:midissage_NodeShape a sh:NodeShape ;
+    sh:property :midissage_dateValue ;
+.
+:midissage_dateValue a sh:PropertyShape ;
+    sh:path :dateValue ;
+    sh:datatype xsd:integer ;
+    sh:maxCount 1 ;
+    sh:maxLength 8 ;
+.
+:vernissage a sh:PropertyShape ;
+    sh:path :vernissage ;
+    sh:node :vernissage_NodeShape ;
+    sh:maxCount 1 ;
+.
+:vernissage_NodeShape a sh:NodeShape ;
+    sh:property :vernissage_dateValue ;
+.
+:vernissage_dateValue a sh:PropertyShape ;
+    sh:path :dateValue ;
+    sh:datatype xsd:integer ;
+    sh:maxCount 1 ;
+    sh:maxLength 8 ;
+.
+:exponats a sh:PropertyShape ;
+    rdfs:label "Exponate"@de, "Exponats"@fr, "Exponats"@en ;
+    sh:path :exponats ;
+    sh:class :ExhibitionExponat ;
+.
+:catalogs a sh:PropertyShape ;
+    rdfs:label "Ausstellungskataloge"@de, "Catalogues d'exposition"@fr, "Exhibition catalogs"@en ;
+    sh:path :catalogs ;
+    sh:class :Resource ;
+.
+:resources a sh:PropertyShape ;
+    rdfs:label "Ressourcen"@de, "Ressources"@fr, "Resources"@en ;
+    sh:path :resources ;
+    sh:class :Resource ;
+.
+:image a sh:PropertyShape ;
+    rdfs:label "Bild"@de, "Image"@fr, "Image"@en ;
+    sh:path :image ;
+    sh:datatype xsd:anyURI ;
+    sh:maxCount 1 ;
+.

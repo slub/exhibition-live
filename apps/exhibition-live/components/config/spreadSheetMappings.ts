@@ -3,9 +3,11 @@ import {
   spreadSheetMappings_NewYork,
 } from "./spreadSheetMappings_NewYork";
 import { spreadSheetMapping_Hamburg } from "./spreadSheetMapping_Hamburg";
-import { DeclarativeMatchBasedFlatMappings } from "../utils/mapping/mapMatchBasedByConfig";
 import { OwnColumnDesc } from "../google/types";
-import { DeclarativeFlatMappings } from "../utils/mapping/mappingStrategies";
+import {
+  DeclarativeFlatMappings,
+  DeclarativeMatchBasedFlatMappings,
+} from "@slub/edb-data-mapping";
 
 export type ConcreteSpreadSheetMapping = {
   raw?: DeclarativeMatchBasedFlatMappings;

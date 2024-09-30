@@ -1,6 +1,5 @@
-import config from "@slub/edb-tsup-config/tsup.config.js";
+import { makeConfigWithExternals } from "@slub/edb-tsup-config/tsup.config.js";
+import pkg from "./package.json";
 
-export default {
-  ...config,
-  format: ["esm"],
-};
+const config = makeConfigWithExternals(pkg);
+export default config;

@@ -91,6 +91,7 @@ describe("make construct query", () => {
         },
       })
       .toString();
+    console.log(constructQuery);
     expect(constructQuery).toMatch(/CONSTRUCT {.*/);
   });
 

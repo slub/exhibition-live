@@ -1,16 +1,18 @@
 import { ImportExport, Settings } from "@mui/icons-material";
 import { useMediaQuery, useTheme, List, Divider, Toolbar } from "@mui/material";
-import { JSONSchema7 } from "json-schema";
 import React, { useCallback, useMemo } from "react";
 
-import loadedSchema from "../../../public/schema/Exhibition.schema.json";
 import SettingsModal from "../../content/settings/SettingsModal";
-import { useLocalSettings } from "../../state/useLocalSettings";
-import { MenuGroup, NavGroup, NavItem, Drawer } from "./menu";
-import menuLists from "./menu/menuLists";
-import { useGlobalAuth } from "../../state";
+import {
+  useAdbContext,
+  useLocalSettings,
+  useModifiedRouter,
+} from "@slub/edb-state-hooks";
+import { Drawer } from "./menu";
 import { useTranslation } from "next-i18next";
-import { useModifiedRouter } from "../../basic";
+import { useGlobalAuth } from "../../state/useGlobalAuth";
+import { createMenuListFromSchema } from "./createMenuListFromSchema";
+import { MenuGroup, NavGroup, NavItem } from "@slub/edb-advanced-components";
 
 type SidebarProps = {
   open?: boolean;
@@ -69,11 +71,10 @@ const Options = ({ open }) => {
 const Navigation = ({ open }) => {
   const { t } = useTranslation();
   const { getPermission } = useGlobalAuth();
+  const { schema } = useAdbContext();
   const menuGroup = useMemo<MenuGroup | null>(() => {
-    return loadedSchema
-      ? menuLists(loadedSchema as JSONSchema7, getPermission, t)
-      : (null as MenuGroup);
-  }, [getPermission, t]);
+    return schema ? createMenuListFromSchema(schema, getPermission, t) : null;
+  }, [schema, getPermission, t]);
   return (
     menuGroup && (
       <>
@@ -98,7 +99,6 @@ export const Sidebar = ({ open, onClose }: SidebarProps) => {
     >
       <Toolbar />
       <Navigation open={open} />
-      <ImportSection open={open} />
       <Options open={open} />
       <Divider />
     </Drawer>

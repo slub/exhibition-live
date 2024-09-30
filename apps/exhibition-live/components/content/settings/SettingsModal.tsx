@@ -17,7 +17,7 @@ import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import React, { FunctionComponent, useCallback, useState } from "react";
 
-import { useLocalSettings } from "../../state/useLocalSettings";
+import { useLocalSettings } from "@slub/edb-state-hooks";
 import AuthorityConfigForm from "./AuthorityConfigForm";
 import EndpointChooser from "./EndpointChooser";
 import FeatureForm from "./FeatureForm";

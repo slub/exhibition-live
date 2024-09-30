@@ -1,0 +1,97 @@
+import { Meta, Markdown } from "@storybook/blocks";
+
+<Meta title="Development/Reconcilation" />
+
+# Reconcilation
+
+**Date: 2024-08-01**
+**Source: [Thread on Github](https://github.com/reconciliation-api/specs/issues/104#issuecomment-1355364865)**
+
+For autosuggest and entity linking, we use the Freebase Reconciliation API next to other methods. The Reconciliation API is a service that takes a string as input and returns a list of entity IDs which are likely to be the entity that the string represents. The API can be used to reconcile entities from Freebase or other sources.
+
+Even though it is not part of the EDB Framework for reference , we'll provide the following information about the Reconciliation API:
+
+## parameters of the Reconciliation API
+
+<Markdown>
+  {`
+| Parameter name      | Value   | Description                                                                                                                                                                                                                                                                                                                                                                                     |
+|---------------------|---------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Optional parameters |         |                                                                                                                                                                                                                                                                                                                                                                                                 |
+| as_of_time          | string  | A MQL as_of_time value to use with mql_output queries.                                                                                                                                                                                                                                                                                                                                          |
+| callback            | string  | JS method name for JSONP callbacks.                                                                                                                                                                                                                                                                                                                                                             |
+| cursor              | integer | The cursor parameter along with the limit parameter allows you to page through a defined number of results at a time. For example, to present 3 pages of successive 10 results, use  limit=10 and cursor=0, then cursor=10, and cursor=20.                                                                                                                                                      |
+| domain              | string  | Restrict to topics with this Freebase domain ID.                                                                                                                                                                                                                                                                                                                                                |
+| encode              | string  | The encoding of the response. You can use this parameter to enable HTML encoding.Acceptable values are:"html": Encode certain characters in the response (such as tags and ampersands) using HTML encoding."off": No encoding of the response. You should not print the results directly on a web page without HTML-escaping the content first. (default)                                       |
+| exact               | boolean | Query on exact name and keys only.                                                                                                                                                                                                                                                                                                                                                              |
+| filter              | string  | The filter parameter allows you to create more complex rules and constraints to apply to your query.The filter value is a simple language that supports the following symbols:the all, any, should and not operatorsthe type, domain, name, alias, with and without operandsthe ( and ) parenthesis for grouping and precedenceTo learn how to use the filter property see the Search Cookbook. |
+| format              | string  | Structural format of the JSON response.Acceptable values are:"entity": Basic information about the entities. (default)"ids": Ordered list of Freebase ids."mids": Ordered list of Freebase mids.                                                                                                                                                                                                |
+| indent              | boolean | Whether to indent the JSON results or not.                                                                                                                                                                                                                                                                                                                                                      |
+| lang                | string  | The code of the language with which to run the query. Default is 'en'.                                                                                                                                                                                                                                                                                                                          |
+| limit               | integer | Maximum number of results to return. By default, 20 matches in decreasing order of relevance are returned, if that many exist. Fewer or more matches may be requested by using the limit parameter with a different value. (Example.)                                                                                                                                                           |
+| mql_output          | string  | The MQL query to run againist the results to extract more data. After the query is run, the matching documents' IDs are passed to the mql_output MQL query to retrieve actual data about the matches. The MQL results are sorted by decreasing relevance score.                                                                                                                                 |
+| prefixed            | boolean | Prefix match against names and aliases.                                                                                                                                                                                                                                                                                                                                                         |
+| query               | string  | Query term to search for.                                                                                                                                                                                                                                                                                                                                                                       |
+| scoring             | string  | Relevance scoring algorithm to use.Acceptable values are:"entity": Use Freebase and popularity entity ranking. (default)"freebase": Use Freebase entity ranking."schema": Use schema ranking for properties and types.                                                                                                                                                                          |
+| spell               | string  | Request 'did you mean' suggestionsAcceptable values are:"always": Request spelling suggestions for any query at least three characters long."no_results": Request spelling suggestions if no results were found."no_spelling": Don't request spelling suggestions. (default)                                                                                                                    |
+| stemmed             | boolean | Query on stemmed names and aliases. May not be used with prefixed.                                                                                                                                                                                                                                                                                                                              |
+| type                | string  | Restrict to topics with this Freebase type id.                                                                                                                                                                                                                                                                                                                                                  |
+| with                | string  | A filter rule to match against.                                                                                                                                                                                                                                                                                                                                                                 |
+| without             | string  | A filter rule to not match against.
+                                                                                                                                                                                                                                                                                                                                                     |
+  `}
+</Markdown>
+
+All parameters below are optional but you must have one of either [query](https://developers.google.com/freebase/v1/search#query) or [filter](https://developers.google.com/freebase/v1/search#filter).
+
+### Parameter name Value Description
+
+#### Optional parameters
+- as_of_time string A MQL as_of_time value to use with mql_output queries.
+- callback string JS method name for JSONP callbacks.
+- cursor integer The cursor parameter along with the limit parameter allows you to page through a defined number of results at a time. For example, to present 3 pages of successive 10 results, use limit=10 and cursor=0, then cursor=10, and cursor=20.
+- domain string Restrict to topics with this Freebase domain ID.\
+encode string The encoding of the response. You can use this parameter to enable HTML encoding.
+
+#### Acceptable values are:
+- "html": Encode certain characters in the response (such as tags and ampersands) using HTML encoding.\
+- "off": No encoding of the response. You should not print the results directly on a web page without HTML-escaping the content first. (default)\
+exact boolean Query on exact name and keys only.\
+filter string\
+The filter parameter allows you to create more complex rules and constraints to apply to your query.
+
+The filter value is a simple language that supports the following symbols:
+
+the all, any, should and not operators\
+the type, domain, name, alias, with and without operands\
+the ( and ) parenthesis for grouping and precedence\
+To learn how to use the filter property see the [Search Cookbook](https://developers.google.com/freebase/v1/search-cookbook).
+
+### format string Structural format of the JSON response.
+
+#### Acceptable values are:
+- "entity": Basic information about the entities. (default)\
+- "ids": Ordered list of Freebase ids.\
+- "mids": Ordered list of Freebase mids.\
+indent boolean Whether to indent the JSON results or not.\
+lang string The code of the language with which to run the query. Default is 'en'.\
+limit integer Maximum number of results to return. By default, 20 matches in decreasing order of relevance are returned, if that many exist. Fewer or more matches may be requested by using the limit parameter with a different value. ([Example](https://www.googleapis.com/freebase/v1/search?query=tiger&limit=5&indent=true).)\
+mql_output string The MQL query to run againist the results to extract more data. After the query is run, the matching documents' IDs are passed to the mql_output MQL query to retrieve actual data about the matches. The MQL results are sorted by decreasing relevance score.\
+prefixed boolean Prefix match against names and aliases.\
+query string Query term to search for.\
+scoring string Relevance scoring algorithm to use.
+
+#### Acceptable values are:
+- "entity": Use Freebase and popularity entity ranking. (default)\
+- "freebase": Use Freebase entity ranking.\
+- "schema": Use schema ranking for properties and types.\
+spell string Request 'did you mean' suggestions
+
+#### Acceptable values are:
+- "always": Request spelling suggestions for any query at least three characters long.\
+- "no_results": Request spelling suggestions if no results were found.\
+- "no_spelling": Don't request spelling suggestions. (default)\
+stemmed boolean Query on stemmed names and aliases. May not be used with prefixed.\
+type string Restrict to topics with this Freebase type id.\
+with string A filter rule to match against.\
+without string A filter rule to not match against.

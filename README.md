@@ -8,20 +8,19 @@ A live demo of the exhibition catalog is available here: [https://slub.github.io
 
 You might want to set your own storage backend(s) within the settings modal.
 
-## Storybook stories
+## Development Documentation
 
-The pure frontend specific component based framework, that sets the base of the exhibition catalog is documented within the Storybook.
-
-You can get a live preview of the current `develop` branch here: [https://slub.github.io/exhibition-live/storybook/](https://slub.github.io/exhibition-live/storybook/)
+Please have a look at the **[Storybook of the EDB Framework](https://slub.github.io/exhibition-live/storybook/)** for an indepth documentation of the frontend components, th cli
+and the overall architecture of the exhibition catalog and the EDB framework.
 
 # Development
 
 ## Getting Started
 
-First, run the development server:
+For a quick start install all dependencies initially build the packages and start the development server of the nextjs exhibition-live application.
 
 ```bash
-bun i && bun run dev
+bun i && bun build:packages && bun run dev:exhibition
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
@@ -56,6 +55,12 @@ Other SPARQL Endpoints, like Jena Fuseki, Virtuoso, Blazegraph or GraphDB can be
 Additional effort might be needed to configure CORS and authentication and to get along with some
 Endpoints not beeing fully SPARQL 1.1 compliant.
 
+### Endpoint Configuration
+
+The configuration of endpoints within the `exhibition-live` application can either be done dynamically at runtime using
+the settings modal or by providing a `SPARQL_ENDPOINT` environment variable at build time, which disables setting the endpoint
+within the modal and is especially suitable for production deployments, where one wants to make sure all users operate on the same endpoint.
+
 ## Storybook
 
 This project uses [Storybooks](https://storybook.js.org/) to enforce reusable component based development and to document them with
@@ -67,6 +72,19 @@ bun i && bun run storybook
 ```
 
 Open [http://localhost:6006](http://localhost:6006) with your browser to see the storybook.
+
+## Testing
+
+Unit tests of core functionality is done by `jest`. For integration tests of the frontend `Cypress` is being used.
+
+### Trouble Shooting
+
+Cypress under Nix:
+it might be necessary to delete `~/.cache/Cypress`
+
+```
+rm -rf ~/.cache/Cypress
+```
 
 ## Using Docker
 
@@ -130,3 +148,16 @@ that provide additional information for the frontend, like:
 
 - the UI-Schemata for form layout and style hints
 - data mapping declarations for data conversion from and to norm data repositories
+
+# Helpful Commands
+
+Complete rebuild without cache:
+
+```
+docker compose down
+docker compose rm -f
+docker compose pull
+docker compose up --build -d
+```
+
+Deletes all images, reloads all images from repository, starts all images with building in daemon-mode, may add `docker compose logs -f` for output in following mode.

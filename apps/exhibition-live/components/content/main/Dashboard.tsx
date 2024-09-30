@@ -9,19 +9,17 @@ import {
 } from "@mui/material";
 import Grid2 from "@mui/material/Unstable_Grid2";
 import { TrendingDown, TrendingUp } from "@mui/icons-material";
-import { useQuery } from "@tanstack/react-query";
-import { useGlobalCRUDOptions } from "../../state/useGlobalCRUDOptions";
+import { useQuery } from "@slub/edb-state-hooks";
+import { useAdbContext, useGlobalCRUDOptions } from "@slub/edb-state-hooks";
 import { SELECT } from "@tpluscode/sparql-builder";
-import { primaryFields, typeIRItoTypeName } from "../../config";
-import { sladb } from "../../form/formConfigs";
-import BarReChart from "../charts/BarReChart";
 import { orderBy } from "lodash";
 import { useMemo } from "react";
 import { SearchBar } from "./Search";
 import { ParentSize } from "@visx/responsive";
-import { fixSparqlOrder } from "../../utils/discover";
 import df from "@rdfjs/data-model";
 import { useTranslation } from "next-i18next";
+import { fixSparqlOrder } from "@slub/sparql-schema";
+import { BarReChart } from "@slub/edb-charts";
 
 export const HeaderTitle = styled(Typography)(({ theme }) => ({
   fontFamily: "'Play', sans-serif",
@@ -97,9 +95,20 @@ export const OwnCard = ({
   </Card>
 );
 
-const relevantTypes = Object.keys(primaryFields).map((key) => sladb(key).value);
-
 export const Dashboard = (props) => {
+  const {
+    queryBuildOptions: { primaryFields },
+    typeIRIToTypeName,
+    typeNameToTypeIRI,
+    jsonLDConfig: { defaultPrefix },
+    propertyNameToIRI,
+  } = useAdbContext();
+
+  const relevantTypes = useMemo(
+    () => Object.keys(primaryFields).map((key) => propertyNameToIRI(key)),
+    [propertyNameToIRI, primaryFields],
+  );
+
   const { t } = useTranslation();
   const { crudOptions } = useGlobalCRUDOptions();
   const { selectFetch } = crudOptions || {};
@@ -126,16 +135,14 @@ export const Dashboard = (props) => {
     () =>
       orderBy(
         typeCountData?.map((item) => ({
-          title: t(typeIRItoTypeName(item.type?.value)),
+          title: t(typeIRIToTypeName(item.type?.value)),
           score: parseInt(item.count?.value) || 0,
         })),
         ["score"],
         ["desc"],
       ),
-    [typeCountData, t],
+    [typeCountData, t, typeIRIToTypeName],
   );
-
-  const items = useMemo(() => {}, []);
 
   return (
     <Box

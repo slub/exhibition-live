@@ -22,6 +22,7 @@ jobs:
   # Build job
   build:
     runs-on: ubuntu-latest
+    environment: github-pages
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -57,12 +58,10 @@ jobs:
       - name: Install dependencies
         run: bun install
       - name: create env file
-        env:
-          NEXT_PUBLIC_GAPI_OAUTH_CLIENT_ID: ${{ secrets.NEXT_PUBLIC_GAPI_OAUTH_CLIENT_ID }}
-          NEXT_PUBLIC_BASE_PATH:  /${{ github.event.repository.name }}
         run: |
           touch ./apps/exhibition-live/.env
-          echo NEXT_PUBLIC_GAPI_OAUTH_CLIENT_ID="${{ secrets.NEXT_PUBLIC_GAPI_OAUTH_CLIENT_ID  }}" >> ./apps/exhibition-live/.env
+          echo "${{ vars.LOCAL_ENV_FILE }}" > ./apps/exhibition-live/.env
+          echo NEXT_PUBLIC_GAPI_OAUTH_CLIENT_ID="${{ vars.NEXT_PUBLIC_GAPI_OAUTH_CLIENT_ID }}" >> ./apps/exhibition-live/.env
           echo NEXT_PUBLIC_BASE_PATH="/${{ github.event.repository.name }}" >> ./apps/exhibition-live/.env
       - name: Build with Next.js
         run: bun run build

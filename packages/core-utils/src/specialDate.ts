@@ -78,3 +78,34 @@ export const getPaddedDate = (date: Date) => {
   const day = leftpad(date.getDate(), 2);
   return `${year}${month}${day}`;
 };
+
+/**
+ * convert a number to a string with a given length, pad it with zeros
+ * @param date the date as number between 0 and 99999999
+ * @param part the part of the date to extract ("day", "month", or "year")
+ */
+export const getDatePartAsString = (
+  date: number,
+  part: "day" | "month" | "year",
+) => {
+  const value = getDatePart(date, part);
+  if (value === 0) return "";
+  const maxLength = part === "year" ? 4 : 2;
+  return leftpad(value, maxLength);
+};
+
+/**
+ * convert year, month, day to a number
+ * @param year
+ * @param month
+ * @param day
+ * @returns
+ */
+export const makeSpecialDate = (
+  year: number,
+  month?: number | undefined,
+  day?: number | undefined,
+) => {
+  const specialDateString = `${year}${month ? leftpad(month, 2) : "00"}${day ? leftpad(day, 2) : "00"}`;
+  return Number(specialDateString);
+};

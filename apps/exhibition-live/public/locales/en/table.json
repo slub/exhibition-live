@@ -49,5 +49,9 @@
   "relatedCorporation": "related corporation",
   "exhibitionType":  "type",
   "exhibitionCategory":  "category",
-  "exhibitionSeries": "series"
+  "exhibitionSeries": "series",
+  "exposedArtists": "exposed artists",
+  "curators": "curators",
+  "organizers": "organizers",
+  "catalogs": "catalogs"
 }

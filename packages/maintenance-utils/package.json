@@ -1,0 +1,47 @@
+{
+  "name": "@slub/edb-maintenance-utils",
+  "version": "1.0.0",
+  "description": "Document and graph loading utilities for EDB maintenance",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs",
+      "default": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "lint": "eslint \"**/*.ts*\"",
+    "lint-fix": "eslint --fix \"**/*.ts*\"",
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest",
+    "test:watch": "NODE_OPTIONS=--experimental-vm-modules jest --watch --color",
+    "test:coverage": "NODE_OPTIONS=--experimental-vm-modules jest --coverage",
+    "doc": "typedoc"
+  },
+  "devDependencies": {
+    "@rdfjs/types": "^1.1.0",
+    "@slub/edb-build-helper": "workspace:*",
+    "@slub/edb-core-types": "workspace:*",
+    "@slub/edb-tsconfig": "workspace:*",
+    "@slub/edb-tsup-config": "workspace:*",
+    "@slub/edb-graph-traversal": "workspace:*",
+    "jsonld-context-parser": "^3.0.0",
+    "@types/jest": "^29.5.12",
+    "@types/json-schema": "^7.0.14",
+    "eslint-config-edb": "workspace:*",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "@rdfjs/data-model": "^2.0.2",
+    "@tpluscode/rdf-ns-builders": "^4.3.0",
+    "@slub/json-schema-utils": "workspace:*",
+    "@slub/edb-graph-traversal": "workspace:*",
+    "json-schema": "^0.4.0"
+  }
+}

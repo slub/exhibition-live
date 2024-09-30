@@ -8,6 +8,7 @@ import {
 import { NamedEntityData } from "@slub/edb-core-types";
 import { jsonld2DataSet } from "./jsonld2DataSet";
 import datasetFactory from "@rdfjs/dataset";
+import { filterUndefOrNull } from "@slub/edb-core-utils";
 
 type CleanJSONLDOptions = {
   walkerOptions?: Partial<WalkerOptions>;
@@ -27,7 +28,7 @@ const defaultOptions: Partial<WalkerOptions> = {
 
 const cleanProperty = (data: any) => {
   return Array.isArray(data)
-    ? data.map(cleanProperty)
+    ? filterUndefOrNull(data).map(cleanProperty)
     : typeof data === "object"
       ? Object.keys(data).reduce((acc, key) => {
           const prop = data[key];

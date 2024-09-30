@@ -6,28 +6,30 @@ import React, {
   useState,
 } from "react";
 
-import {
-  findEntityWithinLobid,
-  findEntityWithinLobidByIRI,
-} from "../../utils/lobid/findEntityWithinLobid";
-import ClassicResultListItem from "../result/ClassicResultListItem";
-import ClassicEntityCard from "./ClassicEntityCard";
-import LobidAllPropTable from "./LobidAllPropTable";
-import WikidataAllPropTable from "../wikidata/WikidataAllPropTable";
-import {
-  PrimaryFieldExtract,
-  PrimaryFieldExtractDeclaration,
-} from "../../utils/types";
-import { filterUndefOrNull } from "../../utils/core";
-import {
-  applyToEachField,
-  extractFieldIfString,
-} from "../../utils/mapping/simpleFieldExtractor";
-import { useQuery } from "@tanstack/react-query";
+import { filterUndefOrNull } from "@slub/edb-ui-utils";
+import { useQuery } from "@slub/edb-state-hooks";
 import { typeIRItoTypeName } from "../../config";
 import Ajv from "ajv";
 import { useTranslation } from "next-i18next";
-import { BasicThingInformation } from "@slub/edb-core-types";
+import {
+  BasicThingInformation,
+  PrimaryFieldExtract,
+  PrimaryFieldExtractDeclaration,
+} from "@slub/edb-core-types";
+import {
+  ClassicEntityCard,
+  ClassicResultListItem,
+} from "@slub/edb-basic-components";
+import {
+  LobidAllPropTable,
+  WikidataAllPropTable,
+} from "@slub/edb-advanced-components";
+import {
+  findEntityWithinLobid,
+  findEntityWithinLobidByIRI,
+} from "@slub/edb-authorities";
+import { applyToEachField, extractFieldIfString } from "@slub/edb-data-mapping";
+import { lobidTypemap } from "@slub/exhibition-schema";
 
 type Props = {
   searchString: string;
@@ -43,6 +45,11 @@ type LobIDEntry = {
 };
 
 const nullOnEmpty = (arr: any[]) => (arr.length > 0 ? arr : null);
+
+const defaultGndPrimaryFieldExtract: PrimaryFieldExtract<any> = {
+  label: "preferredName",
+  image: (entry: any) => entry.depiction?.[0]?.thumbnail,
+};
 
 const gndPrimaryFields: PrimaryFieldExtractDeclaration = {
   DifferentiatedPerson: {
@@ -75,7 +82,7 @@ const getFirstMatchingFieldDeclaration = <T,>(
   fieldDeclaration: PrimaryFieldExtractDeclaration<T>,
 ): PrimaryFieldExtract<T> | null => {
   const key = Object.keys(fieldDeclaration).find((key) => type.includes(key));
-  return key ? fieldDeclaration[key] : null;
+  return key ? fieldDeclaration[key] : defaultGndPrimaryFieldExtract;
 };
 
 const defaultPrimaryFields: PrimaryFieldExtract<any> = {
@@ -174,6 +181,7 @@ const LobidSearchTable: FunctionComponent<Props> = ({
         await findEntityWithinLobid(
           searchString,
           typeIRItoTypeName(typeIRI),
+          lobidTypemap,
           10,
         )
       )?.member?.map((allProps: any) => gndEntryWithMainInfo(allProps)),
@@ -236,6 +244,7 @@ const LobidSearchTable: FunctionComponent<Props> = ({
                       size="small"
                       color="primary"
                       variant="contained"
+                      className="accept-button"
                       disabled={!onAcceptItem || !selectedEntry}
                       onClick={() =>
                         onAcceptItem && onAcceptItem(id, selectedEntry)

@@ -1,0 +1,60 @@
+import { Meta } from "@storybook/blocks";
+import {SBMermaid} from "../../.storybook/blocks/SBMermaid";
+
+<Meta title="maintenance/Cli" />
+
+
+# EDB Cli
+
+The EDB Cli is a command-line tool for accessing and mapping data according to the current EDB data model defined by the JSON Schema.
+
+The Cli will use the global configuration provided by the environment (for example `.env` file) to connect to the configured DataStore
+and what model to use.
+
+The CLI also supports a list of Import-DataStores, which can be used to import data from other data sources.
+The data flow looks as follows (in the example a Prisma DataStore is being used) :
+
+
+
+<SBMermaid chart={`flowchart TD
+    subgraph CLI
+      Argument-Parser -- CRUD --> ds2[/Main-DataStore\\] --> PrismaORM
+      ds3[/Import-DataStore 1\\] -- import --> ds2
+      ds4[/Import-DataStore 2\\] -- import --> ds2
+    end
+      CLI -- output --> jsonld[JSON-LD Documents]
+      PrismaORM --> id1[(Postgres)]`}></SBMermaid>
+
+To run the EDB Cli, run the following command:
+
+```bash
+bun run cli
+```
+It will show you the available subcommands and options.
+
+```
+edb-cli <subcommand>
+
+where <subcommand> can be one of:
+
+- list
+- get
+- flatImport - Import of flat table structured documents
+- import - Recursively import data from another data store
+
+For more help, try running `edb-cli <subcommand> --help`
+```
+
+#### Retrieving Data
+
+Use the list or get command to retrieve data from the EDB Cli. The list command will list all documents, while the get command will retrieve a specific data object.
+
+```bash
+bun run cli list Person -n 10
+```
+will list 10 documents of the type `Person`.
+
+```bash
+bun run cli get Person http://ontologies.slub-dresden.de/exhibition/entity#XYZ
+```
+will retrieve the document with the id `http://ontologies.slub-dresden.de/exhibition/entity#XYZ` of the type `Person`.

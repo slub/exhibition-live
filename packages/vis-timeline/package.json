@@ -1,0 +1,33 @@
+{
+  "name": "@slub/edb-vis-timeline",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs",
+      "default": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsup src/index.tsx --format esm,cjs --dts --external react",
+    "dev": "tsup src/index.tsx --format esm,cjs --watch --dts --external react",
+    "lint": "eslint \"**/*.ts*\"",
+    "lint-fix": "eslint --fix \"**/*.ts*\""
+  },
+  "dependencies": {
+    "vis-data": "^7.1.9",
+    "vis-timeline": "^7.7.3"
+  },
+  "devDependencies": {
+    "react": "^18",
+    "@types/react": "^18.3.3"
+  },
+  "peerDependencies": {
+    "react": "^18"
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "type": "VerticalLayout",
+  "elements": [
+    {
+      "type": "Control",
+      "scope": "#/properties/title",
+      "label": "Bezeichnung",
+      "options": {
+        "focus": true
+      }
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/description",
+      "label": "Beschreibung",
+      "options": {
+        "multi": true
+      }
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/ressourceType"
+    },
+    {
+      "type": "HorizontalLayout",
+      "elements": [
+        {
+          "type": "Control",
+          "scope": "#/properties/ppn"
+        },
+        {
+          "type": "Control",
+          "scope": "#/properties/doi"
+        },
+        {
+          "type": "Control",
+          "scope": "#/properties/url"
+        }
+      ]
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/signature"
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/image"
+    }
+  ]
+}

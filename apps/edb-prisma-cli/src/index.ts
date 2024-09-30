@@ -1,4 +1,4 @@
-import schema from "@slub/exhibition-schema/schemas/jsonschema/Exhibition.schema.json";
+import { primaryFields, schema } from "@slub/exhibition-schema";
 import {
   boolean,
   command,
@@ -17,14 +17,23 @@ import { defs } from "@slub/json-schema-utils";
 import { JSONSchema7 } from "json-schema";
 import { dataStore as sparqlStore } from "./dataStore";
 import { extendSchema } from "./extendSchema";
-import { PrismaClient } from "@prisma/client";
-import { primaryFields } from "./primaryFields";
+import { PrismaClient } from "@prisma/edb-exhibition-client";
 import { filterJSONLD } from "@slub/edb-core-utils";
 
 const importStore = sparqlStore;
 const prisma = new PrismaClient();
+
 const rootSchema = extendSchema(schema as JSONSchema7);
 const dataStore = prismaStore(prisma, rootSchema, primaryFields);
+//bun only runs if we call it here: why??
+//find first object that can be counted:
+for (const key of Object.keys(prisma)) {
+  if (prisma[key]?.count) {
+    const c = await prisma[key].count();
+    //console.log(c)
+    break;
+  }
+}
 
 const allTypes = Object.keys(defs(schema as JSONSchema7));
 const importCommand = command({
@@ -54,6 +63,7 @@ const importCommand = command({
     } else {
       await dataStore.importDocuments(typeName, importStore, limit || 10);
     }
+    process.exit(0);
   },
 });
 
@@ -93,6 +103,7 @@ const get = command({
     }
     const item = await dataStore.loadDocument(type, entityIRI);
     console.log(formatResult(item, pretty, noJsonld));
+    process.exit(0);
   },
 });
 
@@ -127,12 +138,32 @@ const list = command({
       description: "Filter JSON-LD properties",
       long: "no-jsonld",
     }),
+    flat: flag({
+      type: boolean,
+      description:
+        "get the results as flat SPARQL Select like answer result set",
+      long: "flat",
+    }),
   },
-  handler: async ({ type, amount = 1, search, pretty, noJsonld }) => {
-    await dataStore.findDocuments(type, { search }, amount, (item) => {
-      console.log(formatResult(item, pretty, noJsonld));
-      return Promise.resolve();
-    });
+  handler: async ({ type, amount = 1, flat, search, pretty, noJsonld }) => {
+    if (flat) {
+      if (!dataStore.findDocumentsAsFlatResultSet) {
+        console.error("not implemented");
+        process.exit(-1);
+      }
+      const results = await dataStore.findDocumentsAsFlatResultSet(
+        type,
+        { search },
+        amount,
+      );
+      console.log(formatResult(results, pretty, false));
+    } else {
+      await dataStore.findDocuments(type, { search }, amount, (item) => {
+        console.log(formatResult(item, pretty, noJsonld));
+        return Promise.resolve();
+      });
+    }
+    process.exit(0);
   },
 });
 

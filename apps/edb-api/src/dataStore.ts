@@ -1,26 +1,24 @@
 import config from "@slub/exhibition-sparql-config";
-import { oxigraphCrudOptions } from "@slub/remote-query-implementations";
-import { initSPARQLStore } from "@slub/sparql-db-impl";
-import schema from "@slub/exhibition-schema/schemas/jsonschema/Exhibition.schema.json";
-import { JSONSchema7 } from "json-schema";
+import {
+  getProviderOrDefault,
+  getSPARQLFlavour,
+} from "@slub/remote-query-implementations";
+import { initSPARQLDataStoreFromConfig } from "@slub/sparql-db-impl";
 
-const {
-  namespace,
-  walkerOptions,
-  defaultPrefix,
-  defaultQueryBuilderOptions,
-  sparqlEndpoint,
-} = config;
-const crudOptions = oxigraphCrudOptions(sparqlEndpoint);
+const worker = getProviderOrDefault(config.sparqlEndpoint);
+
+if (!worker) {
+  throw new Error("No worker found for the given SPARQL endpoint");
+}
+export const dataStore = initSPARQLDataStoreFromConfig(
+  config,
+  worker(config.sparqlEndpoint),
+  getSPARQLFlavour(config.sparqlEndpoint),
+);
+
 export const typeNameToTypeIRI = (typeName: string) =>
-  namespace(typeName).value;
+  config.namespace(typeName).value;
 
-export const dataStore = initSPARQLStore({
-  defaultPrefix,
-  typeNameToTypeIRI,
-  queryBuildOptions: defaultQueryBuilderOptions,
-  walkerOptions,
-  sparqlQueryFunctions: crudOptions,
-  schema: schema as JSONSchema7,
-  defaultLimit: 10,
-});
+export const typeIRItoTypeName = (iri: string) => {
+  return iri?.substring(config.BASE_IRI.length, iri.length);
+};

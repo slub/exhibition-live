@@ -2,8 +2,12 @@ import { StorybookConfig } from "@storybook/nextjs";
 
 const config: StorybookConfig = {
   stories: [
+    "../stories/**/*.mdx",
+    "../stories/**/*.stories.@(js|jsx|ts|tsx)",
     "../components/**/*.mdx",
     "../components/**/*.stories.@(js|jsx|ts|tsx)",
+    "../../../packages/**/*.stories.@(js|jsx|ts|tsx)",
+    "../../../packages/**/*.mdx",
   ],
 
   addons: [
@@ -15,7 +19,11 @@ const config: StorybookConfig = {
 
   framework: {
     name: "@storybook/nextjs",
-    options: {},
+    options: {
+      builder: {
+        useSWC: true, // Enables SWC support
+      },
+    },
   },
   docs: {
     autodocs: true,
@@ -29,6 +37,15 @@ const config: StorybookConfig = {
         },
       ],
     });
+    config.resolve = {
+      ...config.resolve,
+      fallback: {
+        ...(config.resolve || {}).fallback,
+        fs: false,
+        stream: false,
+        os: false,
+      },
+    };
     return config;
   },
   /*

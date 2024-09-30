@@ -1,0 +1,11 @@
+{
+  "extends": "@slub/edb-tsconfig/base.json",
+  "include": ["."],
+  "exclude": ["dist", "build", "node_modules"],
+  "compilerOptions": {
+    "lib": ["ES2015", "DOM"],
+    "resolveJsonModule": true,
+    "esModuleInterop": true
+  }
+}
+

@@ -23,12 +23,10 @@ import React, {
   useState,
 } from "react";
 
-import {
-  remoteSparqlQuery,
-  sparqlSelectViaFieldMappings,
-} from "../../utils/sparql";
-import { wikidataPrefixes } from "../../utils/wikidata";
-import WikidataAllPropTable from "./WikidataAllPropTable";
+import { wikidataPrefixes } from "@slub/edb-ui-utils";
+import { sparqlSelectViaFieldMappings } from "@slub/sparql-schema";
+import { remoteSparqlQuery } from "@slub/remote-query-implementations";
+import { WikidataAllPropTable } from "@slub/edb-advanced-components";
 
 interface OwnProps {
   personIRI?: string | null;

@@ -1,0 +1,191 @@
+import { Meta } from "@storybook/blocks";
+
+<Meta title="Development/Packaging" />
+
+# Packaging
+
+In order to add functionality to either the CLI, the API or the frontend to guarantee maximum code reusage
+and a clear separation of dependencies we encourage to create a new package for each new feature.
+
+## How to write a package
+
+you can start with a template using the `hygen` generator:
+
+```bash
+hygen edb <package-type>
+```
+
+Presents a wizard where you can choose the name of the package and the type of package you want to create.
+It will automatically set up the base structure of the package optimized for the distribution you choose.
+
+A package, without any frontend dependencies like react, can be scaffolded with:
+
+```bash
+hygen edb tsup-package
+```
+
+### Example
+
+Let's assume we want to integrate some third party library like [sparnatural](https://sparnatural.eu/) into the frontend.
+
+
+1. Create a new package
+
+```bash
+hygen edb frontend-package
+```
+
+We will call it `@slub/edb-sparnatural`. This will generate a new package in the `packages` directory.
+
+2. Examine the package within the Storybook
+
+After launching the Storybook, you can see the new package in the sidebar. A scaffold component should have been created.
+```bash
+bun run storybook
+```
+
+The generated `package.json` should look like that:
+
+```json
+{
+  "name": "@slub/edb-sparnatural",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs",
+      "default": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsup src/index.tsx",
+    "dev": "tsup src/index.tsx",
+    "lint": "eslint \"**/*.ts*\"",
+    "lint-fix": "eslint --fix \"**/*.ts*\""
+  },
+  "peerDependencies": {
+    "@mui/material": "^5",
+    "@mui/icons-material": "^5",
+    "react": "^18"
+  },
+  "dependencies": {
+  },
+  "devDependencies": {
+    "@slub/edb-build-helper": "workspace:*",
+    "@slub/edb-tsconfig": "workspace:*",
+    "@slub/edb-tsup-config": "workspace:*"
+  }
+}
+```
+
+Go to the package directory and install the dependencies:
+
+We will remove the `@mui/*` dependencies and add the `sparnatural` dependency using bun:
+
+```bash
+bun remove @mui/material @mui/icons-material --peer
+bun add sparnatural
+```
+
+3. Implement the package
+
+No modify the `src/EdbSparnatural.tsx` file to include the `sparnatural` library. Because Sparnatural is a webcomponent we need to tacle arround not having the component beeing recognized by React.
+So a `declarations.d.ts` file is needed to declare the `spar-natural` WebComponent.
+
+```typescript
+namespace JSX {
+  interface IntrinsicElements {
+    "spar-natural": SparnaturalAttributes;
+  }
+
+  interface SparnaturalAttributes {
+    ref:React.RefObject<HTMLElement>
+    src: string;
+    lang: string;
+    endpoint: string;
+    distinct: string;
+    limit: string;
+    prefix: string;
+    debug:string
+  }
+}
+```
+
+Teh final `src/EdbSparnatural.tsx` file should look like this:
+
+```tsx
+import React, { useEffect, useRef } from 'react';
+import "sparnatural/src/assets/stylesheets/sparnatural.scss";
+
+export interface SparnaturalEvent extends Event {
+  detail?: {
+    queryString: string,
+    queryJson: string,
+    querySparqlJs: string
+  }
+}
+export type EdbSparnaturalProps = {
+  src: string;
+  lang: string;
+  endpoint: string;
+  distinct: string;
+  limit: string;
+  prefix: string;
+  debug: string;
+}
+
+export const EdbSparnatural: React.FC<EdbSparnaturalProps> = ({
+  src,
+  lang,
+  endpoint,
+  distinct,
+  limit,
+  prefix,
+  debug,
+}) => {
+  const sparnaturalRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    import("sparnatural").then(() => {
+      const handleQueryUpdated = (event: SparnaturalEvent) => {
+        console.log(event?.detail?.queryString);
+        console.log(event?.detail?.queryJson);
+        console.log(event?.detail?.querySparqlJs);
+        // here : don't forget to call expandSparql so that core:sparqlString annotation is taken into account
+      };
+
+      sparnaturalRef.current?.addEventListener("queryUpdated", handleQueryUpdated);
+
+      return () => {
+        sparnaturalRef.current?.removeEventListener("queryUpdated", handleQueryUpdated);
+      };
+    });
+  }, []);
+
+  return (
+      <div id="ui-search" style={{ width: "auto" }}>
+        <spar-natural
+          ref={sparnaturalRef}
+          src={src}
+          lang={lang}
+          endpoint={endpoint}
+          distinct={distinct}
+          limit={limit}
+          prefix={prefix}
+          debug={debug}
+        />
+      </div>
+  );
+};
+```
+
+4. Build the package
+
+```bash
+bun run build
+```

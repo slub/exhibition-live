@@ -49,5 +49,9 @@
   "relatedCorporation": "Bezug zu Körperschaften",
   "exhibitionType":  "Art",
   "exhibitionCategory":  "Kategorie",
-  "exhibitionSeries": "Ausstellungsreihe"
+  "exhibitionSeries": "Ausstellungsreihe",
+  "exposedArtists": "Ausgestellte Künstler:innen",
+  "curators": "Kurator:innen",
+  "organizers": "Organisator:innen",
+  "catalogs": "Kataloge"
 }

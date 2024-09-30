@@ -1,4 +1,3 @@
-import { Typography } from "@mui/material";
 import parse from "html-react-parser";
 import React, {
   FunctionComponent,
@@ -9,19 +8,15 @@ import React, {
 } from "react";
 
 import {
-  remoteSparqlQuery,
-  sparqlSelectViaFieldMappings,
-} from "../../utils/sparql";
-import {
-  findPersonWithinWikidataUsingREST,
+  findWithinWikidataUsingREST,
   wikidataPrefixes,
-} from "../../utils/wikidata";
-import {
-  AutocompleteSuggestion,
-  DebouncedAutocomplete,
-} from "../DebouncedAutoComplete";
+} from "@slub/edb-ui-utils";
 import WikidataHumanCard from "./WikidataHumanCard";
 import WikidataThingCard from "./WikidataThingCard";
+import { sparqlSelectViaFieldMappings } from "@slub/sparql-schema";
+import { remoteSparqlQuery } from "@slub/remote-query-implementations";
+import { DebouncedAutocomplete } from "@slub/edb-advanced-components";
+import { AutocompleteSuggestion } from "@slub/edb-core-types";
 
 interface OwnProps {
   selected?: AutocompleteSuggestion | null;
@@ -102,13 +97,7 @@ const WikidataAutocompleteInput: FunctionComponent<Props> = ({
         minSearchLength={3}
         load={async (searchString) =>
           searchString
-            ? (
-                await findPersonWithinWikidataUsingREST(
-                  searchString,
-                  10,
-                  classType,
-                )
-              )
+            ? (await findWithinWikidataUsingREST(searchString, classType, 10))
                 .map((d) => {
                   return d;
                 })

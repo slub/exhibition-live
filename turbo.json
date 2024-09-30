@@ -2,6 +2,8 @@
   "$schema": "https://turbo.build/schema.json",
   "globalDotEnv": [".env"],
   "pipeline": {
+    "demo": {
+    },
     "build": {
       "dependsOn": ["^build"],
       "outputs": ["dist/**", ".next/**", "!.next/cache/**"]
@@ -10,12 +12,17 @@
       "dependsOn": ["^build"],
       "outputs": ["_site"]
     },
+    "dev:api": {},
     "build:watch": {},
+    "dev:vite": {},
     "test": {
       "dependsOn": ["^test"]
     },
     "lint": {},
     "lint:fix": {},
+    "build:prisma": {
+      "cache": false
+    },
     "docs": {},
     "dev": {
       "cache": false,

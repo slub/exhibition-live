@@ -16,7 +16,7 @@ import { useCallback, useState } from "react";
 import AutocompleteURIFieldRenderer from "./AutocompleteURIFieldRenderer";
 
 export default {
-  title: "form/exhibition/AutocompleteURIFieldRenderer",
+  title: "ui/form/renderer/AutocompleteURIFieldRenderer",
   component: AutocompleteURIFieldRenderer,
 };
 

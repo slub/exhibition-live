@@ -1,0 +1,30 @@
+## Turbo Cache in Your Project
+
+Turbo Cache drastically improves build times in monorepo setups by caching the results of previous builds and reusing them when possible. This is particularly beneficial for our project, which combines multiple UI projects (Vite.js, Next.js, Storybook), a Node.js CLI/API, and shared packages.
+
+### How Turbo Cache Works:
+
+1. **Task Fingerprinting:** Turbo analyzes each task definition (e.g., build command for Vite.js project) along with its dependencies (files within the Vite.js project, shared packages) and environment variables. It generates a unique hash ("fingerprint") representing this specific task configuration.
+
+2. **Cache Lookup:** When you run a task, Turbo checks if a cached output exists for the corresponding fingerprint.
+
+3. **Cache Hit/Miss:**
+- **Hit:** If found, Turbo skips the actual execution and uses the cached output, resulting in significantly faster build times.
+- **Miss:** If not found (e.g., first-time execution, code changes detected), Turbo executes the task, caches the output, and associates it with the generated fingerprint for future use.
+
+**Impact on Our Project and Workspace Dependencies:**
+
+Turbo's understanding of workspace dependencies is crucial for our monorepo's efficiency. Let's illustrate with an example:
+
+Imagine our Vite.js project depends on a utility function from a shared package located in `packages/utils`.
+
+1. **Initial Build:** On the first build of both the `utils` package and the Vite.js project, Turbo caches the outputs and associates them with their respective fingerprints.
+
+2. **Change in Shared Package:** Now, let's say you modify the utility function within `packages/utils`. Turbo's dependency graph detects this change and knows that the Vite.js project relies on the modified package.
+
+3. **Targeted Rebuilds:**  Turbo intelligently invalidates only the cached outputs related to the `utils` package and the Vite.js project. This means:
+-  The `utils` package is rebuilt.
+-  The Vite.js project is rebuilt, leveraging the updated output from the rebuilt `utils` package.
+- Other unrelated parts of the monorepo remain untouched, preserving their cached states and saving significant build time.
+
+In essence, Turbo's workspace dependency awareness ensures that only the necessary parts of your monorepo are rebuilt when changes occur, maximizing caching efficiency and streamlining your development process.

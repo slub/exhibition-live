@@ -1,9 +1,8 @@
-import { EntityDetailCard } from "./";
-import { Box } from "@mui/material";
 import { Meta, StoryObj } from "@storybook/react";
+import { EntityDetailCard } from "@slub/edb-advanced-components";
 
 export default {
-  title: "presentation/kb/EntityDetailCard",
+  title: "ui/view/EntityDetailCard",
   component: EntityDetailCard,
 } as Meta<typeof EntityDetailCard>;
 
@@ -32,10 +31,12 @@ const exampleOne = {
     sourceCorporation: {
       idAuthority: {},
     },
-    fromDateDisplay: "05.04.2014",
-    toDateDisplay: "13.07.2014",
-    startDate: {},
-    endDate: {},
+    startDate: {
+      dateValue: 20140405,
+    },
+    endDate: {
+      dateValue: 20140713,
+    },
     exhibitionType: {
       "@id":
         "http://ontologies.slub-dresden.de/exhibition/entity/EventType#s-1",

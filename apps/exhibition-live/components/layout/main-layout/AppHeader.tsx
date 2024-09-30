@@ -1,18 +1,8 @@
 // material-ui
 import MenuIcon from "@mui/icons-material/Menu";
 import ListIcon from "@mui/icons-material/List";
-import {
-  ButtonBase,
-  useTheme,
-  AppBar,
-  Toolbar,
-  Button,
-  Hidden,
-  ToggleButton,
-} from "@mui/material";
+import { ButtonBase, useTheme, AppBar, Toolbar } from "@mui/material";
 import React from "react";
-import { useFormEditor } from "../../state";
-import { useSettings } from "../../state/useLocalSettings";
 
 type AppHeaderProps = {
   toggleDrawer: () => void;

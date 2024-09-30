@@ -28,8 +28,15 @@
     "@slub/edb-core-utils": "workspace:*",
     "@slub/edb-graph-traversal": "workspace:*",
     "@slub/remote-query-implementations": "workspace:*",
+    "@slub/prisma-db-impl": "workspace:*",
     "@slub/sparql-schema": "workspace:*",
+    "@slub/edb-authorities": "workspace:*",
+    "@slub/edb-data-mapping": "workspace:*",
+    "@slub/edb-cli-creator": "workspace:*",
+    "@slub/edb-file-import": "workspace:*",
     "@tpluscode/sparql-builder": "^0.3.31",
-    "cmd-ts": "^0.13.0"
+    "cmd-ts": "^0.13.0",
+    "uuid": "^10.0.0",
+    "csv-parse": "^5.5.6"
   }
 }

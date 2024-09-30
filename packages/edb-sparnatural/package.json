@@ -1,0 +1,39 @@
+{
+  "name": "@slub/edb-sparnatural",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs",
+      "default": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsup src/index.tsx",
+    "dev": "tsup src/index.tsx",
+    "lint": "eslint \"**/*.ts*\"",
+    "lint-fix": "eslint --fix \"**/*.ts*\"",
+    "jsonschema2shacl:install": "./install-jsonschema2shacl.sh",
+    "jsonschema2shacl": "./.venv/bin/python3 ./jsonschema2shacl/main.py"
+  },
+  "peerDependencies": {
+    "react": "^18",
+    "leaflet": "~1.9"
+  },
+  "dependencies": {
+    "sparnatural": "^9.5.1",
+    "select2": "^4.1.0-rc.0",
+    "@fortawesome/fontawesome-free": "^6.6.0",
+    "@geoman-io/leaflet-geoman-free": "^2.17.0"
+  },
+  "devDependencies": {
+    "@slub/edb-build-helper": "workspace:*",
+    "@slub/edb-tsconfig": "workspace:*",
+    "@slub/edb-tsup-config": "workspace:*"
+  }
+}

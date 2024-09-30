@@ -25,10 +25,16 @@
   "license": "MIT",
   "private": true,
   "scripts": {
+    "start": "turbo run demo",
     "build": "turbo run build",
-    "build:packages": "turbo run build --filter=@slub/*",
+    "build:packages": "turbo run build --filter=@slub/* --filter=@slub/edb-kxp-components --continue",
+    "build:manifestations": "turbo run build --filter='./manifestation/*' --continue",
     "build:pages": "turbo run build:pages",
+    "cli": "bun ./apps/edb-cli/src/index.ts",
     "dev": "turbo run dev --parallel",
+    "dev:api": "turbo run dev:api",
+    "dev:exhibition": "turbo run dev --parallel --filter='./apps/exhibition-live'",
+    "dev:vite": "turbo run dev:vite --parallel --filter='./apps/exhibition-live'",
     "dev:packages": "turbo run dev --parallel --filter='./packages/*'",
     "test": "turbo run test",
     "lint": "turbo run lint",
@@ -37,15 +43,23 @@
     "precommit": "bun run lint-staged",
     "prepare": "husky install",
     "changeset:init": "changeset init",
-    "changeset": "changeset"
+    "changeset": "changeset",
+    "helper:deps": "bun ./packages/build-helper/get-dependencies.js",
+    "build:prisma": "turbo run build:prisma && sed -i \"s/env(\\\"DATABASE_PROVIDER\\\")/\\\"${DATABASE_PROVIDER:-sqlite}\\\"/g\" ./prisma/*.prisma",
+    "prisma:exhibition:generate": "prisma generate --schema ./prisma/exhibition.prisma",
+    "prisma:exhibition:migrate": "prisma migrate dev --schema ./prisma/exhibition.prisma",
+    "purge": "rm -rf node_modules && find -maxdepth 3 -name node_modules | xargs rm -rf"
   },
   "workspaces": [
-    "apps/*",
     "packages/*",
-    "manifestation/*"
+    "packages/ideas/*",
+    "packages/form-renderer/*",
+    "manifestation/*",
+    "apps/*"
   ],
   "devDependencies": {
     "@turbo/gen": "^1.13.0",
+    "hygen": "^6.2.11",
     "eslint": "^8.57.0",
     "husky": "^8.0.0",
     "lint-staged": "^15.2.2",
@@ -53,7 +67,8 @@
     "tsup": "^8.0.2",
     "turbo": "^1.13.0",
     "@changesets/cli": "^2.27.1",
-    "typescript": "^5"
+    "typescript": "^5",
+    "prisma": "^5.17.0"
   },
   "overrides": {
     "@typescript-eslint/typescript-estree": "^7.4.0"

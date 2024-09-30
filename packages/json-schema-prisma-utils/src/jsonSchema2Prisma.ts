@@ -5,6 +5,7 @@ import {
   isPrimitive,
 } from "@slub/json-schema-utils";
 import { JSONSchema7 } from "json-schema";
+import { schemaName } from "@slub/exhibition-schema/src";
 
 const primitiveToPrisma = (type: string, requiredQM: string): string => {
   switch (type) {
@@ -161,12 +162,15 @@ export const propertiesToPrisma = (
             const type = (propSchema.items as any).$ref
               .split("/")
               .pop() as string;
+            const relationName = `${typeName}_${pp}_${type}`;
             return {
-              directProperties: [`${pp} ${type}[]`],
+              directProperties: [
+                `${pp} ${type}[] @relation(name: "${relationName}")`,
+              ],
               externalComplementaryProperties: [
                 {
                   tableName: type,
-                  property: `${reverseProperty} ${typeName}[]`,
+                  property: `${reverseProperty} ${typeName}[] @relation(name: "${relationName}")`,
                 },
               ],
             };
@@ -342,4 +346,23 @@ export const jsonSchema2Prisma = (
     }
   }
   return buildInstruction2ModelString(modelBuildInstruction);
+};
+
+export const logPrismaSchemaWithPreamble = (
+  schemaName: string,
+  schema: JSONSchema7,
+): string => {
+  const preamble = `
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/@prisma/edb-${schemaName}-client"
+}
+
+datasource db {
+  provider = env("DATABASE_PROVIDER")
+  url      = env("DATABASE_URL")
+}
+`;
+
+  return `${preamble}${jsonSchema2Prisma(schema, new WeakSet<any>())}`;
 };
